@@ -16,7 +16,10 @@
         <h1>Tasket</h1>
     </header>
     
-    <section id=viz></section>
+    <section class=board>
+        <div class=viz></div>
+        <div class=content></div>
+    </section>
         <!--
         <h1>Tasks</h1>
         <ul class=hubs>
@@ -63,11 +66,21 @@
     </aside>
     
     <footer>Tasket. lorem ipsum</footer>
+    
+    
+    <!-- MICRO-TEMPLATES -->
+    <script type=text/tim class=task>
+        <article class=task>
+            <h1>{{title}}</h1>
+            <div class=desc>{{desc}}</div>
+        </article>
+    </script>
   
     <!-- SCRIPTS -->
     <script src="js/console.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/raphael.min.js"></script>
+    <script src="js/raphael-extensions.js"></script>
     <script src="js/tim.js"></script>
     <script src="js/tasket.js"></script>    
   </body>

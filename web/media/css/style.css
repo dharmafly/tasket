@@ -10,10 +10,10 @@ header h1 {
     left:0.38em;
     z-index:1;
     font-size:1.62em;
-    color:#aaa;
+    opacity:0.38;
 }
 
-#viz {
+.board, .viz, .content {
     position:absolute;
     top:0;
     left:0;
@@ -27,4 +27,18 @@ aside.profile {
 
 footer {
     clear:both;
+}
+
+article.task {
+    font-size:0.62em;
+    background-color:#ffc;
+    color:#555;
+    max-width:20em;
+    float:left;
+    position:absolute;
+    top:0;
+    left:0;
+}
+article.task h1 {
+    margin:0;
 }
