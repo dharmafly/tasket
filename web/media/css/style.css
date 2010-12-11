@@ -1,0 +1,30 @@
+body {
+    margin:0;
+    padding:0.38em 1.62em;
+    position:relative;
+}
+
+header h1 {
+    position:absolute;
+    top:0.38em;
+    left:0.38em;
+    z-index:1;
+    font-size:1.62em;
+    color:#aaa;
+}
+
+#viz {
+    position:absolute;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+}
+
+aside.profile {
+    float:right;
+}
+
+footer {
+    clear:both;
+}
