@@ -70,13 +70,13 @@ Hub.prototype = {
             count = 0,
             circle;
             
-        this.x = 100;
+        this.x = 162;
         this.y = 162;
         
         jQuery.each(this.tasks, function(taskId, task){
             var angle = ((degreesPerSegment * count) + pathStartAngle) % 360,
                 taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius) + " " + hub.y).rotate(angle, hub.x, hub.y).attr("stroke", "#555"),
-                taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).attr({fill:"#ccc"}).rotate(angle, hub.x, hub.y),
+                taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).attr({fill:"#f9c"}).rotate(angle, hub.x, hub.y),
                 taskSet = viz.set(),
                 
                 // TODO: TEMP - use jQuery to calculate offset position
@@ -91,7 +91,7 @@ Hub.prototype = {
         });
         
         circle = shapes.circle = viz.circle(this.x, this.y, this.r)
-            .attr({fill:"#ccc"});
+            .attr({fill:"#f96"});
         set.push(circle);
         return this;
     }

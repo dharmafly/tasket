@@ -3,6 +3,9 @@ body {
     padding:0.38em 1.62em;
     position:relative;
 }
+a {
+    cursor:pointer;
+}
 
 header h1 {
     position:absolute;
@@ -40,18 +43,30 @@ article.task {
     position:absolute;
     top:0;
     left:0;
+    -moz-transition-property:color, background-color, opacity;
+    -webkit-transition-property:color, background-color, opacity;
+    -o-transition-property:color, background-color, opacity;
+    transition-property:color, background-color, opacity;
+    -moz-transition-duration:0.16s;
+    -webkit-transition-duration:0.16s;
+    -o-transition-duration:0.16s;
+    transition-duration:0.16s;
 }
 article.task:hover {
     cursor:pointer;
-    color:#070;
+    color:#a70;
 }
 article.task.visible {
     background-color:#ffc;
+    color:#630;
     z-index:1;
+    opacity:0.9;
+}
+article.task.visible:hover {
+    cursor:default;
 }
 article.task div.desc {
     display:none;
-    margin-bottom:0.38em;
     font-size:1.38em;
 }
 
