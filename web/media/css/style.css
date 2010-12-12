@@ -6,6 +6,7 @@ body {
     margin:0;
     position:relative;
     font-family: sans-serif;
+    background-color:#d2e2ef;
 }
 a {
     cursor:pointer;
@@ -14,12 +15,16 @@ a {
 header h1 {
     position:absolute;
     top:0.38em;
-    left:0.38em;
+    right:0.38em;
     z-index:1;
-    font-size:1.38em;
+    font-size:1em;
     opacity:0.38;
     padding:0;
     margin:0;
+    font-style:italic;
+    text-transform:lowercase;
+    font-family:Georgia, serif;
+    color:#fff;
 }
 
 section.board, section.board div.viz, section.board div.content {
@@ -31,22 +36,40 @@ section.board, section.board div.viz, section.board div.content {
 section.board {
     width:75%;
     position:relative;
+    /*overflow:auto;*/
+    background: -webkit-gradient(
+        linear,
+        left bottom,
+        left top,
+        color-stop(0.38, rgb(86,116,144)),
+        color-stop(0.68, rgb(140,174,202))
+    );
+    background: -moz-linear-gradient(
+        center bottom,
+        rgb(86,116,144) 38%,
+        rgb(140,174,202) 68%
+    );
 }
 section.board div.viz, section.board div.content {
-    width:100%;
+    width:95%;
+    height:99%;
 }
 
 aside.profile {
     position:absolute;
     top:0;
     right:0;
-    max-width:25%;
-    min-width:16.2em;
+    width:20%;
+    padding:2.5%;
+    overflow:auto;
 }
 
-aside.profile h1 {
+aside.profile h1.fn, aside.profile > section > h1 {
     color:#777;
     font-size:1.38em;
+}
+aside.profile > section > h1 {
+    margin-bottom:0.14em;
 }
 aside.profile img.photo {
     width:100px;
@@ -56,13 +79,25 @@ aside.profile img.photo {
 body > footer {
     display:none;
 }
+div.content section.hub {
+    position:absolute;
+    text-align:right;
+    width:100px;
+    padding-right:1em;
+}
+div.content section.hub h1 {
+    font-size:1em;
+    font-weight:normal;
+    padding:0;
+    margin:0;
+}
 
 div.content article.task {
+    background-color:rgba(240, 242, 198, 0.2);
     font-size:0.62em;
     border:1px solid #ccc;
     padding:0.16em 1em 0.16em 24px;
     margin:-5px 0 0 -5px;
-    color:#555;
     max-width:20em;
     float:left;
     position:absolute;
@@ -77,27 +112,64 @@ div.content article.task {
     -o-transition-duration:0.16s;
     transition-duration:0.16s;
 }
-article.task:hover {
+div.content article.task.ui-draggable-dragging {
+    backround-color:#ffc;
+}
+div.content article.task h1 {
+    font-weight:normal;
+}
+div.content article.task:hover {
     cursor:pointer;
     color:#a70;
 }
-article.task.visible {
+div.content article.task.visible, div.content article.task:hover {
     background-color:#ffc;
     color:#630;
     z-index:1;
     opacity:0.9;
 }
-article.task.visible:hover {
-    cursor:default;
+div.content article.task.visible:hover {
+    /*cursor:default;*/
 }
-article.task div.desc {
+div.content article.task div.desc {
     display:none;
     font-size:1.38em;
+    margin-bottom:0.38em;
+}
+aside.profile ul.tasks {
+    list-style:circle;
+    margin-top:0;
+    padding-top:0;
+}
+aside.profile article.task {
+    -moz-transition-property:background-color;
+    -webkit-transition-property:background-color;
+    -o-transition-property:background-color;
+    transition-property:background-color;
+    -moz-transition-duration:1s;
+    -webkit-transition-duration:1s;
+    -o-transition-duration:1s;
+    transition-duration:1s;
+}
+aside.profile article.task:hover {
+    cursor:pointer;
+}
+aside.profile ul.tasks article.task.added {
+    background-color:#cfc;
 }
 aside.profile article.task h1 {
     font-size:1em;
     font-weight:normal;
-    color:#000;
+    display:inline;
+}
+aside.profile article.task a.done {
+    font-size:0.8em;
+    padding-left:1em;
+    text-decoration:underline;
+    color:#339;
+}
+aside.profile article.task div.desc {
+    display:none;
 }
 
 article.task h1 {

@@ -3,9 +3,10 @@ var // SETTINGS
     pathStartAngle = 270,
     pathTotalArc = 240,
     pathLength = 38,
-    taskCircleRadius = 6,
+    taskCircleRadius = 5,
     pathRadius = hubRadius + pathLength,
     
+    bodyElem = jQuery("body"),
     vizElem = jQuery("section.board div.viz"),
     contentElem = jQuery("section.board div.content"),
     contentTasksElem = jQuery("ul.tasks", contentElem),
@@ -75,6 +76,7 @@ Hub.prototype = {
             set = shapes.set = viz.set(),
             degreesPerSegment = pathTotalArc / this.numTasks,
             count = 0,
+            imageWidth = this.r * 1.38,
             circle;
             
         this.x = 162;
@@ -82,8 +84,8 @@ Hub.prototype = {
         
         jQuery.each(this.tasks, function(taskId, task){
             var angle = ((degreesPerSegment * count) + pathStartAngle) % 360,
-                taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius) + " " + hub.y).rotate(angle, hub.x, hub.y).attr("stroke", "#555"),
-                taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).attr({fill:"#f9c"}).rotate(angle, hub.x, hub.y),
+                taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius - taskCircleRadius) + " " + hub.y).rotate(angle, hub.x, hub.y).attr("stroke", "#555"),
+                taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).rotate(angle, hub.x, hub.y),
                 taskSet = viz.set(),
                 
                 // TODO: TEMP - use jQuery to calculate offset position
@@ -98,8 +100,19 @@ Hub.prototype = {
         });
         
         circle = shapes.circle = viz.circle(this.x, this.y, this.r)
-            .attr({fill:"#f96"});
+            .attr({fill:"#7390aa"});
         set.push(circle);
+        set.push(viz.image("images/profile2.jpg", this.x - imageWidth / 2, this.y - imageWidth / 2, imageWidth, imageWidth));
+        
+        var html = tim(getTemplate("hub"), {
+            title: this.title
+        });
+        
+        jQuery(html)
+            // TODO: calculate positions more reliably
+            .css({left:(this.x - this.r - 110) + "px", top:(this.y - 10) + "px"})
+            .appendTo(contentElem);
+        
         return this;
     }
 };
@@ -125,14 +138,14 @@ Task.prototype = {
         jQuery(html)
             .css({left:x + "px", top: y + "px"})
             .appendTo(contentTasksElem)
-            .draggable()
+            .draggable({containment:bodyElem, revert:"invalid"})
             .data("task", this);
             
         return this;
     }
 };
 
-contentElem.delegate("article.task", "click", function(){
+bodyElem.delegate("article.task", "click", function(){
     var taskElem = jQuery(this),
         visible = !taskElem.data("visible"),
         descElem = taskElem.find("div.desc");
@@ -153,10 +166,42 @@ inProgressElem.droppable({
 	    var taskElem = ui.draggable,
 	        task = taskElem.data("task");
 	        
-	    taskElem.remove();
 	    jQuery("<li></li>")
 	        .append(taskElem)
 	        .appendTo(inProgressTasksElem);
+	        
+	    var doneElem = jQuery("<a class=done>done</a>")
+	        .hide()
+	        .insertAfter(taskElem.find("h1"))
+	        .click(function(){
+	            doneElem.remove();
+	            taskElem
+	                .addClass("added")
+	                .parent().appendTo(completedTasksElem);
+	                
+	            window.setTimeout(function(){
+	                taskElem.removeClass("added");
+	            }, 618); 
+	        });
+	        
+	    taskElem
+	        .draggable("option", "disabled", true)
+	        .data("visible", false)
+	        .hover(
+	            function(){
+                    doneElem.show();
+                },
+                function(){
+                    doneElem.hide();
+                }
+            )
+            .addClass("added");
+            
+        taskElem.find("div.desc").hide();
+            
+	    window.setTimeout(function(){
+	        taskElem.removeClass("added");
+	    }, 618); 
 	}
 });
 
