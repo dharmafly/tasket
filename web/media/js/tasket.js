@@ -117,7 +117,7 @@ Hub.prototype = {
         }
         
         // Gravity
-        this.y = this.numTasks * 50 + 50;
+        this.y = this.numTasks * 100 + 50;
         
     
         var hub = this,
@@ -228,7 +228,7 @@ Task.create = function(){
             task;
         
         if (!you){
-            you = new Hub(5, "Mary-Sue", {x:550, y:150, img:"media/images/profile.jpg"});
+            you = new Hub(5, "You", {x:550, y:150, img:"media/images/profile.jpg"});
         }
         task = you.addTask(null, title, {desc:desc, time:time});        
         jQuery('#temp_id').attr('value', task.tempId);
