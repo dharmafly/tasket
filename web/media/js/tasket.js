@@ -70,6 +70,10 @@ Hub.prototype = {
         return this;
     },
     
+    createTask: function(){
+        jQuery.nitelite().open(tim(getTemplate("createTask"), {}));
+    },
+    
     draw: function(){
         var hub = this,
             shapes = this.shapes = {},
@@ -181,7 +185,7 @@ inProgressElem.droppable({
 	                
 	            window.setTimeout(function(){
 	                taskElem.removeClass("added");
-	            }, 618); 
+	            }, 618);
 	        });
 	        
 	    taskElem
@@ -201,7 +205,7 @@ inProgressElem.droppable({
             
 	    window.setTimeout(function(){
 	        taskElem.removeClass("added");
-	    }, 618); 
+	    }, 618);
 	}
 });
 

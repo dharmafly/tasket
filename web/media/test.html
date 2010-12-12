@@ -64,14 +64,52 @@
             </div>
         </article>
     </script>
+    
+    <script type=text/tim class=createTask>    
+        <section class=create-task>
+            <h1>Create a new task</h1>
+        
+            <form method="POST" id="taskform">
+               <div class="input">
+                   <label for="id_title">Title</label>
+                   <input id="id_title" type="text" name="title" maxlength="255" />
+               </div>
+
+               <div class="input">
+                   <label for="id_time_estimate">Time estimate</label>
+                   <select name="time_estimate" id="id_time_estimate">
+                        <option value="" selected="selected">---------</option>
+                        <option value="600">Ten Minutes</option>
+                        <option value="1800">Half an Hour</option>
+                        <option value="3600">One Hour</option>
+                        <option value="7200">Two hours</option>
+                        <option value="14400">Four hours</option>
+                        <option value="28800">Eight hours</option>
+                        <option value="43200">More than Eight hours</option>
+                        </select>
+               </div>
+
+               <div class="input">
+                   <label for="id_summary">Summary</label>
+                   <textarea id="id_summary" rows="10" cols="40"
+            name="summary"></textarea>
+               </div>
+
+               <input type="hidden" name="temp_id" value="" id="temp_id">
+               <input type="submit" name="add" value="Add" id="add">
+            </form>
+        </section>
+    </script>
+    
   
     <!-- SCRIPTS -->
     <script src="js/console.js"></script>
     <script src="js/jquery.min.js"></script>
     <script src="js/jquery-ui-1.8.7.custom.min.js"></script>
+    <script src="js/jquery.form.js"></script>
     <script src="js/raphael.min.js"></script>
-    <script src="js/raphael-extensions.js"></script>
     <script src="js/tim.js"></script>
+    <script src="js/nitelite.js"></script>
     <script src="js/tasket.js"></script>    
   </body>
 </html>
