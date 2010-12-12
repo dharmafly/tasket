@@ -1,0 +1,52 @@
+<style>
+    label {float:left; width:150px; display:block;}
+</style>
+
+
+{{ form.errors }}
+
+<form method="POST" id="taskform">
+    {% csrf_token %}
+    <div class="input">
+        <label for="id_title">{{ form.title.label }}</label>
+        {{ form.title }}
+    </div>
+
+    <div class="input">
+        <label for="id_time_estimate">{{ form.time_estimate.label }}</label>
+        {{ form.time_estimate }}
+    </div>
+
+    <div class="input">
+        <label for="id_summary">{{ form.summary.label }}</label>
+        {{ form.summary }}
+    </div>
+
+    <input type="hidden" name="temp_id" value="" id="temp_id">
+    <input type="submit" name="add" value="Add" id="add">
+</form>
+
+<script src="{{ MEDIA_URL }}js/jquery.min.js"></script>
+<script src="{{ MEDIA_URL }}js/jquery.form.js"></script>
+
+<script>
+    
+    function SetUp() {
+        $('#taskform').ajaxForm({
+            beforeSubmit: AddTempId,
+            success: TaskAdded
+        })
+    }
+
+    function AddTempId(formData, jqForm, options) {
+        $('#temp_id').attr('value', new Date().getTime());
+    }
+
+    function TaskAdded(responseText, statusText, xhr, $form) {
+        alert(responseText);
+    }
+
+    $(document).ready(function() { 
+        SetUp();
+    });
+</script>
