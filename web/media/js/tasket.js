@@ -103,7 +103,7 @@ Hub.prototype = {
         circle = shapes.circle = viz.circle(this.x, this.y, this.r)
             .attr({fill:"#7390aa"});
         set.push(circle);
-        set.push(viz.image("images/profile2.jpg", this.x - imageWidth / 2, this.y - imageWidth / 2, imageWidth, imageWidth));
+        set.push(viz.image("media/images/profile2.jpg", this.x - imageWidth / 2, this.y - imageWidth / 2, imageWidth, imageWidth));
         
         var html = tim(getTemplate("hub"), {
             title: this.title
