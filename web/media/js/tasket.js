@@ -8,9 +8,12 @@ var // SETTINGS
     
     vizElem = jQuery("section.board div.viz"),
     contentElem = jQuery("section.board div.content"),
+    contentTasksElem = jQuery("ul.tasks", contentElem),
     sideElem = jQuery("aside.profile"),
     inProgressElem = jQuery("section.in-progress", sideElem),
     inProgressTasksElem = jQuery("ul.tasks", inProgressElem),
+    completedElem = jQuery("section.completed", sideElem),
+    completedTasksElem = jQuery("ul.tasks", completedElem),
     completedElem = jQuery("section.completed", sideElem),
     viz = Raphael(vizElem[0]),
     
@@ -121,7 +124,7 @@ Task.prototype = {
         
         jQuery(html)
             .css({left:x + "px", top: y + "px"})
-            .appendTo(contentElem)
+            .appendTo(contentTasksElem)
             .draggable()
             .data("task", this);
             
@@ -149,12 +152,11 @@ inProgressElem.droppable({
 	drop: function(event, ui){
 	    var taskElem = ui.draggable,
 	        task = taskElem.data("task");
-	    
-	    jQuery("<li></li>")
-	        .append(taskElem.find("h1").text())
-	        .appendTo(inProgressTasksElem);
 	        
 	    taskElem.remove();
+	    jQuery("<li></li>")
+	        .append(taskElem)
+	        .appendTo(inProgressTasksElem);
 	}
 });
 

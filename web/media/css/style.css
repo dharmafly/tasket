@@ -1,7 +1,11 @@
+html, body {
+    height:100%;
+}
+
 body {
     margin:0;
-    padding:0.38em 1.62em;
     position:relative;
+    font-family: sans-serif;
 }
 a {
     cursor:pointer;
@@ -12,27 +16,48 @@ header h1 {
     top:0.38em;
     left:0.38em;
     z-index:1;
-    font-size:1.62em;
+    font-size:1.38em;
     opacity:0.38;
+    padding:0;
+    margin:0;
 }
 
-.board, .viz, .content {
+section.board, section.board div.viz, section.board div.content {
     position:absolute;
     top:0;
     left:0;
-    width:100%;
     height:100%;
+}
+section.board {
+    width:75%;
+    position:relative;
+}
+section.board div.viz, section.board div.content {
+    width:100%;
 }
 
 aside.profile {
-    float:right;
+    position:absolute;
+    top:0;
+    right:0;
+    max-width:25%;
+    min-width:16.2em;
 }
 
-footer {
-    clear:both;
+aside.profile h1 {
+    color:#777;
+    font-size:1.38em;
+}
+aside.profile img.photo {
+    width:100px;
+    height:100px;
 }
 
-article.task {
+body > footer {
+    display:none;
+}
+
+div.content article.task {
     font-size:0.62em;
     border:1px solid #ccc;
     padding:0.16em 1em 0.16em 24px;
@@ -68,6 +93,11 @@ article.task.visible:hover {
 article.task div.desc {
     display:none;
     font-size:1.38em;
+}
+aside.profile article.task h1 {
+    font-size:1em;
+    font-weight:normal;
+    color:#000;
 }
 
 article.task h1 {
