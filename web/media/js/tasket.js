@@ -135,6 +135,7 @@ Task.prototype = {
             title: this.title,
             desc: this.desc
         });
+        _(this.title, this.desc, html)
         
         jQuery(html)
             .css({left:x + "px", top: y + "px"})

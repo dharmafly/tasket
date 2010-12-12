@@ -65,9 +65,9 @@
     
     <script type=text/tim class=task>
         <article class=task>
-            <h1>{{title}}</h1>
+            <h1>{% templatetag openvariable %}title{% templatetag closevariable %}</h1>
             <div class=desc>
-                {{desc}}
+                {% templatetag openvariable %}desc{% templatetag closevariable %}
             </div>
         </article>
     </script>
