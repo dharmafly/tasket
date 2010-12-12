@@ -201,10 +201,17 @@ Task.create = function(){
     }
 
     function taskAdded(responseText, statusText, xhr, $form) {
-        var tempId = "foo",
-            taskId = 5,
-            task = tempTasks[tempId];
+        if (!JSON){
+            return;
+        }
+        var data = JSON.parse(responseText),
+            tempId = data.temp_id,
+            taskId = data.task_id,
+            task;
             
+        if (tempId && taskId){
+            task = tempTasks[tempId];
+        }
         if (task){
             task.id = taskId;
             delete task.tempId;
