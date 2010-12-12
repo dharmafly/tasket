@@ -10,6 +10,8 @@ body {
 }
 a {
     cursor:pointer;
+    text-decoration:underline;
+    color:#339;
 }
 
 header h1 {
@@ -165,8 +167,6 @@ aside.profile article.task h1 {
 aside.profile article.task a.done {
     font-size:0.8em;
     padding-left:1em;
-    text-decoration:underline;
-    color:#339;
 }
 aside.profile article.task div.desc {
     display:none;

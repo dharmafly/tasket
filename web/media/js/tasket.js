@@ -15,7 +15,8 @@ var // SETTINGS
     inProgressTasksElem = jQuery("ul.tasks", inProgressElem),
     completedElem = jQuery("section.completed", sideElem),
     completedTasksElem = jQuery("ul.tasks", completedElem),
-    completedElem = jQuery("section.completed", sideElem),
+    createdElem = jQuery("section.created", sideElem),
+    createdTasksElem = jQuery("ul.tasks", createdElem),
     viz = Raphael(vizElem[0]),
     
     templates,
@@ -68,10 +69,6 @@ Hub.prototype = {
         this.tasks[task.id || task.tempId] = task;
         this.numTasks ++;
         return this;
-    },
-    
-    createTask: function(){
-        jQuery.nitelite().open(tim(getTemplate("createTask"), {}));
     },
     
     draw: function(){
@@ -148,6 +145,29 @@ Task.prototype = {
         return this;
     }
 };
+Task.create = function(){
+    jQuery.nitelite(0.62, "#567490").open(tim(getTemplate("createTask"), {}));
+    
+    function SetUp() {
+        $('#taskform').ajaxForm({
+            beforeSubmit: AddTempId,
+            success: TaskAdded
+        })
+    }
+
+    function AddTempId(formData, jqForm, options) {
+        $('#temp_id').attr('value', new Date().getTime());
+    }
+
+    function TaskAdded(responseText, statusText, xhr, $form) {
+        alert(responseText);
+    }
+
+    SetUp();
+};
+
+createdTasksElem.find("a.create")
+    .click(Task.create);
 
 bodyElem.delegate("article.task", "click", function(){
     var taskElem = jQuery(this),
