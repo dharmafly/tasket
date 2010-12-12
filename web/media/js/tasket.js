@@ -20,6 +20,9 @@ var // SETTINGS
     viz = Raphael(vizElem[0]),
     
     templates,
+    tasks = {},
+    tempTasks = {},
+    
     forEach = Array.prototype.forEach ?
     function(array, fn, thisp){
         return array.forEach(fn, thisp);
@@ -146,24 +149,37 @@ Task.prototype = {
     }
 };
 Task.create = function(){
-    jQuery.nitelite(0.62, "#567490").open(tim(getTemplate("createTask"), {}));
+    var lightbox = jQuery.nitelite(0.62, "#567490");
+    lightbox.open(tim(getTemplate("createTask"), {}));
     
-    function SetUp() {
-        $('#taskform').ajaxForm({
-            beforeSubmit: AddTempId,
-            success: TaskAdded
+    function setUp() {
+        jQuery('#taskform').ajaxForm({
+            beforeSubmit: addTempId,
+            success: taskAdded
         })
+            .submit(function(){
+                lightbox.close();
+            });
     }
 
-    function AddTempId(formData, jqForm, options) {
-        $('#temp_id').attr('value', new Date().getTime());
+    function addTempId(formData, jqForm, options) {
+        jQuery('#temp_id').attr('value', new Date().getTime());
+        lightbox.close();
     }
 
-    function TaskAdded(responseText, statusText, xhr, $form) {
-        alert(responseText);
+    function taskAdded(responseText, statusText, xhr, $form) {
+        var tempId = "foo",
+            taskId = 5,
+            task = tempTasks[tempId];
+            
+        if (task){
+            task.id = taskId;
+            delete task.tempId;
+            delete tempTasks[tempId];
+        }
     }
 
-    SetUp();
+    setUp();
 };
 
 createdTasksElem.find("a.create")
