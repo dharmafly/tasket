@@ -22,6 +22,7 @@ var // SETTINGS
     templates,
     tasks = {},
     tempTasks = {},
+    you,
     
     forEach = Array.prototype.forEach ?
     function(array, fn, thisp){
@@ -43,7 +44,18 @@ var // SETTINGS
 // returns int from 1 to max
 function randomInt(max){
     return Math.ceil((max || 2) * Math.random());
-}   
+}
+
+function getBy(enumerable, findProperty, findValue){
+    return jQuery.map(enumerable, function(el, i){
+        if (typeof el[findProperty] !== 'undefined'){
+            if (typeof findValue === 'undefined' ||
+                el[findProperty] === findValue){
+                return el;
+            }
+        }
+    });
+}
 
 function getTemplate(key){
     if (!templates){
@@ -94,10 +106,19 @@ Hub.prototype = {
     
     draw: function(){
         if (this.shapes && this.elements){
-            forEach(this.shapes.concat(this.elements), function(el){
+            forEach(this.shapes, function(el){
                 el.remove();
             });
+            forEach(this.elements, function(el){
+                if (!el.data("task") || el.data("task").status === "todo"){
+                    el.remove();
+                }
+            });
         }
+        
+        // Gravity
+        this.y = this.numTasks * 50 + 50;
+        
     
         var hub = this,
             elements = this.elements = [],
@@ -109,6 +130,10 @@ Hub.prototype = {
             circle;
         
         jQuery.each(this.tasks, function(taskId, task){
+            if (task.status !== "todo"){
+                return true;
+            }
+        
             var angle = ((degreesPerSegment * count) + pathStartAngle) % 360,
                 taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius - taskCircleRadius) + " " + hub.y).rotate(angle, hub.x, hub.y).attr("stroke", "#555"),
                 taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).rotate(angle, hub.x, hub.y),
@@ -186,24 +211,37 @@ Task.create = function(){
     lightbox.open(tim(getTemplate("createTask"), {}));
     
     function setUp() {
-        jQuery('#taskform').ajaxForm({
-            beforeSubmit: addTempId,
-            success: taskAdded
-        })
+        jQuery('#taskform')
+            .ajaxForm({
+                beforeSubmit: addTempId,
+                success: taskAdded
+            })
             .submit(function(){
                 lightbox.close();
             });
     }
 
-    function addTempId(formData, jqForm, options) {
-        jQuery('#temp_id').attr('value', new Date().getTime());
+    function addTempId(formData, jqForm, options){
+        var title = getBy(formData, "name", "title")[0].value,
+            desc = getBy(formData, "name", "summary")[0].value,
+            time = getBy(formData, "name", "time_estimate")[0].value,
+            task;
+        
+        if (!you){
+            you = new Hub(5, "Mary-Sue", {x:550, y:150, img:"media/images/profile.jpg"});
+        }
+        task = you.addTask(null, title, {desc:desc, time:time});        
+        jQuery('#temp_id').attr('value', task.tempId);
+        
+        you.draw();
         lightbox.close();
     }
 
     function taskAdded(responseText, statusText, xhr, $form) {
-        if (!JSON){
+        if (!JSON || !responseText){
             return;
         }
+        try {
         var data = JSON.parse(responseText),
             tempId = data.temp_id,
             taskId = data.task_id,
@@ -217,6 +255,8 @@ Task.create = function(){
             delete task.tempId;
             delete tempTasks[tempId];
         }
+        }
+        catch(e){}
     }
 
     setUp();
@@ -286,19 +326,13 @@ inProgressElem.droppable({
 	    }, 0);
 	    
 	    task.status = "inprogress";
+	    task.hub.numTasks --;
+	    task.hub.draw();
 	}
 });
 
-var h = new Hub(5, "Bob Jenkins", {x:150, y:150, img:"media/images/profile2.jpg"});
-h.addTask(null, "Get food", {desc:"lorem ipsum"});
-h.addTask(null, "Get food", {desc:"lorem ipsum"});
-h.addTask(null, "Get food", {desc:"lorem ipsum"});
-h.addTask(null, "Get food", {desc:"lorem ipsum"});
+var h = new Hub(5, "Bob Jenkins", {x:145, y:400, img:"media/images/profile2.jpg"});
+h.addTask(null, "Buy food from market", {desc:"lorem ipsum"});
+h.addTask(null, "Pick up prescription", {desc:"lorem ipsum"});
+h.addTask(null, "Put out dustbin", {desc:"lorem ipsum"});
 h.draw();
-
-var h2 = new Hub(5, "Mary-Sue", {x:450, y:350, img:"media/images/profile.jpg"});
-h2.addTask(null, "Get food", {desc:"lorem ipsum"});
-h2.addTask(null, "Get food", {desc:"lorem ipsum"});
-h2.addTask(null, "Get food", {desc:"lorem ipsum"});
-h2.addTask(null, "Get food", {desc:"lorem ipsum"});
-h2.draw();
