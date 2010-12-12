@@ -62,10 +62,28 @@ function Hub(id, title, opts){
     this.id = id;
     this.title = title;
     this.tasks = {};
+    this.img = opts.img || null;
+    this.x = opts.x || 0;
+    this.y = opts.y || 0;
 }
 Hub.prototype = {
     r: hubRadius,
     numTasks: 0,
+    
+    translate: function(x, y){
+        forEach(h.shapes, function(elem){
+            elem.translate(x, y)
+        });
+        
+        forEach(h.elements, function(elem){
+            var offset = elem.offset();
+                
+            elem.offset({
+                left:offset.left + x,
+                top:offset.top + y
+            });
+        });
+    },
 
     addTask: function(id, title, opts){
         var task = new Task(id, this, title, opts);
@@ -75,48 +93,52 @@ Hub.prototype = {
     },
     
     draw: function(){
+        if (this.shapes && this.elements){
+            forEach(this.shapes.concat(this.elements), function(el){
+                el.remove();
+            });
+        }
+    
         var hub = this,
-            shapes = this.shapes = {},
-            set = shapes.set = viz.set(),
+            elements = this.elements = [],
+            shapes = this.shapes = [], 
+            taskElems = elements.tasks = [],
             degreesPerSegment = pathTotalArc / this.numTasks,
             count = 0,
             imageWidth = this.r * 1.38,
             circle;
-            
-        this.x = 162;
-        this.y = 162;
         
         jQuery.each(this.tasks, function(taskId, task){
             var angle = ((degreesPerSegment * count) + pathStartAngle) % 360,
                 taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius - taskCircleRadius) + " " + hub.y).rotate(angle, hub.x, hub.y).attr("stroke", "#555"),
                 taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).rotate(angle, hub.x, hub.y),
-                taskSet = viz.set(),
                 
                 // TODO: TEMP - use jQuery to calculate offset position
                 taskNode = jQuery(taskCircle.node),
                 taskOffset = taskNode.offset();
-            
-            taskSet.push(taskPath, taskCircle);
-            set.push(taskSet);
-
+                
+            shapes.push(taskPath, taskCircle);
             task.draw(taskOffset.left, taskOffset.top);
             count ++;
         });
         
-        circle = shapes.circle = viz.circle(this.x, this.y, this.r)
+        circle = this.circle = viz.circle(this.x, this.y, this.r)
             .attr({fill:"#7390aa"});
-        set.push(circle);
-        set.push(viz.image("media/images/profile2.jpg", this.x - imageWidth / 2, this.y - imageWidth / 2, imageWidth, imageWidth));
+        shapes.push(circle);
+        shapes.push(viz.image(this.img, this.x - imageWidth / 2, this.y - imageWidth / 2, imageWidth, imageWidth));
         
         var html = tim(getTemplate("hub"), {
             title: this.title
-        });
-        
-        jQuery(html)
+        }),
+        hubName = jQuery(html)
             // TODO: calculate positions more reliably
-            .css({left:(this.x - this.r - 110) + "px", top:(this.y - 10) + "px"})
+            .offset({
+                left:(this.x - this.r - 110),
+                top:(this.y - 10)
+            })
             .appendTo(contentElem);
         
+        elements.push(hubName);
         return this;
     }
 };
@@ -133,18 +155,29 @@ function Task(id, hub, title, opts){
     this.desc = opts.desc || "";
 }
 Task.prototype = {
+    status: "todo",
+
     draw: function(x, y){
         var html = tim(getTemplate("task"), {
             title: this.title,
             desc: this.desc
-        });
-        
-        jQuery(html)
+        }),
+        task = jQuery(html)
             .css({left:x + "px", top: y + "px"})
             .appendTo(contentTasksElem)
-            .draggable({containment:bodyElem, revert:"invalid"})
+            .draggable({
+                containment:bodyElem,
+                revert:"invalid",
+                start: function(){
+                    inProgressElem.addClass("dragging");
+                },
+                stop: function(){
+                    inProgressElem.removeClass("dragging");
+                }
+            })
             .data("task", this);
-            
+        
+        this.hub.elements.push(task);        
         return this;
     }
 };
@@ -222,6 +255,8 @@ inProgressElem.droppable({
 	            window.setTimeout(function(){
 	                taskElem.removeClass("added");
 	            }, 618);
+	            
+                taskElem.data("task").status = "inprogress";
 	        });
 	        
 	    taskElem
@@ -241,13 +276,22 @@ inProgressElem.droppable({
             
 	    window.setTimeout(function(){
 	        taskElem.removeClass("added");
-	    }, 618);
+	    }, 0);
+	    
+	    task.status = "inprogress";
 	}
 });
 
-var h = new Hub(5, "Bob Jenkins");
+var h = new Hub(5, "Bob Jenkins", {x:150, y:150, img:"media/images/profile2.jpg"});
 h.addTask(null, "Get food", {desc:"lorem ipsum"});
 h.addTask(null, "Get food", {desc:"lorem ipsum"});
 h.addTask(null, "Get food", {desc:"lorem ipsum"});
 h.addTask(null, "Get food", {desc:"lorem ipsum"});
 h.draw();
+
+var h2 = new Hub(5, "Mary-Sue", {x:450, y:350, img:"media/images/profile.jpg"});
+h2.addTask(null, "Get food", {desc:"lorem ipsum"});
+h2.addTask(null, "Get food", {desc:"lorem ipsum"});
+h2.addTask(null, "Get food", {desc:"lorem ipsum"});
+h2.addTask(null, "Get food", {desc:"lorem ipsum"});
+h2.draw();

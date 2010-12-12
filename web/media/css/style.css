@@ -116,6 +116,8 @@ div.content article.task {
 }
 div.content article.task.ui-draggable-dragging {
     backround-color:#ffc;
+    z-index:1;
+    width:10em;
 }
 div.content article.task h1 {
     font-weight:normal;
@@ -158,6 +160,10 @@ aside.profile article.task:hover {
 }
 aside.profile ul.tasks article.task.added {
     background-color:#cfc;
+    -moz-transition-property:none;
+    -webkit-transition-property:none;
+    -o-transition-property:none;
+    transition-property:none;
 }
 aside.profile article.task h1 {
     font-size:1em;
@@ -174,6 +180,9 @@ aside.profile article.task div.desc {
 
 article.task h1 {
     margin:0;
+}
+aside.profile section.in-progress.dragging {
+    background-color:#cfc;
 }
 
 section.create-task label {
