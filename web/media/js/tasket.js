@@ -1,9 +1,9 @@
 var // SETTINGS
     hubRadius = 38,
-    pathStartAngle = 0,
+    pathStartAngle = 270,
+    pathTotalArc = 240,
     pathLength = 38,
     taskCircleRadius = 6,
-    taskPadding = 3,
     pathRadius = hubRadius + pathLength,
     
     vizElem = jQuery("section.board div.viz"),
@@ -66,30 +66,27 @@ Hub.prototype = {
         var hub = this,
             shapes = this.shapes = {},
             set = shapes.set = viz.set(),
-            degreesPerSegment = 360 / this.numTasks,
+            degreesPerSegment = pathTotalArc / this.numTasks,
             count = 0,
             circle;
             
         this.x = 100;
-        this.y = 100;
-        
+        this.y = 162;
         
         jQuery.each(this.tasks, function(taskId, task){
             var angle = ((degreesPerSegment * count) + pathStartAngle) % 360,
-                taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius) + " " + hub.y).rotate(angle, hub.x, hub.y),
+                taskPath = viz.path("M" + hub.x + " " + hub.y + " L" + (hub.x + pathRadius) + " " + hub.y).rotate(angle, hub.x, hub.y).attr("stroke", "#555"),
                 taskCircle = viz.circle(hub.x + pathRadius, hub.y, taskCircleRadius).attr({fill:"#ccc"}).rotate(angle, hub.x, hub.y),
                 taskSet = viz.set(),
                 
                 // TODO: TEMP - use jQuery to calculate offset position
                 taskNode = jQuery(taskCircle.node),
-                taskOffset = taskNode.offset(),
-                taskX = taskOffset.left  - taskPadding,
-                taskY = taskOffset.top - taskPadding;
+                taskOffset = taskNode.offset();
             
             taskSet.push(taskPath, taskCircle);
             set.push(taskSet);
 
-            task.draw(taskX, taskY);
+            task.draw(taskOffset.left, taskOffset.top);
             count ++;
         });
         
@@ -125,9 +122,25 @@ Task.prototype = {
     }
 };
 
+contentElem.delegate("article.task", "click", function(){
+    var taskElem = jQuery(this),
+        visible = !taskElem.data("visible"),
+        descElem = taskElem.find("div.desc");
+    
+    if (visible){
+        descElem.slideDown("fast");
+    }
+    else {
+        descElem.slideUp("fast");
+    }
+    taskElem
+        .toggleClass("visible")
+        .data("visible", visible);
+});
+
 var h = new Hub(5, "Bob Jenkins");
-h.addTask(null, "Get food");
-h.addTask(null, "Get food");
-h.addTask(null, "Get food");
-h.addTask(null, "Get food");
+h.addTask(null, "Get food", {desc:"lorem ipsum"});
+h.addTask(null, "Get food", {desc:"lorem ipsum"});
+h.addTask(null, "Get food", {desc:"lorem ipsum"});
+h.addTask(null, "Get food", {desc:"lorem ipsum"});
 h.draw();

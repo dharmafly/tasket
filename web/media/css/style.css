@@ -31,7 +31,9 @@ footer {
 
 article.task {
     font-size:0.62em;
-    background-color:#ffc;
+    border:1px solid #ccc;
+    padding:0.16em 1em 0.16em 24px;
+    margin:-5px 0 0 -5px;
     color:#555;
     max-width:20em;
     float:left;
@@ -39,6 +41,20 @@ article.task {
     top:0;
     left:0;
 }
+article.task:hover {
+    cursor:pointer;
+    color:#070;
+}
+article.task.visible {
+    background-color:#ffc;
+    z-index:1;
+}
+article.task div.desc {
+    display:none;
+    margin-bottom:0.38em;
+    font-size:1.38em;
+}
+
 article.task h1 {
     margin:0;
 }
