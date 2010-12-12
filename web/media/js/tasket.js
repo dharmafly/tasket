@@ -8,6 +8,10 @@ var // SETTINGS
     
     vizElem = jQuery("section.board div.viz"),
     contentElem = jQuery("section.board div.content"),
+    sideElem = jQuery("aside.profile"),
+    inProgressElem = jQuery("section.in-progress", sideElem),
+    inProgressTasksElem = jQuery("ul.tasks", inProgressElem),
+    completedElem = jQuery("section.completed", sideElem),
     viz = Raphael(vizElem[0]),
     
     templates,
@@ -117,7 +121,10 @@ Task.prototype = {
         
         jQuery(html)
             .css({left:x + "px", top: y + "px"})
-            .appendTo(contentElem);
+            .appendTo(contentElem)
+            .draggable()
+            .data("task", this);
+            
         return this;
     }
 };
@@ -136,6 +143,19 @@ contentElem.delegate("article.task", "click", function(){
     taskElem
         .toggleClass("visible")
         .data("visible", visible);
+});
+
+inProgressElem.droppable({
+	drop: function(event, ui){
+	    var taskElem = ui.draggable,
+	        task = taskElem.data("task");
+	    
+	    jQuery("<li></li>")
+	        .append(taskElem.find("h1").text())
+	        .appendTo(inProgressTasksElem);
+	        
+	    taskElem.remove();
+	}
 });
 
 var h = new Hub(5, "Bob Jenkins");
