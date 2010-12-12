@@ -30,8 +30,9 @@ def all_tasks(request):
     res.write(json.dumps({'hubs' : d}))
     return res
 
-
-
+# Tmp, for demo
+from django.views.decorators.csrf import csrf_exempt
+@csrf_exempt
 def task(request):
     
     form = forms.TaskForm()

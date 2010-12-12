@@ -4,6 +4,6 @@ from django.conf.urls.defaults import *
 import views
 
 urlpatterns = patterns('',
-   url(r'^$',views.all_tasks, name="all_tasks"),
+   url(r'^$','django.views.generic.simple.direct_to_template', {'template' : 'test.html'}, name="all_tasks"),
    url(r'^task/$',views.task, name="node"),      
    )
