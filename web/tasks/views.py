@@ -11,7 +11,7 @@ import forms
 
 def all_tasks(request):
     d = {}
-    for hub in HubMember.objects.all():
+    for hub in Person.objects.all():
         d[hub.pk] = {
             'name' : hub.name,
             }
@@ -27,7 +27,15 @@ def all_tasks(request):
         d[hub.pk]['tasks'] = hub_tasks
         
     res = HttpResponse()
-    res.write(json.dumps({'hubs' : d}))
+    
+    x = json.dumps({'hubs' : d})
+    if request.GET.get('callback'):
+        x = "%s (%s);" % (request.GET['callback'], x)
+    
+    res = HttpResponse(
+    x
+    )
+
     return res
 
 # Tmp, for demo
@@ -49,13 +57,16 @@ def task(request):
 
             task.hub = person
             task.save()
+            x = json.dumps({
+                'temp_id' : request.POST.get('temp_id'),
+                'task_id' : task.pk,
+                })
+            
+            if request.GET.get('callback'):
+                x = "%s = (%s);" % (request.GET['callback'], x)
+            
             res = HttpResponse(
-                json.dumps({
-                    'temp_id' : request.POST.get('temp_id'),
-                    'task_id' : task.pk,
-                    })
-            
-            
+            x
             )
             return res
     
