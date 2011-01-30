@@ -156,6 +156,36 @@
 				});
 			}
 		}());
+
+		(function () {
+			// Temporarily position the projects & tasks for styling.
+			var helpers = document.querySelectorAll('.help'),
+			    hover_class = 'active';
+
+			function addClass(element, klass) {
+				classes = element.className.split(' ');
+				classes.push(klass);
+				element.className = classes.join(' ');
+			}
+
+			function removeClass(element, klass) {
+				var regexp = new RegExp('\\s*' + klass + '\\s*');
+				element.className = element.className.replace(regexp, '');
+			}
+
+			[].slice.call(helpers).forEach(function (helper, index) {
+				var info = document.createElement('a');
+
+				info.href  = '#info';
+				info.title = 'Show info about this section';
+				info.className = 'info';
+				info.appendChild(document.createTextNode('Help'));
+				info.onmouseover = info.onfocus = function () { addClass(helper, hover_class); };
+				info.onmouseout  = info.onblur  = function () { removeClass(helper, hover_class); };
+
+				helper.parentNode.appendChild(info);
+			});
+		}());
 	</script>
 </body>
 </html>

@@ -452,6 +452,7 @@ article .meta img {
 }
 
 .dashboard .quicklinks {
+	position: relative;
 	border-bottom: 1px solid #ccc;
 	padding-bottom: 20px;
 	margin-bottom: 20px;
@@ -478,6 +479,35 @@ article .meta img {
 
 .dashboard .quicklinks .current {
 	background: #fafafa;
+}
+
+.dashboard .quicklinks .info {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.js .dashboard .quicklinks .help {
+	display: none;
+	position: absolute;
+	top: 20px;
+	right: -90px;
+	width: 180px;
+	padding: 10px;
+	color: #fff;
+	background-color: rgba(0, 0, 0, 0.8);
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	/*opacity: 0;
+	-webkit-transition: 0.3s ease-out opacity;*/
+}
+
+.js .dashboard .quicklinks .active {
+	display: block;
+	/*opacity: 1;*/
 }
 
 .dashboard footer p {
