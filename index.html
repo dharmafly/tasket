@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!--[if lt IE 7 ]> <html lang="en" class="no-js ie6"> <![endif]-->
-<!--[if IE 7 ]>    <html lang="en" class="no-js ie7"> <![endif]-->
-<!--[if IE 8 ]>    <html lang="en" class="no-js ie8"> <![endif]-->
-<!--[if IE 9 ]>    <html lang="en" class="no-js ie9"> <![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en" class="no-js"> <!--<![endif]-->
+<!--[if lt IE 7 ]> <html lang="en" class="ie6"> <![endif]-->
+<!--[if IE 7 ]>    <html lang="en" class="ie7"> <![endif]-->
+<!--[if IE 8 ]>    <html lang="en" class="ie8"> <![endif]-->
+<!--[if IE 9 ]>    <html lang="en" class="ie9"> <![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--> <html lang="en"> <!--<![endif]-->
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -13,11 +13,31 @@
 
 	<title>Tasket</title>
 
+	<script>document.documentElement.className += ' js';</script>
 	<link rel="shortcut icon" href="/favicon.ico" />
 	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-	<link rel="stylesheet" href="css/style.css?v0.1" />
+	<link rel="stylesheet" href="css/global.css?v0.1" />
 </head>
 <body>
-
+	<header>
+		<h1>Tasket</h1>
+		<nav>
+			<ul>
+				<li><a href="#/" title="The Tasket homepage">Home</a></li>
+				<li><a href="#/about" title="About the Tasket project">About</a></li>
+				<li>
+					<form action="#/logout" method="POST">
+						<button class="link" type="submit">Logout</button>
+					</form>
+				</li>
+			</ul>
+		</nav>
+		<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Matt Andrews&lsquo; avatar" /> Matt Andrews</h2>
+		<h3>Tasks</h3>
+		<dl>
+			<dt>Pending</dt><dd>24</dd>
+			<dt>Done</dt><dd>42</dd>
+		</dl>
+	</header>
 </body>
 </html>
