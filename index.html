@@ -33,7 +33,7 @@
 					</li>
 				</ul>
 			</nav>
-			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User&lsquo; avatar" /> Current User</h2>
+			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User&rsquo; avatar" /> Current User</h2>
 			<div class="tasks">
 				<h3>Tasks</h3>
 				<dl>
@@ -52,24 +52,28 @@
 		<ul class="tasks">
 			<li>
 				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
-				<p class="meta">
-					<img src="http://placehold.it/14x14" width="14" height="14" alt="Another User&lsquo;s avatar" />
-					<a href="#/user/another-user/" title="See Another User&lsquo;s tasks">Another User</a> is doing this task
-				</p>
+				<aside class="meta">
+					<p class="owner">
+						<img src="http://placehold.it/14x14" width="14" height="14" alt="Another User&rsquo;s avatar" />
+						<a href="#/user/another-user/" title="See Another User&rsquo;s tasks">Another User</a><br /> is doing this task
+					</p>
+				</aside>
 			</li>
 			<li>
 				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
-				<p class="meta">
-					<form action="#/tasks/" method="POST"><button type="submit">I&lsquo;ll do this</button></form>
-				</p>
+				<aside class="meta">
+					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ll do this</button></form>
+				</aside>
 			</li>
 			<li>
 				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
-				<p class="meta">
-					<img src="http://placehold.it/14x14" width="14" height="14" alt="Your avatar" />
-					<a href="#/user/current-user/" title="See your tasks">You</a> are doing this task
-					<form action="#/tasks/" method="POST"><button type="submit">I&lsquo;ve done this</button></form>
-				</p>
+				<aside class="meta">
+					<p class="owner">
+						<img src="http://placehold.it/14x14" width="14" height="14" alt="Your avatar" />
+						<a href="#/user/current-user/" title="See your tasks">You&rsquo;re</a> doing this
+					</p>
+					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ve done it</button></form>
+				</aside>
 			</li>
 		</ul>
 	</article>
@@ -77,7 +81,7 @@
 		(function () {
 			// Temporarily position the projects & tasks for styling.
 			var project = document.querySelector('article'),
-			    offsets = [[-200, -40], [-20, -280], [120, -40]],
+			    offsets = [[-200, -40], [-20, -330], [120, -40]],
 			    tasks;
 
 			if (project) {
