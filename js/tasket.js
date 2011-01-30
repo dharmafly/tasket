@@ -3,7 +3,6 @@
 var namespace = "tasket",
     appName = "Tasket",
     version = "0.1.0",
-    board,
     undef;
 
 /////
@@ -29,7 +28,8 @@ Board.prototype = {
             if (item.id === undef){
                 throw appName + " Board: item has no id";
             }
-            if (!item instanceof Constructor){
+            if (!(item instanceof Constructor)){
+                item.board = this;
                 item = new Constructor(item);
             }
             collection[item.id] = item;
@@ -71,8 +71,9 @@ Board.prototype = {
     }
 };
 
-function History(subject){
+function History(subject, board){
     this.subject = subject;
+    this.board = board;
     this._history = [];
 }
 History.prototype = {
@@ -97,13 +98,24 @@ History.prototype = {
     }
 };
 
-function Task(hub, id, owner){
-    this.id = id;
-    this.hub = hub;
-    this.board = hub.board;
-    this.owner = owner;
-    this.history = new History(this);
-    this.history.push("created", owner);
+function Task(settings){
+    if (!settings || settings.id === undef || !settings.hub || !settings.owner){
+        throw appName + " " + this.type + ": incomplete settings";
+    }
+    this.id = settings.id;
+    this.hub = settings.hub;
+    this.board = this.board || this.hub.board;
+    
+    this.owner = settings.owner;
+    this.created = settings.created || now();
+    this.updated = settings.updated || this.created;
+    this.title = settings.title;
+    this.description = settings.description;
+    this.image = settings.image;
+    this.timeEstimate = settings.timeEstimate;
+    
+    this.history = new History(this, this.board);
+    this.history.push("created", this.owner);
     this.board.task(this);
 }
 Task.prototype = {
@@ -136,16 +148,26 @@ Task.prototype = {
 /////
 
 
-function Hub(board, id, owner){
-    this.id = id;
-    this.board = board;
-    this.owner = owner;
+function Hub(settings){
+    if (!settings || settings.id === undef || !settings.board || !settings.owner){
+        throw appName + " " + this.type + ": incomplete settings";
+    }
+    this.id = settings.id;
+    this.board = settings.board;
+    this.owner = settings.owner;
+    
+    this.created = settings.created || now();
+    this.updated = settings.updated || this.created;
+    this.title = settings.title;
+    this.description = settings.description;
+    this.image = settings.image;
+    
     this.tasks = {};
     this.admins = {};
-    this.admins[owner.id] = owner;
-    this.history = new History(this);
-    this.history.push("created", owner);
-    board.hub(this);
+    this.admins[this.owner.id] = this.owner;
+    this.history = new History(this, this.board);
+    this.history.push("created", this.owner);
+    this.board.hub(this);
 }
 Hub.prototype = {
     type: "hub",
@@ -171,12 +193,22 @@ Hub.prototype = {
 /////
 
 
-function User(board, id){
-    this.id = id;
-    this.board = board;
-    this.history = new History(this);
+function User(settings){
+    if (!settings || settings.id === undef || !settings.board){
+        throw appName + " " + this.type + ": incomplete settings";
+    }
+    this.id = settings.id;
+    this.board = settings.board;
+    this.hubsOwned = {};
+    this.hubsAdmined = {};
+    this.history = new History(this, this.board);
     this.history.push("created");
-    board.user(this);
+    this.board.user(this);
 }
 User.prototype = {
+    type: "user"
 };
+
+
+/////
+
