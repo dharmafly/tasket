@@ -73,5 +73,26 @@
 			</li>
 		</ul>
 	</article>
+	<script>
+		(function () {
+			// Temporarily position the projects & tasks for styling.
+			var project = document.querySelector('article'),
+			    offsets = [[-200, -40], [-20, -280], [120, -40]],
+			    tasks;
+
+			if (project) {
+				project.style.top  = '40%';
+				project.style.left = '40%';
+				
+				tasks = project.querySelectorAll('.tasks li');
+				[].slice.call(tasks).forEach(function (task, index) {
+					if (offsets[index]) {
+						task.style.top  = offsets[index][0] + 'px';
+						task.style.left = offsets[index][1] + 'px';
+					}
+				});
+			}
+		}());
+	</script>
 </body>
 </html>
