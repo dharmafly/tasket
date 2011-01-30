@@ -1,0 +1,220 @@
+html {
+	font: 13px/16px Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
+	background-color: #b9e4ff; /* Fallback for non-gradient supporting browsers */
+	background-image: -webkit-gradient(
+		radial, center center, 0, center center, 480, from(#fff), to(#dedede)
+	);
+	background-image: -moz-radial-gradient(
+	    center center, #fff, #dedede
+	);
+	background-image: -webkit-radial-gradient(
+	    center center, #fff, #dedede
+	);
+	background-image: radial-gradient(
+	    center center, #fff, #dedede
+	);
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-attachment: fixed;
+}
+
+body {
+	margin: 0;
+	height: 100%;
+}
+
+header, footer, section, article, nav {
+	display: block;
+}
+
+h1, h2, h3, h4, h5, h6 {
+	margin: 0;
+	font-size: 13px;
+	font-weight: normal;
+}
+
+a, a:visited{
+	text-decoration: none;
+}
+
+a:hover, a:active, a:focus,
+.link:hover, .link:active, .link:focus {
+	border-bottom: 1px solid;
+}
+
+button.link {
+	padding: 0;
+	font-size: 13px;
+	background: none;
+	border: none;
+	color: #fff;
+	cursor: pointer;
+}
+
+nav ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+}
+
+.header-container {
+	background-color: #333;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#101010), to(#323232)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #101010, #323232
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #101010, #323232
+	);
+	background-image: linear-gradient(
+	    90deg, #101010, #323232
+	);
+	-webkit-box-shadow: 0 0 3px #000;
+	-moz-box-shadow: 0 0 3px #000;
+	-ms-box-shadow: 0 0 3px #000;
+	-o-box-shadow: 0 0 3px #000;
+	box-shadow: 0 0 3px #000;
+}
+
+.header-container header {
+	width: 940px;
+	margin: 0 auto;
+	position: relative;
+	line-height: 40px;
+}
+
+.header-container h1,
+.header-container h2,
+.header-container h3,
+.header-container nav,
+.header-container nav ul,
+.header-container nav li,
+.header-container div,
+.header-container dl,
+.header-container dt,
+.header-container dd {
+	display: inline-block;
+	margin: 0;
+	text-shadow: 0 1px 0 #000;
+}
+
+.header-container,
+.header-container a {
+	color: #fff;
+}
+
+.header-container,
+.header-container a {
+	color: #fff;
+}
+
+.header-container h1 {
+	position: absolute;
+	left: 0;
+	top: 0;
+	line-height: 40px;
+	font-size: 20px;
+}
+
+.header-container nav {
+	margin-left: 240px;
+}
+
+.header-container nav li {
+	margin-left: 28px;
+}
+
+.header-container nav li:first-child {
+	margin-left: 0;
+}
+
+.header-container nav a {
+	font-size: 14px;
+}
+
+.header-container nav a {
+	font-size: 14px;
+}
+
+.header-container form {
+	position: absolute;
+	top: 0;
+	right: 0;
+}
+
+.header-container form button {
+	font-size: 12px;
+	color: #ccc;
+}
+
+.header-container h2 {
+	margin-right: 60px;
+	padding: 0 8px;
+	border: 1px solid black;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	line-height: 23px;
+}
+
+.header-container h2 img {
+	position: relative;
+	top: 3px;
+	margin-right: 2px;
+}
+
+.header-container h2,
+.header-container .tasks {
+	margin-top: 8px;
+	float: right;
+	
+}
+
+.header-container .tasks {
+	margin-right: 14px;
+	padding: 0 12px;
+	line-height: 25px;
+	background-color: #000;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#111), to(#000)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #111, #000
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #111, #000
+	);
+	background-image: linear-gradient(
+	    90deg, #111, #000
+	);
+	-webkit-border-radius: 12.5px;
+	-moz-border-radius: 12.5px;
+	-ms-border-radius: 12.5px;
+	-o-border-radius: 12.5px;
+	border-radius: 12.5px;
+}
+
+.header-container .tasks h3 {
+	color: #aaa;
+}
+
+.header-container .tasks h3,
+.header-container .tasks dd {
+	margin-right: 10px;
+}
+
+.header-container .tasks dd {
+	font-weight: bold;
+	margin-right: 1em;
+}
+
+.header-container .tasks dt {
+	margin-right: 0.4em;
+	font-weight: normal;
+	text-transform: lowercase;
+}
+
