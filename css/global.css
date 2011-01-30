@@ -48,13 +48,13 @@ a:hover, a:active, a:focus,
 	border-bottom: 1px solid;
 }
 
-button {
+button, .button {
 	font-size: 13px;
 	text-shadow: 0 1px 1px #000;
 	line-height: 25px;
 	color: #fff;
 	display: inline-block;
-	padding: 0 10px;
+	padding: 0 15px;
 	border: none;
 	background-color: #333;
 	background-image: -webkit-gradient(
@@ -82,8 +82,8 @@ button {
 	cursor: pointer;
 }
 
-button:hover,
-button:focus {
+button:hover, button:focus,
+.button:hover, .button:focus {
 	background-color: #444;
 	background-image: -webkit-gradient(
   		linear, left bottom, left top, from(#232323), to(#444)
@@ -97,9 +97,10 @@ button:focus {
 	background-image: linear-gradient(
 	    90deg, #232323, #444
 	);
+	border: none;
 }
 
-button:active {
+button:active, .button:active {
 	color: #454545;
 	text-shadow: 0 -1px 0 #000;
 	background-color: #111;
@@ -142,13 +143,20 @@ button.link {
 	box-shadow: none;
 }
 
-nav ul {
+nav ul,
+.listing {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
 }
 
 .header-container {
+	z-index: 2;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	padding: 0 10px;
 	background-color: #333;
 	background-image: -webkit-gradient(
   		linear, left bottom, left top, from(#101010), to(#323232)
@@ -314,6 +322,7 @@ nav ul {
 }
 
 article {
+	z-index: 0;
 	position: absolute;
 }
 
@@ -403,5 +412,117 @@ article .meta img {
 	position: absolute;
 	top: 7px;
 	left: 0;
+}
+
+.dashboard-container {
+	width: 960px;
+	margin: 0 auto;
+	position: relative;
+}
+
+.dashboard {
+	z-index: 1;
+	position: absolute;
+	top: 40px;
+	right: 0;
+	width: 200px;
+	padding: 20px;
+	background-color: rgba(230, 230, 230, 0.95);
+	border: 1px solid rgba(180, 180, 180, 1);
+	-webkit-border-radius: 0 0 0 5px;
+	-moz-border-radius: 0 0 0 5px;
+	-ms-border-radius: 0 0 0 5px;
+	-o-border-radius: 0 0 0 5px;
+	border-radius: 0 0 0 5px;
+}
+
+.dashboard .notifications {
+	padding: 15px 13px;
+	margin-bottom: 20px;
+	background-color: rgba(255, 255, 255, 0.3);
+	border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.dashboard .notifications li {
+	margin-bottom: 10px;
+}
+
+.dashboard .notifications li:last-child {
+	margin-bottom: 0;
+}
+
+.dashboard .quicklinks {
+	border-bottom: 1px solid #ccc;
+	padding-bottom: 20px;
+	margin-bottom: 20px;
+}
+
+.dashboard .quicklinks h1 {
+	font-size: 18px;
+	color: #444;
+	margin-bottom: 15px;
+}
+
+.dashboard .quicklinks p {
+	margin: 0;
+	padding: 0;
+}
+
+.dashboard .quicklinks ul {
+	margin: 10px 0;
+}
+
+.dashboard .quicklinks li {
+	padding: 3px 0;
+}
+
+.dashboard .quicklinks .current {
+	background: #fafafa;
+}
+
+.dashboard footer p {
+	margin: 0;
+}
+
+.dashboard footer a {
+	border-bottom: 1px solid;
+}
+
+.dashboard footer a:hover,
+.dashboard footer a:focus {
+	color: #333;
+}
+
+.dashboard footer a:active {
+	color: #000;
+}
+
+.dashboard footer .statistics {
+	position: relative;
+	padding-left: 60px;
+}
+
+.dashboard footer .statistics img {
+	position: absolute;
+	left: 0;
+	top: 0;
+}
+
+.dashboard footer .statistics em {
+	display: block;
+	font-size: 48px;
+	font-style: normal;
+	font-weight: bold;
+	letter-spacing: -2px;
+	line-height: 1;
+}
+
+.dashboard footer nav {
+	margin: 10px 0;
+}
+
+.dashboard footer nav li {
+	display: inline-block;
+	margin-right: 10px;
 }
 
