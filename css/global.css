@@ -23,7 +23,7 @@ body {
 	height: 100%;
 }
 
-header, footer, section, article, nav {
+header, hgroup, footer, section, article, nav {
 	display: block;
 }
 
@@ -218,3 +218,51 @@ nav ul {
 	text-transform: lowercase;
 }
 
+article {
+	position: absolute;
+	/* Temporarily position the elements */
+	top: 25%;
+	left: 12%;
+}
+
+article > img {
+	position: absolute;
+	top: 50%;
+	left: 0;
+	margin-top: -46px;
+	padding: 20px;
+	border: 10px solid #111;
+	background-color: #aaa;
+	-webkit-background-clip: padding-box;
+	background-clip: padding-box;
+	-webkit-border-radius: 45px;
+	-moz-border-radius: 45px;
+	-ms-border-radius: 45px;
+	-o-border-radius: 45px;
+	border-radius: 45px;
+}
+
+article > hgroup h1 {
+	font-weight: bold;
+	font-size: 18px;
+}
+
+article > hgroup h2 {
+	font-size: 14px;
+}
+
+article > hgroup {
+	margin-left: 70px;
+	padding: 10px 20px;
+	background-color: #111;
+	color: #fff;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+}
+
+article > ul {
+	display: none;
+}
