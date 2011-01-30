@@ -56,6 +56,7 @@ button, .button {
 	font-size: 13px;
 	text-shadow: 0 1px 1px #000;
 	line-height: 25px;
+	min-height: 25px;
 	color: #fff;
 	display: inline-block;
 	padding: 0 15px;
@@ -150,18 +151,28 @@ button.link {
 .action, a:link.action {
 	color: #484848;
 	text-shadow: none;
+	min-height: 23px;
 	background-color: #111;
-	line-height: 23px;
-	background-image: -webkit-gradient(
+	background-repeat: no-repeat;
+	background-position: 30px 30px, 0 0;
+	background-image:
+	url(../images/sprites.png),
+	-webkit-gradient(
   		linear, left bottom, left top, from(#e2e5e5), to(#fefefe)
 	);
-	background-image: -moz-linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-moz-linear-gradient(
 	    90deg, #e2e5e5, #fefefe
 	);
-	background-image: -webkit-linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-webkit-linear-gradient(
 	    90deg, #e2e5e5, #fefefe
 	);
-	background-image: linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	linear-gradient(
 	    90deg, #e2e5e5, #fefefe
 	);
 	border: 1px solid #8f9397;
@@ -175,16 +186,24 @@ button.link {
 .action:hover, a:hover.action,
 .action:focus, a:focus.action {
 	background-color: #ececec;
-	background-image: -webkit-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-webkit-gradient(
   		linear, left bottom, left top, from(#ececec), to(#fff)
 	);
-	background-image: -moz-linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-moz-linear-gradient(
 	    90deg, #fefefe, #fff
 	);
-	background-image: -webkit-linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-webkit-linear-gradient(
 	    90deg, #fefefe, #fff
 	);
-	background-image: linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	linear-gradient(
 	    90deg, #fafafa, #fff
 	);
 	border: 1px solid #a3a3a3;
@@ -199,16 +218,24 @@ button.link {
 	color: #555;
 	background-color: #ccc;
 	text-shadow: none;
-	background-image: -webkit-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-webkit-gradient(
   		linear, left bottom, left top, from(#bbb), to(#ccc)
 	);
-	background-image: -moz-linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	 -moz-linear-gradient(
 	    90deg, #fefefe, #fff
 	);
-	background-image: -webkit-linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	-webkit-linear-gradient(
 	    90deg, #fefefe, #fff
 	);
-	background-image: linear-gradient(
+	background-image:
+	url(../images/sprites.png),
+	linear-gradient(
 	    90deg, #fafafa, #fff
 	);
 	border: 1px solid #a3a3a3;
@@ -219,26 +246,36 @@ button.link {
 	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
-.action.edit,
+a.action.edit,
 .action.delete,
 .action.close,
-.action.locate {
+a.action.locate {
 	display: inline-block;
 	text-indent: -999em;
 	padding: 0;
 	width: 17px;
 	height: 17px;
+	min-height: 17px;
 	-webkit-box-sizing: content-box;
-	-mox-box-sizing: content-box;
+	-moz-box-sizing: content-box;
 	-o-box-sizing: content-box;
 	box-sizing: content-box;
 }
 
-.action.locate {
+a.action.edit {
+	background-position: 3px -88px, 0 0;
+}
+
+.action.close, .action.delete {
+	background-position: 4px -116px, 0 0;
+}
+
+a.action.locate {
 	position: relative;
 	top: 1px;
 	width: 23px;
 	height: 23px;
+	background-position: 2px -178px, 0 0;
 }
 
 nav ul,
@@ -317,6 +354,7 @@ nav ul,
 
 .header-container nav {
 	margin-left: 240px;
+	float: left;
 }
 
 .header-container nav li {
@@ -372,7 +410,6 @@ nav ul,
 .header-container .tasks {
 	margin-top: 8px;
 	float: right;
-	
 }
 
 .header-container .tasks {
@@ -468,7 +505,7 @@ article li {
 
 article li {
 	position: absolute;
-	padding: 0 15px;
+	padding: 12px 15px;
 	width: 250px;
 	border: 3px solid #aaa;
 	background-color: #fff;
@@ -481,13 +518,13 @@ article ul {
 }
 
 article .meta {
-	margin: 0 0 12px;
+	margin: 0;
 	overflow: hidden;
 }
 
 article .description {
 	overflow: hidden;
-	margin: 12px 0 6px;
+	margin: 0 0 6px;
 }
 
 article .meta .owner,
@@ -544,6 +581,8 @@ article .meta img {
 
 .dashboard .notifications li {
 	margin-bottom: 10px;
+	padding-left: 15px;
+	background: url(../images/sprites.png) no-repeat 0 -58px;
 }
 
 .dashboard .notifications li:last-child {
@@ -581,9 +620,15 @@ article .meta img {
 }
 
 .dashboard .quicklinks .info {
+	display: block;
 	position: absolute;
 	top: 0;
 	right: 0;
+	height: 17px;
+	width: 17px;
+	text-indent: -900em;
+	background: url(../images/sprites.png) no-repeat 0 -150px;
+	border: none;
 }
 
 .js .dashboard .quicklinks .help {
@@ -754,4 +799,10 @@ article .meta img {
 
 .detail .listing-wrapper li p {
 	margin: 0 0 3px;
+}
+
+.detail .listing-wrapper li button,
+.detail .listing-wrapper li .button {
+	float: left;
+	margin-right: 3px;
 }

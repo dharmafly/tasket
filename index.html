@@ -250,6 +250,14 @@
 				helper.parentNode.appendChild(info);
 			});
 		}());
+		
+		(function () {
+			var close = document.querySelectorAll('.close');
+			
+			[].slice.call(close).forEach(function (close, index) {
+				close.onclick = function () { close.parentNode.style.display = 'none'; return false; };
+			});
+		}());
 	</script>
 </body>
 </html>
