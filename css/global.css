@@ -48,6 +48,10 @@ a:hover, a:active, a:focus,
 	border-bottom: 1px solid;
 }
 
+.form-button {
+	display: inline-block;
+}
+
 button, .button {
 	font-size: 13px;
 	text-shadow: 0 1px 1px #000;
@@ -58,16 +62,16 @@ button, .button {
 	border: none;
 	background-color: #333;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#101010), to(#323232)
+  		linear, left bottom, left top, from(#101010), to(#232323)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #101010, #323232
+	    90deg, #101010, #232323
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #101010, #323232
+	    90deg, #101010, #232323
 	);
 	background-image: linear-gradient(
-	    90deg, #101010, #323232
+	    90deg, #101010, #232323
 	);
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -141,6 +145,100 @@ button.link {
 	-ms-box-shadow: none;
 	-o-box-shadow: none;
 	box-shadow: none;
+}
+
+.action, a:link.action {
+	color: #484848;
+	text-shadow: none;
+	background-color: #111;
+	line-height: 23px;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#e2e5e5), to(#fefefe)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #e2e5e5, #fefefe
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #e2e5e5, #fefefe
+	);
+	background-image: linear-gradient(
+	    90deg, #e2e5e5, #fefefe
+	);
+	border: 1px solid #8f9397;
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	-ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	-o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.action:hover, a:hover.action,
+.action:focus, a:focus.action {
+	background-color: #ececec;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#ececec), to(#fff)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #fefefe, #fff
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #fefefe, #fff
+	);
+	background-image: linear-gradient(
+	    90deg, #fafafa, #fff
+	);
+	border: 1px solid #a3a3a3;
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.0.5);
+	-ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+	-o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.action:active, a:active.action {
+	color: #555;
+	background-color: #ccc;
+	text-shadow: none;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#bbb), to(#ccc)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #fefefe, #fff
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #fefefe, #fff
+	);
+	background-image: linear-gradient(
+	    90deg, #fafafa, #fff
+	);
+	border: 1px solid #a3a3a3;
+	-webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	-moz-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	-ms-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	-o-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+
+.action.edit,
+.action.delete,
+.action.close,
+.action.locate {
+	display: inline-block;
+	text-indent: -999em;
+	padding: 0;
+	width: 17px;
+	height: 17px;
+	-webkit-box-sizing: content-box;
+	-mox-box-sizing: content-box;
+	-o-box-sizing: content-box;
+	box-sizing: content-box;
+}
+
+.action.locate {
+	position: relative;
+	top: 1px;
+	width: 23px;
+	height: 23px;
 }
 
 nav ul,
@@ -254,7 +352,7 @@ nav ul,
 
 .header-container h2 {
 	margin-right: 60px;
-	padding: 0 8px;
+	padding: 0 10px 0 8px;
 	border: 1px solid black;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
@@ -429,6 +527,7 @@ article .meta img {
 	padding: 20px;
 	background-color: rgba(230, 230, 230, 0.95);
 	border: 1px solid rgba(180, 180, 180, 1);
+	border-top: none;
 	-webkit-border-radius: 0 0 0 5px;
 	-moz-border-radius: 0 0 0 5px;
 	-ms-border-radius: 0 0 0 5px;
@@ -556,3 +655,103 @@ article .meta img {
 	margin-right: 10px;
 }
 
+.detail {
+	background-color: #333;
+	position: absolute;
+	top: 10px;
+	bottom: 10px;
+	left: 10px;
+	right: 10px;
+	padding: 15px 10px;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.detail,
+.detail a {
+	color: #fff;
+}
+
+.detail h1 {
+	text-align: center;
+	font-size: 18px;
+	font-weight: bold;
+}
+
+.detail .close {
+	position: absolute;
+	top: 13px;
+	right: 10px;
+}
+
+.detail .profile {
+	margin-bottom: 20px;
+}
+
+.detail .profile img {
+	float: left;
+	margin: 0 10px 15px 0;
+}
+
+.detail .profile dt {
+	font-weight: bold;
+	clear: left;
+}
+
+.detail .profile dt:first-child {
+	clear: none;
+}
+
+.detail .profile dd {
+	margin: 0 0 15px;
+}
+
+.detail .list {
+	position: relative;
+	color: #333;
+	background-color: #000;
+	-webkit-border-radius: 2px;
+	-moz-border-radius: 2px;
+	-ms-border-radius: 2px;
+	-o-border-radius: 2px;
+	border-radius: 2px;
+}
+
+.detail .list h1 {
+	color: #fff;
+	font-size: 14px;
+	font-weight: normal;
+	line-height: 35px;
+}
+
+.detail .list > .action {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+}
+
+.detail .listing-wrapper {
+	color: #5a5a5a;
+	background-color: #fff;
+	-webkit-border-radius: 0 0 2px 2px;
+	-moz-border-radius: 0 0 2px 2px;
+	-ms-border-radius: 0 0 2px 2px;
+	-o-border-radius: 0 0 2px 2px;
+	border-radius: 0 0 2px 2px;
+}
+
+.detail .listing-wrapper li {
+	padding: 10px;
+	border-bottom: 1px solid;
+}
+
+.detail .listing-wrapper li:last-child {
+	border-bottom: none;
+}
+
+.detail .listing-wrapper li p {
+	margin: 0 0 3px;
+}

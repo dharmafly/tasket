@@ -134,6 +134,67 @@
 				</nav>
 				<p>Built by <a href="http://dharmafly.com/" title="Find out more about Dharmafly">Dharmafly</a></p>
 			</footer>
+			<section class="detail">
+				<h1>Detail Title</h1>
+				<button class="action close">Close</button>
+				<section class="profile">
+					<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
+					<dl>
+						<dt>Project:</dt>
+						<dd>My latest project</dd>
+						<dt>Organisation:</dt>
+						<dd>Our wonderful organisation</dd>
+						<dt>Tags:</dt>
+						<dd>
+							<a href="#/tags/apples/" title="See all projects tagged with Apples">Apples</a>,
+							<a href="#/tags/cheese/" title="See all projects tagged with Cheese">Cheese</a>,
+							<a href="#/tags/beans/" title="See all projects tagged with Beans">Beans</a>,
+							<a href="#/tags/eggs/" title="See all projects tagged with Eggs">Eggs</a>
+						</dd>
+					</dl>
+					<a class="button action locate" href="#center" title="Centre view on this project">Centre View</a>
+					<a class="button" href="#/projects/my-project/edit/" title="Edit this project">Edit</a>
+					<form class="form-button" action="#/project/my-project/" method="POST">
+						<button class="button" type="submit">Delete</button>
+					</form>
+				</section>
+				<section class="list">
+					<h1>Tasks</h1>
+					<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+					<div class="listing-wrapper">
+						<ul class="listing">
+							<li>
+								<p>New task item that needs to be done</p>
+								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+								<form class="form-button" action="#/tasks/new-task/" method="POST">
+									<button class="action delete" type="submit">Delete</button>
+								</form>
+							</li>
+							<li>
+								<p>New task item that needs to be done</p>
+								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+								<form class="form-button" action="#/tasks/new-task/" method="POST">
+									<button class="action delete" type="submit">Delete</button>
+								</form>
+							</li>
+							<li>
+								<p>New task item that needs to be done</p>
+								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+								<form class="form-button" action="#/tasks/new-task/" method="POST">
+									<button class="action delete" type="submit">Delete</button>
+								</form>
+							</li>
+							<li>
+								<p>New task item that needs to be done</p>
+								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+								<form class="form-button" action="#/tasks/new-task/" method="POST">
+									<button class="action delete" type="submit">Delete</button>
+								</form>
+							</li>
+						</ul>
+					</div>
+				</section>
+			</section>
 		</section>
 	</div>
 	<script>
@@ -158,7 +219,7 @@
 		}());
 
 		(function () {
-			// Temporarily position the projects & tasks for styling.
+			// Add the helper icon to all quicklinks in the dashboard.
 			var helpers = document.querySelectorAll('.help'),
 			    hover_class = 'active';
 
@@ -180,9 +241,12 @@
 				info.title = 'Show info about this section';
 				info.className = 'info';
 				info.appendChild(document.createTextNode('Help'));
+
+				// Add class to helper when button is hovered so we can display it in the stylesheet.
 				info.onmouseover = info.onfocus = function () { addClass(helper, hover_class); };
 				info.onmouseout  = info.onblur  = function () { removeClass(helper, hover_class); };
 
+				// Append this to the dashboard section.
 				helper.parentNode.appendChild(info);
 			});
 		}());
