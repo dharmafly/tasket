@@ -1,5 +1,8 @@
+/* @override http://localhost:8000/css/global.css?v0.1 */
+
 html {
 	font: 13px/16px Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
+	color: #333;
 	background-color: #b9e4ff; /* Fallback for non-gradient supporting browsers */
 	background-image: -webkit-gradient(
 		radial, center center, 0, center center, 480, from(#fff), to(#dedede)
@@ -33,7 +36,12 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 
+p {
+	margin: 16px 0;
+}
+
 a, a:visited{
+	color: #555;
 	text-decoration: none;
 }
 
@@ -42,13 +50,98 @@ a:hover, a:active, a:focus,
 	border-bottom: 1px solid;
 }
 
+button {
+	font-size: 13px;
+	text-shadow: 0 1px 1px #000;
+	line-height: 25px;
+	color: #fff;
+	display: inline-block;
+	padding: 0 10px;
+	border: none;
+	background-color: #333;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#101010), to(#323232)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #101010, #323232
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #101010, #323232
+	);
+	background-image: linear-gradient(
+	    90deg, #101010, #323232
+	);
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	-ms-border-radius: 3px;
+	-o-border-radius: 3px;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	-ms-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	-o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	cursor: pointer;
+}
+
+button:hover,
+button:focus {
+	background-color: #444;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#232323), to(#444)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #232323, #444
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #232323, #444
+	);
+	background-image: linear-gradient(
+	    90deg, #232323, #444
+	);
+}
+
+button:active {
+	color: #454545;
+	text-shadow: 0 -1px 0 #000;
+	background-color: #111;
+	background-image: -webkit-gradient(
+  		linear, left bottom, left top, from(#000), to(#111)
+	);
+	background-image: -moz-linear-gradient(
+	    90deg, #232323, #444
+	);
+	background-image: -webkit-linear-gradient(
+	    90deg, #232323, #444
+	);
+	background-image: linear-gradient(
+	    90deg, #232323, #444
+	);
+	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	-ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	-o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
 button.link {
 	padding: 0;
 	font-size: 13px;
+	text-shadow: none;
+	line-height: 16px;
 	background: none;
 	border: none;
 	color: #fff;
-	cursor: pointer;
+	-webkit-border-radius: 0;
+	-moz-border-radius: 0;
+	-ms-border-radius: 0;
+	-o-border-radius: 0;
+	border-radius: 0;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-ms-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
 }
 
 nav ul {
@@ -146,6 +239,10 @@ nav ul {
 
 .header-container form button {
 	font-size: 12px;
+}
+
+.header-container h2,
+.header-container form button {
 	color: #ccc;
 }
 
@@ -220,9 +317,6 @@ nav ul {
 
 article {
 	position: absolute;
-	/* Temporarily position the elements */
-	top: 25%;
-	left: 12%;
 }
 
 article > img {
@@ -242,20 +336,24 @@ article > img {
 	border-radius: 45px;
 }
 
-article > hgroup h1 {
+article hgroup h1 {
 	font-weight: bold;
 	font-size: 18px;
 }
 
-article > hgroup h2 {
+article hgroup h2 {
 	font-size: 14px;
 }
 
-article > hgroup {
+article hgroup {
 	margin-left: 70px;
 	padding: 10px 20px;
 	background-color: #111;
 	color: #fff;
+}
+
+article hgroup,
+article li {
 	-webkit-border-radius: 5px;
 	-moz-border-radius: 5px;
 	-ms-border-radius: 5px;
@@ -263,6 +361,32 @@ article > hgroup {
 	border-radius: 5px;
 }
 
-article > ul {
-	display: none;
+article li {
+	position: absolute;
+	padding: 0 15px;
+	width: 190px;
+	border: 3px solid #aaa;
+	background-color: #fff;
+}
+
+article ul {
+	padding: 0;
+	margin: 0;
+	list-style-type: none;
+}
+
+article .meta {
+	position: relative;
+	color: #676767;
+	padding-left: 20px;
+}
+
+article .meta a {
+		
+}
+
+article .meta img {
+	position: absolute;
+	top: 0;
+	left: 0;
 }
