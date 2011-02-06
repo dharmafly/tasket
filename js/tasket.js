@@ -11,42 +11,74 @@ function now(){
     return (new Date()).toString();
 }
 
+function isAlphaNum(arg){
+    return typeof arg === "number" || typeof arg === "string";
+}
+
+function report(msg, type){
+    return appName + (type ? " " + type : "") + ": " + msg;
+}
+
 
 /////
 
 
-function Board(){}
-Board.prototype = {
+// TASKET CONSTRUCTOR
+function Tasket(namespace){
+    if (!namespace){
+        throw report("namespace required");
+    }
+    this.namespace = namespace;
+}
+
+// TASKET: STATIC PROPERTIES
+Tasket.version = version;
+
+// TASKET: INSTANCE PROTOTYPE
+Tasket.prototype = {
     tasks: {},
     users: {},
     hubs: {},
     
     _item: function(item, Constructor, collection){
-        var cachedItem = collection && collection[item];
-        
-        if (!cachedItem){
-            if (item.id === undef){
-                throw appName + " Board: item has no id";
+        var remove = (Constructor === null);
+    
+        if (isAlphaNum(item)){
+            item = collection[item];
+                        
+            return remove && item ?
+                this._item(item, Constructor, collection) :
+                item;
+        }
+        if (item && item.id){
+            if (remove){
+                delete collection[item.id];
             }
-            if (!(item instanceof Constructor)){
-                item.board = this;
+            else {
+                item.tasket = this;
                 item = new Constructor(item);
+                collection[item.id] = item;
             }
-            collection[item.id] = item;
-            return item;
         }
-        else if (Constructor === null){
-            delete collection[item.id];
-            return this;
-        }
-        
-        return cachedItem;
+        return item;
     },
     
     // get/set task
-    task: function(task, remove){
-        var Constructor = remove === null ? null : Task;
-        return this._item(task, Constructor, this.tasks);
+    task: function(item, remove){
+        var Constructor = remove === null ? null : Task,
+            task = this._item(item, Constructor, this.tasks),
+            hubTasks = task.hub.tasks;
+        
+        // Add/remove task to hub's collection
+        if (task && task.id){
+            if (remove){
+                delete hubTasks[task.id];
+            }
+            else {
+                hubTasks[task.id] = task;
+            }
+        }
+        return task;
     },
     
     // get/set hub
@@ -71,9 +103,9 @@ Board.prototype = {
     }
 };
 
-function History(subject, board){
+function History(subject, tasket){
     this.subject = subject;
-    this.board = board;
+    this.tasket = tasket;
     this._history = [];
 }
 History.prototype = {
@@ -83,7 +115,7 @@ History.prototype = {
             
             // If this is a new action, then publish/trigger an event
             if (!timestamp){
-                this.board.pub(
+                this.tasket.pub(
                     type + "." + this.subject.type,
                     this.subject,
                     data
@@ -99,48 +131,48 @@ History.prototype = {
 };
 
 function Task(settings){
-    if (!settings || settings.id === undef || !settings.hub || !settings.owner){
-        throw appName + " " + this.type + ": incomplete settings";
-    }
     this.id = settings.id;
     this.hub = settings.hub;
-    this.board = this.board || this.hub.board;
-    
+    this.tasket = this.hub.tasket;
     this.owner = settings.owner;
-    this.created = settings.created || now();
-    this.updated = settings.updated || this.created;
-    this.title = settings.title;
+    
+    this.title = settings.title; // remove?
     this.description = settings.description;
     this.image = settings.image;
-    this.timeEstimate = settings.timeEstimate;
+    this.estimate = settings.estimate;
     
-    this.history = new History(this, this.board);
-    this.history.push("created", this.owner);
-    this.board.task(this);
+    this.history = new History(this, this.tasket);
+    this.event("created", this.owner, this.createdTime);
 }
 Task.prototype = {
     type: "task",
-    complete: false,
-    confirmed: false,
-    completedBy: null,
-    confirmedBy: null,
     
-    completeTask: function(user, timestamp){
-        this.completedBy = user;
-        this.history("completed", user, timestamp);
+    event: function(event, user, timestamp){
+        timestamp = timestamp || now();
+        this[event] = {user:user, time:timestamp};
+        this.history.push(event, user, timestamp);
         return this;
     },
     
-    confirmTask: function(user, timestamp){
-        this.confirmedBy = user;
-        this.history("confirmed", user, timestamp);
-        return this;
+    create: function(user, timestamp){
+        return this.event("created", user, timestamp);
+    },
+    
+    assign: function(user, timestamp){
+        return this.event("assigned", user, timestamp);
+    },
+    
+    complete: function(user, timestamp){        
+        return this.event("completed", user, timestamp);
+    },
+    
+    confirm: function(user, timestamp){
+        return this.event("confirmed", user, timestamp);
     },
     
     remove: function(user, timestamp){
-        this.history("removed", user, timestamp);
-        this.board.task(this, null);
-        return this;
+        this.tasket.task(this, null);
+        return this.event("removed", user, timestamp);
     }
 };
 
@@ -149,15 +181,10 @@ Task.prototype = {
 
 
 function Hub(settings){
-    if (!settings || settings.id === undef || !settings.board || !settings.owner){
-        throw appName + " " + this.type + ": incomplete settings";
-    }
     this.id = settings.id;
-    this.board = settings.board;
+    this.tasket = settings.tasket;
     this.owner = settings.owner;
     
-    this.created = settings.created || now();
-    this.updated = settings.updated || this.created;
     this.title = settings.title;
     this.description = settings.description;
     this.image = settings.image;
@@ -165,26 +192,51 @@ function Hub(settings){
     this.tasks = {};
     this.admins = {};
     this.admins[this.owner.id] = this.owner;
-    this.history = new History(this, this.board);
-    this.history.push("created", this.owner);
-    this.board.hub(this);
+    this.history = new History(this, this.tasket);
+    this.event("created", this.owner, this.createdTime);
 }
 Hub.prototype = {
     type: "hub",
     
-    admin: function(user){
-        this.admins[user.id] = user;
+    event: function(event, user, timestamp){
+        timestamp = timestamp || now();
+        this[event] = {user:user, time:timestamp};
+        this.history.push(event, user, timestamp);
         return this;
     },
     
-    task: function(task){
-        this.tasks[task.id] = task;
+    isAdmin: function(user){
+        return !!(this.admins[user.id]);
+    },
+    
+    admin: function(user, remove){
+        if (remove){
+            delete this.admins[user.id];
+            this.event("adminRemoved", user);
+        }
+        else {
+            this.admins[user.id] = user;
+            this.event("adminCreated", user);
+        }
+        return this;
+    },
+    
+    task: function(task, remove){
+        if (remove){
+            task.remove();
+            this.event("taskRemoved"); // TODO: event user?, this needs calling by task.remove && tasket.task(null)
+        }
+        else {
+            task.hub = this;    
+            this.tasket.task(task, remove);
+            this.event("taskCreated", task.owner, task.createdTime);
+        }
         return this;
     },
     
     remove: function(user, timestamp){
+        this.tasket.hub(this, null);
         this.history("removed", user, timestamp);
-        this.board.hub(this, null);
         return this;
     }
 };
@@ -194,16 +246,12 @@ Hub.prototype = {
 
 
 function User(settings){
-    if (!settings || settings.id === undef || !settings.board){
-        throw appName + " " + this.type + ": incomplete settings";
-    }
     this.id = settings.id;
-    this.board = settings.board;
+    this.tasket = settings.tasket;
     this.hubsOwned = {};
     this.hubsAdmined = {};
-    this.history = new History(this, this.board);
+    this.history = new History(this, this.tasket);
     this.history.push("created");
-    this.board.user(this);
 }
 User.prototype = {
     type: "user"
