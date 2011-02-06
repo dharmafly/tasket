@@ -1,5 +1,14 @@
 /*global jQuery, console, _*/
 
+/*
+    TODO:
+    Architectural issues to solve:
+        * tempIds -> ids, including lookup object normalisation
+        * async retrieval of info from server -> callbacks in methods
+        * export JSON
+*/
+
+
 var namespace = "tasket",
     appName = "Tasket",
     version = "0.1.0",
@@ -100,6 +109,39 @@ Tasket.prototype = {
     
     // Subscribe to an event
     sub: function(type, callback){
+    },
+    
+    import: function(data){
+        /*
+            {users:[], hubs:[], tasks:[]}
+        */
+
+        var i, len, hub, task;
+        
+        i = 0;
+        len = data.users.length;
+        for (i=0; i<len; i++){
+            this.user(data.users[i]);
+        }
+        
+        i = 0;
+        len = data.hubs.length;
+        for (i=0; i<len; i++){
+            hub = data.hubs[i];
+            hub.owner = this.user(hub.owner);
+            this.hub(hub);
+        }
+        
+        i = 0;
+        len = data.tasks.length;
+        for (i=0; i<len; i++){
+            task = data.tasks[i];
+            task.owner = this.user(task.owner);
+            task.hub = this.hub(task.hub);
+            this.task(task);
+        }
+        
+        return this;
     }
 };
 
@@ -143,6 +185,10 @@ function Task(settings){
     
     this.history = new History(this, this.tasket);
     this.event("created", this.owner, this.createdTime);
+    
+    if (this.owner){
+        this.owner.tasksOwned[this.id] = this;
+    }
 }
 Task.prototype = {
     type: "task",
@@ -171,8 +217,7 @@ Task.prototype = {
     },
     
     remove: function(user, timestamp){
-        this.tasket.task(this, null);
-        return this.event("removed", user, timestamp);
+        return this.tasket.task(this, null);
     }
 };
 
@@ -194,6 +239,10 @@ function Hub(settings){
     this.admins[this.owner.id] = this.owner;
     this.history = new History(this, this.tasket);
     this.event("created", this.owner, this.createdTime);
+    
+    if (this.owner){
+        this.owner.hubsOwned[this.id] = this;
+    }
 }
 Hub.prototype = {
     type: "hub",
@@ -212,26 +261,22 @@ Hub.prototype = {
     admin: function(user, remove){
         if (remove){
             delete this.admins[user.id];
+            delete user.hubsAdmined[hub.id];
             this.event("adminRemoved", user);
         }
         else {
             this.admins[user.id] = user;
+            user.hubsAdmined[hub.id] = this;
             this.event("adminCreated", user);
         }
         return this;
     },
     
     task: function(task, remove){
-        if (remove){
-            task.remove();
-            this.event("taskRemoved"); // TODO: event user?, this needs calling by task.remove && tasket.task(null)
+        if (!remove){
+            task.hub = this;
         }
-        else {
-            task.hub = this;    
-            this.tasket.task(task, remove);
-            this.event("taskCreated", task.owner, task.createdTime);
-        }
-        return this;
+        return this.tasket.task(task, remove);
     },
     
     remove: function(user, timestamp){
@@ -248,6 +293,10 @@ Hub.prototype = {
 function User(settings){
     this.id = settings.id;
     this.tasket = settings.tasket;
+    this.username = settings.username;
+    this.realname = settings.realname;
+
+    this.tasksOwned = {};
     this.hubsOwned = {};
     this.hubsAdmined = {};
     this.history = new History(this, this.tasket);
