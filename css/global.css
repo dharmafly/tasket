@@ -799,10 +799,14 @@ article .meta img {
 	margin-bottom: 0;
 }
 
+.detail .list a {
+	color: #333;
+}
+
 .detail .list > .action {
 	position: absolute;
-	top: 5px;
-	right: 5px;
+	top: 4px;
+	right: 4px;
 }
 
 .detail .listing-wrapper {
@@ -815,11 +819,29 @@ article .meta img {
 	border-radius: 0 0 2px 2px;
 }
 
-.detail .listing-wrapper li {
+.detail .listing-wrapper li,
+.detail nav.listing-wrapper a {
+	display: block;
 	padding: 10px;
+}
+
+.detail .listing-wrapper li {
 	border-bottom: 1px solid;
 }
 
+.detail nav.listing-wrapper li {
+	padding: 0;
+}
+
+.detail nav.listing-wrapper li {
+	background: url(../images/list-arrow.png) no-repeat right center;
+}
+
+.detail nav.listing-wrapper li:hover {
+	background-color: #efefef;
+}
+
+.detail nav.listing-wrapper a:hover,
 .detail .listing-wrapper li:last-child {
 	border-bottom: none;
 }
