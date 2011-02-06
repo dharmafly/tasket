@@ -478,6 +478,12 @@ article > img {
 	border-radius: 45px;
 }
 
+article > img.active {
+	background-image: url(../images/sprites.png);
+	background-repeat: no-repeat;
+	background-position: 5px -235px;
+}
+
 article hgroup h1 {
 	font-weight: bold;
 	font-size: 18px;
