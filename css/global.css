@@ -596,7 +596,13 @@ article .meta img {
 	margin-bottom: 20px;
 }
 
+.dashboard .last {
+	padding-bottom: 0;
+	border-bottom: 0;
+}
+
 .dashboard .quicklinks h1 {
+	text-align: left;
 	font-size: 18px;
 	color: #444;
 	margin-bottom: 15px;
@@ -716,7 +722,8 @@ article .meta img {
 }
 
 .detail,
-.detail a {
+.detail a,
+.detail .quicklinks h1 {
 	color: #fff;
 }
 
@@ -724,6 +731,7 @@ article .meta img {
 	text-align: center;
 	font-size: 18px;
 	font-weight: bold;
+	margin-bottom: 25px;
 }
 
 .detail .close {
@@ -733,12 +741,26 @@ article .meta img {
 }
 
 .detail .profile {
+	overflow: hidden;
 	margin-bottom: 20px;
 }
 
 .detail .profile img {
 	float: left;
 	margin: 0 10px 15px 0;
+}
+
+.detail .profile p {
+	float: left;
+	margin: 0;
+}
+
+.detail .profile .name {
+	font-weight: bold;
+}
+
+.detail .profile dl {
+	margin: 0;
 }
 
 .detail .profile dt {
@@ -752,6 +774,10 @@ article .meta img {
 
 .detail .profile dd {
 	margin: 0 0 15px;
+}
+
+.detail .quicklinks .current {
+	background-color: #aaa;
 }
 
 .detail .list {
@@ -770,6 +796,7 @@ article .meta img {
 	font-size: 14px;
 	font-weight: normal;
 	line-height: 35px;
+	margin-bottom: 0;
 }
 
 .detail .list > .action {
