@@ -562,15 +562,19 @@ article .meta img {
 	position: relative;
 }
 
+.dashboard,
+.lightbox-inner {
+	position: absolute;
+	background-color: rgba(230, 230, 230, 0.95);
+	border: 1px solid rgba(180, 180, 180, 1);
+	padding: 20px;
+}
+
 .dashboard {
 	z-index: 1;
-	position: absolute;
 	top: 40px;
 	right: 0;
 	width: 200px;
-	padding: 20px;
-	background-color: rgba(230, 230, 230, 0.95);
-	border: 1px solid rgba(180, 180, 180, 1);
 	border-top: none;
 	-webkit-border-radius: 0 0 0 5px;
 	-moz-border-radius: 0 0 0 5px;
@@ -870,4 +874,53 @@ article .meta img {
 .detail .listing-wrapper li .button {
 	float: left;
 	margin-right: 3px;
+}
+
+.lightbox {
+	display: none;
+	opacity: 0;
+	z-index: 100;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0, 0, 0, 0.9);
+	-webkit-transition: opacity 200ms ease-in;
+}
+
+.lightbox.fade-in {
+	opacity: 1;
+}
+
+.lightbox.show {
+	display: block;
+}
+
+.lightbox .lightbox-inner {
+	z-index: 100;
+	position: fixed;
+	top: 100px;
+	left: 50%;
+	width: 460px;
+	margin-left: -250px;
+	border-width: 4px;
+	border-color: #aaa;
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	-ms-border-radius: 5px;
+	-o-border-radius: 5px;
+	border-radius: 5px;
+	background-color: #efefef;
+	-webkit-background-clip: padding-box;
+	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	-moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	-o-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+.lightbox .close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }

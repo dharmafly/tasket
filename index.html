@@ -277,9 +277,40 @@
 				</section>
 			</section>
 		</section>
-		
 	</div>
+	<section class="lightbox">
+		<div class="lightbox-inner">
+			<h1>Login</h1>
+			<form action="#/login" method="POST">
+				<ul>
+					<li>
+						<label for="field-email">Email Address</label>
+						<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+					</li>
+					<li>
+						<label for="field-password">Password</label>
+						<input type="password" id="field-password" name="password" placeholder="password" value="" />
+					</li>
+				</ul>
+				<div class="actions">
+					<button type="submit">Login</button>
+				</div>
+			</form>
+			<button class="action close">Close Lightbox</button>
+		</div>
+	</section>
 	<script>
+		function addClass(element, klass) {
+			classes = element.className.split(' ');
+			classes.push(klass);
+			element.className = classes.join(' ');
+		}
+
+		function removeClass(element, klass) {
+			var regexp = new RegExp('\\s*' + klass + '\\s*');
+			element.className = element.className.replace(regexp, '');
+		}
+
 		(function () {
 			// Temporarily position the projects & tasks for styling.
 			var project = document.querySelector('article'),
@@ -289,7 +320,7 @@
 			if (project) {
 				project.style.top  = '40%';
 				project.style.left = '40%';
-				
+
 				tasks = project.querySelectorAll('.tasks li');
 				[].slice.call(tasks).forEach(function (task, index) {
 					if (offsets[index]) {
@@ -304,17 +335,6 @@
 			// Add the helper icon to all quicklinks in the dashboard.
 			var helpers = document.querySelectorAll('.help'),
 			    hover_class = 'active';
-
-			function addClass(element, klass) {
-				classes = element.className.split(' ');
-				classes.push(klass);
-				element.className = classes.join(' ');
-			}
-
-			function removeClass(element, klass) {
-				var regexp = new RegExp('\\s*' + klass + '\\s*');
-				element.className = element.className.replace(regexp, '');
-			}
 
 			[].slice.call(helpers).forEach(function (helper, index) {
 				var info = document.createElement('a');
@@ -332,13 +352,56 @@
 				helper.parentNode.appendChild(info);
 			});
 		}());
-		
+
 		(function () {
 			var close = document.querySelectorAll('.close');
-			
+
 			[].slice.call(close).forEach(function (close, index) {
 				close.onclick = function () { close.parentNode.style.display = 'none'; return false; };
 			});
+		}());
+
+		(function () {
+			// A very basic lightweight lightbox implementation.
+			var lightbox = {
+				_classnames: {
+					display: 'show',
+					animate: 'fade-in'
+				},
+				_element: document.querySelector('.lightbox'),
+				show: function () {
+					addClass(lightbox._element, lightbox._classnames.display);
+					// Need to use a timer for the animation to trigger.
+					setTimeout(function () {
+						addClass(lightbox._element, lightbox._classnames.animate);
+					}, 0);
+				},
+				hide: function () {
+					var duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
+
+					removeClass(lightbox._element, lightbox._classnames.animate);
+					if (duration) {
+						setTimeout(function () {
+							removeClass(lightbox._element, lightbox._classnames.display);
+						}, duration * 1000);
+					} else {
+						removeClass(lightbox._element, lightbox._classnames.display);
+					}
+				}
+			};
+
+			// Close the lightbox if the background is clicked.
+			lightbox._element.onclick = function (event) {
+				if (event.target === lightbox._element) {
+					lightbox.hide();
+				}
+			};
+
+			// Override the generic close button event set above.
+			document.querySelector('.lightbox .close').onclick = lightbox.hide;
+
+			window.lightbox = lightbox;
+			setTimeout(lightbox.show, 500);
 		}());
 	</script>
 </body>
