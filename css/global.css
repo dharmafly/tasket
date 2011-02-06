@@ -133,6 +133,7 @@ button.link {
 	font-size: 13px;
 	text-shadow: none;
 	line-height: 16px;
+	min-height: 0;
 	background: none;
 	border: none;
 	color: #fff;
@@ -740,10 +741,19 @@ article .meta img {
 	margin-bottom: 25px;
 }
 
+.detail .back,
 .detail .close {
 	position: absolute;
 	top: 13px;
 	right: 10px;
+}
+
+.detail .back {
+	top: 13px;
+	left: 8px;
+	right: auto;
+	padding-left: 10px;
+	background: url(../images/sprites.png) no-repeat 0 -27px;
 }
 
 .detail .profile {
