@@ -279,7 +279,7 @@
 		</section>
 	</div>
 	<section class="lightbox">
-		<div class="lightbox-inner">
+		<div class="lightbox-inner content">
 			<h1>Login</h1>
 			<form action="#/login" method="POST">
 				<ul>
@@ -288,12 +288,13 @@
 						<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
 					</li>
 					<li>
-						<label for="field-password">Password</label>
+						<label for="field-password">Password <strong class="error">(This field is required)</strong></label>
 						<input type="password" id="field-password" name="password" placeholder="password" value="" />
 					</li>
 				</ul>
 				<div class="actions">
 					<button type="submit">Login</button>
+					<p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
 				</div>
 			</form>
 			<button class="action close">Close Lightbox</button>

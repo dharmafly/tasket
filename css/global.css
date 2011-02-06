@@ -280,10 +280,75 @@ a.action.locate {
 }
 
 nav ul,
+form ul,
 .listing {
 	list-style-type: none;
 	margin: 0;
 	padding: 0;
+}
+
+.content h1,
+.content h2,
+.content h3 {
+	font-weight: bold;
+	font-size: 18px;
+	margin-bottom: 20px;
+	padding-bottom: 10px;
+	border-bottom: 1px solid #ccc;
+}
+
+.content h1 {
+	font-size: 18px;
+}
+
+.content h2 {
+	font-size: 16px;
+}
+
+.content h3 {
+	font-size: 14px;
+}
+
+.content form {
+	width: 300px;
+}
+
+.content form li {
+	margin-bottom: 10px;
+}
+
+.content form .error {
+	color: #ce0300;
+}
+
+.content form label,
+.content form input {
+	display: block;
+}
+
+.content form label {
+	font-weight: bold;
+	line-height: 1.5;
+}
+
+.content form input {
+	border: 1px solid #ccc;
+	padding: 6px 4px;
+	font-size: 14px;
+	width: 290px;
+}
+
+.content form .actions {
+	text-align: right;
+	position: relative;
+}
+
+.content form .actions .note {
+	text-align: left;
+	position: absolute;
+	top: 0;
+	margin: 0;
+	line-height: 28px;
 }
 
 .header-container {
