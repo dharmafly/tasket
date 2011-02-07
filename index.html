@@ -44,7 +44,7 @@
 		</header>
 	</div>
 	<article>
-		<img src="http://placehold.it/30x30" width="30" height="30" alt="Logo for Project X" />
+		<img class="active" src="http://placehold.it/30x30" width="30" height="30" alt="Logo for Project X" />
 		<hgroup>
 			<h1>Project X</h1>
 			<h2>Company Y</h2>
@@ -137,6 +137,7 @@
 			<section class="detail">
 				<h1>Detail Title</h1>
 				<button class="action close">Close</button>
+				<button class="link back">Back</button>
 				<section class="profile">
 					<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
 					<dl>
@@ -195,9 +196,122 @@
 					</div>
 				</section>
 			</section>
+			<section class="detail">
+				<h1>Detail Title</h1>
+				<button class="action close">Close</button>
+				<section class="profile user">
+					<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
+					<p class="name">Anonymous User</p>
+					<p>London, UK</p>
+				</section>
+				<section class="quicklinks">
+					<h1>My Projects</h1>
+					<ul class="listing">
+						<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+						<li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+						<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+					</ul>
+					<p>
+						<a class="button" href="#/projects/" title="View all projects">View All</a>
+						<a class="button" href="#/projects/new/" title="Create a new project">New</a>
+					</p>
+				</section>
+				<section class="quicklinks">
+					<h1>Tasks I&rsquo;m Doing</h1>
+					<ul class="listing">
+						<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+						<li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+						<li><a href="#/tasks/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+					</ul>
+					<p>
+						<a class="button" href="#/tasks/" title="View all tasks">View All</a>
+					</p>
+				</section>
+				<section class="quicklinks last">
+					<h1>Tasks I Manage</h1>
+					<ul class="listing">
+						<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+						<li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+						<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+					</ul>
+					<p>
+						<a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
+					</p>
+				</section>
+			</section>
+			<section class="detail">
+				<h1>My Projects</h1>
+				<button class="action close">Close</button>
+				<section class="list">
+					<h1>Pending</h1>
+					<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+					<nav class="listing-wrapper">
+						<ul class="listing">
+							<li>
+								<a href="#project-one" title="View project one">Project One</a>
+							</li>
+							<li>
+								<a href="#project-two" title="View project two">Project Two</a>
+							</li>
+							<li>
+								<a href="#project-three" title="View project one">Project Three with a really, really long title</a>
+							</li>
+							<li>
+								<a href="#project-four" title="View project four">Project Four</a>
+							</li>
+						</ul>
+					</nav>
+				</section>
+				<section class="list">
+					<h1>Done</h1>
+					<nav class="listing-wrapper">
+						<ul class="listing">
+							<li>
+								<a href="#project-five" title="View project five">Project Five</a>
+							</li>
+							<li>
+								<a href="#project-six" title="View project six">Project Six</a>
+							</li>
+						</ul>
+					</nav>
+				</section>
+			</section>
 		</section>
 	</div>
+	<section class="lightbox">
+		<div class="lightbox-inner content">
+			<h1>Login</h1>
+			<form action="#/login" method="POST">
+				<ul>
+					<li>
+						<label for="field-email">Email Address</label>
+						<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+					</li>
+					<li>
+						<label for="field-password">Password <strong class="error">(This field is required)</strong></label>
+						<input type="password" id="field-password" name="password" placeholder="password" value="" />
+					</li>
+				</ul>
+				<div class="actions">
+					<button type="submit">Login</button>
+					<p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
+				</div>
+			</form>
+			<button class="action close">Close Lightbox</button>
+		</div>
+	</section>
 	<script>
+		function addClass(element, klass) {
+			classes = element.className.split(' ');
+			classes.push(klass);
+			element.className = classes.join(' ');
+		}
+
+		function removeClass(element, klass) {
+			var regexp = new RegExp('\\s*' + klass + '\\s*');
+			element.className = element.className.replace(regexp, '');
+		}
+
 		(function () {
 			// Temporarily position the projects & tasks for styling.
 			var project = document.querySelector('article'),
@@ -207,7 +321,7 @@
 			if (project) {
 				project.style.top  = '40%';
 				project.style.left = '40%';
-				
+
 				tasks = project.querySelectorAll('.tasks li');
 				[].slice.call(tasks).forEach(function (task, index) {
 					if (offsets[index]) {
@@ -222,17 +336,6 @@
 			// Add the helper icon to all quicklinks in the dashboard.
 			var helpers = document.querySelectorAll('.help'),
 			    hover_class = 'active';
-
-			function addClass(element, klass) {
-				classes = element.className.split(' ');
-				classes.push(klass);
-				element.className = classes.join(' ');
-			}
-
-			function removeClass(element, klass) {
-				var regexp = new RegExp('\\s*' + klass + '\\s*');
-				element.className = element.className.replace(regexp, '');
-			}
 
 			[].slice.call(helpers).forEach(function (helper, index) {
 				var info = document.createElement('a');
@@ -250,13 +353,56 @@
 				helper.parentNode.appendChild(info);
 			});
 		}());
-		
+
 		(function () {
 			var close = document.querySelectorAll('.close');
-			
+
 			[].slice.call(close).forEach(function (close, index) {
 				close.onclick = function () { close.parentNode.style.display = 'none'; return false; };
 			});
+		}());
+
+		(function () {
+			// A very basic lightweight lightbox implementation.
+			var lightbox = {
+				_classnames: {
+					display: 'show',
+					animate: 'fade-in'
+				},
+				_element: document.querySelector('.lightbox'),
+				show: function () {
+					addClass(lightbox._element, lightbox._classnames.display);
+					// Need to use a timer for the animation to trigger.
+					setTimeout(function () {
+						addClass(lightbox._element, lightbox._classnames.animate);
+					}, 0);
+				},
+				hide: function () {
+					var duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
+
+					removeClass(lightbox._element, lightbox._classnames.animate);
+					if (duration) {
+						setTimeout(function () {
+							removeClass(lightbox._element, lightbox._classnames.display);
+						}, duration * 1000);
+					} else {
+						removeClass(lightbox._element, lightbox._classnames.display);
+					}
+				}
+			};
+
+			// Close the lightbox if the background is clicked.
+			lightbox._element.onclick = function (event) {
+				if (event.target === lightbox._element) {
+					lightbox.hide();
+				}
+			};
+
+			// Override the generic close button event set above.
+			document.querySelector('.lightbox .close').onclick = lightbox.hide;
+
+			window.lightbox = lightbox;
+			setTimeout(lightbox.show, 500);
 		}());
 	</script>
 </body>
