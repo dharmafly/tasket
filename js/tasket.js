@@ -12,9 +12,29 @@
 var namespace = "tasket",
     appName = "Tasket",
     version = "0.1.0",
+    
+    //JSON = window.JSON,
     undef;
 
 /////
+    
+function map(obj, fn){
+    var result = [],
+        prop, val;
+
+    for (prop in obj){
+        if (obj.hasOwnProperty(prop)){
+            val = fn.call(obj, prop, obj[prop]);
+            result.push(val);
+        }
+    }
+    return result;
+}
+
+// TODO: execute this and respond if not supported
+function browserIsSupported(){
+    return !!window.JSON;
+}
 
 function now(){
     return (new Date()).toString();
@@ -26,6 +46,12 @@ function isAlphaNum(arg){
 
 function report(msg, type){
     return appName + (type ? " " + type : "") + ": " + msg;
+}
+
+function ids(collection){
+    return arrayMap(collection, function(id){
+        return id;
+    });
 }
 
 
@@ -118,30 +144,54 @@ Tasket.prototype = {
 
         var i, len, hub, task;
         
-        i = 0;
-        len = data.users.length;
-        for (i=0; i<len; i++){
-            this.user(data.users[i]);
+        if (data.users){
+            i = 0;
+            len = data.users.length;
+            for (i=0; i<len; i++){
+                this.user(data.users[i]);
+            }
         }
         
-        i = 0;
-        len = data.hubs.length;
-        for (i=0; i<len; i++){
-            hub = data.hubs[i];
-            hub.owner = this.user(hub.owner);
-            this.hub(hub);
+        if (data.hubs){
+            i = 0;
+            len = data.hubs.length;
+            for (i=0; i<len; i++){
+                hub = data.hubs[i];
+                hub.owner = this.user(hub.owner);
+                this.hub(hub);
+            }
         }
         
-        i = 0;
-        len = data.tasks.length;
-        for (i=0; i<len; i++){
-            task = data.tasks[i];
-            task.owner = this.user(task.owner);
-            task.hub = this.hub(task.hub);
-            this.task(task);
+        if (data.tasks){
+            i = 0;
+            len = data.tasks.length;
+            for (i=0; i<len; i++){
+                task = data.tasks[i];
+                task.owner = this.user(task.owner);
+                task.hub = this.hub(task.hub);
+                this.task(task);
+            }
         }
         
         return this;
+    },
+    
+    export: function(stringify){
+        var result = {
+            namespace: this.namespace,
+            version: Tasket.version,
+            users: map(this.users, function(id, item){
+                return item.export(false);
+            }),
+            hubs: map(this.hubs, function(id, item){
+                return item.export(false);
+            }),
+            tasks: map(this.tasks, function(id, item){
+                return item.export(false);
+            })
+        };
+        
+        return stringify !== false ? JSON.stringify(result) : result;
     }
 };
 
@@ -169,6 +219,11 @@ History.prototype = {
     
     get: function(){
         return this._history;
+    },
+    
+    export: function(stringify){
+        var result = this.get();
+        return stringify !== false ? JSON.stringify(result) : result;
     }
 };
 
@@ -218,6 +273,20 @@ Task.prototype = {
     
     remove: function(user, timestamp){
         return this.tasket.task(this, null);
+    },
+    
+    export: function(stringify){
+        var result = {
+            id: this.id,
+            hub: this.hub.id,
+            owner: this.owner.id,
+            title: this.title,
+            description: this.description,
+            image: this.image,
+            estimate: this.estimate,
+            history: this.history.export()
+        };        
+        return stringify !== false ? JSON.stringify(result) : result;
     }
 };
 
@@ -283,6 +352,20 @@ Hub.prototype = {
         this.tasket.hub(this, null);
         this.history("removed", user, timestamp);
         return this;
+    },
+    
+    export: function(stringify){
+        var result = {
+            id: this.id,
+            owner: this.owner.id,
+            title: this.title,
+            description: this.description,
+            image: this.image,
+            tasks: ids(this.tasks),
+            admins: ids(this.admins),
+            history: this.history.export()
+        };        
+        return stringify !== false ? JSON.stringify(result) : result;
     }
 };
 
@@ -295,6 +378,7 @@ function User(settings){
     this.tasket = settings.tasket;
     this.username = settings.username;
     this.realname = settings.realname;
+    this.image = settings.image;
 
     this.tasksOwned = {};
     this.hubsOwned = {};
@@ -303,7 +387,18 @@ function User(settings){
     this.history.push("created");
 }
 User.prototype = {
-    type: "user"
+    type: "user",
+    
+    export: function(stringify){
+        var result = {
+            id: this.id,
+            username: this.username,
+            realname: this.realname,
+            image: this.image,
+            history: this.history.export()
+        };        
+        return stringify !== false ? JSON.stringify(result) : result;
+    }
 };
 
 
