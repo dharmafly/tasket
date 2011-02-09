@@ -4,7 +4,7 @@
 html {
 	font: 13px/16px Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
 	color: #333;
-	background-color: #b9e4ff; /* Fallback for non-gradient supporting browsers */
+	background-color: #ececec; /* Fallback for non-gradient supporting browsers */
 	background-image: -webkit-gradient(
 		radial, center center, 0, center center, 480, from(#fff), to(#dedede)
 	);
