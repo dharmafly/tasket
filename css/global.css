@@ -1,3 +1,5 @@
+/* @override http://localhost:8000/css/global.css?v0.1 */
+
 html {
 	font: 13px/16px Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
 	color: #333;
@@ -439,18 +441,20 @@ form ul,
 	font-size: 14px;
 }
 
-.header-container form {
+.header-container .login {
 	position: absolute;
 	top: 0;
 	right: 0;
 }
 
-.header-container form button {
+.header-container nav .login a,
+.header-container nav .login button {
 	font-size: 12px;
 }
 
 .header-container h2,
-.header-container form button {
+.header-container .login a,
+.header-container .login button {
 	color: #ccc;
 }
 

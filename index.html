@@ -26,11 +26,12 @@
 				<ul>
 					<li><a href="#/" title="The Tasket homepage">Home</a></li>
 					<li><a href="#/about" title="About the Tasket project">About</a></li>
-					<li>
+					<li class="login"><a href="#/about" title="Login to Tasket">Login</a></li>
+					<!-- <li class="login">
 						<form action="#/logout" method="POST">
 							<button class="link" type="submit">Logout</button>
 						</form>
-					</li>
+					</li> -->
 				</ul>
 			</nav>
 			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User&rsquo; avatar" /> Current User</h2>
@@ -402,7 +403,14 @@
 			document.querySelector('.lightbox .close').onclick = lightbox.hide;
 
 			window.lightbox = lightbox;
-			setTimeout(lightbox.show, 500);
+		}());
+		
+		(function () {
+			var login  = document.querySelector('.login a');
+			login.onclick = function () {
+				window.lightbox.show();
+				return false;
+			};
 		}());
 	</script>
 </body>
