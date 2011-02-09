@@ -1,3 +1,6 @@
+/* @group Base Elements
+-----------------------------------------------------------------------------*/
+
 html {
 	font: 13px/16px Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
 	color: #333;
@@ -287,6 +290,11 @@ form ul,
 	padding: 0;
 }
 
+/* @end */
+
+/* @group Content Elements
+-----------------------------------------------------------------------------*/
+
 .content h1,
 .content h2,
 .content h3 {
@@ -378,6 +386,11 @@ form ul,
 	margin: 0;
 	line-height: 28px;
 }
+
+/* @end */
+
+/* @group Header
+-----------------------------------------------------------------------------*/
 
 .header-container {
 	z-index: 2;
@@ -552,6 +565,11 @@ form ul,
 	text-transform: lowercase;
 }
 
+/* @end */
+
+/* @group Task Widget
+-----------------------------------------------------------------------------*/
+
 article {
 	z-index: 0;
 	position: absolute;
@@ -650,6 +668,11 @@ article .meta img {
 	top: 7px;
 	left: 0;
 }
+
+/* @end */
+
+/* @group Dashboard
+-----------------------------------------------------------------------------*/
 
 .dashboard-container {
 	width: 960px;
@@ -812,6 +835,9 @@ article .meta img {
 	margin-right: 10px;
 }
 
+/* @group Dashboard Detail Styles
+-----------------------------------------------------------------------------*/
+
 .detail {
 	background-color: #333;
 	position: absolute;
@@ -971,6 +997,12 @@ article .meta img {
 	margin-right: 3px;
 }
 
+/* @end */
+/* @end */
+
+/* @group Lightbox
+-----------------------------------------------------------------------------*/
+
 .lightbox {
 	display: none;
 	opacity: 0;
@@ -1019,3 +1051,5 @@ article .meta img {
 	top: 10px;
 	right: 10px;
 }
+
+/* @end */
