@@ -135,7 +135,7 @@
 				</nav>
 				<p>Built by <a href="http://dharmafly.com/" title="Find out more about Dharmafly">Dharmafly</a></p>
 			</footer>
-			<section class="detail">
+			<section id="project" class="detail">
 				<h1>Detail Title</h1>
 				<button class="action close">Close</button>
 				<button class="link back">Back</button>
@@ -197,7 +197,7 @@
 					</div>
 				</section>
 			</section>
-			<section class="detail">
+			<section id="user" class="detail">
 				<h1>Detail Title</h1>
 				<button class="action close">Close</button>
 				<section class="profile user">
@@ -240,7 +240,7 @@
 					</p>
 				</section>
 			</section>
-			<section class="detail">
+			<section id="projects" class="detail">
 				<h1>My Projects</h1>
 				<button class="action close">Close</button>
 				<section class="list">
@@ -404,11 +404,37 @@
 
 			window.lightbox = lightbox;
 		}());
-		
+
+		// Set up the login lightbox.
 		(function () {
 			var login  = document.querySelector('.login a');
 			login.onclick = function () {
 				window.lightbox.show();
+				return false;
+			};
+		}());
+
+		// Set up the dashbaord detail boxes.
+		(function () {
+			var projects  = document.getElementById('projects'),
+			    project   = document.getElementById('project'),
+			    user      = document.getElementById('user');
+
+			projects.style.display = 'none';
+			document.querySelector('[href="#/projects/"]').onclick = function () {
+				projects.style.display = 'block';
+				return false;
+			};
+			
+			project.style.display = 'none';
+			document.querySelector('.button[href="#/tasks/"]').onclick = function () {
+				project.style.display = 'block';
+				return false;
+			};
+			
+			user.style.display = 'none';
+			document.querySelector('[href="#/user/another-user/"]').onclick = function () {
+				user.style.display = 'block';
 				return false;
 			};
 		}());
