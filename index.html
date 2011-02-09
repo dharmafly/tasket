@@ -25,8 +25,8 @@
 			<nav>
 				<ul>
 					<li><a href="#/" title="The Tasket homepage">Home</a></li>
-					<li><a href="#/about" title="About the Tasket project">About</a></li>
-					<li class="login"><a href="#/about" title="Login to Tasket">Login</a></li>
+					<li><a href="#/about/" title="About the Tasket project">About</a></li>
+					<li class="login"><a href="#/login/" title="Login to Tasket">Login</a></li>
 					<!-- <li class="login">
 						<form action="#/logout" method="POST">
 							<button class="link" type="submit">Logout</button>
@@ -280,27 +280,48 @@
 		</section>
 	</div>
 	<section class="lightbox">
-		<div class="lightbox-inner content">
-			<h1>Login</h1>
-			<form action="#/login" method="POST">
-				<ul>
-					<li>
-						<label for="field-email">Email Address</label>
-						<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
-					</li>
-					<li>
-						<label for="field-password">Password <strong class="error">(This field is required)</strong></label>
-						<input type="password" id="field-password" name="password" placeholder="password" value="" />
-					</li>
-				</ul>
-				<div class="actions">
-					<button type="submit">Login</button>
-					<p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
-				</div>
-			</form>
+		<div class="lightbox-inner">
+			<div class="content">{content}</div>
 			<button class="action close">Close Lightbox</button>
 		</div>
 	</section>
+
+	<script id="template-login" type="text/html">
+		<h1>Login</h1>
+		<form action="#/login" method="POST">
+			<ul>
+				<li>
+					<label for="field-email">Email Address</label>
+					<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+				</li>
+				<li>
+					<label for="field-password">Password <strong class="error">(This field is required)</strong></label>
+					<input type="password" id="field-password" name="password" placeholder="password" value="" />
+				</li>
+			</ul>
+			<div class="actions">
+				<button type="submit">Login</button>
+				<p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
+			</div>
+		</form>
+	</script>
+
+	<script id="template-about" type="text/html">
+		<h1>About Tasket</h1>
+		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+		   incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad 
+		   <em>emphais</em> minim veniam, quis <code>nostrud</code> exercitation ullamco 
+		   laboris nisi <a href="#">ut aliquip ex</a> ea commodo consequat.</p>
+		<h2>A level two heading</h2>
+		<p>irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+		   pariatur. Excepteur sint occaecat cupidatat non proident</p>
+		<p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		<h3>A level three heading</h3>
+		<blockquote>
+			<p>Some form of blockquote would go here, perhaps some Shakespeare?</p>
+		</blockquote>
+	</script>
+
 	<script>
 		function addClass(element, klass) {
 			classes = element.className.split(' ');
@@ -371,12 +392,16 @@
 					animate: 'fade-in'
 				},
 				_element: document.querySelector('.lightbox'),
+				_content: document.querySelector('.lightbox .content'),
 				show: function () {
 					addClass(lightbox._element, lightbox._classnames.display);
+
 					// Need to use a timer for the animation to trigger.
 					setTimeout(function () {
 						addClass(lightbox._element, lightbox._classnames.animate);
 					}, 0);
+
+					return this;
 				},
 				hide: function () {
 					var duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
@@ -389,6 +414,12 @@
 					} else {
 						removeClass(lightbox._element, lightbox._classnames.display);
 					}
+
+					return this;
+				},
+				html: function (html) {
+					this._content.innerHTML = html;
+					return this;
 				}
 			};
 
@@ -405,11 +436,19 @@
 			window.lightbox = lightbox;
 		}());
 
-		// Set up the login lightbox.
+		// Set up the lightboxes.
 		(function () {
-			var login  = document.querySelector('.login a');
-			login.onclick = function () {
-				window.lightbox.show();
+			var login_html = document.getElementById('template-login').innerHTML,
+			    about_html = document.getElementById('template-about').innerHTML;
+
+			document.querySelector('.login a').onclick = function () {
+				window.lightbox.html(login_html).show();
+				return false;
+			};
+
+			document.querySelector('[href="#/about/"]').onclick = function () {
+				console.log(':');
+				window.lightbox.html(about_html).show();
 				return false;
 			};
 		}());
@@ -425,13 +464,13 @@
 				projects.style.display = 'block';
 				return false;
 			};
-			
+
 			project.style.display = 'none';
 			document.querySelector('.button[href="#/tasks/"]').onclick = function () {
 				project.style.display = 'block';
 				return false;
 			};
-			
+
 			user.style.display = 'none';
 			document.querySelector('[href="#/user/another-user/"]').onclick = function () {
 				user.style.display = 'block';
