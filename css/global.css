@@ -23,6 +23,21 @@ html {
 	background-attachment: fixed;
 }
 
+html.linear {
+	background-image: -webkit-gradient(
+  		linear, left top, left bottom, from(#fff), to(#dedede)
+	);
+	background-image: -moz-linear-gradient(
+	    -90deg, #fff, #dedede
+	);
+	background-image: -webkit-linear-gradient(
+	    -90deg, #fff, #dedede
+	);
+	background-image: linear-gradient(
+	    -90deg, #fff, #dedede
+	);
+}
+
 body {
 	margin: 0;
 	height: 100%;
