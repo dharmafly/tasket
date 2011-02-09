@@ -292,7 +292,8 @@ form ul,
 .content h3 {
 	font-weight: bold;
 	font-size: 18px;
-	margin: 20px 0;
+	/* Pull the bottom border in line with the close button */
+	margin: 20px -10px 20px 0;
 	padding-bottom: 10px;
 	border-bottom: 1px solid #ccc;
 }
@@ -342,7 +343,8 @@ form ul,
 }
 
 .content form label,
-.content form input {
+.content form input,
+.content form textarea {
 	display: block;
 }
 
@@ -351,11 +353,17 @@ form ul,
 	line-height: 1.5;
 }
 
-.content form input {
+.content form input,
+.content form textarea,
+.content form select {
 	border: 1px solid #ccc;
 	padding: 6px 4px;
 	font-size: 14px;
 	width: 290px;
+}
+
+.content form select {
+	width: 300px;
 }
 
 .content form .actions {

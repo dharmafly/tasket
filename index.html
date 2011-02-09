@@ -309,8 +309,8 @@
 	<script id="template-about" type="text/html">
 		<h1>About Tasket</h1>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-		   incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad 
-		   <em>emphais</em> minim veniam, quis <code>nostrud</code> exercitation ullamco 
+		   incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad
+		   <em>emphais</em> minim veniam, quis <code>nostrud</code> exercitation ullamco
 		   laboris nisi <a href="#">ut aliquip ex</a> ea commodo consequat.</p>
 		<h2>A level two heading</h2>
 		<p>irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
@@ -320,6 +320,34 @@
 		<blockquote>
 			<p>Some form of blockquote would go here, perhaps some Shakespeare?</p>
 		</blockquote>
+	</script>
+
+	<script id="template-new" type="text/html">
+		<h1>Create a new task</h1>
+		<form action="#/tasks/" method="POST">
+			<ul>
+				<li>
+					<label for="field-title">Title</label>
+					<input id="field-title" name="title" placeholder="My new task" value="" />
+				</li>
+				<li>
+					<label for="field-timespan">Time required</label>
+					<select id="field-timespan" name="timespan">
+						<option value="600">Ten minutes</option>
+						<option value="600">Half an hour</option>
+						<option value="600">One day</option>
+						<option value="600">Three days</option>
+					</select>
+				</li>
+				<li>
+					<label for="field-summary">Summary</label>
+					<textarea id="field-summary" name="summary" cols="30" rows="6" placeholder="Description&hellip;"></textarea>
+				</li>
+			</ul>
+			<div class="actions">
+				<button type="submit">Create Task</button>
+			</div>
+		</form>
 	</script>
 
 	<script>
@@ -439,7 +467,8 @@
 		// Set up the lightboxes.
 		(function () {
 			var login_html = document.getElementById('template-login').innerHTML,
-			    about_html = document.getElementById('template-about').innerHTML;
+			    about_html = document.getElementById('template-about').innerHTML,
+			    new_html   = document.getElementById('template-new').innerHTML;
 
 			document.querySelector('.login a').onclick = function () {
 				window.lightbox.html(login_html).show();
@@ -447,8 +476,12 @@
 			};
 
 			document.querySelector('[href="#/about/"]').onclick = function () {
-				console.log(':');
 				window.lightbox.html(about_html).show();
+				return false;
+			};
+
+			document.querySelector('[href$="/new/"]').onclick = function () {
+				window.lightbox.html(new_html).show();
 				return false;
 			};
 		}());
