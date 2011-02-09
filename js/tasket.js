@@ -3,9 +3,11 @@
 /*
     TODO:
     Architectural issues to solve:
-        * tempIds -> ids, including lookup object normalisation
+        * tempIds -> ids
+            ** lookup object normalisation
+            ** partial data, e.g. hub === number, with no owner
+            ** changeId of an item, in all collections
         * async retrieval of info from server -> callbacks in methods
-        * export JSON
 */
 
 
@@ -37,7 +39,7 @@ function browserIsSupported(){
 }
 
 function now(){
-    return (new Date()).toString();
+    return (new Date()).getTime();
 }
 
 function isAlphaNum(arg){
@@ -52,6 +54,17 @@ function ids(collection){
     return arrayMap(collection, function(id){
         return id;
     });
+}
+
+function count(){
+    if (!count._){
+        count._ = 0;
+    }
+    return count._ ++;
+}
+
+function tempId(){
+    return "t" + now() + "-" + count();
 }
 
 
@@ -85,15 +98,13 @@ Tasket.prototype = {
                 this._item(item, Constructor, collection) :
                 item;
         }
-        if (item && item.id){
-            if (remove){
-                delete collection[item.id];
-            }
-            else {
-                item.tasket = this;
-                item = new Constructor(item);
-                collection[item.id] = item;
-            }
+        if (remove){
+            delete collection[item.id];
+        }
+        else {
+            item.tasket = this;
+            item = new Constructor(item);
+            collection[item.id] = item;
         }
         return item;
     },
@@ -228,7 +239,7 @@ History.prototype = {
 };
 
 function Task(settings){
-    this.id = settings.id;
+    this.id = settings.id || tempId();
     this.hub = settings.hub;
     this.tasket = this.hub.tasket;
     this.owner = settings.owner;
@@ -295,7 +306,7 @@ Task.prototype = {
 
 
 function Hub(settings){
-    this.id = settings.id;
+    this.id = settings.id || tempId();
     this.tasket = settings.tasket;
     this.owner = settings.owner;
     
@@ -374,7 +385,7 @@ Hub.prototype = {
 
 
 function User(settings){
-    this.id = settings.id;
+    this.id = settings.id || tempId();
     this.tasket = settings.tasket;
     this.username = settings.username;
     this.realname = settings.realname;
