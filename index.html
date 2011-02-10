@@ -26,6 +26,7 @@
 				<ul>
 					<li><a href="#/" title="The Tasket homepage">Home</a></li>
 					<li><a href="#/about/" title="About the Tasket project">About</a></li>
+					<li><a href="#/sign-up/" title="Sign up for an account">Sign up</a></li>
 					<li class="login"><a href="#/login/" title="Login to Tasket">Login</a></li>
 					<!-- <li class="login">
 						<form action="#/logout" method="POST">
@@ -306,6 +307,30 @@
 		</form>
 	</script>
 
+	<script id="template-signup" type="text/html">
+		<h1>Register for a Tasket Account</h1>
+		<p>Please provide the following details and we&rsquo;ll create an account for you.</p>
+		<form action="#/sign-up/" method="POST">
+			<ul>
+				<li>
+					<label for="field-email">Email Address</label>
+					<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+				</li>
+				<li>
+					<label for="field-password">Password</label>
+					<input type="password" id="field-password" name="password" placeholder="password" value="" />
+				</li>
+				<li>
+					<label for="field-password-confirm">Confirm Password</label>
+					<input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
+				</li>
+			</ul>
+			<div class="actions">
+				<button type="submit">Sign Up</button>
+			</div>
+		</form>
+	</script>
+
 	<script id="template-about" type="text/html">
 		<h1>About Tasket</h1>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
@@ -466,24 +491,22 @@
 
 		// Set up the lightboxes.
 		(function () {
-			var login_html = document.getElementById('template-login').innerHTML,
-			    about_html = document.getElementById('template-about').innerHTML,
-			    new_html   = document.getElementById('template-new').innerHTML;
+			var template, templates = {
+				'template-signup': '[href="#/sign-up/"]',
+				'template-login': '.login a',
+				'template-about': '[href="#/about/"]',
+				'template-new': '[href$="/new/"]'
+			}
 
-			document.querySelector('.login a').onclick = function () {
-				window.lightbox.html(login_html).show();
-				return false;
-			};
-
-			document.querySelector('[href="#/about/"]').onclick = function () {
-				window.lightbox.html(about_html).show();
-				return false;
-			};
-
-			document.querySelector('[href$="/new/"]').onclick = function () {
-				window.lightbox.html(new_html).show();
-				return false;
-			};
+			for (template in templates) {
+				(function () {
+					var html = document.getElementById(template).innerHTML;
+					document.querySelector(templates[template]).onclick = function () {
+						window.lightbox.html(html).show();
+						return false;
+					};
+				}());
+			}
 		}());
 
 		// Set up the dashbaord detail boxes.
