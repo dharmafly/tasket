@@ -878,6 +878,8 @@ article .meta img {
 
 .js.ie .dashboard .quicklinks .help {
 	display: none;
+	background-color: transparent;
+	background-image: url(../images/overlay-90.png);
 }
 
 .js .dashboard .quicklinks .active {
@@ -1145,6 +1147,11 @@ article .meta img {
 	-ms-transition: opacity 200ms ease-in;
 	-o-transition: opacity 200ms ease-in;
 	transition: opacity 200ms ease-in;
+}
+
+.ie .lightbox {
+	background-color: transparent;
+	background-image: url(../images/overlay-90.png);
 }
 
 .lightbox.fade-in {
