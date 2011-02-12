@@ -1,3 +1,5 @@
+/* @override http://localhost:8000/css/global.css?v0.1 */
+
 /* @group Base Elements
 -----------------------------------------------------------------------------*/
 
@@ -105,6 +107,15 @@ button, .button, .button:visited {
 	-o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
 	cursor: pointer;
+}
+
+/* Fix line-height bug in FF & Opera 
+   http://www.cssnewbie.com/input-button-line-height-bug/
+ */
+button {
+	line-height: 1.386em /* 18px */;
+	padding-top: 0.231em /* 3px */;
+	padding-bottom: 0.308em /* 4px */;
 }
 
 button:hover, button:focus,
