@@ -458,7 +458,11 @@
 					return this;
 				},
 				hide: function () {
-					var duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
+					var duration;
+					
+					if (window.getComputedStyle) {
+						duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
+					}
 
 					removeClass(lightbox._element, lightbox._classnames.animate);
 					if (duration) {
@@ -479,6 +483,7 @@
 
 			// Close the lightbox if the background is clicked.
 			lightbox._element.onclick = function (event) {
+				event = event || window.event;
 				if (event.target === lightbox._element) {
 					lightbox.hide();
 				}
@@ -497,7 +502,7 @@
 				'template-login': '.login a',
 				'template-about': '[href="#/about/"]',
 				'template-new': '[href$="/new/"]'
-			}
+			};
 
 			for (template in templates) {
 			    if (templates.hasOwnProperty(template)){

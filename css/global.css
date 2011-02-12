@@ -1,5 +1,3 @@
-/* @override http://localhost:8000/css/global.css?v0.1 */
-
 /* @group Base Elements
 -----------------------------------------------------------------------------*/
 
@@ -703,8 +701,10 @@ article .meta img {
 .dashboard,
 .lightbox-inner {
 	position: absolute;
+	background-color: #e6e6e6;
 	background-color: rgba(230, 230, 230, 0.95);
-	border: 1px solid rgba(180, 180, 180, 1);
+	border: 1px solid #b4b4b4;
+	border-color: rgba(180, 180, 180, 1);
 	padding: 1.538em /* 20px */;
 }
 
@@ -729,8 +729,10 @@ article .meta img {
 .dashboard .notifications {
 	padding: 1.154em /* 15px */ 1em /* 13px */;
 	margin-bottom: 1.538em /* 20px */;
+	background-color: #ececec;
 	background-color: rgba(255, 255, 255, 0.3);
-	border: 1px solid rgba(0, 0, 0, 0.2);
+	border: 1px solid #bcbcbc;
+	border-color: rgba(0, 0, 0, 0.2);
 }
 
 .dashboard .notifications li {
@@ -798,6 +800,7 @@ article .meta img {
 	width: 13.846em /* 180px */;
 	padding: 0.679em /* 10px */;
 	color: #fff;
+	background-color: #000;
 	background-color: rgba(0, 0, 0, 0.8);
 	-webkit-border-radius: 0.385em /* 5px */;
 	-moz-border-radius: 0.385em /* 5px */;
