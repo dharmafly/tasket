@@ -283,7 +283,7 @@
 
 	<section class="lightbox">
 		<div class="lightbox-inner">
-			<div class="content">{content}</div>
+			<div class="content"></div>
 			<button class="action close">Close Lightbox</button>
 		</div>
 	</section>
@@ -400,7 +400,7 @@
 				project.style.left = '40%';
 
 				tasks = project.querySelectorAll('.tasks li');
-				[].slice.call(tasks).forEach(function (task, index) {
+				$.each(tasks, function (index, task) {
 					if (offsets[index]) {
 						task.style.top  = offsets[index][0] + 'px';
 						task.style.left = offsets[index][1] + 'px';
@@ -414,7 +414,7 @@
 			var helpers = document.querySelectorAll('.help'),
 			    hover_class = 'active';
 
-			[].slice.call(helpers).forEach(function (helper, index) {
+			$.each(helpers, function (index, helper) {
 				var info = document.createElement('a');
 
 				info.href  = '#info';
@@ -431,10 +431,10 @@
 		}());
 
 		(function () {
-			var close = document.querySelectorAll('.close');
+			var buttons = document.querySelectorAll('.close');
 
-			[].slice.call(close).forEach(function (close, index) {
-				close.onclick = function () { close.parentNode.style.display = 'none'; return false; };
+			$.each(buttons, function (index, button) {
+				button.onclick = function () { button.parentNode.style.display = 'none'; return false; };
 			});
 		}());
 
