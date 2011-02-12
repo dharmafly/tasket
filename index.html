@@ -79,16 +79,137 @@
 			</li>
 		</ul>
 	</article>
-	<div class="dashboard-container">
-		<section class="dashboard">
-			<ul class="listing notifications">
-				<li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
-				<li><a href="#/done/" title="View your completed tasks">3 tasks you&rsquo;ve done have been approved</a></li>
-				<li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
+
+	<section class="dashboard">
+		<ul class="listing notifications">
+			<li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
+			<li><a href="#/done/" title="View your completed tasks">3 tasks you&rsquo;ve done have been approved</a></li>
+			<li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
+		</ul>
+		<section class="quicklinks">
+			<h1>My Projects</h1>
+			<p class="help">This section provides you a quick list of your recent projects</p>
+			<ul class="listing">
+				<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+				<li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+				<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
 			</ul>
+			<p>
+				<a class="button" href="#/projects/" title="View all projects">View All</a>
+				<a class="button" href="#/projects/new/" title="Create a new project">New</a>
+			</p>
+		</section>
+		<section class="quicklinks">
+			<h1>Tasks I&rsquo;m Doing</h1>
+			<p class="help">This section provides you a quick list of your currently active tasks</p>
+			<ul class="listing">
+				<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+				<li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+				<li><a href="#/tasks/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+			</ul>
+			<p>
+				<a class="button" href="#/tasks/" title="View all tasks">View All</a>
+			</p>
+		</section>
+		<section class="quicklinks">
+			<h1>Tasks I Manage</h1>
+			<p class="help">This section provides you a quick list of tasks you administer</p>
+			<ul class="listing">
+				<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+				<li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+				<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+			</ul>
+			<p>
+				<a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
+			</p>
+		</section>
+		<footer>
+			<p class="statistics">
+				<img src="http://placehold.it/50x50" width="50" height="50" alt="Chart showing percentage of completed tasks" />
+				<em>2,030</em> tasks done by everyone</p>
+			<nav>
+				<ul>
+					<li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
+					<li><a href="#/blog/" title="Read the blog">Blog</a></li>
+					<li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
+				</ul>
+			</nav>
+			<p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
+			    App by <span class="df-name">Dharmafly</span>
+			</a></p>
+		</footer>
+		<section id="project" class="detail">
+			<h1>Detail Title</h1>
+			<button class="action close">Close</button>
+			<button class="link back">Back</button>
+			<section class="profile">
+				<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
+				<dl>
+					<dt>Project:</dt>
+					<dd>My latest project</dd>
+					<dt>Organisation:</dt>
+					<dd>Our wonderful organisation</dd>
+					<dt>Tags:</dt>
+					<dd>
+						<a href="#/tags/apples/" title="See all projects tagged with Apples">Apples</a>,
+						<a href="#/tags/cheese/" title="See all projects tagged with Cheese">Cheese</a>,
+						<a href="#/tags/beans/" title="See all projects tagged with Beans">Beans</a>,
+						<a href="#/tags/eggs/" title="See all projects tagged with Eggs">Eggs</a>
+					</dd>
+				</dl>
+				<a class="button action locate" href="#center" title="Centre view on this project">Centre View</a>
+				<a class="button" href="#/projects/my-project/edit/" title="Edit this project">Edit</a>
+				<form class="form-button" action="#/project/my-project/" method="POST">
+					<button class="button" type="submit">Delete</button>
+				</form>
+			</section>
+			<section class="list">
+				<h1>Tasks</h1>
+				<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+				<div class="listing-wrapper">
+					<ul class="listing">
+						<li>
+							<p>New task item that needs to be done</p>
+							<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+							<form class="form-button" action="#/tasks/new-task/" method="POST">
+								<button class="action delete" type="submit">Delete</button>
+							</form>
+						</li>
+						<li>
+							<p>New task item that needs to be done</p>
+							<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+							<form class="form-button" action="#/tasks/new-task/" method="POST">
+								<button class="action delete" type="submit">Delete</button>
+							</form>
+						</li>
+						<li>
+							<p>New task item that needs to be done</p>
+							<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+							<form class="form-button" action="#/tasks/new-task/" method="POST">
+								<button class="action delete" type="submit">Delete</button>
+							</form>
+						</li>
+						<li>
+							<p>New task item that needs to be done</p>
+							<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+							<form class="form-button" action="#/tasks/new-task/" method="POST">
+								<button class="action delete" type="submit">Delete</button>
+							</form>
+						</li>
+					</ul>
+				</div>
+			</section>
+		</section>
+		<section id="user" class="detail">
+			<h1>Detail Title</h1>
+			<button class="action close">Close</button>
+			<section class="profile user">
+				<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
+				<p class="name">Anonymous User</p>
+				<p>London, UK</p>
+			</section>
 			<section class="quicklinks">
 				<h1>My Projects</h1>
-				<p class="help">This section provides you a quick list of your recent projects</p>
 				<ul class="listing">
 					<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
 					<li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
@@ -101,7 +222,6 @@
 			</section>
 			<section class="quicklinks">
 				<h1>Tasks I&rsquo;m Doing</h1>
-				<p class="help">This section provides you a quick list of your currently active tasks</p>
 				<ul class="listing">
 					<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
 					<li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
@@ -111,9 +231,8 @@
 					<a class="button" href="#/tasks/" title="View all tasks">View All</a>
 				</p>
 			</section>
-			<section class="quicklinks">
+			<section class="quicklinks last">
 				<h1>Tasks I Manage</h1>
-				<p class="help">This section provides you a quick list of tasks you administer</p>
 				<ul class="listing">
 					<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
 					<li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
@@ -123,165 +242,46 @@
 					<a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
 				</p>
 			</section>
-			<footer>
-				<p class="statistics">
-					<img src="http://placehold.it/50x50" width="50" height="50" alt="Chart showing percentage of completed tasks" />
-					<em>2,030</em> tasks done by everyone</p>
-				<nav>
-					<ul>
-						<li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
-						<li><a href="#/blog/" title="Read the blog">Blog</a></li>
-						<li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
+		</section>
+		<section id="projects" class="detail">
+			<h1>My Projects</h1>
+			<button class="action close">Close</button>
+			<section class="list">
+				<h1>Pending</h1>
+				<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+				<nav class="listing-wrapper">
+					<ul class="listing">
+						<li>
+							<a href="#project-one" title="View project one">Project One</a>
+						</li>
+						<li>
+							<a href="#project-two" title="View project two">Project Two</a>
+						</li>
+						<li>
+							<a href="#project-three" title="View project one">Project Three with a really, really long title</a>
+						</li>
+						<li>
+							<a href="#project-four" title="View project four">Project Four</a>
+						</li>
 					</ul>
 				</nav>
-				<p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
-				    App by <span class="df-name">Dharmafly</span>
-				</a></p>
-			</footer>
-			<section id="project" class="detail">
-				<h1>Detail Title</h1>
-				<button class="action close">Close</button>
-				<button class="link back">Back</button>
-				<section class="profile">
-					<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
-					<dl>
-						<dt>Project:</dt>
-						<dd>My latest project</dd>
-						<dt>Organisation:</dt>
-						<dd>Our wonderful organisation</dd>
-						<dt>Tags:</dt>
-						<dd>
-							<a href="#/tags/apples/" title="See all projects tagged with Apples">Apples</a>,
-							<a href="#/tags/cheese/" title="See all projects tagged with Cheese">Cheese</a>,
-							<a href="#/tags/beans/" title="See all projects tagged with Beans">Beans</a>,
-							<a href="#/tags/eggs/" title="See all projects tagged with Eggs">Eggs</a>
-						</dd>
-					</dl>
-					<a class="button action locate" href="#center" title="Centre view on this project">Centre View</a>
-					<a class="button" href="#/projects/my-project/edit/" title="Edit this project">Edit</a>
-					<form class="form-button" action="#/project/my-project/" method="POST">
-						<button class="button" type="submit">Delete</button>
-					</form>
-				</section>
-				<section class="list">
-					<h1>Tasks</h1>
-					<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
-					<div class="listing-wrapper">
-						<ul class="listing">
-							<li>
-								<p>New task item that needs to be done</p>
-								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-								<form class="form-button" action="#/tasks/new-task/" method="POST">
-									<button class="action delete" type="submit">Delete</button>
-								</form>
-							</li>
-							<li>
-								<p>New task item that needs to be done</p>
-								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-								<form class="form-button" action="#/tasks/new-task/" method="POST">
-									<button class="action delete" type="submit">Delete</button>
-								</form>
-							</li>
-							<li>
-								<p>New task item that needs to be done</p>
-								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-								<form class="form-button" action="#/tasks/new-task/" method="POST">
-									<button class="action delete" type="submit">Delete</button>
-								</form>
-							</li>
-							<li>
-								<p>New task item that needs to be done</p>
-								<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-								<form class="form-button" action="#/tasks/new-task/" method="POST">
-									<button class="action delete" type="submit">Delete</button>
-								</form>
-							</li>
-						</ul>
-					</div>
-				</section>
 			</section>
-			<section id="user" class="detail">
-				<h1>Detail Title</h1>
-				<button class="action close">Close</button>
-				<section class="profile user">
-					<img src="http://placehold.it/55x55" alt="The project logo" width="55" height="55" />
-					<p class="name">Anonymous User</p>
-					<p>London, UK</p>
-				</section>
-				<section class="quicklinks">
-					<h1>My Projects</h1>
+			<section class="list">
+				<h1>Done</h1>
+				<nav class="listing-wrapper">
 					<ul class="listing">
-						<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-						<li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-						<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+						<li>
+							<a href="#project-five" title="View project five">Project Five</a>
+						</li>
+						<li>
+							<a href="#project-six" title="View project six">Project Six</a>
+						</li>
 					</ul>
-					<p>
-						<a class="button" href="#/projects/" title="View all projects">View All</a>
-						<a class="button" href="#/projects/new/" title="Create a new project">New</a>
-					</p>
-				</section>
-				<section class="quicklinks">
-					<h1>Tasks I&rsquo;m Doing</h1>
-					<ul class="listing">
-						<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-						<li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-						<li><a href="#/tasks/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-					</ul>
-					<p>
-						<a class="button" href="#/tasks/" title="View all tasks">View All</a>
-					</p>
-				</section>
-				<section class="quicklinks last">
-					<h1>Tasks I Manage</h1>
-					<ul class="listing">
-						<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-						<li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-						<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-					</ul>
-					<p>
-						<a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
-					</p>
-				</section>
-			</section>
-			<section id="projects" class="detail">
-				<h1>My Projects</h1>
-				<button class="action close">Close</button>
-				<section class="list">
-					<h1>Pending</h1>
-					<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
-					<nav class="listing-wrapper">
-						<ul class="listing">
-							<li>
-								<a href="#project-one" title="View project one">Project One</a>
-							</li>
-							<li>
-								<a href="#project-two" title="View project two">Project Two</a>
-							</li>
-							<li>
-								<a href="#project-three" title="View project one">Project Three with a really, really long title</a>
-							</li>
-							<li>
-								<a href="#project-four" title="View project four">Project Four</a>
-							</li>
-						</ul>
-					</nav>
-				</section>
-				<section class="list">
-					<h1>Done</h1>
-					<nav class="listing-wrapper">
-						<ul class="listing">
-							<li>
-								<a href="#project-five" title="View project five">Project Five</a>
-							</li>
-							<li>
-								<a href="#project-six" title="View project six">Project Six</a>
-							</li>
-						</ul>
-					</nav>
-				</section>
+				</nav>
 			</section>
 		</section>
-	</div>
+	</section>
+
 	<section class="lightbox">
 		<div class="lightbox-inner">
 			<div class="content">{content}</div>
