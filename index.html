@@ -134,7 +134,9 @@
 						<li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
 					</ul>
 				</nav>
-				<p>Built by <a href="http://dharmafly.com/" title="Find out more about Dharmafly">Dharmafly</a></p>
+				<p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
+				    App by <span class="df-name">Dharmafly</span>
+				</a></p>
 			</footer>
 			<section id="project" class="detail">
 				<h1>Detail Title</h1>
@@ -416,7 +418,6 @@
 				var info = document.createElement('a');
 
 				info.href  = '#info';
-				info.title = 'Show info about this section';
 				info.className = 'info';
 				info.appendChild(document.createTextNode('Help'));
 
@@ -499,13 +500,15 @@
 			}
 
 			for (template in templates) {
-				(function () {
-					var html = document.getElementById(template).innerHTML;
-					document.querySelector(templates[template]).onclick = function () {
-						window.lightbox.html(html).show();
-						return false;
-					};
-				}());
+			    if (templates.hasOwnProperty(template)){
+				    (function () {
+					    var html = document.getElementById(template).innerHTML;
+					    document.querySelector(templates[template]).onclick = function () {
+						    window.lightbox.html(html).show();
+						    return false;
+					    };
+				    }());
+				}
 			}
 		}());
 

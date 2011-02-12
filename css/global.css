@@ -848,6 +848,26 @@ article .meta img {
 	margin-right: 0.679em /* 10px */;
 }
 
+/* Dharmafly */
+.dashboard footer a.df {
+    text-decoration:none;
+    border:none;
+    padding-top:0.16em;
+    display:block;
+}
+.dashboard footer a.df span.df-name {
+    font-family:Calibri,Helvetica,Arial,sans-serif;
+    text-transform:uppercase;
+    font-weight:bold;
+}
+.dashboard footer a.df:hover {
+    color:#70873f;
+}
+.dashboard footer a.df:hover span.df-name {
+    border-bottom-width:1px;
+    border-bottom-style:solid;
+}
+
 /* @group Dashboard Detail Styles
 -----------------------------------------------------------------------------*/
 
