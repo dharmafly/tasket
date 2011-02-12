@@ -431,14 +431,6 @@
 		}());
 
 		(function () {
-			var buttons = document.querySelectorAll('.close');
-
-			$.each(buttons, function (index, button) {
-				button.onclick = function () { button.parentNode.style.display = 'none'; return false; };
-			});
-		}());
-
-		(function () {
 			// A very basic lightweight lightbox implementation.
 			var lightbox = {
 				_classnames: {
@@ -519,27 +511,29 @@
 
 		// Set up the dashbaord detail boxes.
 		(function () {
-			var projects  = document.getElementById('projects'),
-			    project   = document.getElementById('project'),
-			    user      = document.getElementById('user');
+			var details = {
+				'[href="#/projects/"]':          document.getElementById('projects'),
+				'.button[href="#/tasks/"]':      document.getElementById('project'),
+				'[href="#/user/another-user/"]': document.getElementById('user')
+			}
 
-			projects.style.display = 'none';
-			document.querySelector('[href="#/projects/"]').onclick = function () {
-				projects.style.display = 'block';
-				return false;
-			};
+			$.each(details, function (selector, detail) {
+				detail.style.display = 'none';
+				document.querySelector(selector).onclick = function () {
+					var close = detail.querySelector('.close');
 
-			project.style.display = 'none';
-			document.querySelector('.button[href="#/tasks/"]').onclick = function () {
-				project.style.display = 'block';
-				return false;
-			};
+					detail.style.display = 'block';
+					addClass(detail.parentNode, 'detail-active');
 
-			user.style.display = 'none';
-			document.querySelector('[href="#/user/another-user/"]').onclick = function () {
-				user.style.display = 'block';
-				return false;
-			};
+					close.onclick = function () {
+						close.parentNode.style.display = 'none';
+						removeClass(detail.parentNode, 'detail-active');
+						return false;
+					};
+					
+					return false;
+				};
+			});
 		}());
 	</script>
 </body>

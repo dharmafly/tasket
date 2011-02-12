@@ -715,15 +715,26 @@ article .meta img {
 	right: 20px;
 	bottom: 20px;
 	width: 15.385em /* 200px */;
-	overflow: scroll;
+	overflow: auto;
 	overflow-x: hidden;
 	border-top: none;
-	border-right: none;
-	-webkit-border-radius: 0 0 0 0.385em /* 5px */;
-	-moz-border-radius: 0 0 0 0.385em /* 5px */;
-	-ms-border-radius: 0 0 0 0.385em /* 5px */;
-	-o-border-radius: 0 0 0 0.385em /* 5px */;
-	border-radius: 0 0 0 0.385em /* 5px */;
+	-webkit-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	-moz-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	-ms-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	-o-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	border-radius: 0 0 0.385em 0.385em /* 5px */;
+}
+
+.dashboard.detail-active {
+	overflow: hidden;
+}
+
+.dashboard.detail-active > * {
+	visibility: hidden; /* Hide content in background */
+}
+
+.dashboard.detail-active .detail {
+	visibility: visible;
 }
 
 .dashboard .notifications {
@@ -923,11 +934,13 @@ article .meta img {
 
 .detail {
 	background-color: #333;
-	position: absolute;
-	top: 10px;
-	bottom: 10px;
-	left: 10px;
-	right: 10px;
+	overflow: auto;
+	overflow-x: hidden;
+	position: fixed;
+	top: 3.846em /* 50px */;
+	bottom: 30px;
+	right: 30px;
+	width: 15.76em /* 205px */;
 	padding: 1.154em /* 15px */ 0.679em /* 10px */;
 	-webkit-border-radius: -0.154em /* -2px */;
 	-moz-border-radius: -0.154em /* -2px */;
