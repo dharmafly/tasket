@@ -81,7 +81,7 @@ button, .button, .button:visited {
 	display: inline-block;
 	padding: 0 0.8667em /* 15px */;
 	border: none;
-	background-color: #333;
+	background-color: #232323;
 	background-image: -webkit-gradient(
   		linear, left bottom, left top, from(#101010), to(#232323)
 	);
@@ -182,7 +182,7 @@ button.link {
 	color: #484848;
 	text-shadow: none;
 	min-height: 1.769em /* 23px */;
-	background-color: #111;
+	background-color: #ececec;
 	background-repeat: no-repeat;
 	background-position: 30px 30px, 0 0;
 	background-image:
@@ -211,6 +211,13 @@ button.link {
 	-ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 	-o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.ie .action, a:link.action,
+.ie .action:hover, a:hover.action,
+.ie .action:focus, a:focus.action,
+.ie .action:active, a:active.action {
+	background-image: url(../images/sprites.png);
 }
 
 .action:hover, a:hover.action,
@@ -244,6 +251,11 @@ button.link {
 	box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
 }
 
+.ie .action:hover, a:hover.action,
+.ie .action:focus, a:focus.action {
+	background-color: #fafafa;
+}
+  
 .action:active, a:active.action {
 	color: #555;
 	background-color: #ccc;
@@ -276,6 +288,10 @@ button.link {
 	box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
 }
 
+.ie .action:active, a:active.action {
+	background-color: #fefefe;
+}
+
 a.action.edit,
 .action.delete,
 .action.close,
@@ -296,8 +312,18 @@ a.action.edit {
 	background-position: 3px -88px, 0 0;
 }
 
+.ie a.action.edit {
+	background-position: 3px -88px;
+}
+
 .action.close, .action.delete {
+	background-position: 4px -116px;
 	background-position: 4px -116px, 0 0;
+}
+
+.ie .action.close,
+.ie .action.delete {
+	background-position: 4px -116px;
 }
 
 a.action.locate {
@@ -306,6 +332,10 @@ a.action.locate {
 	width: 23px;
 	height: 23px;
 	background-position: 2px -178px, 0 0;
+}
+
+.ie a.action.locate {
+	background-position: 2px -178px;
 }
 
 nav ul,
