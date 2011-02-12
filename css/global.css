@@ -835,6 +835,10 @@ article .meta img {
 	transform-origin: 13.846em /* 180px */ 0;
 }
 
+.js.ie .dashboard .quicklinks .help {
+	display: none;
+}
+
 .js .dashboard .quicklinks .active {
 	-webkit-transform: scale(1); 
 	-moz-transform: scale(1); 
@@ -842,6 +846,10 @@ article .meta img {
 	-o-transform: scale(1); 
 	transform: scale(1); 
 	opacity: 1;
+}
+
+.js.ie .dashboard .quicklinks .active {
+	display: block;
 }
 
 .dashboard footer p {
