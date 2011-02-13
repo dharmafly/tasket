@@ -1,3 +1,5 @@
+/* @override http://localhost:8000/css/global.css?v0.1 */
+
 /* @group Base Elements
 -----------------------------------------------------------------------------*/
 
@@ -185,6 +187,7 @@ button.link {
 	background-color: #ececec;
 	background-repeat: no-repeat;
 	background-position: 30px 30px, 0 0;
+	background-image: url(../images/sprites.png);
 	background-image:
 	url(../images/sprites.png),
 	-webkit-gradient(
@@ -637,8 +640,6 @@ article > img {
 	padding: 20px;
 	border: 10px solid #111;
 	background-color: #aaa;
-	-webkit-background-clip: padding-box;
-	background-clip: padding-box;
 	-webkit-border-radius: 45px;
 	-moz-border-radius: 45px;
 	-ms-border-radius: 45px;
@@ -1178,9 +1179,6 @@ article .meta img {
 	-o-border-radius: 0.385em /* 5px */;
 	border-radius: 0.385em /* 5px */;
 	background-color: #efefef;
-	-webkit-background-clip: padding-box;
-	-moz-background-clip: padding-box;
-	background-clip: padding-box;
 	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 	-moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 	-o-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
