@@ -1,5 +1,3 @@
-/* @override http://localhost:8000/css/global.css?v0.1 */
-
 /* @group Base Elements
 -----------------------------------------------------------------------------*/
 
@@ -428,6 +426,11 @@ form ul,
 	font-size: 1em /* 13px */;
 	width: 22.307em /* 290px */;
 	max-width: 100%;
+}
+
+.content form textarea {
+	/* Fixes an issue in FF where the font size is reset */
+	font: 13px/1.6em Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
 }
 
 .content form select {
