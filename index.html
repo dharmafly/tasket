@@ -35,7 +35,7 @@
 					</li> -->
 				</ul>
 			</nav>
-			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User&rsquo; avatar" /> Current User</h2>
+			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User’ avatar" /> Current User</h2>
 			<div class="tasks">
 				<h3>Tasks</h3>
 				<dl>
@@ -56,15 +56,15 @@
 				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
 				<aside class="meta">
 					<p class="owner">
-						<img src="http://placehold.it/14x14" width="14" height="14" alt="Another User&rsquo;s avatar" />
-						<a href="#/user/another-user/" title="See Another User&rsquo;s tasks">Another User</a><br /> is doing this task
+						<img src="http://placehold.it/14x14" width="14" height="14" alt="Another User’s avatar" />
+						<a href="#/user/another-user/" title="See Another User’s tasks">Another User</a><br /> is doing this task
 					</p>
 				</aside>
 			</li>
 			<li>
 				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
 				<aside class="meta">
-					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ll do this</button></form>
+					<form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
 				</aside>
 			</li>
 			<li>
@@ -72,9 +72,9 @@
 				<aside class="meta">
 					<p class="owner">
 						<img src="http://placehold.it/14x14" width="14" height="14" alt="Your avatar" />
-						<a href="#/user/current-user/" title="See your tasks">You&rsquo;re</a> doing this
+						<a href="#/user/current-user/" title="See your tasks">You’re</a> doing this
 					</p>
-					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ve done it</button></form>
+					<form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
 				</aside>
 			</li>
 		</ul>
@@ -83,7 +83,7 @@
 		<section class="dashboard">
 			<ul class="listing notifications">
 				<li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
-				<li><a href="#/done/" title="View your completed tasks">3 tasks you&rsquo;ve done have been approved</a></li>
+				<li><a href="#/done/" title="View your completed tasks">3 tasks you’ve done have been approved</a></li>
 				<li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
 			</ul>
 			<section class="quicklinks">
@@ -100,7 +100,7 @@
 				</p>
 			</section>
 			<section class="quicklinks">
-				<h1>Tasks I&rsquo;m Doing</h1>
+				<h1>Tasks I’m Doing</h1>
 				<p class="help">This section provides you a quick list of your currently active tasks</p>
 				<ul class="listing">
 					<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
@@ -221,7 +221,7 @@
 					</p>
 				</section>
 				<section class="quicklinks">
-					<h1>Tasks I&rsquo;m Doing</h1>
+					<h1>Tasks I’m Doing</h1>
 					<ul class="listing">
 						<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
 						<li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
@@ -311,12 +311,16 @@
 
 	<script id="template-signup" type="text/html">
 		<h1>Register for a Tasket Account</h1>
-		<p>Please provide the following details and we&rsquo;ll create an account for you.</p>
+		<p>Please provide the following details and we’ll create an account for you.</p>
 		<form action="#/sign-up/" method="POST">
 			<ul>
 				<li>
 					<label for="field-email">Email Address</label>
 					<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+				</li>
+				<li>
+					<label for="field-real-name">Your Name</label>
+					<input type="text" id="field-real-name" name="real-name" placeholder="Joe Bloggs" value="" />
 				</li>
 				<li>
 					<label for="field-password">Password</label>
