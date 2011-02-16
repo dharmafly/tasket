@@ -203,6 +203,7 @@ var tim = (function createTim(initSettings){
             return applyFilter("token", token, data, template);
         });
     */
+    // TODO: all an array to be passed to tim(), so that the template is called for each element in it
     function substitute(template, data){
         var match, tag, token, substituted, startPos, endPos, templateStart, templateEnd, subTemplate, closeToken, closePos, key, loopData, loop;
     
@@ -214,28 +215,31 @@ var tim = (function createTim(initSettings){
             templateStart = template.slice(0, startPos);
             templateEnd = template.slice(endPos);
             
-            if (typeof substituted !== "object"){
+            if (typeof substituted !== "boolean" && typeof substituted !== "object"){
                 template = templateStart + substituted + templateEnd;
-            }
-            else {
+            } else {
                 subTemplate = "";
                 closeToken = settings.start + "/" + token + settings.end;
                 closePos = templateEnd.indexOf(closeToken);
                 
                 if (closePos >= 0){
                     templateEnd = templateEnd.slice(0, closePos);
-                    for (key in substituted){
-                        if (substituted.hasOwnProperty(key)){
-                            pattern.lastIndex = 0;
+                    if (typeof substituted === "boolean") {
+                        subTemplate = substituted ? templateEnd : '';
+                    } else {
+                        for (key in substituted){
+                            if (substituted.hasOwnProperty(key)){
+                                pattern.lastIndex = 0;
                             
-                            // Allow {{_key}} in templates
-                            loopData = extend({_key:key}, substituted[key]);
-                            loopData = applyFilter("loopData", loopData, loop, token);
-                            loop = tim(templateEnd, loopData);
-                            subTemplate += applyFilter("loop", loop, token, loopData);
+                                // Allow {{_key}} and {{_content}} in templates
+                                loopData = extend({_key:key, _content:substituted[key]}, substituted[key]);
+                                loopData = applyFilter("loopData", loopData, loop, token);
+                                loop = tim(templateEnd, loopData);
+                                subTemplate += applyFilter("loop", loop, token, loopData);
+                            }
                         }
+                        subTemplate = applyFilter("loopEnd", subTemplate, token, loopData);
                     }
-                    subTemplate = applyFilter("loopEnd", subTemplate, token, loopData);
                     template = templateStart + subTemplate + template.slice(endPos + templateEnd.length + closeToken.length);
                 }
                 else {
