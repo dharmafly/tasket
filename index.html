@@ -288,7 +288,7 @@
 		</div>
 	</section>
 
-	<script id="template-login" type="text/html">
+	<script class="login" type="text/tim">
 		<h1>Login</h1>
 		<form action="#/login" method="POST">
 			<ul>
@@ -308,7 +308,7 @@
 		</form>
 	</script>
 
-	<script id="template-signup" type="text/html">
+	<script class="signup" type="text/tim">
 		<h1>Register for a Tasket Account</h1>
 		<p>Please provide the following details and we&rsquo;ll create an account for you.</p>
 		<form action="#/sign-up/" method="POST">
@@ -336,7 +336,7 @@
 		</form>
 	</script>
 
-	<script id="template-about" type="text/html">
+	<script class="about" type="text/tim">
 		<h1>About Tasket</h1>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
 		   incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad
@@ -352,7 +352,7 @@
 		</blockquote>
 	</script>
 
-	<script id="template-new" type="text/html">
+	<script class="new-task" type="text/tim">
 		<h1>Create a new task</h1>
 		<form action="#/tasks/" method="POST">
 			<ul>
@@ -381,6 +381,7 @@
 	</script>
 
 	<script src="js/jquery.min.js"></script>
+	<script src="js/tim.js"></script>
 	<script>
 		function addClass(element, klass) {
 			classes = element.className.split(' ');
@@ -494,23 +495,20 @@
 		// Set up the lightboxes.
 		(function () {
 			var template, templates = {
-				'template-signup': '[href="#/sign-up/"]',
-				'template-login': '.login a',
-				'template-about': '[href="#/about/"]',
-				'template-new': '[href$="/new/"]'
+				'signup': '[href="#/sign-up/"]',
+				'login': '.login a',
+				'about': '[href="#/about/"]',
+				'new': '[href$="/new/"]'
 			};
 
-			for (template in templates) {
-			    if (templates.hasOwnProperty(template)){
-				    (function () {
-					    var html = document.getElementById(template).innerHTML;
-					    document.querySelector(templates[template]).onclick = function () {
-						    window.lightbox.html(html).show();
-						    return false;
-					    };
-				    }());
-				}
-			}
+			$.each(templates, function (template_name, selector) {
+				var html = tim(template_name);
+
+				$(selector).click(function (event) {
+					window.lightbox.html(html).show();
+					event.preventDefault();
+				});
+			});
 		}());
 
 		// Set up the dashbaord detail boxes.
@@ -519,7 +517,7 @@
 				'[href="#/projects/"]':          document.getElementById('projects'),
 				'.button[href="#/tasks/"]':      document.getElementById('project'),
 				'[href="#/user/another-user/"]': document.getElementById('user')
-			}
+			};
 
 			$.each(details, function (selector, detail) {
 				detail.style.display = 'none';
