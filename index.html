@@ -51,31 +51,6 @@
 			<h2>Company Y</h2>
 		</hgroup>
 		<ul class="tasks">
-			<li>
-				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
-				<aside class="meta">
-					<p class="owner">
-						<img src="http://placehold.it/14x14" width="14" height="14" alt="Another User&rsquo;s avatar" />
-						<a href="#/user/another-user/" title="See Another User&rsquo;s tasks">Another User</a><br /> is doing this task
-					</p>
-				</aside>
-			</li>
-			<li>
-				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
-				<aside class="meta">
-					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ll do this</button></form>
-				</aside>
-			</li>
-			<li>
-				<p class="description">This is a task description, it should contain a few sentences detailing the nature of the task.</p>
-				<aside class="meta">
-					<p class="owner">
-						<img src="http://placehold.it/14x14" width="14" height="14" alt="Your avatar" />
-						<a href="#/user/current-user/" title="See your tasks">You&rsquo;re</a> doing this
-					</p>
-					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ve done it</button></form>
-				</aside>
-			</li>
 		</ul>
 	</article>
 
@@ -288,6 +263,32 @@
 		</div>
 	</section>
 
+	<script class="task" type="text/tim">
+		<li>
+			<p class="description">{{description}}</p>
+			<aside class="meta">
+				{{hasUser}}
+					<p class="owner">
+						{{isOwner}}
+							<img src="{{user.avatar}}" width="14" height="14" alt="Your avatar" />
+							<a href="{{user.url}}" title="See your tasks">You&rsquo;re</a> doing this
+						{{/isOwner}}
+						{{isNotOwner}}
+							<img src="{{user.avatar}}" width="14" height="14" alt="{{user.name}}&rsquo;s avatar" />
+							<a href="{{user.url}}" title="See {{user.name}}&rsquo;s tasks">{{user.name}}</a><br /> is doing this task
+						{{/isNotOwner}}
+					</p>
+				{{/hasUser}}
+				{{showTakeThisButton}}
+					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ll do this</button></form>
+				{{/showTakeThisButton}}
+				{{showDoneThisButton}}
+					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ve done it</button></form>
+				{{/showDoneThisButton}}
+			</aside>
+		</li>
+	</script>
+
 	<script class="login" type="text/tim">
 		<h1>Login</h1>
 		<form action="#/login" method="POST">
@@ -396,20 +397,62 @@
 
 		(function () {
 			// Temporarily position the projects & tasks for styling.
-			var project = document.querySelector('article'),
-			    offsets = [[-200, -40], [-20, -330], [120, -40]],
-			    tasks;
+			var project = $('article'),
+			    tasks = [
+			    	{
+			    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+			    		user: {
+			    			name: 'Another User',
+			    			url: '#/user/another-user/',
+			    			avatar: 'http://placehold.it/14x14'
+			    		},
+			    		hasUser: true,
+			    		isOwner: false,
+			    		isNotOwner: true,
+			    		showTakeThisButton: false,
+			    		showDoneThisButton: false,
+			    		offset: [-200, -40]
+			    	},
+			    	{
+			    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+			    		user: {
+			    			name: 'Current User',
+			    			url: '#/user/current-user/',
+			    			avatar: 'http://placehold.it/14x14'
+			    		},
+			    		hasUser: true,
+			    		isOwner: true,
+			    		isNotOwner: false,
+			    		showTakeThisButton: false,
+			    		showDoneThisButton: true,
+			    		offset: [-20, -330]
+			    	},
+			    	{
+			    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+			    		user: {},
+			    		hasUser: false,
+			    		isOwner: false,
+			    		isNotOwner: true,
+			    		showTakeThisButton: true,
+			    		showDoneThisButton: false,
+			    		offset: [120, -40]
+			    	}
+			    ];
 
-			if (project) {
-				project.style.top  = '40%';
-				project.style.left = '40%';
+			if (project.length) {
+				project.css({
+					top: '40%',
+					left: '40%'
+				});
 
-				tasks = project.querySelectorAll('.tasks li');
 				$.each(tasks, function (index, task) {
-					if (offsets[index]) {
-						task.style.top  = offsets[index][0] + 'px';
-						task.style.left = offsets[index][1] + 'px';
-					}
+					var html = tim('task', task),
+					    element = $(html);
+
+					element.css({
+						top:  task.offset[0],
+						left: task.offset[1]
+					}).appendTo(project.find('.tasks'));
 				});
 			}
 		}());
