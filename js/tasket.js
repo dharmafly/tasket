@@ -88,55 +88,77 @@ Tasket.prototype = {
     users: {},
     hubs: {},
     
-    _item: function(item, Constructor, collection){
-        var remove = (Constructor === null);
+    _fullOrStub: function(type, item, Full, Stub){
+        var isStub;
+        
+        if (item instanceof Full || item instanceof Stub){
+            return item;
+        }
+        if (item !== undef){
+            isStub = isAlphaNum(item);
+            return this[type]({id:item, stub:true});
+        }
+    },
     
+    _item: function(item, Constructor, collection){
+        var create = (Constructor !== false);
+
         if (isAlphaNum(item)){
             item = collection[item];
-                        
-            return remove && item ?
-                this._item(item, Constructor, collection) :
-                item;
+            
+            return !create && item ?
+                this._item(item, false, collection) : // Delete item
+                item; // Return item (or undefined)
         }
-        if (remove){
-            delete collection[item.id];
-        }
-        else {
+        if (!item.id){
+            throw report("id property required");
+        }        
+        if (create){
             item.tasket = this;
             item = new Constructor(item);
             collection[item.id] = item;
+        }
+        else {
+            delete collection[item.id];
         }
         return item;
     },
     
     // get/set task
-    task: function(item, remove){
-        var Constructor = remove === null ? null : Task,
+    task: function(item, create){
+        var Constructor = (create !== false) ?
+                (item.stub ? TaskStub : Task) : false,
             task = this._item(item, Constructor, this.tasks),
-            hubTasks = task.hub.tasks;
+            hubTasks;
         
         // Add/remove task to hub's collection
-        if (task && task.id){
-            if (remove){
-                delete hubTasks[task.id];
-            }
-            else {
+        if (task && !task.stub){
+            hubTasks = task.hub && task.hub.tasks;
+            
+            if (create){
                 hubTasks[task.id] = task;
+            }
+            else if (hubTasks) {
+                delete hubTasks[task.id];
             }
         }
         return task;
     },
     
     // get/set hub
-    hub: function(hub, remove){
-        var Constructor = remove === null ? null : Hub;
-        return this._item(hub, Constructor, this.hubs);
+    hub: function(item, create){
+        var Constructor = (create !== false) ?
+                (item.stub ? HubStub : Hub) : false;
+            
+        return this._item(item, Constructor, this.hubs);
     },
     
     // get/set user
-    user: function(user, remove){
-        var Constructor = remove === null ? null : User;
-        return this._item(user, Constructor, this.users);
+    user: function(item, create){
+        var Constructor = (create !== false) ?
+                (item.stub ? UserStub : User) : false;
+            
+        return this._item(item, Constructor, this.users);
     },
     
     // Publish an event
@@ -206,6 +228,10 @@ Tasket.prototype = {
     }
 };
 
+
+/////
+
+
 function History(subject, tasket){
     this.subject = subject;
     this.tasket = tasket;
@@ -238,21 +264,72 @@ History.prototype = {
     }
 };
 
+
+/////
+
+
+function TaskStub(settings){
+    this.tasket = settings.tasket;
+    this.id     = settings.id;
+    this.owner  = settings.owner;
+    this.hub    = settings.hub;
+    this.createdTime = settings.createdTime;
+}
+
+function HubStub(settings){
+    this.tasket  = settings.tasket;
+    this.id      = settings.id;
+    this.owner   = settings.owner;
+    this.hub     = settings.hub;
+    this.createdTime = settings.createdTime;
+}
+
+function UserStub(settings){
+    this.tasket  = settings.tasket;
+    this.id      = settings.id;
+    this.realname = settings.realname;
+    this.image   = settings.image;
+    this.createdTime = settings.createdTime;
+}
+
+TaskStub.prototype = HubStub.prototype = UserStub.prototype = {
+    stub: true
+};
+
+
+/////
+
+
 function Task(settings){
+    var hub, owner;
+
     this.id = settings.id || tempId();
-    this.hub = settings.hub;
-    this.tasket = this.hub.tasket;
-    this.owner = settings.owner;
+    this.tasket = settings.tasket;
+    this.createdTime = settings.createdTime || now();
     
-    this.title = settings.title; // remove?
+    this.hub = this.tasket._fullOrStub(
+        "hub", settings.hub, Hub, HubStub
+    );
+    this.owner = this.tasket._fullOrStub(
+        "user", settings.owner, User, UserStub
+    );
+    if (!this.hub){
+        throw report("No hub, " + this.id, "task");
+    }
+    if (!this.owner){
+        throw report("No owner, " + this.id, "task");
+    }
+    
+    this.title  = settings.title; // TODO: remove?
     this.description = settings.description;
-    this.image = settings.image;
+    this.image  = settings.image;
     this.estimate = settings.estimate;
     
     this.history = new History(this, this.tasket);
-    this.event("created", this.owner, this.createdTime);
-    
-    if (this.owner){
+    if (!settings.createdTime){
+        this.event("created", this.owner, this.createdTime);
+    }
+    if (this.owner && this.owner.tasksOwned){
         this.owner.tasksOwned[this.id] = this;
     }
 }
@@ -265,7 +342,26 @@ Task.prototype = {
         this.history.push(event, user, timestamp);
         return this;
     },
+
+    remove: function(user, timestamp){
+        return this.tasket.task(this, false);
+    },
     
+    export: function(stringify){
+        var result = {
+            id: this.id,
+            hub: this.hub && this.hub.id,
+            owner: this.owner && this.owner.id,
+            title: this.title,
+            description: this.description,
+            image: this.image,
+            estimate: this.estimate,
+            history: this.history.export()
+        };        
+        return stringify !== false ? JSON.stringify(result) : result;
+    }
+    
+    /*
     create: function(user, timestamp){
         return this.event("created", user, timestamp);
     },
@@ -280,25 +376,8 @@ Task.prototype = {
     
     confirm: function(user, timestamp){
         return this.event("confirmed", user, timestamp);
-    },
-    
-    remove: function(user, timestamp){
-        return this.tasket.task(this, null);
-    },
-    
-    export: function(stringify){
-        var result = {
-            id: this.id,
-            hub: this.hub.id,
-            owner: this.owner.id,
-            title: this.title,
-            description: this.description,
-            image: this.image,
-            estimate: this.estimate,
-            history: this.history.export()
-        };        
-        return stringify !== false ? JSON.stringify(result) : result;
     }
+    */    
 };
 
 
@@ -306,20 +385,29 @@ Task.prototype = {
 
 
 function Hub(settings){
-    this.id = settings.id || tempId();
+    this.id     = settings.id || tempId();
     this.tasket = settings.tasket;
-    this.owner = settings.owner;
+    this.createdTime = settings.createdTime;
     
-    this.title = settings.title;
+    this.owner = this.tasket._fullOrStub(
+        "user", settings.owner, User, UserStub
+    );
+    if (!this.owner){
+        throw report("No owner, " + this.id, "hub");
+    }
+    
+    this.title  = settings.title;
     this.description = settings.description;
-    this.image = settings.image;
+    this.image  = settings.image;
     
-    this.tasks = {};
+    this.tasks  = {};
     this.admins = {};
     this.admins[this.owner.id] = this.owner;
-    this.history = new History(this, this.tasket);
-    this.event("created", this.owner, this.createdTime);
     
+    this.history = new History(this, this.tasket);
+    if (!settings.createdTime){
+        this.event("created", this.owner, this.createdTime);
+    }
     if (this.owner){
         this.owner.hubsOwned[this.id] = this;
     }
@@ -341,13 +429,13 @@ Hub.prototype = {
     admin: function(user, remove){
         if (remove){
             delete this.admins[user.id];
-            delete user.hubsAdmined[hub.id];
-            this.event("adminRemoved", user);
+            delete user.hubsAdmined[this.id];
+            //this.event("adminRemoved", user);
         }
         else {
             this.admins[user.id] = user;
-            user.hubsAdmined[hub.id] = this;
-            this.event("adminCreated", user);
+            user.hubsAdmined[this.id] = this;
+            //this.event("adminCreated", user);
         }
         return this;
     },
@@ -359,16 +447,16 @@ Hub.prototype = {
         return this.tasket.task(task, remove);
     },
     
-    remove: function(user, timestamp){
-        this.tasket.hub(this, null);
-        this.history("removed", user, timestamp);
+    remove: function(user){
+        this.tasket.hub(this, false);
+        // this.event("removed", user);
         return this;
     },
     
     export: function(stringify){
         var result = {
             id: this.id,
-            owner: this.owner.id,
+            owner: this.owner && this.owner.id,
             title: this.title,
             description: this.description,
             image: this.image,
@@ -387,15 +475,16 @@ Hub.prototype = {
 function User(settings){
     this.id = settings.id || tempId();
     this.tasket = settings.tasket;
-    this.username = settings.username;
+    //this.username = settings.username;
     this.realname = settings.realname;
     this.image = settings.image;
 
     this.tasksOwned = {};
     this.hubsOwned = {};
     this.hubsAdmined = {};
+    
     this.history = new History(this, this.tasket);
-    this.history.push("created");
+    //this.history.push("created");
 }
 User.prototype = {
     type: "user",
