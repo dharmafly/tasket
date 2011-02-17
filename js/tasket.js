@@ -82,10 +82,21 @@ User = Model.extend({
 
 var TaskView = Backbone.View.extend({
     tagName: "li",
+    
+    events: {
+        "click button": "completeTask"
+    },
 
     render: function(){
-        this.el.innerHTML = this.model.get("description");
+        jQuery(this.el)
+            .append("<p>" + this.model.escape("description") + "</p>")
+            .append("<button>Complete!</button>");
+            
         return this;
+    },
+    
+    completeTask: function(){
+        this.remove();
     }
 });
 
