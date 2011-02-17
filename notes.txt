@@ -1,0 +1,1 @@
+Backbone Issue: Model.validate() doesn't seem to run on constructor call. Bug?

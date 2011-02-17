@@ -280,7 +280,6 @@ function HubStub(settings){
     this.tasket  = settings.tasket;
     this.id      = settings.id;
     this.owner   = settings.owner;
-    this.hub     = settings.hub;
     this.createdTime = settings.createdTime;
 }
 
