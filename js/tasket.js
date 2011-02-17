@@ -65,7 +65,6 @@ User = Model.extend({
     // required: realname
     
     defaults: {
-        realname: null,
         image: null
     },
     
@@ -78,15 +77,31 @@ User = Model.extend({
 });
 
 
+/////
+
+
+var TaskView = Backbone.View.extend({
+    tagName: "li",
+
+    render: function(){
+        this.el.innerHTML = this.model.get("description");
+        return this;
+    }
+});
+
+
+
+
+/////
+
+
 // Export API
 
-var bob = new User({foo:3});
+var tasksElem = jQuery("#tasks");
 
-    
-bob.bind("error", function(model, error) {
-    alert(model.get("title") + " " + error);
-});
-bob.set({foosdsadsa:3});
+jQuery("button#newtask")
+    .click(function(){
+        var view = new TaskView({model:new Task({description:"Lorem ipsum"})});
+        tasksElem.append(view.render().el);
+    });
 
-
-console.log(JSON.stringify(bob));
