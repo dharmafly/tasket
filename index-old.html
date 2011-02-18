@@ -34,7 +34,7 @@
 					</li> -->
 				</ul>
 			</nav>
-			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User’ avatar" /> Current User</h2>
+			<h2><img src="http://placehold.it/16x16" width="16" height="16" alt="Current User&rsquo; avatar" /> Current User</h2>
 			<div class="tasks">
 				<h3>Tasks</h3>
 				<dl>
@@ -44,11 +44,20 @@
 			</div>
 		</header>
 	</div>
+	<article>
+		<img class="active" src="http://placehold.it/30x30" width="30" height="30" alt="Logo for Project X" />
+		<hgroup>
+			<h1>Project X</h1>
+			<h2>Company Y</h2>
+		</hgroup>
+		<ul class="tasks">
+		</ul>
+	</article>
 
 	<section class="dashboard">
 		<ul class="listing notifications">
 			<li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
-			<li><a href="#/done/" title="View your completed tasks">3 tasks you’ve done have been approved</a></li>
+			<li><a href="#/done/" title="View your completed tasks">3 tasks you&rsquo;ve done have been approved</a></li>
 			<li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
 		</ul>
 		<section class="quicklinks">
@@ -65,7 +74,7 @@
 			</p>
 		</section>
 		<section class="quicklinks">
-			<h1>Tasks I’m Doing</h1>
+			<h1>Tasks I&rsquo;m Doing</h1>
 			<p class="help">This section provides you a quick list of your currently active tasks</p>
 			<ul class="listing">
 				<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
@@ -111,15 +120,6 @@
 			<button class="action close">Close Lightbox</button>
 		</div>
 	</section>
-	
-	<script class="hub" type="text/tim">
-	    <img {{isActive}}class="active" {{/isActive}}src="{{image}}" width="30" height="30" alt="{{title}}" />
-	    <hgroup>
-		    <h1>{{title}}</h1>
-		    <h2>{{description}}</h2>
-	    </hgroup>
-	    <ul class="tasks"></ul>
-	</script>
 
 	<script class="task" type="text/tim">
 		<li>
@@ -129,19 +129,19 @@
 					<p class="owner">
 						{{isOwner}}
 							<img src="{{user.avatar}}" width="14" height="14" alt="Your avatar" />
-							<a href="{{user.url}}" title="See your tasks">You’re</a> doing this
+							<a href="{{user.url}}" title="See your tasks">You&rsquo;re</a> doing this
 						{{/isOwner}}
 						{{isNotOwner}}
-							<img src="{{user.avatar}}" width="14" height="14" alt="{{user.name}}’s avatar" />
-							<a href="{{user.url}}" title="See {{user.name}}’s tasks">{{user.name}}</a><br /> is doing this task
+							<img src="{{user.avatar}}" width="14" height="14" alt="{{user.name}}&rsquo;s avatar" />
+							<a href="{{user.url}}" title="See {{user.name}}&rsquo;s tasks">{{user.name}}</a><br /> is doing this task
 						{{/isNotOwner}}
 					</p>
 				{{/hasUser}}
 				{{showTakeThisButton}}
-					<form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
+					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ll do this</button></form>
 				{{/showTakeThisButton}}
 				{{showDoneThisButton}}
-					<form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
+					<form action="#/tasks/" method="POST"><button type="submit">I&rsquo;ve done it</button></form>
 				{{/showDoneThisButton}}
 			</aside>
 		</li>
@@ -195,7 +195,7 @@
 			</p>
 		</section>
 		<section class="quicklinks">
-			<h1>Tasks I’m Doing</h1>
+			<h1>Tasks I&rsquo;m Doing</h1>
 			<ul class="listing">
 				{{tasks}}
 					<li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/tasks/{{slug}}/" title="View {{title}}">{{title}}</a></li>
@@ -308,7 +308,7 @@
 
 	<script class="signup" type="text/tim">
 		<h1>Register for a Tasket Account</h1>
-		<p>Please provide the following details and we’ll create an account for you.</p>
+		<p>Please provide the following details and we&rsquo;ll create an account for you.</p>
 		<form action="#/sign-up/" method="POST">
 			<ul>
 				<li>
@@ -379,10 +379,7 @@
 	</script>
 
 	<script src="js/jquery.min.js"></script>
-	<script src="js/underscore.js"></script>
-	<script src="js/backbone.js"></script>
 	<script src="js/tim.js"></script>
-	<script src="js/tasket.js"></script>
 	<script>
 		function addClass(element, klass) {
 			classes = element.className.split(' ');
@@ -395,6 +392,67 @@
 			element.className = element.className.replace(regexp, '');
 		}
 
+		(function () {
+			// Temporarily position the projects & tasks for styling.
+			var project = $('article'),
+			    tasks = [
+			    	{
+			    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+			    		user: {
+			    			name: 'Another User',
+			    			url: '#/user/another-user/',
+			    			avatar: 'http://placehold.it/14x14'
+			    		},
+			    		hasUser: true,
+			    		isOwner: false,
+			    		isNotOwner: true,
+			    		showTakeThisButton: false,
+			    		showDoneThisButton: false,
+			    		offset: [-200, -40]
+			    	},
+			    	{
+			    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+			    		user: {
+			    			name: 'Current User',
+			    			url: '#/user/current-user/',
+			    			avatar: 'http://placehold.it/14x14'
+			    		},
+			    		hasUser: true,
+			    		isOwner: true,
+			    		isNotOwner: false,
+			    		showTakeThisButton: false,
+			    		showDoneThisButton: true,
+			    		offset: [-20, -330]
+			    	},
+			    	{
+			    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+			    		user: {},
+			    		hasUser: false,
+			    		isOwner: false,
+			    		isNotOwner: true,
+			    		showTakeThisButton: true,
+			    		showDoneThisButton: false,
+			    		offset: [120, -40]
+			    	}
+			    ];
+
+			if (project.length) {
+				project.css({
+					top: '40%',
+					left: '40%'
+				});
+
+				$.each(tasks, function (index, task) {
+					var html = tim('task', task),
+					    element = $(html);
+
+					element.css({
+						top:  task.offset[0],
+						left: task.offset[1]
+					}).appendTo(project.find('.tasks'));
+				});
+			}
+		}());
 
 		(function () {
 			// Add the helper icon to all quicklinks in the dashboard.
@@ -554,7 +612,7 @@
 					})
 				})
 			};
-            /*
+
 			$.each(details, function (selector, html) {
 				var detail = $(html).appendTo('.dashboard').hide();
 
@@ -572,7 +630,6 @@
 					return false;
 				};
 			});
-			*/
 		}());
 	</script>
 </body>
