@@ -92,10 +92,9 @@ User = Model.extend({
 
 var TaskView = Backbone.View.extend({
     tagName: "li",
-    _offset: {
-        top: 0,
-        left: 0
-    },
+    
+    _offsetTop: 0,
+    _offsetLeft: 0,
     
     events: {
         //"click button": "completeTask"
