@@ -1,4 +1,4 @@
-/*global jQuery, console, _, Backbone*/
+/*global jQuery, console, _, Backbone, tim*/
 
 
 function now(){
@@ -103,17 +103,34 @@ var TaskView = Backbone.View.extend({
     
     initialize: function(options){
         this.elem = jQuery(this.el);
+        
         if (options.offset){
-            this.offset(options.offset);
+            this.offsetValues(options.offset);
+            delete this.options.offset;
         }
     },
     
-    offset: function(offset){
-        if (offset){
-            this._offset = offset;
-        }
-        this.elem.offset(this._offset);
+    offsetValues: function(offset){
+        this._offsetTop  = offset.top;
+        this._offsetLeft = offset.left;
         return this;
+    },
+    
+    offsetApply: function(){
+        this.elem.offset(this.offset());
+        return this;
+    },
+    
+    offset: function(offset){
+        if (!offset){
+            return {
+                top: this._offsetTop,
+                left:this._offsetLeft
+            };
+        }
+        return this
+            .offsetValues(offset)
+            .offsetApply();
     },
 
     render: function(){
@@ -121,115 +138,76 @@ var TaskView = Backbone.View.extend({
         this.elem
             .html(tim("task", data));
             
-        return this.offset();
+        return this.offsetApply();
     }
 });
 
 var HubView = Backbone.View.extend({
     tagName: "article",
+
     active: false,
-    _offset: {
-        top: 0,
-        left: 0
-    },
+    _offsetTop: 0,
+    _offsetLeft: 0,
     
     events: {
         //"click button": "completeTask"
     },
     
-    initialize: function(options){
-        this.elem = jQuery(this.el);
-        if (options.offset){
-            this.offset(options.offset);
-        }
+    offsetValues: function(offset){
+        this._offsetTop  = offset.top;
+        this._offsetLeft = offset.left;
+        return this;
+    },
+    
+    offsetApply: function(){
+        this.elem.offset(this.offset());
+        return this;
     },
     
     offset: function(offset){
-        if (offset){
-            this._offset = offset;
+        if (!offset){
+            return {
+                top: this._offsetTop,
+                left:this._offsetLeft
+            };
         }
-        this.elem.offset(this._offset);
-        return this;
+        return this
+            .offsetValues(offset)
+            .offsetApply();
+    },
+    
+    addTasks: function(){
+        this.collection.each(function(task){ // TODO: trig
+            var view = new TaskView({model:task});
+            this.$(".tasks").append(view.render().elem);
+        }, this);
     },
 
-    render: function(){
+    render: function(){console.log(2332);
         var data = this.model.toJSON();
         data.isActive = this.active;
         
         this.elem.html(tim("hub", data));
         
-        this.collection.each(function(task){
-            var view = new TaskView({model:task});
-            this.$(".tasks").append(view.render().elem);
-        }, this);
-            
-        return this.offset();
+        if (this.active){
+            this.addTasks();
+        }
+        return this.offsetApply();
+    },
+    
+    initialize: function(options){
+        this.elem = jQuery(this.el);
+        
+        if (options.offset){
+            this.offsetValues(options.offset);
+            delete this.options.offset;
+        }
+        if (options.active){
+            this.active = options.active;
+            delete this.options.active;
+        }
     }
 });
-
-
-(function () {
-    // Temporarily position the projects & tasks for styling.
-    var project = $('article'),
-        tasks = [
-        	{
-        		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-        		user: {
-        			name: 'Another User',
-        			url: '#/user/another-user/',
-        			avatar: 'http://placehold.it/14x14'
-        		},
-        		hasUser: true,
-        		isOwner: false,
-        		isNotOwner: true,
-        		showTakeThisButton: false,
-        		showDoneThisButton: false,
-        		offset: [-200, -40]
-        	},
-        	{
-        		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-        		user: {
-        			name: 'Current User',
-        			url: '#/user/current-user/',
-        			avatar: 'http://placehold.it/14x14'
-        		},
-        		hasUser: true,
-        		isOwner: true,
-        		isNotOwner: false,
-        		showTakeThisButton: false,
-        		showDoneThisButton: true,
-        		offset: [-20, -330]
-        	},
-        	{
-        		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-        		user: {},
-        		hasUser: false,
-        		isOwner: false,
-        		isNotOwner: true,
-        		showTakeThisButton: true,
-        		showDoneThisButton: false,
-        		offset: [120, -40]
-        	}
-        ];
-
-    if (project.length) {
-	    project.css({
-		    top: '40%',
-		    left: '40%'
-	    });
-
-	    $.each(tasks, function (index, task) {
-		    var html = tim('task', task),
-		        element = $(html);
-
-		    element.css({
-			    top:  task.offset[0],
-			    left: task.offset[1]
-		    }).appendTo(project.find('.tasks'));
-	    });
-    }
-    });
-
 
 
 /////
@@ -237,58 +215,63 @@ var HubView = Backbone.View.extend({
 
 // Export API
 
-var myHub = new HubView({
-    model: new Hub({
+var myHub = new Hub({
         title: "Foo foo foo",
         description: "Lorem ipsum",
         image: "http://placehold.it/30x30"
     }),
-    collection: new Tasks([
-        {
-    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-    		user: {
-    			name: 'Another User',
-    			url: '#/user/another-user/',
-    			avatar: 'http://placehold.it/14x14'
-    		},
-    		hasUser: true,
-    		isOwner: false,
-    		isNotOwner: true,
-    		showTakeThisButton: false,
-    		showDoneThisButton: false,
-    		offset: [-200, -40]
-    	},
-    	{
-    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-    		user: {
-    			name: 'Current User',
-    			url: '#/user/current-user/',
-    			avatar: 'http://placehold.it/14x14'
-    		},
-    		hasUser: true,
-    		isOwner: true,
-    		isNotOwner: false,
-    		showTakeThisButton: false,
-    		showDoneThisButton: true,
-    		offset: [-20, -330]
-    	},
-    	{
-    		description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-    		user: {},
-    		hasUser: false,
-    		isOwner: false,
-    		isNotOwner: true,
-    		showTakeThisButton: true,
-    		showDoneThisButton: false,
-    		offset: [120, -40]
-    	}
-    ]),
-    offset: {
-        top: 100,
-        left: 100
-    },
-    active:true
-});
+    
+    myHubView = new HubView({
+        model: myHub,
+        
+        // options
+        active:true,
+        offset: {
+            top: 100,
+            left: 100
+        },
+        
+        collection: new Tasks([
+            {
+                description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+                user: {
+                    name: 'Another User',
+                    url: '#/user/another-user/',
+                    avatar: 'http://placehold.it/14x14'
+                },
+                hasUser: true,
+                isOwner: false,
+                isNotOwner: true,
+                showTakeThisButton: false,
+                showDoneThisButton: false,
+                offset: [-200, -40]
+            },
+            {
+                description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+                user: {
+                    name: 'Current User',
+                    url: '#/user/current-user/',
+                    avatar: 'http://placehold.it/14x14'
+                },
+                hasUser: true,
+                isOwner: true,
+                isNotOwner: false,
+                showTakeThisButton: false,
+                showDoneThisButton: true,
+                offset: [-20, -330]
+            },
+            {
+                description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+                user: {},
+                hasUser: false,
+                isOwner: false,
+                isNotOwner: true,
+                showTakeThisButton: true,
+                showDoneThisButton: false,
+                offset: [120, -40]
+            }
+        ])
+    });
 
 jQuery("body")
-    .append(myHub.render().elem);
+    .append(myHubView.render().elem);
