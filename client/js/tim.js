@@ -215,6 +215,12 @@ var tim = (function createTim(initSettings){
             templateStart = template.slice(0, startPos);
             templateEnd = template.slice(endPos);
             
+            // If the final value is a function call it and use the returned
+            // value in its place.
+            if (typeof substituted === "function") {
+                substituted = substituted.call(data);
+            }
+            
             if (typeof substituted !== "boolean" && typeof substituted !== "object"){
                 template = templateStart + substituted + templateEnd;
             } else {
