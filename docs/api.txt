@@ -1,0 +1,71 @@
+Tasket API
+
+Hubs
+----
+
+/hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
+/hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma delimited list of ids)
+/hubs/                  # POST:  Creates a hub (responds with new id eg. {"id": "hub_id"})
+/hubs/:id               # GET:   Gets a single hub for :id
+/hubs/:id               # PUT:   Updates a single hub for :id
+/hubs/:id               # DELETE Deletes a single hub for :id
+/hubs/:id/tasks         # GET    Gets page one of unverified tasks
+
+Hub Model Data
+--------------
+
+{
+"id": "hub_id",         *required (assigned by server on creation)
+"title": null,          *required
+"description": null,
+"image": null,
+"owner": "user_id"      *required
+"tasks": [/* unverified task ids */]
+}
+
+Tasks
+-----
+
+/tasks/                  # GET:   Gets all unverified tasks
+/tasks/?ids=:ids         # GET:   Gets array of tasks matching :ids (comma delimited list of ids)
+/tasks/                  # POST:  Creates a task (responds with new id eg. {"id": "task_id"})
+/tasks/:id               # GET:   Gets a single task for :id
+/tasks/:id               # PUT:   Updates a single task for :id
+/tasks/:id               # DELETE Deletes a single task for :id
+
+{
+"id": "task_id",         *required (assigned by server on creation)
+"description": null,
+"image": null,
+"estimate": null,
+"state": "new",
+"owner": "user_id",      *required
+"claimedBy": "user_id",
+"verifiedBy": "user_id",
+"hub": "hub_id"          *required
+}
+
+### Task State Constants
+
+NEW     : "new",
+CLAIMED : "claimed",
+DONE    : "done",
+VERIFIED: "verified"
+
+Users
+-----
+
+/users/                 # GET:   Gets array of all users
+/users/?ids=:ids        # GET:   Gets array of users matching :ids (comma delimited list of ids)
+/users/                 # POST:  Creates a user (responds with new id eg. {"id": "user_id"})
+/users/:id              # GET:   Gets a single user for :id
+/users/:id              # PUT:   Updates a single user for :id
+/users/:id              # DELETE Deletes a single user for :id
+
+{
+"id": "user_id",        *required (assigned by server on creation)
+"realname": null,       *required
+"description": null,
+"image": null,
+"admin": false
+}
