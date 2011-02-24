@@ -15,12 +15,12 @@ Hub Model Data
 --------------
 
 {
-"id": "hub_id",         *required (assigned by server on creation)
-"title": null,          *required
-"description": null,
-"image": null,
-"owner": "user_id"      *required
-"tasks": [/* unverified task ids */]
+    "id": "hub_id",         *required (assigned by server on creation)
+    "title": null,          *required
+    "description": null,
+    "image": null,
+    "owner": "user_id"      *required
+    "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */]
 }
 
 Tasks
@@ -34,15 +34,15 @@ Tasks
 /tasks/:id               # DELETE Deletes a single task for :id
 
 {
-"id": "task_id",         *required (assigned by server on creation)
-"description": null,
-"image": null,
-"estimate": null,
-"state": "new",
-"owner": "user_id",      *required
-"claimedBy": "user_id",
-"verifiedBy": "user_id",
-"hub": "hub_id"          *required
+    "id": "task_id",         *required (assigned by server on creation)
+    "description": null,
+    "image": null,
+    "estimate": null,
+    "state": "new",
+    "owner": "user_id",      *required
+    "claimedBy": "user_id",
+    "verifiedBy": "user_id",
+    "hub": "hub_id"          *required
 }
 
 ### Task State Constants
@@ -55,17 +55,27 @@ VERIFIED: "verified"
 Users
 -----
 
-/users/                 # GET:   Gets array of all users
-/users/?ids=:ids        # GET:   Gets array of users matching :ids (comma delimited list of ids)
-/users/                 # POST:  Creates a user (responds with new id eg. {"id": "user_id"})
-/users/:id              # GET:   Gets a single user for :id
-/users/:id              # PUT:   Updates a single user for :id
-/users/:id              # DELETE Deletes a single user for :id
+/users/               # GET:   Gets array of all users
+/users/?ids=:ids      # GET:   Gets array of users matching :ids (comma delimited list of ids)
+/users/               # POST:  Creates a user (responds with new id eg. {"id": "user_id"})
+/users/:id            # GET:   Gets a single user for :id
+/users/:id            # PUT:   Updates a single user for :id
+/users/:id            # DELETE Deletes a single user for :id
 
 {
-"id": "user_id",        *required (assigned by server on creation)
-"realname": null,       *required
-"description": null,
-"image": null,
-"admin": false
+    "id": "user_id",      *required (assigned by server on creation)
+    "realname": null,     *required
+    "description": null,
+    "location": null,
+    "image": null,
+    "admin": false,
+    "hubs": {
+        "owned": [/* hubs created by this user   */]
+    },
+    "tasks": {
+        "owned": [/* tasks created by this user  */]
+        "claimed": [/* tasks claimed by this user  */]
+        "done": [/* tasks done by this user     */]
+        "verified": [/* tasks verified by this user */]
+    }
 }
