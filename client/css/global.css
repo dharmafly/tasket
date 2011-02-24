@@ -639,19 +639,54 @@ article {
 	position: absolute;
 }
 
+article > div.tasks {
+    position:absolute;
+	width:55em;
+	height:25em;
+	left:-27.5em;
+	top:-12.5em;
+}
+
+article > div.tasks > svg {
+    width:100%;
+    height:100%;
+	background-color:rgba(255,0,0,0.5);
+    position:absolute;
+    top:0;
+}
+
+article > div.tasks > ul {
+	margin: 0;
+	padding:0;
+	list-style-type: none;
+    width:100%;
+    height:100%;
+    position:absolute;
+    top:0;
+}
+
+article > div.tasks > ul > li {
+	position: absolute;
+	padding: 0.923em /* 12px */ 1.154em /* 15px */;
+	width: 19.321em /* 250px */;
+	border: 0.23075em /* 3px */ solid #aaa;
+	background-color: #fff;
+	height:6.4em; /* TODO: verify */
+}
+
 article > img {
 	position: absolute;
 	top: 50%;
 	left: 0;
-	margin-top: -46px;
-	padding: 20px;
-	border: 10px solid #111;
+	margin-top: -4em; /* TODO: calculate */
+	padding: 1.6em;
+	border: 0.8em solid #111;
 	background-color: #aaa;
-	-webkit-border-radius: 45px;
-	-moz-border-radius: 45px;
-	-ms-border-radius: 45px;
-	-o-border-radius: 45px;
-	border-radius: 45px;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	-ms-border-radius: 4em;
+	-o-border-radius: 4em;
+	border-radius: 4em;
 }
 
 article > img.active {
@@ -660,43 +695,29 @@ article > img.active {
 	background-position: 5px -235px;
 }
 
-article hgroup h1 {
+article > hgroup h1 {
 	font-weight: bold;
 	font-size: 1.385em /* 18px */;
 }
 
-article hgroup h2 {
+article > hgroup h2 {
 	font-size: 1.077em /* 14px */;
 }
 
-article hgroup {
+article > hgroup {
 	margin-left: 70px;
 	padding: 0.769em /* 10px */ 1.538em /* 20px */;
 	background-color: #111;
 	color: #fff;
 }
 
-article hgroup,
-article li {
+article > hgroup,
+article > div.tasks > ul > li {
 	-webkit-border-radius: 0.385em /* 5px */;
 	-moz-border-radius: 0.385em /* 5px */;
 	-ms-border-radius: 0.385em /* 5px */;
 	-o-border-radius: 0.385em /* 5px */;
 	border-radius: 0.385em /* 5px */;
-}
-
-article li {
-	position: absolute;
-	padding: 0.923em /* 12px */ 1.154em /* 15px */;
-	width: 19.321em /* 250px */;
-	border: 3px solid #aaa;
-	background-color: #fff;
-}
-
-article ul {
-	padding: 0;
-	margin: 0;
-	list-style-type: none;
 }
 
 article .meta {
