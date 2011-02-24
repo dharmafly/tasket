@@ -107,14 +107,19 @@ User = Model.extend({
     
     defaults: {
         image: null,
-        description: null
+        description: null,
+        location: null
     },
     
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        this.hubsOwned = new Hubs();
-        this.tasksOwned = new Tasks();
-        this.tasksClaimed = new Tasks();
+        this.hubs = {
+            owned: new Hubs()
+        };
+        this.tasks = {
+            owned:   new Tasks(),
+            claimed: new Tasks()
+        };
     }
 });
 
@@ -173,7 +178,7 @@ var HubView = Backbone.View.extend({
     defaults: {
         offsetTop:0,
         offsetLeft:0,
-        active:false
+        selected:false
     },
     
     getset: function(property, value){
@@ -190,8 +195,8 @@ var HubView = Backbone.View.extend({
         return this;
     },
     
-    isActive: function(state){
-        return this.getset("active", state);
+    isSelected: function(){
+        return this.get("selected");
     },
     
     events: {
@@ -265,12 +270,13 @@ var HubView = Backbone.View.extend({
     },
 
     render: function(){
-        var data = this.model.toJSON(),
-            isActive = data.isActive = this.isActive();
+        var data = this.model.toJSON();
+        
+        data.isSelected = this.isSelected();
         
         this.elem.html(tim("hub", data));
             
-        if (isActive){
+        if (data.isSelected){
             this.addTasks();
         }
         return this.offsetApply();
@@ -291,14 +297,14 @@ var myHub = new Hub({
         title: "Foo foo foo",
         description: "Lorem ipsum",
         image: "images/placeholder.png",
-        owner: 5,
+        owner: "5"
     }),
     
     myHubView = new HubView({
         model: myHub,
         
         // options
-        active:true,
+        selected: true,
         offset: {
             top: 300,
             left: 500

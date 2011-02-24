@@ -689,7 +689,7 @@ article > img {
 	border-radius: 4em;
 }
 
-article > img.active {
+article > img.selected {
 	background-image: url(../images/sprites.png);
 	background-repeat: no-repeat;
 	background-position: 5px -235px;
