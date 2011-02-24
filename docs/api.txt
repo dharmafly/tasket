@@ -5,7 +5,8 @@ Hubs
 
 /hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
 /hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma delimited list of ids)
-/hubs/                  # POST:  Creates a hub (responds with new id eg. {"id": "hub_id"})
+/hubs/                  # POST:  Creates a hub (responds with new id & createdTime eg.
+                        #        {"id": "hub_id", "createdTime": 1298567873})
 /hubs/:id               # GET:   Gets a single hub for :id
 /hubs/:id               # PUT:   Updates a single hub for :id
 /hubs/:id               # DELETE Deletes a single hub for :id
@@ -15,12 +16,13 @@ Hub Model Data
 --------------
 
 {
-    "id": "hub_id",         *required (assigned by server on creation)
-    "title": null,          *required
+    "id": "hub_id",           *required (assigned by server on creation)
+    "title": null,            *required
     "description": null,
     "image": null,
-    "owner": "user_id"      *required
-    "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */]
+    "owner": "user_id"        *required
+    "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */],
+    "createdTime": 1298567873
 }
 
 Tasks
@@ -34,15 +36,16 @@ Tasks
 /tasks/:id               # DELETE Deletes a single task for :id
 
 {
-    "id": "task_id",         *required (assigned by server on creation)
+    "id": "task_id",          *required (assigned by server on creation)
     "description": null,
     "image": null,
     "estimate": null,
     "state": "new",
-    "owner": "user_id",      *required
+    "owner": "user_id",       *required
     "claimedBy": "user_id",
     "verifiedBy": "user_id",
-    "hub": "hub_id"          *required
+    "hub": "hub_id",          *required
+    "createdTime": 1298567873
 }
 
 ### Task State Constants
@@ -77,5 +80,6 @@ Users
         "claimed": [/* tasks claimed by this user  */]
         "done": [/* tasks done by this user     */]
         "verified": [/* tasks verified by this user */]
-    }
+    },
+    "createdTime": 1298567873
 }
