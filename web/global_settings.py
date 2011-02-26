@@ -57,6 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'cbv.middleware.DeferredRenderingMiddleware',
 )
 
 ROOT_URLCONF = 'web.urls'
@@ -67,7 +68,7 @@ TEMPLATE_DIRS = (
     # Don't forget to use absolute paths, not relative paths.
 )
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -78,6 +79,8 @@ INSTALLED_APPS = (
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
     'tasks',
-    'south',
-    'django.contrib.gis',    
-)
+    # 'south',
+    # 'django.contrib.gis',    
+    # 'devserver',
+]
+
