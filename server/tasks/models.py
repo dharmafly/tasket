@@ -96,8 +96,7 @@ class Task(models.Model):
         """
         Dumps the objects as_dict method in to JSON.
         """
-        return "working"
-        # return json.dumps(self.as_dict())
+        return json.dumps(self.as_dict())
 
 
 class Hub(models.Model):
@@ -143,7 +142,7 @@ class Hub(models.Model):
             "title": self.title,
             "description": self.description,
             "owner": self.owner.pk,
-            "tasks": [t.pk for t in self.task_set.all().only('id')],
+            "tasks": [t.pk for t in self.task_set.all()],
             "createdTime": self.created_timestamp(),
         }
         
@@ -152,14 +151,10 @@ class Hub(models.Model):
         
         return obj_dict
 
-    def foo(self):
-        return "foo"
-
     def as_json(self):
         """
         Dumps the objects as_dict method in to JSON.
         """
-        # return "foo"
         return json.dumps(self.as_dict())
 
 

@@ -79,6 +79,7 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
     
     def test_hub_put(self):
+        self.client.login(username='TestUser', password='12345')
         response = self.client.put(
                 '/hubs/1/', 
                 data=json.dumps({'title' : 'Updated Title',}),
@@ -87,6 +88,7 @@ class ViewTests(TestCase):
         self.assertEqual(json.loads(response.content)['updated'], True)
     
     def test_hub_delete(self):
+        self.client.login(username='TestUser', password='12345')
         hubs = Hub.objects.all()
         response = self.client.delete('/hubs/1/')
         hubs = Hub.objects.all()
@@ -95,7 +97,7 @@ class ViewTests(TestCase):
     def test_hub_task_list(self):
         response = self.client.get('/hubs/1/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 2)
+        self.assertEqual(len(json_data), 7)
     
     def test_task_get(self):
         response = self.client.get('/tasks/')
@@ -103,7 +105,7 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_data), 1)
     
     def test_task_get_single(self):
-        response = self.client.get('/tasks/2')
+        response = self.client.get('/tasks/2/')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
     
@@ -129,17 +131,16 @@ class ViewTests(TestCase):
 
     def test_task_put(self):
         self.client.login(username='TestUser', password='12345')
-        print [t.pk for t in Task.objects.all()]
         response = self.client.put(
                 '/tasks/2/',
                 data=json.dumps({"description" : "New description!"}),
                 content_type='application/json',
             )
-        print repr(response.content)
-        print response.status_code
-        # json_data = json.loads(response.content)
-        # print json_data
-        # self.assertEqual(json_data['description'].startswith("New"), True)
+        # print repr(response.content)
+        # print response.status_code
+        json_data = json.loads(response.content)
+        print json_data
+        self.assertEqual(json_data['description'].startswith("New"), True)
     
     
     

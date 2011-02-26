@@ -8,26 +8,29 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 # from django.core import serializers
 
-from cbv import View
-
-from utils import AllowJSONPCallback, update_wrapper, classonlymethod
+from utils import AllowJSONPCallback, PutView
 
 from models import Hub, Task
 import forms
 
-
-class HubView(View):
-    # http_method_names = ['get', 'post',]
+class HubView(PutView):
     
-    # def get_single(self, reqeust, hub_id=None, tasks=None):
-    #     hub = get_object_or_404(Hub, pk=hub_id)        
-    #     return HttpResponse(hub.as_json())
+    http_method_names = ['get', 'post', 'put', 'delete',]
+    
+    def __init__(self):
+        self.res = HttpResponse(content_type='application/javascript')
+    
+    @method_decorator(AllowJSONPCallback)
+    def get_single(self, reqeust, hub_id=None, tasks=None):
+        hub = get_object_or_404(Hub, pk=hub_id)        
+        self.res.write(hub.as_json())
+        return self.res
     
     
-    # @method_decorator(AllowJSONPCallback)
+    @method_decorator(AllowJSONPCallback)
     def get(self, request, hub_id=None, tasks=None):
-        # if hub_id:
-        #     return self.get_single(request, hub_id)
+        if hub_id:
+            return self.get_single(request, hub_id)
         
         hubs = Hub.objects.all()
         
@@ -36,38 +39,38 @@ class HubView(View):
             ids = [i.strip() for i in ids.split(',') if i]
             hubs = hubs.filter(pk__in=ids)
         
-        res = HttpResponse()
+        res = self.res
         res.write(hubs.as_json())
         return res
         
-    # # @method_decorator(login_required)
-    # def post(self, request):
-    #     """
-    #     Create a hub
-    #     """
-    #     res = HttpResponse()
-    # 
-    #     form = forms.HubForm(request.POST)
-    #     if form.is_valid():
-    #         H = form.save(commit=False)
-    #         H.owner = request.user
-    #         H.save()
-    #     
-    #         response_json =  {
-    #             "id": H.pk, 
-    #             "createdTime": H.created_timestamp()
-    #             }
-    #         return HttpResponse(json.dumps(response_json))
-    #     else:
-    #         required_list = ", ".join(form.errors.keys())
-    #         return HttpResponse(json.dumps("%s are required" % required_list), status=500)
-
-
-class SingleHubView(View):
+    @method_decorator(login_required)
+    @method_decorator(AllowJSONPCallback)
+    def post(self, request):
+        """
+        Create a hub
+        """
+        res = HttpResponse()
     
-    http_method_names = ['get', 'post', 'delete', 'put',]
+        form = forms.HubForm(request.POST)
+        if form.is_valid():
+            H = form.save(commit=False)
+            H.owner = request.user
+            H.save()
         
-    
+            response_json =  {
+                "id": H.pk, 
+                "createdTime": H.created_timestamp()
+                }
+            self.res.write(json.dumps(response_json))
+
+        else:
+            required_list = ", ".join(form.errors.keys())
+            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.status_code = 500
+        return self.res
+
+    @method_decorator(login_required)
+    @method_decorator(AllowJSONPCallback)
     def put(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
         form = forms.HubForm(request.PUT, instance=hub)
@@ -78,39 +81,52 @@ class SingleHubView(View):
                 "updated" : True,
                 "hub" : H.as_dict()
                 }
-            return HttpResponse(json.dumps(response_json))
+            self.res.write(json.dumps(response_json))
         else:
             required_list = ", ".join(form.errors.keys())
-            return HttpResponse(json.dumps("%s are required" % required_list), status=500)
-    
+            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.status_code = 500
+        return self.res
+
+    @method_decorator(login_required)
+    @method_decorator(AllowJSONPCallback)
     def delete(self, request, hub_id):
-        hub = self.get_hub(request, hub_id)
+        hub = get_object_or_404(Hub, pk=hub_id)
         hub_id = hub.pk
         hub.delete()
-        return HttpResponse(json.dumps(
+        self.res.write(json.dumps(
             {
                 "deleted" : True,
                 "hub_id" : hub_id,
             }
             ))
+        return self.res
+    
 
-class HubTasks(View):
+class HubTasks(PutView):
     http_method_names = ['get',]
+
     @method_decorator(AllowJSONPCallback)
     def get(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
-        return HttpResponse(hub.task_set.all().as_json())
+        self.res.write(hub.task_set.all().as_json())
+        return self.res
 
 
 
-class TasksView(View):
+class TasksView(PutView):
     http_method_names = ['get','post', 'put',]
+    
+    def __init__(self):
+        self.res = HttpResponse(content_type='application/javascript')
+    
     
     @method_decorator(AllowJSONPCallback)
     def get_single(self, request, task_id):
         task = get_object_or_404(Task, pk=task_id)
-        return HttpResponse(task.as_json())
-    
+        self.res.write(task.as_json())
+        return self.res
+
     @method_decorator(AllowJSONPCallback)
     def get(self, request, task_id=None):
         if task_id:
@@ -123,32 +139,38 @@ class TasksView(View):
             ids = [i.strip() for i in ids.split(',') if i]
             tasks = tasks.filter(pk__in=ids)
 
-        res = HttpResponse(mimetype='application/json')
-        res.write(tasks.as_json())
-        return res
+        self.res.write(tasks.as_json())
+        return self.res
 
+    @method_decorator(login_required)
+    @method_decorator(AllowJSONPCallback)
     def post(self, request, task_id=None):
         form = forms.TaskForm(request.POST)
         if form.is_valid():
             T = form.save(commit=False)
             T.owner = request.user
             T.save()
-            return HttpResponse(T.as_json())
+            self.res.write(T.as_json())
         else:
             required_list = ", ".join(form.errors.keys())
-            return HttpResponse(json.dumps("%s are required" % required_list), status=500)
-
+            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.status_code = 500
+        return self.res
+            
+    @method_decorator(login_required)
+    @method_decorator(AllowJSONPCallback)
     def put(self, request, task_id=None):
         task = get_object_or_404(Task, pk=task_id)
         form = forms.TaskForm(request.PUT, instance=task)
         # form.hub = task.hub
         if form.is_valid():
             T = form.save()
-            return HttpResponse(T.as_json())
+            self.res.write(T.as_json())
         else:
             required_list = ", ".join(form.errors.keys())
-            return HttpResponse(json.dumps("%s are required" % required_list), status=500)
-
+            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.status_code = 500
+        return self.res
 
 
 
