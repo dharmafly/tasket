@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import datetime
 import time
 import json
@@ -42,17 +43,30 @@ class Task(models.Model):
         (60*60*12, 'More than Eight hours'),
     )
     
+    STATE_NEW       = 0
+    STATE_CLAIMED   = 1
+    STATE_DONE      = 2
+    STATE_VERIFIED  = 3
+    
+    TASK_STATES = (
+        (STATE_NEW, 'New'),
+        (STATE_CLAIMED, 'Claimed'),
+        (STATE_DONE, 'Done'),
+        (STATE_VERIFIED, 'Verified'),
+    )
+    
     description = models.TextField(blank=True, null=True)
     image = models.ImageField(upload_to="images", blank=True, null=True)
     estimate = models.IntegerField(blank=True, null=True, choices=TIME_ESTIMATE)
-    state = models.CharField(blank=True, max_length=100)
+    state = models.IntegerField(blank=False, null=False, choices=TASK_STATES, default=STATE_NEW)
     owner = models.ForeignKey(User, related_name='owner')
     claimedBy = models.ForeignKey(User, related_name='claimedBy', null=True)
-    verifiedBy = models.ForeignKey(User, related_name='verifiedBy', null=True)
+    verifiedBy = models.ForeignKey(User, related_name='verifiedByFoo', null=True, blank=True, default=None)
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
     hub = models.ForeignKey('Hub')
 
     objects = managers.TaskManager()
+    unverified = managers.UnverifiedTaskManager()
 
     def __unicode__(self):
         return self.description[:10]
@@ -89,9 +103,6 @@ class Task(models.Model):
         
         return obj_dict
 
-    def foo():
-        return "foo"
-
     def as_json(self):
         """
         Dumps the objects as_dict method in to JSON.
@@ -120,7 +131,9 @@ class Hub(models.Model):
     owner = models.ForeignKey(User)
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
     
+    # objects = managers.HubManager()
     objects = managers.HubManager()
+    unverified = managers.UnVerifiedHubManager()
     
     def __unicode__(self):
         return u"%s" % self.title

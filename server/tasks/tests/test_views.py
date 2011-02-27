@@ -14,17 +14,13 @@ import tasks
 class ViewTests(TestCase):
     fixtures = ['test_data.json',]
 
-    def test_hubs_get_status(self):
-        response = self.client.get('/hubs/')
-        self.assertEqual(response.status_code, 200)
-    
     def test_hubs_get(self):
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
-        self.assertEqual(json_list[0]['title'], "Example Hub")
+        self.assertEqual(json_list[0]['title'], "Example Hub 2")
     
     def test_hubs_get_by_id(self):
-        response = self.client.get('/hubs/?id=1')
+        response = self.client.get('/hubs/?ids=2')
         json_list = json.loads(response.content)
         self.assertEqual(json_list[0]['title'], "Example Hub")
     
@@ -70,7 +66,7 @@ class ViewTests(TestCase):
     
     
     def test_hub_get(self):
-        response = self.client.get('/hubs/1/')
+        response = self.client.get('/hubs/2/')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['title'], 'Example Hub')
     
@@ -81,7 +77,7 @@ class ViewTests(TestCase):
     def test_hub_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
-                '/hubs/1/', 
+                '/hubs/2/', 
                 data=json.dumps({'title' : 'Updated Title',}),
                 content_type='application/json',
             )
@@ -90,12 +86,12 @@ class ViewTests(TestCase):
     def test_hub_delete(self):
         self.client.login(username='TestUser', password='12345')
         hubs = Hub.objects.all()
-        response = self.client.delete('/hubs/1/')
+        response = self.client.delete('/hubs/2/')
         hubs = Hub.objects.all()
-        self.assertEqual(len(hubs), 0)
+        self.assertEqual(len(hubs), 1)
     
     def test_hub_task_list(self):
-        response = self.client.get('/hubs/1/tasks/')
+        response = self.client.get('/hubs/2/tasks/')
         json_data = json.loads(response.content)
         self.assertEqual(len(json_data), 7)
     
@@ -105,7 +101,7 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_data), 1)
     
     def test_task_get_single(self):
-        response = self.client.get('/tasks/2/')
+        response = self.client.get('/tasks/3/')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
     
@@ -116,7 +112,7 @@ class ViewTests(TestCase):
     
     def test_task_create(self):
         self.client.login(username='TestUser', password='12345')
-        hub = Hub.objects.get(pk=1)
+        hub = Hub.objects.get(pk=2)
         response = self.client.post(
             '/tasks/',
             {
@@ -132,17 +128,20 @@ class ViewTests(TestCase):
     def test_task_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
-                '/tasks/2/',
+                '/tasks/3/',
                 data=json.dumps({"description" : "New description!"}),
                 content_type='application/json',
             )
-        # print repr(response.content)
-        # print response.status_code
         json_data = json.loads(response.content)
-        print json_data
         self.assertEqual(json_data['description'].startswith("New"), True)
     
     
-    
-    
-    
+    def test_hub_delete(self):
+        self.client.login(username='TestUser', password='12345')
+        old_tasks = len(Task.objects.all())
+        response = self.client.delete('/tasks/3/')
+        tasks = len(Task.objects.all())
+        self.assertEqual(old_tasks-1, tasks)
+
+
+

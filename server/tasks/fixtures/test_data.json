@@ -1,5 +1,4 @@
 [
-{"pk": 1, "model": "tasks.hub", "fields": {"owner": 1, "image": "images/Puppy.jpg", "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.", "title": "Example Hub"}},
 {
     "pk": 1, 
     "model": "auth.user", 
@@ -18,19 +17,37 @@
         "date_joined": "2011-02-25 06:10:27"
     }
 },
-
 {
     "pk": 2, 
-    "model": "tasks.task", 
+    "model": "tasks.hub", 
     "fields": {
-        "verifiedBy": 1, 
-        "description": "This is a test", 
-        "hub": 1, 
-        "image": "images/ACH_4307_3.jpg", 
-        "claimedBy": 1, 
-        "createdTime": "2011-02-25 09:15:03", 
-        "state": "", 
         "owner": 1, 
+        "image": "images/Puppy.jpg", 
+        "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+        "title": "Example Hub"
+    }
+},
+{
+    "pk": 3, 
+    "model": "tasks.hub", 
+    "fields": {
+        "owner": 1, 
+        "image": "images/Puppy.jpg", 
+        "description": "This one will have a verified task",
+        "title": "Example Hub 2"
+    }
+},
+{
+    "pk": 4, 
+    "model": "tasks.task",
+    "fields": {
+        "verifiedBy": 1,
+        "description": "This is a test",
+        "hub": 2,
+        "image": "images/ACH_4307_3.jpg",
+        "claimedBy": 1,
+        "createdTime": "2011-02-25 09:15:03",
+        "owner": 1,
         "estimate": 600
     }
 },
@@ -39,11 +56,23 @@
     "model": "tasks.task", 
     "fields": {
         "description": "This is a test", 
-        "hub": 1, 
+        "hub": 2, 
+        "image": "images/ACH_4307_3.jpg", 
+        "createdTime": "2011-02-25 09:15:03",
+        "owner": 1, 
+        "estimate": 600
+    }
+},
+{
+    "pk": 4, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "Verified Task", 
+        "hub": 3, 
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03", 
-        "state": "", 
         "owner": 1, 
+        "verifiedBy": 1,
         "estimate": 600
     }
 } 

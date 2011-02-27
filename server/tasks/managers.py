@@ -40,4 +40,32 @@ class JsonManager(models.Manager):
 
 
 class HubManager(JsonManager): pass
+
+class UnVerifiedHubManager(JsonManager):
+    """
+    Returns only hubs that have unverfied tasks.
+    """
+    
+    use_for_related_fields = True
+
+    def get_query_set(self):
+        qs = super(UnVerifiedHubManager, self).get_query_set()
+        qs = qs.exclude(task__verifiedBy__isnull=False) 
+        # qs = qs.filter(task__verifiedBy_id__isnull=True) 
+        # print qs.query
+        # print 
+        return qs
+
 class TaskManager(JsonManager): pass
+
+class UnverifiedTaskManager(JsonManager):
+    use_for_related_fields = True
+    def get_query_set(self):
+        qs = super(UnverifiedTaskManager, self).get_query_set()
+        return qs.filter(verifiedBy__isnull=True)
+    
+
+
+
+
+

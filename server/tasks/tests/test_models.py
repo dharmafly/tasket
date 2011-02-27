@@ -42,7 +42,7 @@ class ModelTest(TestCase):
                 
             )
         H.save()
-        H.image.save('Puppy', ContentFile(img.read()))
+        # H.image.save('Puppy', ContentFile(img.read()))
         
         self.H = H
         
@@ -59,14 +59,23 @@ class ModelTest(TestCase):
         working properly.
         """
         
-        self.assertEqual(len(Hub.objects.all()), 2)
-
+        self.assertEqual(len(Hub.objects.all()), 3)
+    
     def test_as_json(self):
         self.assertEqual(json.loads(self.H.as_json())['title'], 'Test Hub')
-
+    
     def test_queryset_as_json(self):
         obs = Hub.objects.all().as_json()
         obj = json.loads(obs)[0]
         self.assertEqual(obj['title'], 'Test Hub')
-    
-    
+
+    def test_verified(self):
+        H = Hub.unverified.all()
+        self.assertEqual(len(H), 2)
+
+
+
+
+
+
+

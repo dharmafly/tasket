@@ -8,7 +8,7 @@ class TaskForm(forms.ModelForm):
     
     class Meta:
         model = Task
-        exclude = ('created', 'owner', 'verifiedBy', 'claimedBy', 'createdTime', )
+        exclude = ('created', 'owner', 'verifiedBy', 'claimedBy', 'createdTime', 'state')
 
 
 class HubForm(forms.ModelForm):
