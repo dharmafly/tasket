@@ -57,6 +57,7 @@ MIDDLEWARE_CLASSES = (
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+    'tasks.middleware.CORSMiddleware'
 )
 
 ROOT_URLCONF = 'web.urls'
@@ -83,3 +84,7 @@ INSTALLED_APPS = [
     # 'devserver',
 ]
 
+DEFAULT_CORS_PATHS = (
+    ('/hub', ('application/json', ), (('Access-Control-Allow-Origin', '*'), )),
+    ('/task', ('application/json', ), (('Access-Control-Allow-Origin', '*'), )),
+)

@@ -1,29 +1,30 @@
-class DeferredRenderingMiddleware(object):
-    """
-    Middleware that renders deferred rendered responses for Django < 1.3.
-    """
-    def process_response(self, request, response):
-        try:
-            if hasattr(response, 'render') and callable(response.render):
-                return response.render()
-            return response
-        except Exception:
-            import sys
-            from django.conf import settings
-            from django.core.handlers.base import BaseHandler
-            from django.core import signals
-            from django.core import urlresolvers
+"""
+Taken from https://github.com/edsu/django-sugar/raw/c699e113a9cb32fc1199dda5d4a3b889d0c87f4e/sugar/middleware/cors.py
+"""
 
-            urlconf = settings.ROOT_URLCONF
-            urlresolvers.set_urlconf(urlconf)
-            resolver = urlresolvers.RegexURLResolver(r'^/', urlconf)
-            receivers = signals.got_request_exception.send(
-                sender=self.__class__,
-                request=request,
-                )
-            handler = BaseHandler()
-            return handler.handle_uncaught_exception(
-                request,
-                resolver,
-                sys.exc_info(),
-                )
+from django.conf import settings
+
+#: By default we'll set CORS Allow Origin * for all application/json responses
+DEFAULT_CORS_PATHS = (
+    ('/', ('application/json', ), (('Access-Control-Allow-Origin', '*'), )),
+)
+
+class CORSMiddleware(object):
+    """
+    Middleware that serves up representations with a CORS header to
+    allow third parties to use your web api from JavaScript without
+    requiring them to proxy it.
+    """
+
+    def __init__(self):
+        self.paths = getattr(settings, "CORS_PATHS", DEFAULT_CORS_PATHS)
+
+    def process_response(self, request, response):
+        content_type = response.get('content-type', '').split(";")[0].lower()
+
+        for path, types, headers in self.paths:
+            if request.path.startswith(path) and content_type in types:
+                for k, v in headers:
+                    response[k] = v
+                break
+        return response
