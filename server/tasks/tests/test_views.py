@@ -98,7 +98,7 @@ class ViewTests(TestCase):
     def test_task_get(self):
         response = self.client.get('/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 1)
+        self.assertEqual(len(json_data), 2)
     
     def test_task_get_single(self):
         response = self.client.get('/tasks/3/')
@@ -106,9 +106,9 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['description'].startswith("This is"), True)
     
     def test_task_get_by_id(self):
-        response = self.client.get('/tasks/?ids=4,5')
+        response = self.client.get('/tasks/?ids=6,7')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 0)
+        self.assertEqual(len(json_data), 1)
     
     def test_task_create(self):
         self.client.login(username='TestUser', password='12345')
@@ -121,7 +121,6 @@ class ViewTests(TestCase):
                 "hub" : hub.pk,
             }
             )
-        
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("Lorem"), True)
 
@@ -143,5 +142,34 @@ class ViewTests(TestCase):
         tasks = len(Task.objects.all())
         self.assertEqual(old_tasks-1, tasks)
 
+    def test_user_get(self):
+        response = self.client.get('/users/')
+        json_data = json.loads(response.content)
+        self.assertEqual(len(json_data), 3)
 
+    def test_user_get_single(self):
+        response = self.client.get('/users/1/')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['description'].startswith("This is"), True)
 
+    def test_user_get_by_id(self):
+        response = self.client.get('/users/?ids=2,3')
+        json_data = json.loads(response.content)
+        self.assertEqual(len(json_data), 2)
+
+    
+    def test_user_put(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.put(
+                '/users/3/',
+                data=json.dumps({"description" : "New description!"}),
+                content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['description'].startswith("New"), True)
+
+    def test_user_delete(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.delete('/users/3/')
+
+        self.assertEqual(response.status_code, 405)

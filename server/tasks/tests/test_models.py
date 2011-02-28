@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 
 from django.contrib.auth.models import User
 
-from tasks.models import Hub, Task
+from tasks.models import Hub, Task, Profile
 import tasks
 
 class ModelTest(TestCase):
@@ -20,6 +20,7 @@ class ModelTest(TestCase):
         """
 
         self.U = User.objects.get(username='TestUser')
+        self.P = Profile.objects.get(user=self.U)
         
         image_path = "%s/fixtures/Puppy.jpg" % tasks.__path__[0]
         img = open(image_path)
@@ -38,7 +39,7 @@ class ModelTest(TestCase):
                                 occaecat cupidatat non proident, sunt in culpa 
                                 qui officia deserunt mollit anim id est laborum.
                             """,
-                owner=self.U,
+                owner=self.P,
                 
             )
         H.save()
@@ -47,13 +48,13 @@ class ModelTest(TestCase):
         self.H = H
         
         # TODO: add more fields
-        self.T = Task(description="Example Task", hub=H, owner=self.U)
+        self.T = Task(description="Example Task", hub=H, owner=self.P)
         self.T.save()
     
     def test_hub_unicode(self):
         self.assertEqual(unicode(self.H), "Test Hub")
     
-    def test_all_hubs(self):
+    def test_hub_all_hubs(self):
         """
         Make sure there is exactly one hub.  Mainly to make sure fixtures are 
         working properly.
@@ -61,10 +62,10 @@ class ModelTest(TestCase):
         
         self.assertEqual(len(Hub.objects.all()), 3)
     
-    def test_as_json(self):
+    def test_hub_as_json(self):
         self.assertEqual(json.loads(self.H.as_json())['title'], 'Test Hub')
     
-    def test_queryset_as_json(self):
+    def test_hub_queryset_as_json(self):
         obs = Hub.objects.all().as_json()
         obj = json.loads(obs)[0]
         self.assertEqual(obj['title'], 'Test Hub')
@@ -72,6 +73,17 @@ class ModelTest(TestCase):
     def test_verified(self):
         H = Hub.unverified.all()
         self.assertEqual(len(H), 2)
+
+    def test_prifile(self):
+        P = Profile.objects.get(user=self.U)
+        # print dir(P)
+        # print P.owned_hubs.all()
+        # print P.as_dict()
+        # X = P.tasks_claimed.filter(verifiedBy__isnull=False)
+        # print X
+        # print X.query
+        
+        # self.assertEqual(len(H), 2)
 
 
 

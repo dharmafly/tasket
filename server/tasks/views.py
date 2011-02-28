@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 from utils import AllowJSONPCallback, PutView
 
-from models import Hub, Task
+from models import Hub, Task, Profile
 import forms
 
 class HubView(PutView):
@@ -61,7 +61,7 @@ class HubView(PutView):
         form = forms.HubForm(request.POST)
         if form.is_valid():
             H = form.save(commit=False)
-            H.owner = request.user
+            H.owner = request.user.profile
             H.save()
         
             response_json =  {
@@ -71,8 +71,7 @@ class HubView(PutView):
             self.res.write(json.dumps(response_json))
             
         else:
-            required_list = ", ".join(form.errors.keys())
-            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
         
@@ -90,8 +89,7 @@ class HubView(PutView):
                 }
             self.res.write(json.dumps(response_json))
         else:
-            required_list = ", ".join(form.errors.keys())
-            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
         
@@ -139,15 +137,15 @@ class TasksView(PutView):
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def post(self, request, task_id=None):
-        form = forms.TaskForm(request.POST)
+        request.POST['state'] = request.POST.get('state', 0)
+        form = forms.TaskForm(request.POST, request=request)
         if form.is_valid():
             T = form.save(commit=False)
-            T.owner = request.user
+            T.owner = request.user.profile
             T.save()
             self.res.write(T.as_json())
         else:
-            required_list = ", ".join(form.errors.keys())
-            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
             
@@ -156,16 +154,16 @@ class TasksView(PutView):
     def put(self, request, task_id=None):
         task = get_object_or_404(Task, pk=task_id)
         request.PUT['hub'] = task.hub.pk
-        form = forms.TaskForm(request.PUT, instance=task)
+        request.PUT['state'] = request.PUT.get('state', 0)
+        form = forms.TaskForm(request.PUT, instance=task, request=request)
         if form.is_valid():
             T = form.save()
             self.res.write(T.as_json())
         else:
-            required_list = ", ".join(form.errors.keys())
-            self.res.write(json.dumps("%s are required" % required_list))
+            self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
-
+        
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def delete(self, request, task_id=None):
@@ -181,3 +179,41 @@ class TasksView(PutView):
         return self.res
 
 
+class ProfileView(PutView):
+    http_method_names = ['get','post', 'put', 'delete',]
+    
+    def __init__(self):
+        self.res = HttpResponse(content_type='application/javascript')
+    
+    def get_single(self, request, user_id):
+        profile = get_object_or_404(Profile, pk=user_id)
+        self.res.write(profile.as_json())
+        return self.res
+        
+    @method_decorator(AllowJSONPCallback)
+    def get(self, request, user_id=None):
+        if user_id:
+            return self.get_single(request, user_id)
+        
+        users = Profile.objects.all()
+        
+        if 'ids' in request.GET:
+            ids = request.GET['ids']
+            ids = [i.strip() for i in ids.split(',') if i]
+            users = users.filter(pk__in=ids)
+            
+        self.res.write(users.as_json())
+        return self.res
+
+    @method_decorator(login_required)
+    @method_decorator(AllowJSONPCallback)
+    def put(self, request, user_id=None):
+        profile = get_object_or_404(Profile, pk=user_id)
+        form = forms.ProfileForm(request.PUT, instance=profile, request=request)
+        if form.is_valid():
+            T = form.save()
+            self.res.write(T.as_json())
+        else:
+            self.res.write(json.dumps(form.errors))
+            self.res.status_code = 500
+        return self.res

@@ -1,6 +1,7 @@
 [
+
 {
-    "pk": 1, 
+    "pk": 2, 
     "model": "auth.user", 
     "fields": {
         "username": "TestUser", 
@@ -18,6 +19,73 @@
     }
 },
 {
+    "pk": 3, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "TestUser2", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2011-02-25 06:10:27", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "sha1$831b8$15caeab515e16716f5e6052feeb5808014792ad7", 
+        "email": "", 
+        "date_joined": "2011-02-25 06:10:27"
+    }
+},
+{
+    "pk": 4, 
+    "model": "auth.user", 
+    "fields": {
+        "username": "TestUser3", 
+        "first_name": "", 
+        "last_name": "", 
+        "is_active": true, 
+        "is_superuser": false, 
+        "is_staff": false, 
+        "last_login": "2011-02-25 06:10:27", 
+        "groups": [], 
+        "user_permissions": [], 
+        "password": "sha1$831b8$15caeab515e16716f5e6052feeb5808014792ad7", 
+        "email": "", 
+        "date_joined": "2011-02-25 06:10:27"
+    }
+},
+
+{
+    "pk": 1, 
+    "model": "tasks.profile", 
+    "fields": {
+        "user": 2,
+        "realname": "Test User 1",
+        "description": "This is a description", 
+        "location": "London"
+    }
+},
+{
+    "pk": 2, 
+    "model": "tasks.profile", 
+    "fields": {
+        "user": 3,
+        "realname": "Test User 2",
+        "description": "This is a description", 
+        "location": "London"
+    }
+},
+{
+    "pk": 3, 
+    "model": "tasks.profile", 
+    "fields": {
+        "user": 4,
+        "realname": "Test User 3",
+        "description": "This is a description", 
+        "location": "London"
+    }
+},
+{
     "pk": 2, 
     "model": "tasks.hub", 
     "fields": {
@@ -31,7 +99,7 @@
     "pk": 3, 
     "model": "tasks.hub", 
     "fields": {
-        "owner": 1, 
+        "owner": 2, 
         "image": "images/Puppy.jpg", 
         "description": "This one will have a verified task",
         "title": "Example Hub 2"
@@ -41,13 +109,14 @@
     "pk": 4, 
     "model": "tasks.task",
     "fields": {
-        "verifiedBy": 1,
-        "description": "This is a test",
+        "verifiedBy": 3,
+        "description": "This is a test.  It's been Done and verified",
         "hub": 2,
         "image": "images/ACH_4307_3.jpg",
-        "claimedBy": 1,
+        "claimedBy": 2,
         "createdTime": "2011-02-25 09:15:03",
-        "owner": 1,
+        "owner": 3,
+        "state": 3,
         "estimate": 600
     }
 },
@@ -55,11 +124,13 @@
     "pk": 3, 
     "model": "tasks.task", 
     "fields": {
-        "description": "This is a test", 
+        "description": "This is a test.  It's been Done, but not verified.", 
         "hub": 2, 
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03",
+        "verifiedBy": 1,
         "owner": 1, 
+        "state": 2,
         "estimate": 600
     }
 },
@@ -71,10 +142,38 @@
         "hub": 3, 
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03", 
-        "owner": 1, 
+        "owner": 3, 
         "verifiedBy": 1,
+        "state": 3,
         "estimate": 600
     }
-} 
+},
+{
+    "pk": 5, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "This has been claimed, but not done.", 
+        "hub": 3, 
+        "image": "images/ACH_4307_3.jpg", 
+        "createdTime": "2011-02-25 09:15:03", 
+        "owner": 2,
+        "claimedBy": 2,
+        "state": 1,
+        "estimate": 600
+    }
+},
+{
+    "pk": 6, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "New Task", 
+        "hub": 2, 
+        "image": "images/ACH_4307_3.jpg", 
+        "createdTime": "2011-02-25 09:15:03", 
+        "owner": 2,
+        "state": 0,
+        "estimate": 600
+    }
+}
 
 ]

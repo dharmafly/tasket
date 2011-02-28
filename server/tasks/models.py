@@ -56,12 +56,12 @@ class Task(models.Model):
     )
     
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to="images", blank=True, null=True)
+    image = models.ImageField(upload_to="images/tasks/", blank=True, null=True)
     estimate = models.IntegerField(blank=True, null=True, choices=TIME_ESTIMATE)
     state = models.IntegerField(blank=False, null=False, choices=TASK_STATES, default=STATE_NEW)
-    owner = models.ForeignKey(User, related_name='owner')
-    claimedBy = models.ForeignKey(User, related_name='claimedBy', null=True)
-    verifiedBy = models.ForeignKey(User, related_name='verifiedByFoo', null=True, blank=True, default=None)
+    owner = models.ForeignKey('Profile', related_name='tasks_owned')
+    claimedBy = models.ForeignKey('Profile', related_name='tasks_claimed', null=True, blank=True)
+    verifiedBy = models.ForeignKey('Profile', related_name='tasks_verified', null=True, blank=True)
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
     hub = models.ForeignKey('Hub')
 
@@ -70,7 +70,7 @@ class Task(models.Model):
 
     def __unicode__(self):
         return self.description[:10]
-
+    
     def created_timestamp(self):
         return time.mktime(self.createdTime.timetuple())
     
@@ -127,8 +127,8 @@ class Hub(models.Model):
     
     title = models.CharField(blank=False, max_length=255)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='images', null=True, blank=True)
-    owner = models.ForeignKey(User)
+    image = models.ImageField(upload_to='images/hubs/', null=True, blank=True)
+    owner = models.ForeignKey('Profile', related_name="owned_hubs")
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
     
     # objects = managers.HubManager()
@@ -172,5 +172,46 @@ class Hub(models.Model):
 
 
 
+class Profile(models.Model):
+    user = models.OneToOneField(User)
+    realname = models.CharField(blank=True, max_length=255)
+    description = models.TextField(blank=True)
+    location = models.CharField(blank=True, max_length=255)
+    image = models.ImageField(upload_to='images/users/', null=True, blank=True)
+    createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    admin = models.BooleanField(default=False)
 
+    objects = managers.ProfileManager()
 
+    def __unicode__(self):
+        return u"%s" % self.realname
+
+    def created_timestamp(self):
+        return time.mktime(self.createdTime.timetuple())
+
+    def as_dict(self):
+        obj_dict = {
+            "id": self.user.pk,
+            "realname": self.realname,
+            "description": self.description,
+            "location": self.location,
+            "hubs": {
+                "owned": [h.pk for h in self.owned_hubs.all()],
+                },
+            "tasks": {
+                "owned": [t.pk for t in self.tasks_owned.all()],
+                "claimed": [t.pk for t in self.tasks_claimed.all()],
+                "done": [t.pk for t in self.tasks_claimed.filter(verifiedBy__isnull=False)],
+                "verified": [t.pk for t in self.tasks_verified.all()],
+            },            
+            "createdTime": self.created_timestamp(),
+        }
+        
+        if self.image:
+            obj_dict["image"] = self.image.url
+        
+        return obj_dict
+        
+    def as_json(self):
+        return json.dumps(self.as_dict())
+        

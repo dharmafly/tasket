@@ -1,6 +1,7 @@
 import json
 
 from django.db import models
+import models as task_models
 
 class JsonQuerySet(models.query.QuerySet):
     """
@@ -50,10 +51,7 @@ class UnVerifiedHubManager(JsonManager):
 
     def get_query_set(self):
         qs = super(UnVerifiedHubManager, self).get_query_set()
-        qs = qs.exclude(task__verifiedBy__isnull=False) 
-        # qs = qs.filter(task__verifiedBy_id__isnull=True) 
-        # print qs.query
-        # print 
+        qs = qs.exclude(task__state=task_models.Task.STATE_VERIFIED) 
         return qs
 
 class TaskManager(JsonManager): pass
@@ -65,6 +63,7 @@ class UnverifiedTaskManager(JsonManager):
         return qs.filter(verifiedBy__isnull=True)
     
 
+class ProfileManager(JsonManager): pass
 
 
 
