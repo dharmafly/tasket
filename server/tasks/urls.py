@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 from django.conf.urls.defaults import *
+from django.conf import settings
 
 import views
 
 urlpatterns = patterns('',
+    # Home
+    url(r'^$',views.home),
+
     # Hub Methods
     url(r'^hubs/(?P<hub_id>\d+)/$',views.HubView.as_view()),
     url(r'^hubs/(?P<hub_id>\d+)/(?P<tasks>tasks)/$',views.HubView.as_view(), name="hub_tasks"),
@@ -17,5 +21,11 @@ urlpatterns = patterns('',
     url(r'^users/$',views.ProfileView.as_view(), name="user"),
     url(r'^users/(?P<user_id>\d+)/$',views.ProfileView.as_view(), name="user"),
     
-    # url(r'^example/(?P<hub_id>\d+)/$',views.ExampleView.as_view(), name="task"),
+    
    )
+if settings.DEBUG:
+  urlpatterns += patterns('django.views',
+      (r'^(?P<path>.*)$', 'static.serve',
+      {'document_root': settings.MEDIA_ROOT}),
+
+)

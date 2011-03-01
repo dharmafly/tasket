@@ -13,6 +13,10 @@ from utils import AllowJSONPCallback, PutView
 from models import Hub, Task, Profile
 import forms
 
+def home(reqeust):
+    f = open("../client/index.html", "r")
+    return HttpResponse(f.read())
+
 class HubView(PutView):
     
     http_method_names = ['get', 'post', 'put', 'delete',]
