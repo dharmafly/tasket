@@ -23,6 +23,7 @@ class CORSMiddleware(object):
         content_type = response.get('content-type', '').split(";")[0].lower()
 
         for path, types, headers in self.paths:
+            print path
             if request.path.startswith(path) and content_type in types:
                 for k, v in headers:
                     response[k] = v

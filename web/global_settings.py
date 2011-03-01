@@ -84,7 +84,8 @@ INSTALLED_APPS = [
     # 'devserver',
 ]
 
-DEFAULT_CORS_PATHS = (
-    ('/hub', ('application/json', ), (('Access-Control-Allow-Origin', '*'), )),
-    ('/task', ('application/json', ), (('Access-Control-Allow-Origin', '*'), )),
+CORS_PATHS = (
+    ('/hubs/', ('application/javascript', 'application/json', 'text/html'), (('Access-Control-Allow-Origin', '*'), )),
+    ('/tasks/', ('application/javascript', 'application/json', 'text/html'), (('Access-Control-Allow-Origin', '*'), )),
+    ('/users/', ('application/javascript', 'application/json', 'text/html'), (('Access-Control-Allow-Origin', '*'), )),
 )
