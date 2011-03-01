@@ -6,7 +6,7 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllow
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
-# from django.core import serializers
+from django.conf import settings
 
 from utils import AllowJSONPCallback, PutView
 
@@ -14,7 +14,7 @@ from models import Hub, Task, Profile
 import forms
 
 def home(reqeust):
-    f = open("../client/index.html", "r")
+    f = open("%s/index.html" % settings.MEDIA_ROOT, "r")
     return HttpResponse(f.read())
 
 class HubView(PutView):
