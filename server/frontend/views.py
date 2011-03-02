@@ -4,7 +4,7 @@ import json
 from django.shortcuts import render_to_response
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed, Http404
 from django.template import RequestContext
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
 
 from utils.helpers import AllowJSONPCallback, PutView
@@ -40,7 +40,7 @@ class LoginView(PutView):
                 ))
             return self.res
         
-        form = AuthenticationForm(request, data=request.POST)
+        form = AuthenticationForm(request)
         return render_to_response(
             'login.html',
             {
@@ -79,4 +79,22 @@ class LoginView(PutView):
                 },
                 context_instance=RequestContext(request)
                 )
+
+class LogoutView(PutView):
+    http_method_names = ['get',]
+
+    def __init__(self):
+        self.res = HttpResponse(content_type='application/javascript')
     
+    def get(self, request):
+        logout(request)
+        self.res.write(json.dumps(
+            {
+                'logged_out' : True,
+            }
+        ))
+        
+        return self.res
+        
+        
+        
