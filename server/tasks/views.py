@@ -14,7 +14,7 @@ from models import Hub, Task, Profile
 import forms
 
 def home(reqeust):
-    f = open("%s/index.html" % settings.MEDIA_ROOT, "r")
+    f = open("%s/client/index.html" % settings.ROOT_PATH, "r")
     return HttpResponse(f.read())
 
 class HubView(PutView):
