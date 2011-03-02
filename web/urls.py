@@ -6,19 +6,24 @@ from django.contrib import admin
 admin.autodiscover()
 
 urlpatterns = patterns('',
-    # Example:
+    # Uncomment the next line to enable the admin:
+    (r'^admin/', include(admin.site.urls)),
+
+    # Tasks:
     (r'', include('tasks.urls')),
+    
+    # Frontend
+    (r'', include('frontend.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 
-    # Uncomment the next line to enable the admin:
-    (r'^admin/', include(admin.site.urls)),
 )
+
 
 if settings.DEBUG:
   urlpatterns += patterns('django.views',
-      (r'^media/(?P<path>.*)$', 'static.serve',
+      (r'^(?P<path>.*)$', 'static.serve',
       {'document_root': settings.MEDIA_ROOT}),
 
 )

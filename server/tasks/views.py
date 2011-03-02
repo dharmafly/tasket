@@ -8,7 +8,7 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.decorators import login_required
 from django.conf import settings
 
-from utils import AllowJSONPCallback, PutView
+from utils.helpers import AllowJSONPCallback, PutView
 
 from models import Hub, Task, Profile
 import forms

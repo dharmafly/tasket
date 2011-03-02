@@ -1,0 +1,9 @@
+{# For AHAH, so no html or body tags needed. #}
+<form method=POST>
+    {{ form.non_field_errors }}
+    <ul>
+        {% csrf_token %}
+        {{ form.as_ul }}
+    </ul>
+    <input type="submit" name="submit" value="Log In" id="submit">
+</form>
