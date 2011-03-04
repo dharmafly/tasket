@@ -5,17 +5,16 @@ function now(){
     return (new Date()).getTime();
 }
 
-var Tasket = {
-        endpoint: "http://localhost:8003/tasket/server/"
-    },
-    Model, Tasks, Task, TaskStates, Hubs, Hub, User;
+var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User;
+
+Tasket = {
+    endpoint: "http://tasket.ep.io/"
+};
 
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
     url: function() {
-        var base = Tasket.endpoint + this.type;
-        if (this.isNew()) return base;
-        return base + (base.charAt(base.length - 1) == "/" ? "" : "/") + this.id;
+        return this.isNew() ? null : Tasket.endpoint + this.type + "s/" + this.id;
     },
     
     initialize: function(){
@@ -45,6 +44,16 @@ Model = Backbone.Model.extend({
     }
 });
 
+CollectionModel = Backbone.Collection.extend({
+    initialize: function(){
+        this.type = this.model.prototype.type;
+    },
+
+    url: function(){
+        return Tasket.endpoint + this.type + "s/?ids=" + this.pluck("id");
+    }
+});
+
 // TASK STATES
 TaskStates = {
     NEW     : "new",
@@ -56,8 +65,9 @@ TaskStates = {
 // TASK
 Task = Model.extend({
     // required: owner
-    
+        
     type: "task",
+    
     required: ["owner", "hub"], // TODO: decide if hub required
     
     defaults: {
@@ -73,14 +83,15 @@ Task = Model.extend({
 });
 Task.states = TaskStates;
 
-// TASKS
-Tasks = Backbone.Collection.extend({
+// TASKS COLLECTION
+TaskList = CollectionModel.extend({
     model: Task
 });
 
 // HUB
 Hub = Model.extend({
     type: "hub",
+    
     required: ["owner"],
     
     defaults: {
@@ -91,18 +102,19 @@ Hub = Model.extend({
         
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        this.tasks = new Tasks();
+        this.tasks = new TaskList();
     }
 });
 
-// HUBS
-Hubs = Backbone.Collection.extend({
+// HUBS COLLECTION
+HubList = CollectionModel.extend({
     model: Hub
 });
 
 // USER
 User = Model.extend({    
     type: "user",
+    
     required: ["realname"],
     
     defaults: {
@@ -114,13 +126,18 @@ User = Model.extend({
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
         this.hubs = {
-            owned: new Hubs()
+            owned: new HubList()
         };
         this.tasks = {
-            owned:   new Tasks(),
-            claimed: new Tasks()
+            owned:   new TaskList(),
+            claimed: new TaskList()
         };
     }
+});
+
+// USERS COLLECTION
+UserList = CollectionModel.extend({
+    model: User
 });
 
 
@@ -244,10 +261,13 @@ var HubView = Backbone.View.extend({
         var container = this.$("div.tasks > ul"),
             containerHalfWidth = container.outerWidth(true) / 2,
             containerHalfHeight = container.outerHeight(true) / 2,
-            taskHalfWidth, taskHalfHeight,
+            taskWidth, taskHeight, taskHalfWidth, taskHalfHeight,
             angle = ((2 * Math.PI) / this.collection.length),
-            svgElem = this.$("svg"),
+            //svgElem = this.$("svg"),
             distance = 162;
+            
+            // TEMP: show distance boundary
+            container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
             
         this.collection.each(function(task, i){
             var view = new TaskView({model:task}),
@@ -255,12 +275,24 @@ var HubView = Backbone.View.extend({
                 
             container.append(view.render().elem);
             
-            if (!taskHalfWidth){
+            if (!taskWidth){
+                taskWidth  = view.elem.outerWidth(true);
+                taskHeight = view.elem.outerHeight(true);
                 taskHalfWidth  = view.elem.outerWidth(true) / 2;
                 taskHalfHeight = view.elem.outerHeight(true) / 2;
             }
-            top = Math.round(Math.cos(angle * i) * distance - taskHalfHeight - containerHalfHeight + distance);
-            left = Math.round(Math.sin(angle * i) * distance - taskHalfWidth);// + containerHalfWidth - taskHalfWidth
+            top = Math.round(Math.cos(angle * i) * distance) - (distance / 2);
+            left = Math.round(Math.sin(angle * i) * distance) - (distance / 2);
+            
+            /*
+            if (left < 0){
+                left += (left / (distance * 2)) * taskWidth;
+            }
+            else {
+                left += (left / (distance * 2)) * taskWidth * 2;
+            }
+            */
+            
             view.offset({
                 top: top,
                 left: left
@@ -310,7 +342,7 @@ var myHub = new Hub({
             left: 500
         },
         
-        collection: new Tasks([ // TODO: add these to the hub, not the hubview
+        collection: new TaskList([ // TODO: add these to the hub, not the hubview
             {
                 description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
                 owner: {

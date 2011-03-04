@@ -639,14 +639,44 @@ article {
 	position: absolute;
 }
 
-article > div.tasks {
-    position:absolute;
-	width:55em;
-	height:25em;
-	left:-27.5em;
-	top:-12.5em;
+article > img {
+	position: absolute;
+	left: 0;
+	width:2em;
+	height:2em;
+	margin-top: -3.5em;
+	padding: 1.6em;
+	border: 0.8em solid #111;
+	background-color: #aaa;
+	-webkit-border-radius: 4em;
+	-moz-border-radius: 4em;
+	-ms-border-radius: 4em;
+	-o-border-radius: 4em;
+	border-radius: 4em;
 }
 
+article > img.selected {
+	background-image: url(../images/sprites.png);
+	background-repeat: no-repeat;
+	background-position: 5px -235px;
+}
+
+article > hgroup {
+    margin-top:-2em; /* TODO: needs revising, to accommodate varying sizes of text */
+    position:absolute;
+	margin-left: 6em;
+	min-width:10em;
+	padding: 0.769em /* 10px */ 1.538em /* 20px */;
+	background-color: #111;
+	color: #fff;
+}
+
+article > div.tasks {
+    position:absolute;
+	margin-left:3.4em;
+}
+
+/*
 article > div.tasks > svg {
     width:100%;
     height:100%;
@@ -654,6 +684,7 @@ article > div.tasks > svg {
     position:absolute;
     top:0;
 }
+*/
 
 article > div.tasks > ul {
 	margin: 0;
@@ -672,27 +703,8 @@ article > div.tasks > ul > li {
 	border: 0.23075em /* 3px */ solid #aaa;
 	background-color: #fff;
 	height:6.4em; /* TODO: verify */
-}
-
-article > img {
-	position: absolute;
-	top: 50%;
-	left: 0;
-	margin-top: -4em; /* TODO: calculate */
-	padding: 1.6em;
-	border: 0.8em solid #111;
-	background-color: #aaa;
-	-webkit-border-radius: 4em;
-	-moz-border-radius: 4em;
-	-ms-border-radius: 4em;
-	-o-border-radius: 4em;
-	border-radius: 4em;
-}
-
-article > img.selected {
-	background-image: url(../images/sprites.png);
-	background-repeat: no-repeat;
-	background-position: 5px -235px;
+	
+	opacity:0.6;
 }
 
 article > hgroup h1 {
@@ -702,13 +714,6 @@ article > hgroup h1 {
 
 article > hgroup h2 {
 	font-size: 1.077em /* 14px */;
-}
-
-article > hgroup {
-	margin-left: 70px;
-	padding: 0.769em /* 10px */ 1.538em /* 20px */;
-	background-color: #111;
-	color: #fff;
 }
 
 article > hgroup,
