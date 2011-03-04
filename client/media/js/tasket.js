@@ -296,7 +296,7 @@ var HubView = Backbone.View.extend({
 var myHub = new Hub({
         title: "Foo foo foo",
         description: "Lorem ipsum",
-        image: "images/placeholder.png",
+        image: "media/images/placeholder.png",
         owner: "5"
     }),
     
@@ -316,7 +316,7 @@ var myHub = new Hub({
                 owner: {
                     name: 'Another User',
                     url: '#/user/another-user/',
-                    image: 'images/placeholder.png'
+                    image: 'media/images/placeholder.png'
                 },
                 hub:myHub, // TODO: how does this align with a JSON representation, using the id?
                 hasUser: true,
@@ -330,7 +330,7 @@ var myHub = new Hub({
                 owner: {
                     name: 'Current User',
                     url: '#/user/current-user/',
-                    image: 'images/placeholder.png'
+                    image: 'media/images/placeholder.png'
                 },
                 hub:myHub,
                 hasUser: true,
@@ -344,7 +344,7 @@ var myHub = new Hub({
                 owner: {
                     name: 'Current User',
                     url: '#/user/current-user/',
-                    image: 'images/placeholder.png'
+                    image: 'media/images/placeholder.png'
                 },
                 hub:myHub,
                 hasUser: false,
