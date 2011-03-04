@@ -14,7 +14,8 @@ Tasket = {
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
     url: function() {
-        return this.isNew() ? null : Tasket.endpoint + this.type + "s/" + this.id;
+        var base =  Tasket.endpoint + this.type + "s/";
+        return this.isNew() ? base : base + this.id;
     },
     
     initialize: function(){
