@@ -51,7 +51,8 @@ CollectionModel = Backbone.Collection.extend({
     },
 
     url: function(){
-        return Tasket.endpoint + this.type + "s/?ids=" + this.pluck("id");
+        var base = Tasket.endpoint + this.type + "s/";
+        return this.seed && !this.length ? base : base + "?ids=" + this.pluck("id"); // if the page has just loaded, and nothing is yet loaded, then seed this with default objects
     }
 });
 
@@ -69,7 +70,7 @@ Task = Model.extend({
         
     type: "task",
     
-    required: ["owner", "hub"], // TODO: decide if hub required
+    //required: ["owner", "hub"], // TODO: decide if hub required
     
     defaults: {
         description: null,
@@ -93,7 +94,7 @@ TaskList = CollectionModel.extend({
 Hub = Model.extend({
     type: "hub",
     
-    required: ["owner"],
+    //required: ["owner"],
     
     defaults: {
         title: null,
@@ -116,7 +117,7 @@ HubList = CollectionModel.extend({
 User = Model.extend({    
     type: "user",
     
-    required: ["realname"],
+    //required: ["realname"],
     
     defaults: {
         image: null,
@@ -268,7 +269,7 @@ var HubView = Backbone.View.extend({
             distance = 162;
             
             // TEMP: show distance boundary
-            container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
+            container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
             
         this.collection.each(function(task, i){
             var view = new TaskView({model:task}),
@@ -324,7 +325,45 @@ var HubView = Backbone.View.extend({
 /////
 
 
-// Export API
+function createBoard(callback, error){
+    var pending = 0,
+        board;
+        
+    board = new HubList();    
+    board.seed = true;
+    board.fetch({
+        success: function(board, hubs){
+            board.each(function(hub){
+                pending += hub.attributes.tasks.length;
+                
+                /* TODO: Remove this, and use the following commented block, once Issue #18 is resolved */
+                _(hub.attributes.tasks).each(function(taskId){
+                    new Task({id:taskId})
+                        .fetch({
+                            success:function(model, task){ // TODO: create users; check if hubs, tasks and users are already in memory
+                                hub.tasks.add(task);
+                                pending --;
+                                if (!pending){
+                                    callback(board);
+                                }
+                            },
+                            error: error || function(){}
+                        });
+                });
+                
+                /* TODO: This block is more efficient, but depends on an API bug fix: https://github.com/premasagar/tasket/issues#issue/18
+                _(hub.attributes.tasks).each(function(taskId){
+                    hub.tasks.add({id:taskId});
+                });
+                hub.tasks.fetch({success:O});
+                */
+            });
+        },
+        error: error || function(){}
+    });
+}
+createBoard(O);
+
 
 var myHub = new Hub({
         title: "Foo foo foo",
