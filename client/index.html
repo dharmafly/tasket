@@ -18,6 +18,10 @@
 	<link rel="stylesheet" href="media/css/global.css?v0.1" />
 </head>
 <body>
+	<div class="notification error">
+		<div class="notification-content">Sorry the previous action failed</div>
+		<button class="close">Close</button>
+	</div>
 	<div class="header-container">
 		<header>
 			<h1>Tasket</h1>
@@ -559,7 +563,8 @@
 					})
 				})
 			};
-            /*
+        
+			/*
 			$.each(details, function (selector, html) {
 				var detail = $(html).appendTo('.dashboard').hide();
 

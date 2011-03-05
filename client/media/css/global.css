@@ -1225,3 +1225,191 @@ article .meta img {
 }
 
 /* @end */
+
+/* @group Notification
+-----------------------------------------------------------------------------*/
+
+.notification {
+	position: fixed;
+	height: 36px;
+	top: -38px;
+	left: 0;
+	right: 0;
+	padding: 0 20px;
+	overflow: hidden;
+	z-index: 100;
+	background-color: rgb(25, 141, 6);
+	background-image: url(../images/notification_stripes.png);
+	background-repeat: repeat-x;
+	background-position: bottom left;
+	background-image: url(../images/notification_stripes.png),
+	-webkit-gradient(
+		linear, left top, left bottom, 
+		color-stop(0,   rgb(72, 164, 12)),
+		color-stop(0.5, rgb(57, 156, 19)),
+		color-stop(0.5, rgb(44, 150, 6)),
+		color-stop(1,   rgb(25, 141, 6))
+	);
+	background-image: url(../images/notification_stripes.png),
+	-moz-linear-gradient(
+	    -90deg,
+	    rgb(72, 164, 12),
+		rgb(57, 156, 19) 50%,
+		rgb(44, 150, 6)  50%,
+		rgb(25, 141, 6)
+	);
+	background-image: url(../images/notification_stripes.png),
+	-webkit-linear-gradient(
+	    -90deg,
+	    rgb(72, 164, 12),
+		rgb(57, 156, 19) 50%,
+		rgb(44, 150, 6)  50%,
+		rgb(25, 141, 6)
+	);
+	background-image: url(../images/notification_stripes.png),
+	linear-gradient(
+	    -90deg,
+	    rgb(72, 164, 12),
+		rgb(57, 156, 19) 50%,
+		rgb(44, 150, 6)  50%,
+		rgb(25, 141, 6)
+	);
+	border-top: 1px solid rgb(90, 189, 26);
+	border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+	-webkit-box-shadow:0 1px 0 rgba(0, 0, 0, 0.2);
+}
+
+.notification.warning {
+	background-color: rgb(216, 145, 0);
+	background-image: url(../images/notification_stripes.png),
+	-webkit-gradient(
+		linear, left top, left bottom, 
+		color-stop(0,   rgb(242, 173, 13)),
+		color-stop(0.5, rgb(231, 167, 26)),
+		color-stop(0.5, rgb(227, 156, 0)),
+		color-stop(1,   rgb(216, 145, 0))
+	);
+	background-image: url(../images/notification_stripes.png),
+	-moz-linear-gradient(
+	    -90deg,
+	    rgb(242, 173, 13),
+		rgb(231, 167, 26) 50%,
+		rgb(227, 156, 0)  50%,
+		rgb(216, 145, 0)
+	);
+	background-image: url(../images/notification_stripes.png),
+	-webkit-linear-gradient(
+	    -90deg,
+	    rgb(242, 173, 13),
+		rgb(231, 167, 26) 50%,
+		rgb(227, 156, 0)  50%,
+		rgb(216, 145, 0)
+	);
+	background-image: url(../images/notification_stripes.png),
+	linear-gradient(
+	    -90deg,
+	    rgb(242, 173, 13),
+		rgb(231, 167, 26) 50%,
+		rgb(227, 156, 0)  50%,
+		rgb(216, 145, 0)
+	);
+	border-top: 1px solid rgb(254, 197, 64);
+}
+
+.notification.error {
+	background-color: rgb(184, 26, 26);
+	background-image: url(../images/notification_stripes.png),
+	-webkit-gradient(
+		linear, left top, left bottom, 
+		color-stop(0,   rgb(211, 66, 66)),
+		color-stop(0.5, rgb(202, 62, 62)),
+		color-stop(0.5, rgb(195, 39, 39)),
+		color-stop(1,   rgb(184, 26, 26))
+	);
+	background-image: url(../images/notification_stripes.png),
+	-moz-linear-gradient(
+	    -90deg,
+		rgb(211, 66, 66),
+		rgb(202, 62, 62) 50%,
+		rgb(195, 39, 39) 50%,
+		rgb(184, 26, 26)
+	);
+	background-image: url(../images/notification_stripes.png),
+	-webkit-linear-gradient(
+	    -90deg,
+	    rgb(242, 173, 13),
+		rgb(231, 167, 26) 50%,
+		rgb(227, 156, 0)  50%,
+		rgb(216, 145, 0)
+	);
+	background-image: url(../images/notification_stripes.png),
+	linear-gradient(
+	    -90deg,
+	    rgb(242, 173, 13),
+		rgb(231, 167, 26) 50%,
+		rgb(227, 156, 0)  50%,
+		rgb(216, 145, 0)
+	);
+	border-top: 1px solid rgb(221, 102, 102);
+}
+
+.notification .notification-content {
+	display: inline-block;
+	font-size: 12px;
+	font-weight: bold;
+	line-height: 37px;
+	color: rgb(255, 255, 255);
+	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
+	padding: 0 4px 0 24px;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	-o-box-sizing: border-box;
+	box-sizing: border-box;
+	margin: auto;
+	background: url(../images/notification_icons.png) no-repeat 0 -83px;
+}
+
+.notification.warning .notification-content,
+.notification.error .notification-content  {
+	background: url(../images/notification_icons.png) no-repeat 0 -35px;
+}
+
+.notification .close {
+	position: absolute;
+	top: 10px;
+	right: 20px;
+	width: 15px;
+	height: 15px;
+	min-height: 0;
+	padding: 0;
+	text-indent: -900em;
+	border: none;
+	background: transparent url(../images/notification_icons.png) repeat-x top left;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
+}
+
+.dashboard,
+.notification,
+.header-container {
+	-webkit-transition: top 0.25s ease-out;
+	-moz-transition: top 0.25s ease-out;
+	-o-transition: top 0.25s ease-out;
+	transition: top 0.25s ease-out;
+}
+
+.show-notification .notification {
+	top: 0;
+}
+
+.show-notification .header-container {
+	top: 38px;
+}
+
+.show-notification .dashboard {
+	top: 78px;
+}
+
+/* @end*/
