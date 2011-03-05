@@ -156,6 +156,7 @@ Tasket = {
     
     // Helper function for fetching multiple collections and models in one go, with a callback on completion
     fetchAndAdd: function fetchAndAdd(ids, collection, callback){
+        // Keep track of fetched collections, and trigger event on completion
         function callbackIfComplete(){
             if (!--fetchAndAdd.pending){
                 Tasket.notifier.trigger("fetchComplete", true);
@@ -165,10 +166,12 @@ Tasket = {
     
         var changedIds = [],
             fetchOptions = {
+                // Trigger event on error
                 error: function(){
                     Tasket.notifier.trigger("fetchError", false);
                     Tasket.notifier.unbind("fetchComplete");
                 },
+                // Send supplied callback, and final trigger on completion
                 success: callback ?
                     function(model, instance){
                         callback(model, instance);
@@ -177,13 +180,17 @@ Tasket = {
                     callbackIfComplete
             };
         
+        // Start counting
         if (_.isUndefined(fetchAndAdd.pending)){
             fetchAndAdd.pending = 0;
         }
+        
+        // Accept a single id, or array of ids
         if (!_.isArray(ids)){
             ids = [ids];
         }
         
+        // Add each id to the collection
         _.each(ids, function(id){
             if (!collection.get(id)){
                 changedIds.push(id);
@@ -193,12 +200,15 @@ Tasket = {
             }
         });
         
-        if (changedIds.length){ // TODO: only fetch subset of models just added
+        // Fetch the whole collection
+         // TODO: only fetch subset of models just added
+        if (changedIds.length){
             fetchAndAdd.pending ++;
             collection.fetch(fetchOptions);
         }
     },
     
+    // Bootstrap data on page load: fetch all open hubs, their owners and tasks, and the users involved in those tasks
     initData: function(callback){
         var pending = 0,
             hubs = this.hubs,
@@ -207,9 +217,19 @@ Tasket = {
             fetchAndAdd = this.fetchAndAdd,
             fetchOptions = {
                 success: function(){
-                    fetchAndAdd(hubs.pluck("owner"), users);
                     fetchAndAdd(hubs.pluck("tasks"), tasks, function(){
-                        fetchAndAdd(tasks.pluck("owner"), users);
+                        var usersToFetch = _([
+                                hubs.pluck("owner"),
+                                tasks.pluck("owner"),
+                                tasks.pluck("claimedBy")
+                            ])
+                            .chain()
+                            .flatten()
+                            .unique()
+                            .compact()
+                            .value();
+                            
+                        fetchAndAdd(usersToFetch, users);
                     });
                 }
             };
