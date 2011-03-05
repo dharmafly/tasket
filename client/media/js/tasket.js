@@ -5,11 +5,7 @@ function now(){
     return (new Date()).getTime();
 }
 
-var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User;
-
-Tasket = {
-    endpoint: "http://tasket.ep.io/"
-};
+var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList;
 
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
@@ -31,7 +27,8 @@ Model = Backbone.Model.extend({
     validate: function(attrs) {
         var missing, report;
     
-        if (this.required){
+        // Validate if this is not a stub of a model with just an id - i.e. only on creating from scratch
+        if (!this.id && this.required){
             missing = _.select(this.required, function(property){
                 return _.isUndefined(this.get(property));
             }, this);
@@ -52,7 +49,8 @@ CollectionModel = Backbone.Collection.extend({
 
     url: function(){
         var base = Tasket.endpoint + this.type + "s/";
-        return this.seed && !this.length ? base : base + "?ids=" + this.pluck("id"); // if the page has just loaded, and nothing is yet loaded, then seed this with default objects
+        // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
+        return this.seed && !this.length ? base : base + "?ids=" + this.pluck("id");
     }
 });
 
@@ -70,7 +68,7 @@ Task = Model.extend({
         
     type: "task",
     
-    //required: ["owner", "hub"], // TODO: decide if hub required
+    required: ["owner", "hub"], // TODO: decide if hub required
     
     defaults: {
         description: null,
@@ -94,7 +92,7 @@ TaskList = CollectionModel.extend({
 Hub = Model.extend({
     type: "hub",
     
-    //required: ["owner"],
+    required: ["owner"],
     
     defaults: {
         title: null,
@@ -117,7 +115,7 @@ HubList = CollectionModel.extend({
 User = Model.extend({    
     type: "user",
     
-    //required: ["realname"],
+    required: ["realname"],
     
     defaults: {
         image: null,
@@ -141,6 +139,95 @@ User = Model.extend({
 UserList = CollectionModel.extend({
     model: User
 });
+
+
+/////
+
+
+// TASKET OBJECT
+Tasket = {
+    endpoint: "http://tasket.ep.io/",
+    
+    hubs: new HubList(),
+    tasks: new TaskList(),
+    users: new UserList(),
+    
+    notifier: _.extend({}, Backbone.Events),
+    
+    // Helper function for fetching multiple collections and models in one go, with a callback on completion
+    fetchAndAdd: function fetchAndAdd(ids, collection, callback){
+        function callbackIfComplete(){
+            if (!--fetchAndAdd.pending){
+                Tasket.notifier.trigger("fetchComplete", true);
+                Tasket.notifier.unbind("fetchComplete");
+            }
+        }
+    
+        var changedIds = [],
+            fetchOptions = {
+                error: function(){
+                    Tasket.notifier.trigger("fetchError", false);
+                    Tasket.notifier.unbind("fetchComplete");
+                },
+                success: callback ?
+                    function(model, instance){
+                        callback(model, instance);
+                        callbackIfComplete();
+                    } :
+                    callbackIfComplete
+            };
+        
+        if (_.isUndefined(fetchAndAdd.pending)){
+            fetchAndAdd.pending = 0;
+        }
+        if (!_.isArray(ids)){
+            ids = [ids];
+        }
+        
+        _.each(ids, function(id){
+            if (!collection.get(id)){
+                changedIds.push(id);
+                collection.add(
+                    new collection.model({id:id})
+                );
+            }
+        });
+        
+        if (changedIds.length){ // TODO: only fetch subset of models just added
+            fetchAndAdd.pending ++;
+            collection.fetch(fetchOptions);
+        }
+    },
+    
+    initData: function(callback){
+        var pending = 0,
+            hubs = this.hubs,
+            tasks = this.tasks,
+            users = this.users,
+            fetchAndAdd = this.fetchAndAdd,
+            fetchOptions = {
+                success: function(){
+                    fetchAndAdd(hubs.pluck("owner"), users);
+                    fetchAndAdd(hubs.pluck("tasks"), tasks, function(){
+                        fetchAndAdd(tasks.pluck("owner"), users);
+                    });
+                }
+            };
+        
+        if (callback){            
+            fetchOptions.error = function(){
+                callback(false);
+            };
+            Tasket.notifier.bind("fetchComplete", callback);
+        }
+            
+        hubs.seed = true;
+        hubs.fetch(fetchOptions);
+                
+        return this;
+    }
+};
+
 
 
 /////
@@ -325,44 +412,7 @@ var HubView = Backbone.View.extend({
 /////
 
 
-function createBoard(callback, error){
-    var pending = 0,
-        board;
-        
-    board = new HubList();    
-    board.seed = true;
-    board.fetch({
-        success: function(board, hubs){
-            board.each(function(hub){
-                pending += hub.attributes.tasks.length;
-                
-                /* TODO: Remove this, and use the following commented block, once Issue #18 is resolved */
-                _(hub.attributes.tasks).each(function(taskId){
-                    new Task({id:taskId})
-                        .fetch({
-                            success:function(model, task){ // TODO: create users; check if hubs, tasks and users are already in memory
-                                hub.tasks.add(task);
-                                pending --;
-                                if (!pending){
-                                    callback(board);
-                                }
-                            },
-                            error: error || function(){}
-                        });
-                });
-                
-                /* TODO: This block is more efficient, but depends on an API bug fix: https://github.com/premasagar/tasket/issues#issue/18
-                _(hub.attributes.tasks).each(function(taskId){
-                    hub.tasks.add({id:taskId});
-                });
-                hub.tasks.fetch({success:O});
-                */
-            });
-        },
-        error: error || function(){}
-    });
-}
-createBoard(O);
+Tasket.initData(O);
 
 
 var myHub = new Hub({
