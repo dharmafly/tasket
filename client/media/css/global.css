@@ -1231,8 +1231,8 @@ article .meta img {
 
 .notification {
 	position: fixed;
-	height: 36px;
-	top: -38px;
+	height: 2.769em; /* 36px */
+	top: -2.923em; /* 38px */
 	left: 0;
 	right: 0;
 	padding: 0 20px;
@@ -1331,9 +1331,9 @@ article .meta img {
 
 .notification .notification-content {
 	display: inline-block;
-	font-size: 12px;
+	font-size: 0.923em /* 12px */;
 	font-weight: bold;
-	line-height: 37px;
+	line-height: 2.846em /* 37px */;
 	color: rgb(255, 255, 255);
 	text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.4);
 	padding: 0 4px 0 24px;
@@ -1352,7 +1352,7 @@ article .meta img {
 
 .notification .close {
 	position: absolute;
-	top: 10px;
+	top: 0.769em /* 10px */;
 	right: 20px;
 	width: 15px;
 	height: 15px;
@@ -1381,11 +1381,11 @@ article .meta img {
 }
 
 .show-notification .header-container {
-	top: 38px;
+	top: 2.923em /* 38px */;
 }
 
 .show-notification .dashboard {
-	top: 78px;
+	top: 6em /* 72px */;
 }
 
 /* @end*/
