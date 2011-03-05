@@ -5,7 +5,7 @@ function now(){
     return (new Date()).getTime();
 }
 
-var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList;
+var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification;
 
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
@@ -428,6 +428,73 @@ var HubView = Backbone.View.extend({
     }
 });
 
+// NOTIFICATION
+
+Notification = Backbone.View.extend({
+    tagName: "div",
+
+    className: "notification",
+
+    events: {
+        'click .close': 'hide'
+    },
+
+    initialize: function () {
+        this.elem = $(this.el);
+        this.render();
+        _.bindAll(this, "_onKeyPress");
+    },
+
+    render: function () {
+        this.elem.html('<div class="notification-content"></div><button class="close">Close</button>');
+        return this;
+    },
+
+    message: function (message, status) {
+        this.elem.find(".notification-content").html(message);
+        return this.status(status);
+    },
+
+    status: function (status) {
+        var notification = this.elem;
+        
+        status = status || Notification.status.SUCCESS;
+        
+        if (!notification.hasClass(status)) {
+            $.each(Notification.status, function (key, value) {
+                notification.removeClass(value);
+            });
+            notification.addClass(status);
+        }
+        return this;
+    },
+
+    show: function (message, status) {
+        this.message(message, status);
+        
+        $(window).bind('keyup', this._onKeyPress);
+        $(document.body).addClass('show-notification');
+        return this;
+    },
+
+    hide: function () {
+        $(window).unbind('keyup', this._onKeyPress);
+        $(document.body).removeClass('show-notification');
+        return this;
+    },
+
+    _onKeyPress: function (event) {
+        if (event.keyCode === 27) {
+            this.hide();
+        }
+    }
+});
+
+Notification.status = {
+    ERROR:   "error",
+    WARNING: "warning",
+    SUCCESS: "success"
+};
 
 /////
 
@@ -498,5 +565,7 @@ var myHub = new Hub({
         ])
     });
 
-jQuery("body").append(myHubView.elem);
+var notification = new Notification();
+
+jQuery("body").append(myHubView.elem).prepend(notification.elem);
 myHubView.render();

@@ -1259,14 +1259,6 @@ article .meta img {
 		rgb(25, 141, 6)
 	);
 	background-image: url(../images/notification_stripes.png),
-	-webkit-linear-gradient(
-	    -90deg,
-	    rgb(72, 164, 12),
-		rgb(57, 156, 19) 50%,
-		rgb(44, 150, 6)  50%,
-		rgb(25, 141, 6)
-	);
-	background-image: url(../images/notification_stripes.png),
 	linear-gradient(
 	    -90deg,
 	    rgb(72, 164, 12),
@@ -1291,14 +1283,6 @@ article .meta img {
 	);
 	background-image: url(../images/notification_stripes.png),
 	-moz-linear-gradient(
-	    -90deg,
-	    rgb(242, 173, 13),
-		rgb(231, 167, 26) 50%,
-		rgb(227, 156, 0)  50%,
-		rgb(216, 145, 0)
-	);
-	background-image: url(../images/notification_stripes.png),
-	-webkit-linear-gradient(
 	    -90deg,
 	    rgb(242, 173, 13),
 		rgb(231, 167, 26) 50%,
@@ -1335,20 +1319,12 @@ article .meta img {
 		rgb(184, 26, 26)
 	);
 	background-image: url(../images/notification_stripes.png),
-	-webkit-linear-gradient(
-	    -90deg,
-	    rgb(242, 173, 13),
-		rgb(231, 167, 26) 50%,
-		rgb(227, 156, 0)  50%,
-		rgb(216, 145, 0)
-	);
-	background-image: url(../images/notification_stripes.png),
 	linear-gradient(
 	    -90deg,
-	    rgb(242, 173, 13),
-		rgb(231, 167, 26) 50%,
-		rgb(227, 156, 0)  50%,
-		rgb(216, 145, 0)
+		rgb(211, 66, 66),
+		rgb(202, 62, 62) 50%,
+		rgb(195, 39, 39) 50%,
+		rgb(184, 26, 26)
 	);
 	border-top: 1px solid rgb(221, 102, 102);
 }
