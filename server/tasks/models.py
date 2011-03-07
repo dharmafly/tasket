@@ -72,7 +72,7 @@ class Task(models.Model):
         return self.description[:10]
     
     def created_timestamp(self):
-        return time.mktime(self.createdTime.timetuple())
+        return int(time.mktime(self.createdTime.timetuple()))
     
 
     def as_dict(self):
@@ -142,7 +142,7 @@ class Hub(models.Model):
         ordering = ('-id',)
 
     def created_timestamp(self):
-        return time.mktime(self.createdTime.timetuple())
+        return int(time.mktime(self.createdTime.timetuple()))
 
     def as_dict(self):
         """
@@ -187,7 +187,7 @@ class Profile(models.Model):
         return u"%s" % self.realname
 
     def created_timestamp(self):
-        return time.mktime(self.createdTime.timetuple())
+        return int(time.mktime(self.createdTime.timetuple()))
 
     def as_dict(self):
         obj_dict = {
