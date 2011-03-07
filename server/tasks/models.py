@@ -83,11 +83,11 @@ class Task(models.Model):
         
         """
         obj_dict = {
-            "id": self.pk,
+            "id": str(self.pk),
             "description": self.description,
             "estimate": self.estimate,
             "state" : self.state,
-            "owner" : self.owner.pk,
+            "owner" : str(self.owner.pk),
             "claimedBy" : None,
             "verifiedBy" : None,
             "createdTime" : self.created_timestamp(),
@@ -97,9 +97,9 @@ class Task(models.Model):
         if self.image:
             obj_dict["image"] = self.image.url
         if self.claimedBy:
-            obj_dict["claimedBy"] = self.claimedBy.pk
+            obj_dict["claimedBy"] = str(self.claimedBy.pk)
         if self.verifiedBy:
-            obj_dict["verifiedBy"] = self.verifiedBy.pk
+            obj_dict["verifiedBy"] = str(self.verifiedBy.pk)
         
         return obj_dict
 
@@ -151,11 +151,11 @@ class Hub(models.Model):
         Handy for outputting related objects as a list, etc.
         """
         obj_dict = {
-            "id": self.pk,
+            "id": str(self.pk),
             "title": self.title,
             "description": self.description,
             "owner": self.owner.pk,
-            "tasks": [t.pk for t in self.task_set.all()],
+            "tasks": [str(t.pk) for t in self.task_set.all()],
             "createdTime": self.created_timestamp(),
         }
         
@@ -191,18 +191,18 @@ class Profile(models.Model):
 
     def as_dict(self):
         obj_dict = {
-            "id": self.user.pk,
+            "id": str(self.user.pk),
             "realname": self.realname,
             "description": self.description,
             "location": self.location,
             "hubs": {
-                "owned": [h.pk for h in self.owned_hubs.all()],
+                "owned": [str(h.pk) for h in self.owned_hubs.all()],
                 },
             "tasks": {
-                "owned": [t.pk for t in self.tasks_owned.all()],
-                "claimed": [t.pk for t in self.tasks_claimed.all()],
-                "done": [t.pk for t in self.tasks_claimed.filter(verifiedBy__isnull=False)],
-                "verified": [t.pk for t in self.tasks_verified.all()],
+                "owned": [str(t.pk) for t in self.tasks_owned.all()],
+                "claimed": [str(t.pk) for t in self.tasks_claimed.all()],
+                "done": [str(t.pk) for t in self.tasks_claimed.filter(verifiedBy__isnull=False)],
+                "verified": [str(t.pk) for t in self.tasks_verified.all()],
             },            
             "createdTime": self.created_timestamp(),
         }
