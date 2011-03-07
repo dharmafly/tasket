@@ -128,7 +128,7 @@ class TasksView(PutView):
         if task_id:
             return self.get_single(request, task_id)
         
-        tasks = Task.objects.filter(verifiedBy=None)
+        tasks = Task.objects.all()
         
         if 'ids' in request.GET:
             ids = request.GET['ids']

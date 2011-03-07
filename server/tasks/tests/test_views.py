@@ -98,7 +98,7 @@ class ViewTests(TestCase):
     def test_task_get(self):
         response = self.client.get('/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 2)
+        self.assertEqual(len(json_data), 4)
     
     def test_task_get_single(self):
         response = self.client.get('/tasks/3/')
@@ -106,9 +106,9 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['description'].startswith("This is"), True)
     
     def test_task_get_by_id(self):
-        response = self.client.get('/tasks/?ids=6,7')
+        response = self.client.get('/tasks/?ids=4,5')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 1)
+        self.assertEqual(len(json_data), 2)
     
     def test_task_create(self):
         self.client.login(username='TestUser', password='12345')
