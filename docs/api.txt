@@ -1,16 +1,19 @@
 Tasket API
 
+Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hubs/3/tasks?page=2&per_page=10
+
+
 Hubs
 ----
 
 /hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
 /hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma delimited list of ids)
 /hubs/                  # POST:  Creates a hub (responds with new id & createdTime eg.
-                        #        {"id": "hub_id", "createdTime": 1298567873})
+                                     {"id": "hub_id", "createdTime": 1298567873})
 /hubs/:id               # GET:   Gets a single hub for :id
 /hubs/:id               # PUT:   Updates a single hub for :id
 /hubs/:id               # DELETE Deletes a single hub for :id
-/hubs/:id/tasks         # GET    Gets page one of unverified tasks
+/hubs/:id/tasks         # GET    Gets array of all unverified tasks for this hub
 
 Hub Model Data
 --------------

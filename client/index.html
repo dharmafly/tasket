@@ -34,7 +34,7 @@
 					</li> -->
 				</ul>
 			</nav>
-			<h2><img src="images/placeholder.png" width="16" height="16" alt="Current User’ avatar" /> Current User</h2>
+			<h2><img src="media/images/placeholder.png" width="16" height="16" alt="Current User’ avatar" /> Current User</h2>
 			<div class="tasks">
 				<h3>Tasks</h3>
 				<dl>
@@ -90,7 +90,7 @@
 		</section>
 		<footer>
 			<p class="statistics">
-				<img src="images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
+				<img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
 				<em>2,030</em> tasks done by everyone</p>
 			<nav>
 				<ul>
@@ -119,8 +119,6 @@
 		    <h2>{{description}}</h2>
 	    </hgroup>
 	    <div class="tasks">
-	        <svg xmlns="http://www.w3.org/2000/svg" version="1.1">
-	        </svg>
 	        <ul></ul>
 	    </div>
 	</script>
@@ -523,7 +521,7 @@
 					content: tim('dashboard-detail-project', {
 						name: 'Project Name',
 						slug: 'project-name',
-						image: 'images/placeholder.png',
+						image: 'media/images/placeholder.png',
 						organisation: 'The Organisation',
 						tags: [
 							{name:'red', slug: 'red'},
@@ -541,7 +539,7 @@
 					title: 'Another User',
 					content: tim('dashboard-detail-user', {
 						name: 'Bilbo Baggins',
-						image: 'images/placeholder.png',
+						image: 'media/images/placeholder.png',
 						location: 'The Shire, Middle Earth',
 						projects: [
 							{title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
@@ -561,7 +559,8 @@
 					})
 				})
 			};
-            /*
+
+			/*
 			$.each(details, function (selector, html) {
 				var detail = $(html).appendTo('.dashboard').hide();
 

@@ -1,0 +1,16 @@
+{
+    "id": "6",
+    "description": "This is a task description, it should contain a few sentences detailing the nature of the task.",
+    "owner": {
+        "name": 'Another User',
+        "url": '#/user/another-user/',
+        "image": 'images/placeholder.png'
+    },
+    "hasUser": true,
+    "isOwner": false,
+    "isNotOwner": true,
+    "showTakeThisButton": false,
+    "showDoneThisButton": false,
+    "owner":2,
+    "hub":3
+}

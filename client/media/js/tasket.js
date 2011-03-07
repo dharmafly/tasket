@@ -5,17 +5,13 @@ function now(){
     return (new Date()).getTime();
 }
 
-var Tasket = {
-        endpoint: "http://localhost:8003/tasket/server/"
-    },
-    Model, Tasks, Task, TaskStates, Hubs, Hub, User;
+var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification;
 
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
     url: function() {
-        var base = Tasket.endpoint + this.type;
-        if (this.isNew()) return base;
-        return base + (base.charAt(base.length - 1) == "/" ? "" : "/") + this.id;
+        var base =  Tasket.endpoint + this.type + "s/";
+        return this.isNew() ? base : base + this.id;
     },
     
     initialize: function(){
@@ -31,7 +27,8 @@ Model = Backbone.Model.extend({
     validate: function(attrs) {
         var missing, report;
     
-        if (this.required){
+        // Validate if this is not a stub of a model with just an id - i.e. only on creating from scratch
+        if (!this.id && this.required){
             missing = _.select(this.required, function(property){
                 return _.isUndefined(this.get(property));
             }, this);
@@ -42,6 +39,18 @@ Model = Backbone.Model.extend({
                 //return report;
             }
         }
+    }
+});
+
+CollectionModel = Backbone.Collection.extend({
+    initialize: function(){
+        this.type = this.model.prototype.type;
+    },
+
+    url: function(){
+        var base = Tasket.endpoint + this.type + "s/";
+        // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
+        return this.seed && !this.length ? base : base + "?ids=" + this.pluck("id");
     }
 });
 
@@ -56,8 +65,9 @@ TaskStates = {
 // TASK
 Task = Model.extend({
     // required: owner
-    
+        
     type: "task",
+    
     required: ["owner", "hub"], // TODO: decide if hub required
     
     defaults: {
@@ -73,14 +83,15 @@ Task = Model.extend({
 });
 Task.states = TaskStates;
 
-// TASKS
-Tasks = Backbone.Collection.extend({
+// TASKS COLLECTION
+TaskList = CollectionModel.extend({
     model: Task
 });
 
 // HUB
 Hub = Model.extend({
     type: "hub",
+    
     required: ["owner"],
     
     defaults: {
@@ -91,18 +102,19 @@ Hub = Model.extend({
         
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        this.tasks = new Tasks();
+        this.tasks = new TaskList();
     }
 });
 
-// HUBS
-Hubs = Backbone.Collection.extend({
+// HUBS COLLECTION
+HubList = CollectionModel.extend({
     model: Hub
 });
 
 // USER
 User = Model.extend({    
     type: "user",
+    
     required: ["realname"],
     
     defaults: {
@@ -114,14 +126,128 @@ User = Model.extend({
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
         this.hubs = {
-            owned: new Hubs()
+            owned: new HubList()
         };
         this.tasks = {
-            owned:   new Tasks(),
-            claimed: new Tasks()
+            owned:   new TaskList(),
+            claimed: new TaskList()
         };
     }
 });
+
+// USERS COLLECTION
+UserList = CollectionModel.extend({
+    model: User
+});
+
+
+/////
+
+
+// TASKET OBJECT
+Tasket = {
+    endpoint: "http://tasket.ep.io/",
+    
+    hubs: new HubList(),
+    tasks: new TaskList(),
+    users: new UserList(),
+    
+    notifier: _.extend({}, Backbone.Events),
+    
+    // Helper function for fetching multiple collections and models in one go, with a callback on completion
+    fetchAndAdd: function fetchAndAdd(ids, collection, callback){
+        // Keep track of fetched collections, and trigger event on completion
+        function callbackIfComplete(){
+            if (!--fetchAndAdd.pending){
+                Tasket.notifier.trigger("fetchComplete", true);
+                Tasket.notifier.unbind("fetchComplete");
+            }
+        }
+    
+        var changedIds = [],
+            fetchOptions = {
+                // Trigger event on error
+                error: function(){
+                    Tasket.notifier.trigger("fetchError", false);
+                    Tasket.notifier.unbind("fetchComplete");
+                },
+                // Send supplied callback, and final trigger on completion
+                success: callback ?
+                    function(model, instance){
+                        callback(model, instance);
+                        callbackIfComplete();
+                    } :
+                    callbackIfComplete
+            };
+        
+        // Start counting
+        if (_.isUndefined(fetchAndAdd.pending)){
+            fetchAndAdd.pending = 0;
+        }
+        
+        // Accept a single id, or array of ids
+        if (!_.isArray(ids)){
+            ids = [ids];
+        }
+        
+        // Add each id to the collection
+        _.each(ids, function(id){
+            if (!collection.get(id)){
+                changedIds.push(id);
+                collection.add(
+                    new collection.model({id:id})
+                );
+            }
+        });
+        
+        // Fetch the whole collection
+         // TODO: only fetch subset of models just added
+        if (changedIds.length){
+            fetchAndAdd.pending ++;
+            collection.fetch(fetchOptions);
+        }
+    },
+    
+    // Bootstrap data on page load: fetch all open hubs, their owners and tasks, and the users involved in those tasks
+    initData: function(callback){
+        var pending = 0,
+            hubs = this.hubs,
+            tasks = this.tasks,
+            users = this.users,
+            fetchAndAdd = this.fetchAndAdd,
+            fetchOptions = {
+                success: function(){
+                    fetchAndAdd(hubs.pluck("tasks"), tasks, function(){
+                        var usersToFetch = _([
+                                hubs.pluck("owner"),
+                                tasks.pluck("owner"),
+                                tasks.pluck("claimedBy")
+                            ])
+                            .chain()
+                            .flatten()
+                            .unique()
+                            .compact()
+                            .value();
+                            
+                        fetchAndAdd(usersToFetch, users);
+                    });
+                }
+            };
+        
+        if (callback){            
+            fetchOptions.error = function(){
+                callback(false);
+            };
+            Tasket.notifier.bind("fetchComplete", callback);
+        }
+            
+        hubs.seed = true;
+        hubs.fetch(fetchOptions);
+                
+        return this;
+    }
+};
+
 
 
 /////
@@ -244,10 +370,13 @@ var HubView = Backbone.View.extend({
         var container = this.$("div.tasks > ul"),
             containerHalfWidth = container.outerWidth(true) / 2,
             containerHalfHeight = container.outerHeight(true) / 2,
-            taskHalfWidth, taskHalfHeight,
+            taskWidth, taskHeight, taskHalfWidth, taskHalfHeight,
             angle = ((2 * Math.PI) / this.collection.length),
-            svgElem = this.$("svg"),
+            //svgElem = this.$("svg"),
             distance = 162;
+            
+            // TEMP: show distance boundary
+            container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
             
         this.collection.each(function(task, i){
             var view = new TaskView({model:task}),
@@ -255,12 +384,24 @@ var HubView = Backbone.View.extend({
                 
             container.append(view.render().elem);
             
-            if (!taskHalfWidth){
+            if (!taskWidth){
+                taskWidth  = view.elem.outerWidth(true);
+                taskHeight = view.elem.outerHeight(true);
                 taskHalfWidth  = view.elem.outerWidth(true) / 2;
                 taskHalfHeight = view.elem.outerHeight(true) / 2;
             }
-            top = Math.round(Math.cos(angle * i) * distance - taskHalfHeight - containerHalfHeight + distance);
-            left = Math.round(Math.sin(angle * i) * distance - taskHalfWidth);// + containerHalfWidth - taskHalfWidth
+            top = Math.round(Math.cos(angle * i) * distance) - (distance / 2);
+            left = Math.round(Math.sin(angle * i) * distance) - (distance / 2);
+            
+            /*
+            if (left < 0){
+                left += (left / (distance * 2)) * taskWidth;
+            }
+            else {
+                left += (left / (distance * 2)) * taskWidth * 2;
+            }
+            */
+            
             view.offset({
                 top: top,
                 left: left
@@ -287,16 +428,84 @@ var HubView = Backbone.View.extend({
     }
 });
 
+// NOTIFICATION
+
+Notification = Backbone.View.extend({
+    tagName: "div",
+
+    className: "notification",
+
+    events: {
+        'click .close': 'hide'
+    },
+
+    initialize: function () {
+        this.elem = $(this.el);
+        this.render();
+        _.bindAll(this, "_onKeyPress");
+    },
+
+    render: function () {
+        this.elem.html('<div class="notification-content"></div><button class="close">Close</button>');
+        return this;
+    },
+
+    message: function (message, status) {
+        this.elem.find(".notification-content").html(message);
+        return this.status(status);
+    },
+
+    status: function (status) {
+        var notification = this.elem;
+        
+        status = status || Notification.status.SUCCESS;
+        
+        if (!notification.hasClass(status)) {
+            $.each(Notification.status, function (key, value) {
+                notification.removeClass(value);
+            });
+            notification.addClass(status);
+        }
+        return this;
+    },
+
+    show: function (message, status) {
+        this.message(message, status);
+        
+        $(window).bind('keyup', this._onKeyPress);
+        $(document.body).addClass('show-notification');
+        return this;
+    },
+
+    hide: function () {
+        $(window).unbind('keyup', this._onKeyPress);
+        $(document.body).removeClass('show-notification');
+        return this;
+    },
+
+    _onKeyPress: function (event) {
+        if (event.keyCode === 27) {
+            this.hide();
+        }
+    }
+});
+
+Notification.status = {
+    ERROR:   "error",
+    WARNING: "warning",
+    SUCCESS: "success"
+};
 
 /////
 
 
-// Export API
+Tasket.initData(O);
+
 
 var myHub = new Hub({
         title: "Foo foo foo",
         description: "Lorem ipsum",
-        image: "images/placeholder.png",
+        image: "media/images/placeholder.png",
         owner: "5"
     }),
     
@@ -310,13 +519,13 @@ var myHub = new Hub({
             left: 500
         },
         
-        collection: new Tasks([ // TODO: add these to the hub, not the hubview
+        collection: new TaskList([ // TODO: add these to the hub, not the hubview
             {
                 description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
                 owner: {
                     name: 'Another User',
                     url: '#/user/another-user/',
-                    image: 'images/placeholder.png'
+                    image: 'media/images/placeholder.png'
                 },
                 hub:myHub, // TODO: how does this align with a JSON representation, using the id?
                 hasUser: true,
@@ -330,7 +539,7 @@ var myHub = new Hub({
                 owner: {
                     name: 'Current User',
                     url: '#/user/current-user/',
-                    image: 'images/placeholder.png'
+                    image: 'media/images/placeholder.png'
                 },
                 hub:myHub,
                 hasUser: true,
@@ -344,7 +553,7 @@ var myHub = new Hub({
                 owner: {
                     name: 'Current User',
                     url: '#/user/current-user/',
-                    image: 'images/placeholder.png'
+                    image: 'media/images/placeholder.png'
                 },
                 hub:myHub,
                 hasUser: false,
@@ -356,5 +565,7 @@ var myHub = new Hub({
         ])
     });
 
-jQuery("body").append(myHubView.elem);
+var notification = new Notification();
+
+jQuery("body").append(myHubView.elem).prepend(notification.elem);
 myHubView.render();
