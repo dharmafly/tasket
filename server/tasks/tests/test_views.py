@@ -66,18 +66,18 @@ class ViewTests(TestCase):
     
     
     def test_hub_get(self):
-        response = self.client.get('/hubs/2/')
+        response = self.client.get('/hubs/2')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['title'], 'Example Hub')
     
     def test_hub_get_nonexistent(self):
-        response = self.client.get('/hubs/100/')
+        response = self.client.get('/hubs/100')
         self.assertEqual(response.status_code, 404)
     
     def test_hub_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
-                '/hubs/2/', 
+                '/hubs/2', 
                 data=json.dumps({'title' : 'Updated Title',}),
                 content_type='application/json',
             )
@@ -86,7 +86,7 @@ class ViewTests(TestCase):
     def test_hub_delete(self):
         self.client.login(username='TestUser', password='12345')
         hubs = Hub.objects.all()
-        response = self.client.delete('/hubs/2/')
+        response = self.client.delete('/hubs/2')
         hubs = Hub.objects.all()
         self.assertEqual(len(hubs), 1)
     
@@ -101,7 +101,7 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_data), 4)
     
     def test_task_get_single(self):
-        response = self.client.get('/tasks/3/')
+        response = self.client.get('/tasks/3')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
     
@@ -127,7 +127,7 @@ class ViewTests(TestCase):
     def test_task_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
-                '/tasks/3/',
+                '/tasks/3',
                 data=json.dumps({"description" : "New description!"}),
                 content_type='application/json',
             )
@@ -138,7 +138,7 @@ class ViewTests(TestCase):
     def test_hub_delete(self):
         self.client.login(username='TestUser', password='12345')
         old_tasks = len(Task.objects.all())
-        response = self.client.delete('/tasks/3/')
+        response = self.client.delete('/tasks/3')
         tasks = len(Task.objects.all())
         self.assertEqual(old_tasks-1, tasks)
 
@@ -148,7 +148,7 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_data), 3)
 
     def test_user_get_single(self):
-        response = self.client.get('/users/1/')
+        response = self.client.get('/users/1')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
 
@@ -161,7 +161,7 @@ class ViewTests(TestCase):
     def test_user_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
-                '/users/3/',
+                '/users/3',
                 data=json.dumps({"description" : "New description!"}),
                 content_type='application/json',
             )
@@ -170,6 +170,6 @@ class ViewTests(TestCase):
 
     def test_user_delete(self):
         self.client.login(username='TestUser', password='12345')
-        response = self.client.delete('/users/3/')
+        response = self.client.delete('/users/3')
 
         self.assertEqual(response.status_code, 405)

@@ -26,7 +26,7 @@ class WorkflowTests(TestCase):
         
         self.client.login(username=self.U2.user.username, password='12345')
         response = self.client.put(
-                '/tasks/3/',
+                '/tasks/3',
                 data=json.dumps({"state" : 3}),
                 content_type='application/json',
             )
@@ -42,7 +42,7 @@ class WorkflowTests(TestCase):
         
         self.client.login(username=self.U2.user.username, password='12345')
         response = self.client.put(
-                '/tasks/5/',
+                '/tasks/5',
                 data=json.dumps({"state" : 3}),
                 content_type='application/json',
             )
@@ -53,7 +53,7 @@ class WorkflowTests(TestCase):
     def test_claim_already(self):
         self.client.login(username=self.U3.user.username, password='12345')
         response = self.client.put(
-                '/tasks/5/',
+                '/tasks/5',
                 data=json.dumps({"claimedBy" : 3}),
                 content_type='application/json',
             )
@@ -63,7 +63,7 @@ class WorkflowTests(TestCase):
     def test_claim_new(self):
         self.client.login(username=self.U3.user.username, password='12345')
         response = self.client.put(
-                '/tasks/6/',
+                '/tasks/6',
                 data=json.dumps({"state" : 2}),
                 content_type='application/json',
             )
