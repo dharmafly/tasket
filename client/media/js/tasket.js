@@ -5,7 +5,7 @@ function now(){
     return (new Date()).getTime();
 }
 
-var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification;
+var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView;
 
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
@@ -253,7 +253,7 @@ Tasket = {
 /////
 
 
-var TaskView = Backbone.View.extend({
+TaskView = Backbone.View.extend({
     tagName: "li",
     
     events: {
@@ -298,7 +298,7 @@ var TaskView = Backbone.View.extend({
     }
 });
 
-var HubView = Backbone.View.extend({
+HubView = Backbone.View.extend({
     tagName: "article",
     
     defaults: {
@@ -428,6 +428,7 @@ var HubView = Backbone.View.extend({
     }
 });
 
+
 // NOTIFICATION
 
 Notification = Backbone.View.extend({
@@ -499,9 +500,36 @@ Notification.status = {
 /////
 
 
-Tasket.initData(O);
+// LANGUAGE
+Tasket.lang = {
+    DOWNLOAD_ERROR: "There was a problem downloading data from the server"
+};
 
 
+/////
+
+
+function draw(success){
+    var body = jQuery("body"),
+        hubView;
+
+    if (success){
+        Tasket.hubs.each(function(hub){
+            hubView = new HubView({
+               model: hub
+            }).render();
+            
+            body.append(hubView.elem);
+        });
+    }
+    else {
+        notification.show(Tasket.lang.DOWNLOAD_ERROR, Notification.status.ERROR);
+    }
+}
+
+Tasket.initData(draw);
+
+/*
 var myHub = new Hub({
         title: "Foo foo foo",
         description: "Lorem ipsum",
@@ -564,8 +592,12 @@ var myHub = new Hub({
             }
         ])
     });
+    
+    // jQuery("body").append(myHubView.elem);   
+    // myHubView.render();
+*/
 
+
+// TODO: part of ui object?
 var notification = new Notification();
-
-jQuery("body").append(myHubView.elem).prepend(notification.elem);
-myHubView.render();
+jQuery("body").prepend(notification.elem);
