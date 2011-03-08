@@ -154,7 +154,7 @@ class Hub(models.Model):
             "id": str(self.pk),
             "title": self.title,
             "description": self.description,
-            "owner": self.owner.pk,
+            "owner": str(self.owner.pk),
             "tasks": [str(t.pk) for t in self.task_set.all()],
             "createdTime": self.created_timestamp(),
         }

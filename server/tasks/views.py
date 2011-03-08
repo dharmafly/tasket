@@ -22,7 +22,7 @@ class HubView(PutView):
     http_method_names = ['get', 'post', 'put', 'delete',]
     
     def __init__(self):
-        self.res = HttpResponse(content_type='application/javascript')
+        self.res = HttpResponse(content_type='application/json')
     
     @method_decorator(AllowJSONPCallback)
     def get_hub_tasks(self, request, hub_id, tasks=None):
@@ -116,7 +116,7 @@ class TasksView(PutView):
     http_method_names = ['get','post', 'put', 'delete',]
     
     def __init__(self):
-        self.res = HttpResponse(content_type='application/javascript')
+        self.res = HttpResponse(content_type='application/json')
     
     def get_single(self, request, task_id):
         task = get_object_or_404(Task, pk=task_id)
@@ -187,7 +187,7 @@ class ProfileView(PutView):
     http_method_names = ['get','post', 'put', 'delete',]
     
     def __init__(self):
-        self.res = HttpResponse(content_type='application/javascript')
+        self.res = HttpResponse(content_type='application/json')
     
     def get_single(self, request, user_id):
         profile = get_object_or_404(Profile, pk=user_id)
