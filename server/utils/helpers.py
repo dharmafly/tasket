@@ -47,6 +47,31 @@ class PutView(View):
 
     Partly lifted from django 1.3.
     """
+    
+    def dispatch(self, request, *args, **kwargs):
+        """
+        Try to dispatch to the right method; if a method doesn't exist,
+        defer to the error handler. Also defer to the error handler if the
+        request method isn't on the approved list.
+        """
+
+        # If OPTIONS isn't in the http_method_names, add it and set up the 
+        # default dispatcher
+        self.http_method_names.append('options')
+        print self.http_method_names
+        if request.method.lower() in self.http_method_names:
+            method = request.method.lower()
+            handler = getattr(self, method,
+                              self.http_method_not_allowed)
+        else:
+            handler = self.http_method_not_allowed
+        self.request = request
+        self.args = args
+        self.kwargs = kwargs
+        return handler(request, *args, **kwargs)
+
+    def options(self, request):
+        return HttpResponse()
 
     @classonlymethod
     def as_view(cls, **initkwargs):
