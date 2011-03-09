@@ -1370,10 +1370,10 @@ article .meta img {
 .dashboard,
 .notification,
 .header-container {
-	-webkit-transition: top 0.25s ease-out;
-	-moz-transition: top 0.25s ease-out;
-	-o-transition: top 0.25s ease-out;
-	transition: top 0.25s ease-out;
+	-webkit-transition: top 0.25s ease-in-out;
+	-moz-transition: top 0.25s ease-in-out;
+	-o-transition: top 0.25s ease-in-out;
+	transition: top 0.25s ease-in-out;
 }
 
 .show-notification .notification {
