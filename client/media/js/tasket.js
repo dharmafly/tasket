@@ -493,15 +493,15 @@ Notification = Backbone.View.extend({
     },
     
     success: function (message) {
-        return this.show(message, this.status.SUCCESS);
+        return this.show(message, Notification.status.SUCCESS);
     },
     
     warning: function (message) {
-        return this.show(message, this.status.WARNING);
+        return this.show(message, Notification.status.WARNING);
     },
     
     error: function (message) {
-        return this.show(message, this.status.ERROR);
+        return this.show(message, Notification.status.ERROR);
     },
 
     _onKeyPress: function (event) {
