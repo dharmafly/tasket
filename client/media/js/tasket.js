@@ -147,6 +147,7 @@ UserList = CollectionModel.extend({
 // TASKET OBJECT
 Tasket = {
     endpoint: "http://tasket.ep.io/",
+    // endpoint: "http://localhost:8000/",
     
     hubs: new HubList(),
     tasks: new TaskList(),
