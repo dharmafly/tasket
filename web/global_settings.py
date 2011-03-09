@@ -96,6 +96,7 @@ DEFAULT_TYPE = (
 DEFAULT_HEADERS = (
     ('Access-Control-Allow-Origin', '*'),
     ('Access-Control-Allow-Headers', 'Content-Type, *'),
+    ('Access-Control-Allow-Methods', 'POST, PUT, DELETE, GET'),
     
 )
 
