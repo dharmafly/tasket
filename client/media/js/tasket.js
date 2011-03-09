@@ -168,7 +168,7 @@ Tasket = {
             fetchOptions = {
                 // Trigger event on error
                 error: function(){
-                    Tasket.notifier.trigger("fetchError", false);
+                    Tasket.notifier.trigger("fetchComplete", false);
                     Tasket.notifier.unbind("fetchComplete");
                 },
                 // Send supplied callback, and final trigger on completion
