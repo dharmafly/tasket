@@ -86,8 +86,12 @@ INSTALLED_APPS = [
     # 'devserver',
 ]
 
+DEFAULT_HEADERS = (('Access-Control-Allow-Origin', '*'), ('Access-Control-Allow-Headers', '*'), )
+
 CORS_PATHS = (
-    ('/hubs/', ('application/javascript', 'application/json', 'text/html'), (('Access-Control-Allow-Origin', '*'), )),
-    ('/tasks/', ('application/javascript', 'application/json', 'text/html'), (('Access-Control-Allow-Origin', '*'), )),
-    ('/users/', ('application/javascript', 'application/json', 'text/html'), (('Access-Control-Allow-Origin', '*'), )),
+    ('/hubs/',  ('application/javascript', 'application/json', 'text/html'), DEFAULT_HEADERS), 
+    ('/tasks/', ('application/javascript', 'application/json', 'text/html'), DEFAULT_HEADERS),
+    ('/users/', ('application/javascript', 'application/json', 'text/html'), DEFAULT_HEADERS),
 )
+
+

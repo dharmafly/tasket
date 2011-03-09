@@ -6,7 +6,7 @@ from django.conf import settings
 
 #: By default we'll set CORS Allow Origin * for all application/json responses
 DEFAULT_CORS_PATHS = (
-    ('/', ('application/json', ), (('Access-Control-Allow-Origin', '*'), )),
+    ('/', ('application/json', ), (('Access-Control-Allow-Origin', '*'), ('Access-Control-Allow-Headers', '*'), )),
 )
 
 class CORSMiddleware(object):
