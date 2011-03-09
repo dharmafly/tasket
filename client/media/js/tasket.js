@@ -444,6 +444,8 @@ Notification = Backbone.View.extend({
     initialize: function () {
         this.elem = $(this.el);
         this.render();
+        this.contentElem = this.elem.find(".notification-content");
+        jQuery("body").prepend(this.elem);
         _.bindAll(this, "_onKeyPress");
     },
 
@@ -452,27 +454,33 @@ Notification = Backbone.View.extend({
         return this;
     },
 
-    message: function (message, status) {
-        this.elem.find(".notification-content").html(message);
-        return this.status(status);
+    message: function (message) {
+        this.contentElem.html(message);
+        return this;
     },
 
     status: function (status) {
-        var notification = this.elem;
+        var elem = this.elem,
+            statuses = Notification.status;
         
-        status = status || Notification.status.SUCCESS;
+        status = status || statuses.SUCCESS;
         
-        if (!notification.hasClass(status)) {
-            $.each(Notification.status, function (key, value) {
-                notification.removeClass(value);
+        if (!elem.hasClass(status)) {
+            _(statuses).each(function (value) {
+                elem.removeClass(value);
             });
-            notification.addClass(status);
+            elem.addClass(status);
         }
         return this;
     },
 
     show: function (message, status) {
-        this.message(message, status);
+        if (!_.isUndefined(message)){
+            this.message(message);
+        }
+        if (!_.isUndefined(status)){
+            this.status(status);
+        }
         
         $(window).bind('keyup', this._onKeyPress);
         $(document.body).addClass('show-notification');
@@ -483,6 +491,18 @@ Notification = Backbone.View.extend({
         $(window).unbind('keyup', this._onKeyPress);
         $(document.body).removeClass('show-notification');
         return this;
+    },
+    
+    success: function (message) {
+        return this.show(message, Notification.status.SUCCESS);
+    },
+    
+    warning: function (message) {
+        return this.show(message, Notification.status.WARNING);
+    },
+    
+    error: function (message) {
+        return this.show(message, Notification.status.ERROR);
     },
 
     _onKeyPress: function (event) {
@@ -503,18 +523,22 @@ Notification.status = {
 
 // LANGUAGE
 Tasket.lang = {
+    LOADING:        "Loading...",
     DOWNLOAD_ERROR: "There was a problem downloading data from the server"
 };
 
 
 /////
 
+// TODO: part of ui object?
+var notification = new Notification();
 
 function draw(success){
     var body = jQuery("body"),
         hubView;
 
     if (success){
+        notification.hide();
         Tasket.hubs.each(function(hub){
             hubView = new HubView({
                model: hub
@@ -524,10 +548,16 @@ function draw(success){
         });
     }
     else {
-        notification.show(Tasket.lang.DOWNLOAD_ERROR, Notification.status.ERROR);
+        notification.error(Tasket.lang.DOWNLOAD_ERROR);
     }
 }
 
+// Timeout required to prevent notification appearing immediately (seen in Chrome)
+window.setTimeout(function(){
+    notification.warning(Tasket.lang.LOADING);
+}, 0);
+
+// Get data from the server and draw
 Tasket.initData(draw);
 
 /*
@@ -597,8 +627,3 @@ var myHub = new Hub({
     // jQuery("body").append(myHubView.elem);   
     // myHubView.render();
 */
-
-
-// TODO: part of ui object?
-var notification = new Notification();
-jQuery("body").prepend(notification.elem);
