@@ -16,7 +16,11 @@ function truncate(str, charLimit, continuationStr){
 }
 
 
-var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView;
+/////
+
+
+var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView,
+    body = jQuery("body");
 
 // ABSTRACT MODEL
 Model = Backbone.Model.extend({
@@ -81,7 +85,7 @@ Task = Model.extend({
     
     required: ["owner", "hub"],
     
-    defaults: {
+    defaults: { // TODO: sending null values to and from server is a waste of bandwidth
         description: null,
         image: null,
         estimate: null,
@@ -113,7 +117,7 @@ Hub = Model.extend({
         
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        this.tasks = new TaskList(); // TODO: replace with array of ids
+        this.tasks = this.attributes.tasks;
     }
 });
 
@@ -159,7 +163,6 @@ UserList = CollectionModel.extend({
 Tasket = _.extend({
     endpoint: "http://tasket.ep.io/",
     // endpoint: "http://localhost:8000/",
-    hubDescriptionTruncate: 30, // No. of chars to truncate hub description to. TODO: move to a different object?
     
     hubs: new HubList(),
     tasks: new TaskList(),
@@ -220,7 +223,7 @@ Tasket = _.extend({
     },
     
     // Bootstrap data on page load: fetch all open hubs, their owners and tasks, and the users involved in those tasks
-    initData: function(callback){
+    getOpenHubs: function(callback){
         var pending = 0,
             hubs = this.hubs,
             tasks = this.tasks,
@@ -301,13 +304,19 @@ TaskView = Backbone.View.extend({
     },
 
     render: function(){
-        var data = this.model.toJSON();
+        var data = this.model.toJSON(),
+            currentUser = Tasket.currentUser;
         
         data.hasUser = !!data.claimedBy;
-        data.showTakeThisButton = !data.hasUser;
-        data.showDoneThisButton = data.claimedBy === Tasket.MY_USER_ID; // TODO
+        if (data.hasUser){
+            data.isOwner = (data.owner === currentUser);
+            data.isNotOwner = !data.isOwner;
+        }
         
-        // TODO: make more elegant in Tim? Or use blank strings as default?
+        data.showTakeThisButton = !data.hasUser;
+        data.showDoneThisButton = (data.claimedBy === currentUser);
+        
+        // TODO: make more elegant in Tim? Or use blank strings as default in models?
         _(data).each(function(value, key){
             if (data[key] === null){
                 data[key] = "";
@@ -362,7 +371,7 @@ HubView = Backbone.View.extend({
     
     select: function(){
         this.set("selected", true);
-        this.trigger("select"); // TODO: should this be on the model, not the view?
+        this.trigger("select");
         this.elem.addClass("select");
         this.renderTasks();
         return this;
@@ -400,7 +409,19 @@ HubView = Backbone.View.extend({
         };
     },
     
+    _generateTaskViews: function(){        
+        this.taskViews = _( // TODO: This is an Underscore collection. Confusing? Or genius?
+            _(this.model.tasks).map(function(id){
+                return new TaskView({
+                    model: Tasket.tasks.get(id)
+                });
+            })
+        );
+        return this;
+    },
+    
     renderTasks: function(){
+    
     /*
     
     tasks width: (19.321 + (0.923×2) + (0.23075×2)) × 2 = 42.7955 em
@@ -411,37 +432,28 @@ HubView = Backbone.View.extend({
     hub: 90 px
     padding: 5em;
     
-    */
-        // TODO temp
-        this.collection = new TaskList(
-            _(this.model.attributes.tasks)
-                .map(function(id){
-                    return {id:id};
-                })
-        );
-    
+    */    
         var container = this.$("div.tasks > ul"),
             containerHalfWidth = container.outerWidth(true) / 2,
             containerHalfHeight = container.outerHeight(true) / 2,
             taskWidth, taskHeight, taskHalfWidth, taskHalfHeight,
-            angle = ((2 * Math.PI) / this.collection.length),
+            angle = ((2 * Math.PI) / this.taskViews.size()),
             //svgElem = this.$("svg"),
             distance = 162;
             
             // TEMP: show distance boundary
             container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
             
-        this.collection.each(function(task, i){
-            var view = new TaskView({model:task}),
-                top, left;
-                
-            container.append(view.render().elem);
+        this.taskViews.each(function(taskView, i){
+            var top, left, elem = taskView.elem;
+            
+            container.append(taskView.render().elem);
             
             if (!taskWidth){
-                taskWidth  = view.elem.outerWidth(true);
-                taskHeight = view.elem.outerHeight(true);
-                taskHalfWidth  = view.elem.outerWidth(true) / 2;
-                taskHalfHeight = view.elem.outerHeight(true) / 2;
+                taskWidth  = elem.outerWidth(true);
+                taskHeight = elem.outerHeight(true);
+                taskHalfWidth  = elem.outerWidth(true) / 2;
+                taskHalfHeight = elem.outerHeight(true) / 2;
             }
             top = Math.round(Math.cos(angle * i) * distance) - (distance / 2);
             left = Math.round(Math.sin(angle * i) * distance) - (distance / 2);
@@ -454,8 +466,9 @@ HubView = Backbone.View.extend({
                 left += (left / (distance * 2)) * taskWidth * 2;
             }
             */
+            O(taskView, i, top, left);
             
-            view.offset({
+            taskView.offset({
                 top: top,
                 left: left
             });
@@ -476,7 +489,7 @@ HubView = Backbone.View.extend({
             desc = data.description;
         
         data.isSelected = this.isSelected();
-        data.description = truncate(data.description, Tasket.hubDescriptionTruncate);
+        data.description = truncate(data.description, Tasket.ui.hubDescriptionTruncate);
         
         this.elem.html(tim("hub", data));
             
@@ -488,6 +501,7 @@ HubView = Backbone.View.extend({
     
     initialize: function(options){
         this.elem = jQuery(this.el);
+        this._generateTaskViews(); // Note, this requires all task models to have been fetched
     }
 });
 
@@ -507,7 +521,7 @@ Notification = Backbone.View.extend({
         this.elem = $(this.el);
         this.render();
         this.contentElem = this.elem.find(".notification-content");
-        jQuery("body").prepend(this.elem);
+        body.prepend(this.elem);
         _.bindAll(this, "_onKeyPress");
     },
 
@@ -589,17 +603,22 @@ Tasket.lang = {
     DOWNLOAD_ERROR: "There was a problem downloading data from the server"
 };
 
-
 /////
+
+// UI SETTINGS
+
+Tasket.ui = {
+    hubDescriptionTruncate: 30, // No. of chars to truncate hub description to.
+    notification: new Notification(),
+    currentUser: null
+};
 
 
 var dummyCode = false,
-    // TODO: part of ui object?
-    notification = new Notification();
+    notification = Tasket.ui.notification;
 
-function draw(success){
-    var body = jQuery("body"),
-        hubView;
+function drawHubs(success){
+    var hubView;
 
     if (success){
         notification.hide();
@@ -636,7 +655,7 @@ else {
     }, 0);
 
     // Get data from the server and draw
-    Tasket.initData(draw);
+    Tasket.getOpenHubs(drawHubs);
 }
 
 function drawDummyData(){
