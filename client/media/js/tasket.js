@@ -79,7 +79,7 @@ Task = Model.extend({
         
     type: "task",
     
-    required: ["owner", "hub"], // TODO: decide if hub required
+    required: ["owner", "hub"],
     
     defaults: {
         description: null,
@@ -156,7 +156,7 @@ UserList = CollectionModel.extend({
 
 
 // TASKET OBJECT
-Tasket = {
+Tasket = _.extend({
     endpoint: "http://tasket.ep.io/",
     // endpoint: "http://localhost:8000/",
     hubDescriptionTruncate: 30, // No. of chars to truncate hub description to. TODO: move to a different object?
@@ -165,15 +165,13 @@ Tasket = {
     tasks: new TaskList(),
     users: new UserList(),
     
-    notifier: _.extend({}, Backbone.Events),
-    
     // Helper function for fetching multiple collections and models in one go, with a callback on completion
     fetchAndAdd: function fetchAndAdd(ids, collection, callback){
         // Keep track of fetched collections, and trigger event on completion
         function callbackIfComplete(){
             if (!--fetchAndAdd.pending){
-                Tasket.notifier.trigger("fetchComplete", true);
-                Tasket.notifier.unbind("fetchComplete");
+                Tasket.trigger("fetchComplete", true);
+                Tasket.unbind("fetchComplete");
             }
         }
     
@@ -181,8 +179,8 @@ Tasket = {
             fetchOptions = {
                 // Trigger event on error
                 error: function(){
-                    Tasket.notifier.trigger("fetchComplete", false);
-                    Tasket.notifier.unbind("fetchComplete");
+                    Tasket.trigger("fetchComplete", false);
+                    Tasket.unbind("fetchComplete");
                 },
                 // Send supplied callback, and final trigger on completion
                 success: callback ?
@@ -251,7 +249,7 @@ Tasket = {
             fetchOptions.error = function(){
                 callback(false);
             };
-            Tasket.notifier.bind("fetchComplete", callback);
+            Tasket.bind("fetchComplete", callback);
         }
             
         hubs.seed = true;
@@ -259,7 +257,7 @@ Tasket = {
                 
         return this;
     }
-};
+}, Backbone.Events);
 
 
 
@@ -332,8 +330,6 @@ HubView = Backbone.View.extend({
         selected:false
     },
     
-    eventProxy: _.extend({}, Backbone.Events), // TODO: use bind, trigger
-    
     getset: function(property, value){
         return _.isUndefined(value) ? this.get(property) : this.set(property, value);
     },
@@ -366,7 +362,7 @@ HubView = Backbone.View.extend({
     
     select: function(){
         this.set("selected", true);
-        this.eventProxy.trigger("select"); // TODO: should this be on the model, not the view?
+        this.trigger("select"); // TODO: should this be on the model, not the view?
         this.elem.addClass("select");
         this.renderTasks();
         return this;
@@ -374,7 +370,7 @@ HubView = Backbone.View.extend({
     
     deselect: function(){
         this.set("selected", false);
-        this.eventProxy.trigger("deselect");
+        this.trigger("deselect");
         this.elem.removeClass("select");
         this.clearTasks();
         return this;
