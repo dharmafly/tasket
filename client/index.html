@@ -3,602 +3,633 @@
 <!--[if (gt IE 9)|!(IE)]><!-->
 <html lang="en"><!--<![endif]-->
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
-	<meta name="author" content="" />
-	<meta name="description" content="" />
-	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+    <meta name="author" content="" />
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<title>Tasket</title>
+    <title>Tasket</title>
 
-	<script src="media/js/html5.js"></script>
-	<script>document.documentElement.className += ' js';</script>
+    <script src="media/js/dependencies/html5.js"></script>
+    <script>document.documentElement.className += ' js';</script>
 
-	<link rel="shortcut icon" href="/favicon.ico" />
-	<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-	<link rel="stylesheet" href="media/css/global.css?v0.1" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="stylesheet" href="media/css/global.css?v0.1" />
 </head>
 <body>
-	<div class="header-container">
-		<header>
-			<h1>Tasket</h1>
-			<nav>
-				<ul>
-					<li><a href="#/" title="The Tasket homepage">Home</a></li>
-					<li><a href="#/about/" title="About the Tasket project">About</a></li>
-					<li><a href="#/sign-up/" title="Sign up for an account">Sign up</a></li>
-					<li class="login"><a href="#/login/" title="Login to Tasket">Login</a></li>
-					<!-- <li class="login">
-						<form action="#/logout" method="POST">
-							<button class="link" type="submit">Logout</button>
-						</form>
-					</li> -->
-				</ul>
-			</nav>
-			<h2><img src="media/images/placeholder.png" width="16" height="16" alt="Current User’ avatar" /> Current User</h2>
-			<div class="tasks">
-				<h3>Tasks</h3>
-				<dl>
-					<dt>Pending</dt><dd>24</dd>
-					<dt>Done</dt><dd>42</dd>
-				</dl>
-			</div>
-		</header>
-	</div>
+    <div class="header-container">
+        <header>
+            <h1>Tasket</h1>
+            <nav>
+                <ul>
+                    <li><a href="#/" title="The Tasket homepage">Home</a></li>
+                    <li><a href="#/about/" title="About the Tasket project">About</a></li>
+                    <li><a href="#/sign-up/" title="Sign up for an account">Sign up</a></li>
+                    <li class="login"><a href="#/login/" title="Login to Tasket">Login</a></li>
+                    <!-- <li class="login">
+                        <form action="#/logout" method="POST">
+                            <button class="link" type="submit">Logout</button>
+                        </form>
+                    </li> -->
+                </ul>
+            </nav>
+            <h2><img src="media/images/placeholder.png" width="16" height="16" alt="Current User’ avatar" /> Current User</h2>
+            <div class="tasks">
+                <h3>Tasks</h3>
+                <dl>
+                    <dt>Pending</dt><dd>24</dd>
+                    <dt>Done</dt><dd>42</dd>
+                </dl>
+            </div>
+        </header>
+    </div>
 
-	<section class="dashboard">
-		<ul class="listing notifications">
-			<li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
-			<li><a href="#/done/" title="View your completed tasks">3 tasks you’ve done have been approved</a></li>
-			<li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
-		</ul>
-		<section class="quicklinks">
-			<h1>My Projects</h1>
-			<p class="help">This section provides you a quick list of your recent projects</p>
-			<ul class="listing">
-				<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-				<li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-				<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-			</ul>
-			<p>
-				<a class="button" href="#/projects/" title="View all projects">View All</a>
-				<a class="button" href="#/projects/new/" title="Create a new project">New</a>
-			</p>
-		</section>
-		<section class="quicklinks">
-			<h1>Tasks I’m Doing</h1>
-			<p class="help">This section provides you a quick list of your currently active tasks</p>
-			<ul class="listing">
-				<li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-				<li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-				<li><a href="#/tasks/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-			</ul>
-			<p>
-				<a class="button" href="#/tasks/" title="View all tasks">View All</a>
-			</p>
-		</section>
-		<section class="quicklinks">
-			<h1>Tasks I Manage</h1>
-			<p class="help">This section provides you a quick list of tasks you administer</p>
-			<ul class="listing">
-				<li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-				<li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-				<li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-			</ul>
-			<p>
-				<a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
-			</p>
-		</section>
-		<footer>
-			<p class="statistics">
-				<img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
-				<em>2,030</em> tasks done by everyone</p>
-			<nav>
-				<ul>
-					<li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
-					<li><a href="#/blog/" title="Read the blog">Blog</a></li>
-					<li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
-				</ul>
-			</nav>
-			<p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
-			    App by <span class="df-name">Dharmafly</span>
-			</a></p>
-		</footer>
-	</section>
+    <section class="dashboard">
+        <ul class="listing notifications">
+            <li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
+            <li><a href="#/done/" title="View your completed tasks">3 tasks you’ve done have been approved</a></li>
+            <li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
+        </ul>
+        <section class="quicklinks">
+            <h1>My Projects</h1>
+            <p class="help">This section provides you a quick list of your recent projects</p>
+            <ul class="listing">
+                <li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+                <li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+                <li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+            </ul>
+            <p>
+                <a class="button" href="#/projects/" title="View all projects">View All</a>
+                <a class="button" href="#/projects/new/" title="Create a new project">New</a>
+            </p>
+        </section>
+        <section class="quicklinks">
+            <h1>Tasks I’m Doing</h1>
+            <p class="help">This section provides you a quick list of your currently active tasks</p>
+            <ul class="listing">
+                <li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+                <li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+                <li><a href="#/tasks/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+            </ul>
+            <p>
+                <a class="button" href="#/tasks/" title="View all tasks">View All</a>
+            </p>
+        </section>
+        <section class="quicklinks">
+            <h1>Tasks I Manage</h1>
+            <p class="help">This section provides you a quick list of tasks you administer</p>
+            <ul class="listing">
+                <li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
+                <li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
+                <li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
+            </ul>
+            <p>
+                <a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
+            </p>
+        </section>
+        <footer>
+            <p class="statistics">
+                <img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
+                <em>2,030</em> tasks done by everyone</p>
+            <nav>
+                <ul>
+                    <li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
+                    <li><a href="#/blog/" title="Read the blog">Blog</a></li>
+                    <li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
+                </ul>
+            </nav>
+            <p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
+                App by <span class="df-name">Dharmafly</span>
+            </a></p>
+        </footer>
+    </section>
 
-	<section class="lightbox">
-		<div class="lightbox-inner">
-			<div class="content"></div>
-			<button class="action close">Close Lightbox</button>
-		</div>
-	</section>
-	
-	
-	<!--
-	
-	    TEMPLATES
-	    ---------
-	-->
-		
-	<script type="text/tim" class="hub">
-	    <img {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
-	    <hgroup>
-		    <h1>{{title}}</h1>
-		    <h2>{{description}}</h2>
-	    </hgroup>
-	    <div class="tasks">
-	        <ul></ul>
-	    </div>
-	</script>
+    <section class="lightbox">
+        <div class="lightbox-inner">
+            <div class="content"></div>
+            <button class="action close">Close Lightbox</button>
+        </div>
+    </section>
+    
+    
+    <!--
+    
+        TEMPLATES
+        ---------
+    -->
+        
+    <script type="text/tim" class="hub">
+        <img {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
+        <hgroup>
+            <h1>{{title}}</h1>
+            <h2>{{description}}</h2>
+        </hgroup>
+        <div class="tasks">
+            <ul></ul>
+        </div>
+    </script>
 
-	<script type="text/tim" class="task">
-		<p class="description">{{description}}</p>
-		<aside class="meta">
-			{{hasUser}}
-				<p class="owner">
-					{{isOwner}}
-						<img src="{{owner.image}}" width="14" height="14" alt="Your avatar" />
-						<a href="{{owner.url}}" title="See your tasks">You’re</a> doing this
-					{{/isOwner}}
-					{{isNotOwner}}
-						<img src="{{owner.image}}" width="14" height="14" alt="{{owner.name}}’s avatar" />
-						<a href="{{owner.url}}" title="See {{owner.name}}’s tasks">{{owner.name}}</a><br /> is doing this task
-					{{/isNotOwner}}
-				</p>
-			{{/hasUser}}
-			{{showTakeThisButton}}
-				<form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
-			{{/showTakeThisButton}}
-			{{showDoneThisButton}}
-				<form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
-			{{/showDoneThisButton}}
-		</aside>
-	</script>
+    <script type="text/tim" class="task">
+        <p class="description">{{description}}</p>
+        <aside class="meta">
+            {{hasUser}}
+                <p class="owner">
+                    {{isOwner}}
+                        <img src="{{owner.image}}" width="14" height="14" alt="Your avatar" />
+                        <a href="{{owner.url}}" title="See your tasks">You’re</a> doing this
+                    {{/isOwner}}
+                    {{isNotOwner}}
+                        <img src="{{owner.image}}" width="14" height="14" alt="{{owner.name}}’s avatar" />
+                        <a href="{{owner.url}}" title="See {{owner.name}}’s tasks">{{owner.name}}</a><br /> is doing this task
+                    {{/isNotOwner}}
+                </p>
+            {{/hasUser}}
+            {{showTakeThisButton}}
+                <form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
+            {{/showTakeThisButton}}
+            {{showDoneThisButton}}
+                <form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
+            {{/showDoneThisButton}}
+        </aside>
+    </script>
 
-	<script type="text/tim" class="dashboard-detail">
-		<section id="{{type}}" class="detail">
-			<h1>{{title}}</h1>
-			<button class="action close">Close</button>
-			<button class="link back">Back</button>
-			{{content}}
-		</section>
-	</script>
+    <script type="text/tim" class="dashboard-detail">
+        <section id="{{type}}" class="detail">
+            <h1>{{title}}</h1>
+            <button class="action close">Close</button>
+            <button class="link back">Back</button>
+            {{content}}
+        </section>
+    </script>
 
-	<script type="text/tim" class="dashboard-detail-profile">
-		<section class="list">
-			<h1>{{title}}</h1>
-			<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
-			<div class="listing-wrapper">
-				<ul class="listing">
-					{{tasks}}
-						<li>
-							<p>New task item that needs to be done</p>
-							<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-							<form class="form-button" action="#/tasks/new-task/" method="POST">
-								<button class="action delete" type="submit">Delete</button>
-							</form>
-						</li>
-					{{/tasks}}
-				</ul>
-			</div>
-		</section>
-	</script>
+    <script type="text/tim" class="dashboard-detail-profile">
+        <section class="list">
+            <h1>{{title}}</h1>
+            <a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+            <div class="listing-wrapper">
+                <ul class="listing">
+                    {{tasks}}
+                        <li>
+                            <p>New task item that needs to be done</p>
+                            <a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+                            <form class="form-button" action="#/tasks/new-task/" method="POST">
+                                <button class="action delete" type="submit">Delete</button>
+                            </form>
+                        </li>
+                    {{/tasks}}
+                </ul>
+            </div>
+        </section>
+    </script>
 
-	<script type="text/tim" class="dashboard-detail-user">
-		<section class="profile user">
-			<img src="{{image}}" alt="{{name}}" width="55" height="55" />
-			<p class="name">{{name}}</p>
-			<p>{{location}}</p>
-		</section>
-		<section class="quicklinks">
-			<h1>My Projects</h1>
-			<ul class="listing">
-				{{projects}}
-					<li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/project/{{slug}}/" title="View {{title}}">{{title}}</a></li>
-				{{/projects}}
-			</ul>
-			<p>
-				<a class="button" href="#/projects/" title="View all projects">View All</a>
-				<a class="button" href="#/projects/new/" title="Create a new project">New</a>
-			</p>
-		</section>
-		<section class="quicklinks">
-			<h1>Tasks I’m Doing</h1>
-			<ul class="listing">
-				{{tasks}}
-					<li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/tasks/{{slug}}/" title="View {{title}}">{{title}}</a></li>
-				{{/tasks}}
-			</ul>
-			<p>
-				<a class="button" href="#/tasks/" title="View all tasks">View All</a>
-			</p>
-		</section>
-		<section class="quicklinks last">
-			<h1>Tasks I Manage</h1>
-			<ul class="listing">
-				{{managed}}
-					<li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/tasks/{{slug}}/" title="View {{title}}">{{title}}</a></li>
-				{{/managed}}
-			</ul>
-			<p>
-				<a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
-			</p>
-		</section>
-	</script>
+    <script type="text/tim" class="dashboard-detail-user">
+        <section class="profile user">
+            <img src="{{image}}" alt="{{name}}" width="55" height="55" />
+            <p class="name">{{name}}</p>
+            <p>{{location}}</p>
+        </section>
+        <section class="quicklinks">
+            <h1>My Projects</h1>
+            <ul class="listing">
+                {{projects}}
+                    <li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/project/{{slug}}/" title="View {{title}}">{{title}}</a></li>
+                {{/projects}}
+            </ul>
+            <p>
+                <a class="button" href="#/projects/" title="View all projects">View All</a>
+                <a class="button" href="#/projects/new/" title="Create a new project">New</a>
+            </p>
+        </section>
+        <section class="quicklinks">
+            <h1>Tasks I’m Doing</h1>
+            <ul class="listing">
+                {{tasks}}
+                    <li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/tasks/{{slug}}/" title="View {{title}}">{{title}}</a></li>
+                {{/tasks}}
+            </ul>
+            <p>
+                <a class="button" href="#/tasks/" title="View all tasks">View All</a>
+            </p>
+        </section>
+        <section class="quicklinks last">
+            <h1>Tasks I Manage</h1>
+            <ul class="listing">
+                {{managed}}
+                    <li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/tasks/{{slug}}/" title="View {{title}}">{{title}}</a></li>
+                {{/managed}}
+            </ul>
+            <p>
+                <a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
+            </p>
+        </section>
+    </script>
 
-	<script type="text/tim" class="dashboard-detail-projects">
-		<section class="list">
-			<h1>Pending</h1>
-			<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
-			<nav class="listing-wrapper">
-				<ul class="listing">
-					{{pending}}
-						<li>
-							<a href="#{{slug}}" title="View {{name}}">{{name}}</a>
-						</li>
-					{{/pending}}
-				</ul>
-			</nav>
-		</section>
-		<section class="list">
-			<h1>Done</h1>
-			<nav class="listing-wrapper">
-				<ul class="listing">
-					{{done}}
-						<li>
-							<a href="#{{slug}}" title="View {{name}}">{{name}}</a>
-						</li>
-					{{/done}}
-				</ul>
-			</nav>
-		</section>
-	</script>
+    <script type="text/tim" class="dashboard-detail-projects">
+        <section class="list">
+            <h1>Pending</h1>
+            <a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+            <nav class="listing-wrapper">
+                <ul class="listing">
+                    {{pending}}
+                        <li>
+                            <a href="#{{slug}}" title="View {{name}}">{{name}}</a>
+                        </li>
+                    {{/pending}}
+                </ul>
+            </nav>
+        </section>
+        <section class="list">
+            <h1>Done</h1>
+            <nav class="listing-wrapper">
+                <ul class="listing">
+                    {{done}}
+                        <li>
+                            <a href="#{{slug}}" title="View {{name}}">{{name}}</a>
+                        </li>
+                    {{/done}}
+                </ul>
+            </nav>
+        </section>
+    </script>
 
-	<script type="text/tim" class="dashboard-detail-project">
-		<section class="profile">
-			<img src="{{image}}" alt="The project image" width="55" height="55" />
-			<dl>
-				<dt>Project:</dt>
-				<dd>{{name}}</dd>
-				<dt>Organisation:</dt>
-				<dd>{{organisation}}</dd>
-				<dt>Tags:</dt>
-				<dd>
-					{{tags}}
-						<a href="#/tags/{{slug}}/" title="See all projects tagged with {{name}}">{{name}}</a>,
-					{{/tags}}
-				</dd>
-			</dl>
-			<a class="button action locate" href="#center" title="Centre view on this project">Centre View</a>
-			<a class="button" href="#/projects/{{slug}}/edit/" title="Edit this project">Edit</a>
-			<form class="form-button" action="#/project/{{slug}}/" method="POST">
-				<button class="button" type="submit">Delete</button>
-			</form>
-		</section>
-		<section class="list">
-			<h1>Tasks</h1>
-			<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
-			<div class="listing-wrapper">
-				<ul class="listing">
-					{{tasks}}
-						<li>
-							<p>New task item that needs to be done</p>
-							<a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-							<form class="form-button" action="#/tasks/new-task/" method="POST">
-								<button class="action delete" type="submit">Delete</button>
-							</form>
-						</li>
-					{{/tasks}}
-				</ul>
-			</div>
-		</section>
-	</script>
+    <script type="text/tim" class="dashboard-detail-project">
+        <section class="profile">
+            <img src="{{image}}" alt="The project image" width="55" height="55" />
+            <dl>
+                <dt>Project:</dt>
+                <dd>{{name}}</dd>
+                <dt>Organisation:</dt>
+                <dd>{{organisation}}</dd>
+                <dt>Tags:</dt>
+                <dd>
+                    {{tags}}
+                        <a href="#/tags/{{slug}}/" title="See all projects tagged with {{name}}">{{name}}</a>,
+                    {{/tags}}
+                </dd>
+            </dl>
+            <a class="button action locate" href="#center" title="Centre view on this project">Centre View</a>
+            <a class="button" href="#/projects/{{slug}}/edit/" title="Edit this project">Edit</a>
+            <form class="form-button" action="#/project/{{slug}}/" method="POST">
+                <button class="button" type="submit">Delete</button>
+            </form>
+        </section>
+        <section class="list">
+            <h1>Tasks</h1>
+            <a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
+            <div class="listing-wrapper">
+                <ul class="listing">
+                    {{tasks}}
+                        <li>
+                            <p>New task item that needs to be done</p>
+                            <a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
+                            <form class="form-button" action="#/tasks/new-task/" method="POST">
+                                <button class="action delete" type="submit">Delete</button>
+                            </form>
+                        </li>
+                    {{/tasks}}
+                </ul>
+            </div>
+        </section>
+    </script>
 
-	<script type="text/tim" class="login">
-		<h1>Login</h1>
-		<form action="#/login" method="POST">
-			<ul>
-				<li>
-					<label for="field-email">Email Address</label>
-					<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
-				</li>
-				<li>
-					<label for="field-password">Password <strong class="error">(This field is required)</strong></label>
-					<input type="password" id="field-password" name="password" placeholder="password" value="" />
-				</li>
-			</ul>
-			<div class="actions">
-				<button type="submit">Login</button>
-				<p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
-			</div>
-		</form>
-	</script>
+    <script type="text/tim" class="login">
+        <h1>Login</h1>
+        <form action="#/login" method="POST">
+            <ul>
+                <li>
+                    <label for="field-email">Email Address</label>
+                    <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+                </li>
+                <li>
+                    <label for="field-password">Password <strong class="error">(This field is required)</strong></label>
+                    <input type="password" id="field-password" name="password" placeholder="password" value="" />
+                </li>
+            </ul>
+            <div class="actions">
+                <button type="submit">Login</button>
+                <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
+            </div>
+        </form>
+    </script>
 
-	<script type="text/tim" class="signup">
-		<h1>Register for a Tasket Account</h1>
-		<p>Please provide the following details and we’ll create an account for you.</p>
-		<form action="#/sign-up/" method="POST">
-			<ul>
-				<li>
-					<label for="field-email">Email Address</label>
-					<input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
-				</li>
-				<li>
-					<label for="field-real-name">Your Name</label>
-					<input type="text" id="field-real-name" name="real-name" placeholder="Joe Bloggs" value="" />
-				</li>
-				<li>
-					<label for="field-password">Password</label>
-					<input type="password" id="field-password" name="password" placeholder="password" value="" />
-				</li>
-				<li>
-					<label for="field-password-confirm">Confirm Password</label>
-					<input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
-				</li>
-			</ul>
-			<div class="actions">
-				<button type="submit">Sign Up</button>
-			</div>
-		</form>
-	</script>
+    <script type="text/tim" class="signup">
+        <h1>Register for a Tasket Account</h1>
+        <p>Please provide the following details and we’ll create an account for you.</p>
+        <form action="#/sign-up/" method="POST">
+            <ul>
+                <li>
+                    <label for="field-email">Email Address</label>
+                    <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+                </li>
+                <li>
+                    <label for="field-real-name">Your Name</label>
+                    <input type="text" id="field-real-name" name="real-name" placeholder="Joe Bloggs" value="" />
+                </li>
+                <li>
+                    <label for="field-password">Password</label>
+                    <input type="password" id="field-password" name="password" placeholder="password" value="" />
+                </li>
+                <li>
+                    <label for="field-password-confirm">Confirm Password</label>
+                    <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
+                </li>
+            </ul>
+            <div class="actions">
+                <button type="submit">Sign Up</button>
+            </div>
+        </form>
+    </script>
 
-	<script type="text/tim" class="about">
-		<h1>About Tasket</h1>
-		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
-		   incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad
-		   <em>emphais</em> minim veniam, quis <code>nostrud</code> exercitation ullamco
-		   laboris nisi <a href="#">ut aliquip ex</a> ea commodo consequat.</p>
-		<h2>A level two heading</h2>
-		<p>irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
-		   pariatur. Excepteur sint occaecat cupidatat non proident</p>
-		<p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-		<h3>A level three heading</h3>
-		<blockquote>
-			<p>Some form of blockquote would go here, perhaps some Shakespeare?</p>
-		</blockquote>
-	</script>
+    <script type="text/tim" class="about">
+        <h1>About Tasket</h1>
+        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
+           incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad
+           <em>emphais</em> minim veniam, quis <code>nostrud</code> exercitation ullamco
+           laboris nisi <a href="#">ut aliquip ex</a> ea commodo consequat.</p>
+        <h2>A level two heading</h2>
+        <p>irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla
+           pariatur. Excepteur sint occaecat cupidatat non proident</p>
+        <p>sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+        <h3>A level three heading</h3>
+        <blockquote>
+            <p>Some form of blockquote would go here, perhaps some Shakespeare?</p>
+        </blockquote>
+    </script>
 
-	<script type="text/tim" class="new-task">
-		<h1>Create a new task</h1>
-		<form action="#/tasks/" method="POST">
-			<ul>
-				<li>
-					<label for="field-title">Title</label>
-					<input id="field-title" name="title" placeholder="My new task" value="" />
-				</li>
-				<li>
-					<label for="field-timespan">Time required</label>
-					<select id="field-timespan" name="timespan">
-						<option value="600">Ten minutes</option>
-						<option value="600">Half an hour</option>
-						<option value="600">One day</option>
-						<option value="600">Three days</option>
-					</select>
-				</li>
-				<li>
-					<label for="field-summary">Summary</label>
-					<textarea id="field-summary" name="summary" cols="30" rows="6" placeholder="Description&hellip;"></textarea>
-				</li>
-			</ul>
-			<div class="actions">
-				<button type="submit">Create Task</button>
-			</div>
-		</form>
-	
-	
-	<!--
-	
-	    SCRIPTING
-	    ---------
-	-->
-	</script>
-
+    <script type="text/tim" class="new-task">
+        <h1>Create a new task</h1>
+        <form action="#/tasks/" method="POST">
+            <ul>
+                <li>
+                    <label for="field-title">Title</label>
+                    <input id="field-title" name="title" placeholder="My new task" value="" />
+                </li>
+                <li>
+                    <label for="field-timespan">Time required</label>
+                    <select id="field-timespan" name="timespan">
+                        <option value="600">Ten minutes</option>
+                        <option value="600">Half an hour</option>
+                        <option value="600">One day</option>
+                        <option value="600">Three days</option>
+                    </select>
+                </li>
+                <li>
+                    <label for="field-summary">Summary</label>
+                    <textarea id="field-summary" name="summary" cols="30" rows="6" placeholder="Description&hellip;"></textarea>
+                </li>
+            </ul>
+            <div class="actions">
+                <button type="submit">Create Task</button>
+            </div>
+        </form>
+    </script>
+    
+    
+    <!--
+    
+        SCRIPTS: DEV
+        ------------
+    -->
     <script>
         // Console logging
         function O(){
             console.log.apply(console, arguments);
         }
     </script>
-	<script src="media/js/jquery.min.js"></script>
-	<script src="media/js/underscore.js"></script>
-	<script src="media/js/backbone.js"></script>
-	<script src="media/js/tim.js"></script>
-	<script src="media/js/tasket.js"></script>
-	
-	<script>
-	    // TEMPORARY STUBS
-	
-		function addClass(element, klass) {
-			classes = element.className.split(' ');
-			classes.push(klass);
-			element.className = classes.join(' ');
-		}
+    <script src="media/js/dev/getscript.js"></script>
+    <script>
+        var path = "media/js/";
+        getScript(
+            [
+                path + "dependencies/jquery.min.js",
+                path + "dependencies/underscore.js",
+                path + "dependencies/tim.js"
+            ],
+            getScript.sync(
+                [
+                    path + "dependencies/backbone.js",
+                    path + "core/core.js",
+                    
+                    path + "models/models.js",
+                    path + "models/hub.js",
+                    path + "models/task.js",
+                    path + "models/user.js",
+                    
+                    path + "views/views.js",
+                    path + "views/hubview.js",
+                    path + "views/taskview.js",
+                    path + "views/userview.js",
+                    path + "views/notificationview.js",
+                    path + "views/ui.js",
+                    
+                    path + "core/api.js",
+                    path + "lang/en.js",
+                    path + "tasket-init.js"
+                ],
+                temporaryStubs
+            )
+        );
+        
+        
+    function temporaryStubs(loaded){
+        if (!loaded){
+            return false;
+        }
+    
+        function addClass(element, klass) {
+            classes = element.className.split(' ');
+            classes.push(klass);
+            element.className = classes.join(' ');
+        }
 
-		function removeClass(element, klass) {
-			var regexp = new RegExp('\\s*' + klass + '\\s*');
-			element.className = element.className.replace(regexp, '');
-		}
+        function removeClass(element, klass) {
+            var regexp = new RegExp('\\s*' + klass + '\\s*');
+            element.className = element.className.replace(regexp, '');
+        }
 
 
-		(function () {
-			// Add the helper icon to all quicklinks in the dashboard.
-			var helpers = document.querySelectorAll('.help'),
-			    hover_class = 'active';
+        (function () {
+            // Add the helper icon to all quicklinks in the dashboard.
+            var helpers = document.querySelectorAll('.help'),
+                hover_class = 'active';
 
-			$.each(helpers, function (index, helper) {
-				var info = document.createElement('a');
+            $.each(helpers, function (index, helper) {
+                var info = document.createElement('a');
 
-				info.href  = '#info';
-				info.className = 'info';
-				info.appendChild(document.createTextNode('Help'));
+                info.href  = '#info';
+                info.className = 'info';
+                info.appendChild(document.createTextNode('Help'));
 
-				// Add class to helper when button is hovered so we can display it in the stylesheet.
-				info.onmouseover = info.onfocus = function () { addClass(helper, hover_class); };
-				info.onmouseout  = info.onblur  = function () { removeClass(helper, hover_class); };
+                // Add class to helper when button is hovered so we can display it in the stylesheet.
+                info.onmouseover = info.onfocus = function () { addClass(helper, hover_class); };
+                info.onmouseout  = info.onblur  = function () { removeClass(helper, hover_class); };
 
-				// Append this to the dashboard section.
-				helper.parentNode.appendChild(info);
-			});
-		}());
+                // Append this to the dashboard section.
+                helper.parentNode.appendChild(info);
+            });
+        }());
 
-		(function () {
-			// A very basic lightweight lightbox implementation.
-			var lightbox = {
-				_classnames: {
-					display: 'show',
-					animate: 'fade-in'
-				},
-				_element: document.querySelector('.lightbox'),
-				_content: document.querySelector('.lightbox .content'),
-				show: function () {
-					addClass(lightbox._element, lightbox._classnames.display);
+        (function () {
+            // A very basic lightweight lightbox implementation.
+            var lightbox = {
+                _classnames: {
+                    display: 'show',
+                    animate: 'fade-in'
+                },
+                _element: document.querySelector('.lightbox'),
+                _content: document.querySelector('.lightbox .content'),
+                show: function () {
+                    addClass(lightbox._element, lightbox._classnames.display);
 
-					// Need to use a timer for the animation to trigger.
-					setTimeout(function () {
-						addClass(lightbox._element, lightbox._classnames.animate);
-					}, 0);
+                    // Need to use a timer for the animation to trigger.
+                    setTimeout(function () {
+                        addClass(lightbox._element, lightbox._classnames.animate);
+                    }, 0);
 
-					return this;
-				},
-				hide: function () {
-					var duration;
+                    return this;
+                },
+                hide: function () {
+                    var duration;
 
-					if (window.getComputedStyle) {
-						duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
-					}
+                    if (window.getComputedStyle) {
+                        duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
+                    }
 
-					removeClass(lightbox._element, lightbox._classnames.animate);
-					if (duration) {
-						setTimeout(function () {
-							removeClass(lightbox._element, lightbox._classnames.display);
-						}, duration * 1000);
-					} else {
-						removeClass(lightbox._element, lightbox._classnames.display);
-					}
+                    removeClass(lightbox._element, lightbox._classnames.animate);
+                    if (duration) {
+                        setTimeout(function () {
+                            removeClass(lightbox._element, lightbox._classnames.display);
+                        }, duration * 1000);
+                    } else {
+                        removeClass(lightbox._element, lightbox._classnames.display);
+                    }
 
-					return this;
-				},
-				html: function (html) {
-					this._content.innerHTML = html;
-					return this;
-				}
-			};
+                    return this;
+                },
+                html: function (html) {
+                    this._content.innerHTML = html;
+                    return this;
+                }
+            };
 
-			// Close the lightbox if the background is clicked.
-			lightbox._element.onclick = function (event) {
-				event = event || window.event;
-				if (event.target === lightbox._element) {
-					lightbox.hide();
-				}
-			};
+            // Close the lightbox if the background is clicked.
+            lightbox._element.onclick = function (event) {
+                event = event || window.event;
+                if (event.target === lightbox._element) {
+                    lightbox.hide();
+                }
+            };
 
-			// Override the generic close button event set above.
-			document.querySelector('.lightbox .close').onclick = lightbox.hide;
+            // Override the generic close button event set above.
+            document.querySelector('.lightbox .close').onclick = lightbox.hide;
 
-			window.lightbox = lightbox;
-		}());
+            window.lightbox = lightbox;
+        }());
 
-		// Set up the lightboxes.
-		(function () {
-			var template, templates = {
-				'signup': '[href="#/sign-up/"]',
-				'login': '.login a',
-				'about': '[href="#/about/"]',
-				'new': '[href$="/new/"]'
-			};
+        // Set up the lightboxes.
+        (function () {
+            var template, templates = {
+                'signup': '[href="#/sign-up/"]',
+                'login': '.login a',
+                'about': '[href="#/about/"]',
+                'new': '[href$="/new/"]'
+            };
 
-			$.each(templates, function (template_name, selector) {
-				var html = tim(template_name);
+            $.each(templates, function (template_name, selector) {
+                var html = tim(template_name);
 
-				$(selector).click(function (event) {
-					window.lightbox.html(html).show();
-					event.preventDefault();
-				});
-			});
-		}());
+                $(selector).click(function (event) {
+                    window.lightbox.html(html).show();
+                    event.preventDefault();
+                });
+            });
+        }());
 
-		// Set up the dashbaord detail boxes.
-		(function () {
-			var details;
+        // Set up the dashbaord detail boxes.
+        (function () {
+            var details;
 
-			details = {
-				'[href="#/projects/"]': tim('dashboard-detail', {
-					type: 'projects',
-					title: 'Projects',
-					content: tim('dashboard-detail-projects', {
-						pending: [
-							{name: 'My pending task', slug: 'my-pending-task'}
-						],
-						done: [
-							{name: 'My done task', slug: 'my-done-task'}
-						]
-					})
-				}),
-				'.button[href="#/tasks/"]': tim('dashboard-detail', {
-					type: 'project',
-					title: 'Detail Title',
-					content: tim('dashboard-detail-project', {
-						name: 'Project Name',
-						slug: 'project-name',
-						image: 'media/images/placeholder.png',
-						organisation: 'The Organisation',
-						tags: [
-							{name:'red', slug: 'red'},
-							{name:'blue', slug: 'blue'},
-							{name:'green', slug: 'green'},
-							{name:'orange', slug: 'orange'}
-						],
-						tasks: [
-							{name: 'My Task'}, {name: 'My other task'}
-						]
-					})
-				}),
-				'[href="#/user/another-user/"]': tim('dashboard-detail', {
-					type: 'user',
-					title: 'Another User',
-					content: tim('dashboard-detail-user', {
-						name: 'Bilbo Baggins',
-						image: 'media/images/placeholder.png',
-						location: 'The Shire, Middle Earth',
-						projects: [
-							{title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
-							{title: 'Another awesome project', slug: 'another-awesome-project', isCurrent: true},
-							{title: 'Final awesome project', slug: 'final-awesome-project', isCurrent: false}
-						],
-						tasks: [
-							{title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
-							{title: 'Another awesome project', slug: 'another-awesome-project', isCurrent: true},
-							{title: 'Final awesome project', slug: 'final-awesome-project', isCurrent: false}
-						],
-						managed: [
-							{title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
-							{title: 'Another awesome project', slug: 'another-awesome-project', isCurrent: true},
-							{title: 'Final awesome project', slug: 'final-awesome-project', isCurrent: false}
-						]
-					})
-				})
-			};
+            details = {
+                '[href="#/projects/"]': tim('dashboard-detail', {
+                    type: 'projects',
+                    title: 'Projects',
+                    content: tim('dashboard-detail-projects', {
+                        pending: [
+                            {name: 'My pending task', slug: 'my-pending-task'}
+                        ],
+                        done: [
+                            {name: 'My done task', slug: 'my-done-task'}
+                        ]
+                    })
+                }),
+                '.button[href="#/tasks/"]': tim('dashboard-detail', {
+                    type: 'project',
+                    title: 'Detail Title',
+                    content: tim('dashboard-detail-project', {
+                        name: 'Project Name',
+                        slug: 'project-name',
+                        image: 'media/images/placeholder.png',
+                        organisation: 'The Organisation',
+                        tags: [
+                            {name:'red', slug: 'red'},
+                            {name:'blue', slug: 'blue'},
+                            {name:'green', slug: 'green'},
+                            {name:'orange', slug: 'orange'}
+                        ],
+                        tasks: [
+                            {name: 'My Task'}, {name: 'My other task'}
+                        ]
+                    })
+                }),
+                '[href="#/user/another-user/"]': tim('dashboard-detail', {
+                    type: 'user',
+                    title: 'Another User',
+                    content: tim('dashboard-detail-user', {
+                        name: 'Bilbo Baggins',
+                        image: 'media/images/placeholder.png',
+                        location: 'The Shire, Middle Earth',
+                        projects: [
+                            {title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
+                            {title: 'Another awesome project', slug: 'another-awesome-project', isCurrent: true},
+                            {title: 'Final awesome project', slug: 'final-awesome-project', isCurrent: false}
+                        ],
+                        tasks: [
+                            {title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
+                            {title: 'Another awesome project', slug: 'another-awesome-project', isCurrent: true},
+                            {title: 'Final awesome project', slug: 'final-awesome-project', isCurrent: false}
+                        ],
+                        managed: [
+                            {title: 'An awesome project', slug: 'an-awesome-project', isCurrent: false},
+                            {title: 'Another awesome project', slug: 'another-awesome-project', isCurrent: true},
+                            {title: 'Final awesome project', slug: 'final-awesome-project', isCurrent: false}
+                        ]
+                    })
+                })
+            };
 
-			/*
-			$.each(details, function (selector, html) {
-				var detail = $(html).appendTo('.dashboard').hide();
+            /*
+            $.each(details, function (selector, html) {
+                var detail = $(html).appendTo('.dashboard').hide();
 
-				document.querySelector(selector).onclick = function () {
-					var close = detail.find('.close');
+                document.querySelector(selector).onclick = function () {
+                    var close = detail.find('.close');
 
-					detail.show();
-					detail.parent().addClass('detail-active');
+                    detail.show();
+                    detail.parent().addClass('detail-active');
 
-					close.click(function (event) {
-						detail.hide().parent().removeClass('detail-active');
-						event.preventDefault();
-					});
+                    close.click(function (event) {
+                        detail.hide().parent().removeClass('detail-active');
+                        event.preventDefault();
+                    });
 
-					return false;
-				};
-			});
-			*/
-		}());
-	</script>
+                    return false;
+                };
+            });
+            */
+        }());
+    }
+    </script>
 </body>
 </html>
