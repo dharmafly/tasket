@@ -84,7 +84,7 @@ class Task(models.Model):
         """
         obj_dict = {
             "id": str(self.pk),
-            "description": self.description,
+            "description": self.description.strip(),
             "estimate": self.estimate,
             "state" : self.state,
             "owner" : str(self.owner.pk),
@@ -152,8 +152,8 @@ class Hub(models.Model):
         """
         obj_dict = {
             "id": str(self.pk),
-            "title": self.title,
-            "description": self.description,
+            "title": self.title.strip(),
+            "description": self.description.strip(),
             "owner": str(self.owner.pk),
             "tasks": [str(t.pk) for t in self.task_set.all()],
             "createdTime": self.created_timestamp(),
@@ -192,9 +192,9 @@ class Profile(models.Model):
     def as_dict(self):
         obj_dict = {
             "id": str(self.user.pk),
-            "realname": self.realname,
-            "description": self.description,
-            "location": self.location,
+            "realname": self.realname.strip(),
+            "description": self.description.strip(),
+            "location": self.location.strip(),
             "hubs": {
                 "owned": [str(h.pk) for h in self.owned_hubs.all()],
                 },
