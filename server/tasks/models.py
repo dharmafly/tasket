@@ -91,7 +91,7 @@ class Task(models.Model):
             "claimedBy" : None,
             "verifiedBy" : None,
             "createdTime" : self.created_timestamp(),
-            "hub" : self.hub.as_dict(),
+            "hub" : str(self.hub.pk),
         }
         
         if self.image:
