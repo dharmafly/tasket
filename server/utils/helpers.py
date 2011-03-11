@@ -58,7 +58,6 @@ class PutView(View):
         # If OPTIONS isn't in the http_method_names, add it and set up the 
         # default dispatcher
         self.http_method_names.append('options')
-        print self.http_method_names
         if request.method.lower() in self.http_method_names:
             method = request.method.lower()
             handler = getattr(self, method,
