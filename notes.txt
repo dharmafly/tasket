@@ -1,1 +1,2 @@
 Backbone Issue: Model.validate() doesn't seem to run on constructor call. Bug?
+Backbone docs: bind, trigger, unbind methods on views, collections and models

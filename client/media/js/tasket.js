@@ -332,7 +332,7 @@ HubView = Backbone.View.extend({
         selected:false
     },
     
-    eventProxy: _.extend({}, Backbone.Events),
+    eventProxy: _.extend({}, Backbone.Events), // TODO: use bind, trigger
     
     getset: function(property, value){
         return _.isUndefined(value) ? this.get(property) : this.set(property, value);
@@ -345,7 +345,7 @@ HubView = Backbone.View.extend({
     
     set: function(property, value){
         this.options[property] = value;
-        this.eventProxy.trigger("set", property, value);
+        this.trigger("change", property, value);
         return this;
     },
     
