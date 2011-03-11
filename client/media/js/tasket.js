@@ -5,6 +5,17 @@ function now(){
     return (new Date()).getTime();
 }
 
+function truncate(str, charLimit, continuationStr){
+    if (str && str.length > charLimit){
+        continuationStr = continuationStr || "…";
+        return str
+            .slice(0, charLimit + continuationStr.length)
+            .replace(/\W?\s\S*$/m, "") +
+            continuationStr;
+    }
+}
+
+
 var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView;
 
 // ABSTRACT MODEL
@@ -102,7 +113,7 @@ Hub = Model.extend({
         
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        this.tasks = new TaskList();
+        this.tasks = new TaskList(); // TODO: replace with array of ids
     }
 });
 
@@ -148,6 +159,7 @@ UserList = CollectionModel.extend({
 Tasket = {
     endpoint: "http://tasket.ep.io/",
     // endpoint: "http://localhost:8000/",
+    hubDescriptionTruncate: 30, // No. of chars to truncate hub description to. TODO: move to a different object?
     
     hubs: new HubList(),
     tasks: new TaskList(),
@@ -292,6 +304,18 @@ TaskView = Backbone.View.extend({
 
     render: function(){
         var data = this.model.toJSON();
+        
+        data.hasUser = !!data.claimedBy;
+        data.showTakeThisButton = !data.hasUser;
+        data.showDoneThisButton = data.claimedBy === Tasket.MY_USER_ID; // TODO
+        
+        // TODO: make more elegant in Tim? Or use blank strings as default?
+        _(data).each(function(value, key){
+            if (data[key] === null){
+                data[key] = "";
+            }
+        });
+        
         this.elem
             .html(tim("task", data));
             
@@ -308,6 +332,8 @@ HubView = Backbone.View.extend({
         selected:false
     },
     
+    eventProxy: _.extend({}, Backbone.Events),
+    
     getset: function(property, value){
         return _.isUndefined(value) ? this.get(property) : this.set(property, value);
     },
@@ -319,6 +345,7 @@ HubView = Backbone.View.extend({
     
     set: function(property, value){
         this.options[property] = value;
+        this.eventProxy.trigger("set", property, value);
         return this;
     },
     
@@ -327,7 +354,30 @@ HubView = Backbone.View.extend({
     },
     
     events: {
-        //"click button": "completeTask"
+        "click": "toggleSelected"
+    },
+    
+    toggleSelected: function(){
+        if (this.isSelected()){
+            return this.deselect();
+        }
+        return this.select();
+    },
+    
+    select: function(){
+        this.set("selected", true);
+        this.eventProxy.trigger("select"); // TODO: should this be on the model, not the view?
+        this.elem.addClass("select");
+        this.renderTasks();
+        return this;
+    },
+    
+    deselect: function(){
+        this.set("selected", false);
+        this.eventProxy.trigger("deselect");
+        this.elem.removeClass("select");
+        this.clearTasks();
+        return this;
     },
     
     offsetValues: function(offset){
@@ -354,7 +404,7 @@ HubView = Backbone.View.extend({
         };
     },
     
-    addTasks: function(){
+    renderTasks: function(){
     /*
     
     tasks width: (19.321 + (0.923×2) + (0.23075×2)) × 2 = 42.7955 em
@@ -366,7 +416,13 @@ HubView = Backbone.View.extend({
     padding: 5em;
     
     */
-    
+        // TODO temp
+        this.collection = new TaskList(
+            _(this.model.attributes.tasks)
+                .map(function(id){
+                    return {id:id};
+                })
+        );
     
         var container = this.$("div.tasks > ul"),
             containerHalfWidth = container.outerWidth(true) / 2,
@@ -409,17 +465,27 @@ HubView = Backbone.View.extend({
             });
             
         }, this);
+        
+        return this;
+    },
+    
+    clearTasks: function(){
+        var container = this.$("div.tasks > ul");
+        container.empty();
+        return this;
     },
 
     render: function(){
-        var data = this.model.toJSON();
+        var data = this.model.toJSON(),
+            desc = data.description;
         
         data.isSelected = this.isSelected();
+        data.description = truncate(data.description, Tasket.hubDescriptionTruncate);
         
         this.elem.html(tim("hub", data));
             
         if (data.isSelected){
-            this.addTasks();
+            this.renderTasks();
         }
         return this.offsetApply();
     },
@@ -530,8 +596,10 @@ Tasket.lang = {
 
 /////
 
-// TODO: part of ui object?
-var notification = new Notification();
+
+var dummyCode = false,
+    // TODO: part of ui object?
+    notification = new Notification();
 
 function draw(success){
     var body = jQuery("body"),
@@ -541,10 +609,18 @@ function draw(success){
         notification.hide();
         Tasket.hubs.each(function(hub){
             hubView = new HubView({
-               model: hub
+                model: hub,
+               
+                offset: {
+                    top: 300,
+                    left: 500
+                },
             }).render();
             
             body.append(hubView.elem);
+            
+            // TODO: temp
+            window.hubView = hubView;
         });
     }
     else {
@@ -552,78 +628,87 @@ function draw(success){
     }
 }
 
-// Timeout required to prevent notification appearing immediately (seen in Chrome)
-window.setTimeout(function(){
-    notification.warning(Tasket.lang.LOADING);
-}, 0);
+/////
 
-// Get data from the server and draw
-Tasket.initData(draw);
+if (dummyCode){
+    drawDummyData();
+}
+else {
+    // Timeout required to prevent notification appearing immediately (seen in Chrome)
+    window.setTimeout(function(){
+        notification.warning(Tasket.lang.LOADING);
+    }, 0);
 
-/*
-var myHub = new Hub({
-        title: "Foo foo foo",
-        description: "Lorem ipsum",
-        image: "media/images/placeholder.png",
-        owner: "5"
-    }),
-    
-    myHubView = new HubView({
-        model: myHub,
+    // Get data from the server and draw
+    Tasket.initData(draw);
+}
+
+function drawDummyData(){
+    notification.hide();
+
+    var myHub = new Hub({
+            title: "Foo foo foo",
+            description: "Lorem ipsum",
+            image: "media/images/placeholder.png",
+            owner: "5"
+        }),
         
-        // options
-        selected: true,
-        offset: {
-            top: 300,
-            left: 500
-        },
-        
-        collection: new TaskList([ // TODO: add these to the hub, not the hubview
-            {
-                description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-                owner: {
-                    name: 'Another User',
-                    url: '#/user/another-user/',
-                    image: 'media/images/placeholder.png'
-                },
-                hub:myHub, // TODO: how does this align with a JSON representation, using the id?
-                hasUser: true,
-                isOwner: false,
-                isNotOwner: true,
-                showTakeThisButton: false,
-                showDoneThisButton: false
+        myHubView = new HubView({
+            model: myHub,
+            
+            // options
+            selected: true,
+            offset: {
+                top: 300,
+                left: 500
             },
-            {
-                description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-                owner: {
-                    name: 'Current User',
-                    url: '#/user/current-user/',
-                    image: 'media/images/placeholder.png'
+            
+            collection: new TaskList([ // TODO: add these to the hub, not the hubview
+                {
+                    description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+                    owner: {
+                        name: 'Another User',
+                        url: '#/user/another-user/',
+                        image: 'media/images/placeholder.png'
+                    },
+                    hub:myHub, // TODO: how does this align with a JSON representation, using the id?
+                    hasUser: true,
+                    isOwner: false,
+                    isNotOwner: true,
+                    showTakeThisButton: false,
+                    showDoneThisButton: false
                 },
-                hub:myHub,
-                hasUser: true,
-                isOwner: true,
-                isNotOwner: false,
-                showTakeThisButton: false,
-                showDoneThisButton: true
-            },
-            {
-                description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
-                owner: {
-                    name: 'Current User',
-                    url: '#/user/current-user/',
-                    image: 'media/images/placeholder.png'
+                {
+                    description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+                    owner: {
+                        name: 'Current User',
+                        url: '#/user/current-user/',
+                        image: 'media/images/placeholder.png'
+                    },
+                    hub:myHub,
+                    hasUser: true,
+                    isOwner: true,
+                    isNotOwner: false,
+                    showTakeThisButton: false,
+                    showDoneThisButton: true
                 },
-                hub:myHub,
-                hasUser: false,
-                isOwner: false,
-                isNotOwner: true,
-                showTakeThisButton: true,
-                showDoneThisButton: false
-            }
-        ])
-    });
+                {
+                    description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
+                    owner: {
+                        name: 'Current User',
+                        url: '#/user/current-user/',
+                        image: 'media/images/placeholder.png'
+                    },
+                    hub:myHub,
+                    hasUser: false,
+                    isOwner: false,
+                    isNotOwner: true,
+                    showTakeThisButton: true,
+                    showDoneThisButton: false
+                }
+            ])
+        });
     
-    // jQuery("body").append(myHubView.elem);   
-    // myHubView.render();
-*/
+        jQuery("body").append(myHubView.elem);   
+        myHubView.render();
+}
