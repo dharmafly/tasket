@@ -1,6 +1,7 @@
 <!doctype html>
 <!--[if IE]><html lang="en" class="ie"><![endif]-->
-<!--[if (gt IE 9)|!(IE)]><!--><html lang="en"><!--<![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!-->
+<html lang="en"><!--<![endif]-->
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
@@ -112,7 +113,14 @@
 		</div>
 	</section>
 	
-	<script class="hub" type="text/tim">
+	
+	<!--
+	
+	    TEMPLATES
+	    ---------
+	-->
+		
+	<script type="text/tim" class="hub">
 	    <img {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
 	    <hgroup>
 		    <h1>{{title}}</h1>
@@ -123,7 +131,7 @@
 	    </div>
 	</script>
 
-	<script class="task" type="text/tim">
+	<script type="text/tim" class="task">
 		<p class="description">{{description}}</p>
 		<aside class="meta">
 			{{hasUser}}
@@ -147,7 +155,7 @@
 		</aside>
 	</script>
 
-	<script class="dashboard-detail" type="text/tim">
+	<script type="text/tim" class="dashboard-detail">
 		<section id="{{type}}" class="detail">
 			<h1>{{title}}</h1>
 			<button class="action close">Close</button>
@@ -156,7 +164,7 @@
 		</section>
 	</script>
 
-	<script class="dashboard-detail-profile" type="text/tim">
+	<script type="text/tim" class="dashboard-detail-profile">
 		<section class="list">
 			<h1>{{title}}</h1>
 			<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
@@ -176,7 +184,7 @@
 		</section>
 	</script>
 
-	<script class="dashboard-detail-user" type="text/tim">
+	<script type="text/tim" class="dashboard-detail-user">
 		<section class="profile user">
 			<img src="{{image}}" alt="{{name}}" width="55" height="55" />
 			<p class="name">{{name}}</p>
@@ -218,7 +226,7 @@
 		</section>
 	</script>
 
-	<script class="dashboard-detail-projects" type="text/tim">
+	<script type="text/tim" class="dashboard-detail-projects">
 		<section class="list">
 			<h1>Pending</h1>
 			<a class="button action" href="#/tasks/new/" title="Create a new Task">New</a>
@@ -246,7 +254,7 @@
 		</section>
 	</script>
 
-	<script class="dashboard-detail-project" type="text/tim">
+	<script type="text/tim" class="dashboard-detail-project">
 		<section class="profile">
 			<img src="{{image}}" alt="The project image" width="55" height="55" />
 			<dl>
@@ -286,7 +294,7 @@
 		</section>
 	</script>
 
-	<script class="login" type="text/tim">
+	<script type="text/tim" class="login">
 		<h1>Login</h1>
 		<form action="#/login" method="POST">
 			<ul>
@@ -306,7 +314,7 @@
 		</form>
 	</script>
 
-	<script class="signup" type="text/tim">
+	<script type="text/tim" class="signup">
 		<h1>Register for a Tasket Account</h1>
 		<p>Please provide the following details and we’ll create an account for you.</p>
 		<form action="#/sign-up/" method="POST">
@@ -334,7 +342,7 @@
 		</form>
 	</script>
 
-	<script class="about" type="text/tim">
+	<script type="text/tim" class="about">
 		<h1>About Tasket</h1>
 		<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor
 		   incididunt ut labore et <strong>strong</strong> dolore magna aliqua. Ut enim ad
@@ -350,7 +358,7 @@
 		</blockquote>
 	</script>
 
-	<script class="new-task" type="text/tim">
+	<script type="text/tim" class="new-task">
 		<h1>Create a new task</h1>
 		<form action="#/tasks/" method="POST">
 			<ul>
@@ -376,9 +384,17 @@
 				<button type="submit">Create Task</button>
 			</div>
 		</form>
+	
+	
+	<!--
+	
+	    SCRIPTING
+	    ---------
+	-->
 	</script>
 
     <script>
+        // Console logging
         function O(){
             console.log.apply(console, arguments);
         }
@@ -388,7 +404,10 @@
 	<script src="media/js/backbone.js"></script>
 	<script src="media/js/tim.js"></script>
 	<script src="media/js/tasket.js"></script>
+	
 	<script>
+	    // TEMPORARY STUBS
+	
 		function addClass(element, klass) {
 			classes = element.className.split(' ');
 			classes.push(klass);
