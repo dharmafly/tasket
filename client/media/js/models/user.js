@@ -11,7 +11,7 @@ var User = Model.extend({
     },
     
     initialize: function(){
-        Model.prototype.initialize.apply(this, arguments);
+        Model.prototype.initialize.call(this, arguments);
         this.hubs = {
             owned: new HubList()
         };

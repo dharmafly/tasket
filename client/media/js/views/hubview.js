@@ -153,7 +153,7 @@ var HubView = View.extend({
     },
     
     initialize: function(options){
-        View.prototype.initialize.call(this);
+        View.prototype.initialize.apply(this, arguments);
         this._generateTaskViews(); // Note, this requires all task models to have been fetched
     }
 });
