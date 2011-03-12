@@ -1,12 +1,8 @@
-var TaskView = Backbone.View.extend({
+var TaskView = View.extend({
     tagName: "li",
     
     events: {
         //"click button": "completeTask"
-    },
-    
-    initialize: function(options){
-        this.elem = jQuery(this.el);
     },
     
     offsetValues: function(offset){
