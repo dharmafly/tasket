@@ -121,7 +121,7 @@
     -->
         
     <script type="text/tim" class="hub">
-        <img {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
+        <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
         <hgroup>
             <h1>{{title}}</h1>
             <h2>{{description}}</h2>
@@ -141,8 +141,8 @@
                         <a href="{{owner.url}}" title="See your tasks">You’re</a> doing this
                     {{/isOwner}}
                     {{isNotOwner}}
-                        <img src="{{owner.image}}" width="14" height="14" alt="{{owner.name}}’s avatar" />
-                        <a href="{{owner.url}}" title="See {{owner.name}}’s tasks">{{owner.name}}</a><br /> is doing this task
+                        <img src="{{owner.image}}" width="14" height="14" alt="{{owner.realname}}’s avatar" />
+                        <a href="{{owner.url}}" title="See {{owner.realname}}’s tasks">{{owner.realname}}</a><br /> is doing this task
                     {{/isNotOwner}}
                 </p>
             {{/hasUser}}

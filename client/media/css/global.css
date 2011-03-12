@@ -653,6 +653,7 @@ article > img {
 	-ms-border-radius: 4em;
 	-o-border-radius: 4em;
 	border-radius: 4em;
+	cursor:pointer; /* TODO: remove if link is wrapped aroung img */
 }
 
 article > img.selected {

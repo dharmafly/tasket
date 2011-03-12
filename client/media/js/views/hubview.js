@@ -1,10 +1,10 @@
 var HubView = View.extend({
     tagName: "article",
+    className: "hub",
     
     defaults: {
-        offsetTop:0,
-        offsetLeft:0,
-        selected:false
+        selected: false,
+        taskDistance: 20
     },
     
     isSelected: function(){
@@ -38,30 +38,6 @@ var HubView = View.extend({
         return this;
     },
     
-    offsetValues: function(offset){
-        return this.getset("offset", offset);
-    },
-    
-    offsetApply: function(){
-        var offset = this.options.offset;
-        if (offset){ // only apply offset if it is not the default
-            this.elem.offset(offset);
-        }
-        return this;
-    },
-    
-    offset: function(offset){ // TODO: ensure HubElem or tasksCollection has position:relative
-        if (offset){
-            return this
-                .offsetValues(offset)
-                .offsetApply();
-        }
-        return this.get("offset") || {
-            top:  this.defaults.offsetTop,
-            left: this.defaults.offsetLeft
-        };
-    },
-    
     _generateTaskViews: function(){        
         this.taskViews = _( // TODO: This is an Underscore collection. Confusing? Or genius?
             _(this.model.tasks).map(function(id){
@@ -86,30 +62,31 @@ var HubView = View.extend({
     padding: 5em;
     
     */    
-        var container = this.$("div.tasks > ul"),
-            containerHalfWidth = container.outerWidth(true) / 2,
-            containerHalfHeight = container.outerHeight(true) / 2,
+        var container = this.taskListElem,
+            nucleusRadius = this.nucleusElem.outerWidth(true) / 2,
             taskWidth, taskHeight, taskHalfWidth, taskHalfHeight,
             angle = ((2 * Math.PI) / this.taskViews.size()),
             //svgElem = this.$("svg"),
-            distance = 162;
+            distance = this.get("taskDistance") + nucleusRadius;
             
             // TEMP: show distance boundary
             container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
             
         this.taskViews.each(function(taskView, i){
-            var top, left, elem = taskView.elem;
+            var taskElem = taskView.elem,
+                top, left;
             
-            container.append(taskView.render().elem);
+            taskView.render();
+            container.append(taskElem);
             
             if (!taskWidth){
-                taskWidth  = elem.outerWidth(true);
-                taskHeight = elem.outerHeight(true);
-                taskHalfWidth  = elem.outerWidth(true) / 2;
-                taskHalfHeight = elem.outerHeight(true) / 2;
+                taskWidth  = taskElem.outerWidth(true);
+                taskHeight = taskElem.outerHeight(true);
+                taskHalfWidth  = taskElem.outerWidth(true) / 2;
+                taskHalfHeight = taskElem.outerHeight(true) / 2;
             }
-            top = Math.round(Math.cos(angle * i) * distance) - (distance / 2);
-            left = Math.round(Math.sin(angle * i) * distance) - (distance / 2);
+            top = Math.cos(angle * i) * distance;
+            left = Math.sin(angle * i) * distance - taskHalfWidth;
             
             /*
             if (left < 0){
@@ -119,11 +96,16 @@ var HubView = View.extend({
                 left += (left / (distance * 2)) * taskWidth * 2;
             }
             */
-            O(taskView, i, top, left);
+            // TODO: need to do ratio of these values
+            if (top < 0){
+                top -= taskHeight;
+            }
+            
+            O(taskElem[0], top, left, taskWidth, nucleusRadius, angle);
             
             taskView.offset({
-                top: top,
-                left: left
+                top:  Math.round(top),
+                left: Math.round(left)
             });
             
         }, this);
@@ -132,8 +114,7 @@ var HubView = View.extend({
     },
     
     clearTasks: function(){
-        var container = this.$("div.tasks > ul");
-        container.empty();
+        this.taskListElem.empty();
         return this;
     },
 
@@ -145,6 +126,9 @@ var HubView = View.extend({
         data.description = truncate(data.description, ui.hubDescriptionTruncate);
         
         this.elem.html(tim("hub", data));
+        this.nucleusElem = this.elem.children("img.nucleus");
+        this.tasksElem = this.$("div.tasks");
+        this.taskListElem = this.tasksElem.children("ul");
             
         if (data.isSelected){
             this.renderTasks();
@@ -152,7 +136,7 @@ var HubView = View.extend({
         return this.offsetApply();
     },
     
-    initialize: function(options){
+    initialize: function(){
         View.prototype.initialize.apply(this, arguments);
         this._generateTaskViews(); // Note, this requires all task models to have been fetched
     }

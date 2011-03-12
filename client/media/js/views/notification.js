@@ -1,6 +1,5 @@
 var Notification = Backbone.View.extend({
     tagName: "div",
-
     className: "notification",
 
     events: {
@@ -8,10 +7,10 @@ var Notification = Backbone.View.extend({
     },
 
     initialize: function () {
-        this.elem = $(this.el);
+        this.elem = jQuery(this.el);
         this.render();
         this.contentElem = this.elem.find(".notification-content");
-        body.prepend(this.elem);
+        bodyElem.prepend(this.elem);
         _.bindAll(this, "_onKeyPress");
     },
 
@@ -48,14 +47,14 @@ var Notification = Backbone.View.extend({
             this.status(status);
         }
         
-        $(window).bind('keyup', this._onKeyPress);
-        $(document.body).addClass('show-notification');
+        jQuery(window).bind('keyup', this._onKeyPress);
+        bodyElem.addClass('show-notification');
         return this;
     },
 
     hide: function () {
-        $(window).unbind('keyup', this._onKeyPress);
-        $(document.body).removeClass('show-notification');
+        jQuery(window).unbind('keyup', this._onKeyPress);
+        bodyElem.removeClass('show-notification');
         return this;
     },
     

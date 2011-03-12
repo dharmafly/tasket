@@ -1,38 +1,17 @@
 var TaskView = View.extend({
     tagName: "li",
+    className: "task",
+    
+    defaults: {},
     
     events: {
         //"click button": "completeTask"
     },
-    
-    offsetValues: function(offset){
-        this.options.offset = offset;
-        return this;
-    },
-    
-    offsetApply: function(){
-        var offset = this.options.offset;
-        if (offset){
-            this.elem.offset(offset);
-        }
-        return this;
-    },
-    
-    offset: function(offset){
-        if (offset){
-            return this
-                .offsetValues(offset)
-                .offsetApply();
-        }
-        return this.options.offset || {
-            top:0,
-            left:0
-        };
-    },
 
     render: function(){
         var data = this.model.toJSON(),
-            currentUser = Tasket.currentUser;
+            currentUser = Tasket.currentUser,
+            userModel;
         
         data.hasUser = !!data.claimedBy;
         if (data.hasUser){
@@ -43,12 +22,30 @@ var TaskView = View.extend({
         data.showTakeThisButton = !data.hasUser;
         data.showDoneThisButton = (data.claimedBy === currentUser);
         
-        // TODO: make more elegant in Tim? Or use blank strings as default in models?
+        if (data.owner){
+            userModel = Tasket.users.get(data.owner);
+            data.owner = userModel.attributes;
+            data.owner.url = userModel.url();
+            
+            // TODO: temp
+            _(data.owner).each(function(value, key){
+                if (data.owner[key] === null){
+                    data.owner[key] = "";
+                }
+            });
+        }
+        
+        // TODO: make more elegant in Tim? Or use blank strings / undefined as default in models?
         _(data).each(function(value, key){
             if (data[key] === null){
                 data[key] = "";
             }
         });
+        
+        
+        O(data.owner); // TODO: change user.realname -> user.name?
+        // TODO: provide url for user
+        // TODO: wrap hub nucleus image in url link
         
         this.elem
             .html(tim("task", data));
