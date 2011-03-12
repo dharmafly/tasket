@@ -19,5 +19,6 @@ function truncate(str, charLimit, continuationStr){
 /////
 
 
-var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView, ui, api,
+//var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView, ui, api,
+var Tasket = {},
     body = jQuery("body");

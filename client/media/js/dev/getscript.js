@@ -67,6 +67,7 @@ var getScript = (function(window){
             var charset = options.charset,
                 keep = options.keep,
                 target = options.target,
+                path = options.path || "",
                 async = (options.async !== false),
                 document = target.document,
                 head = document.getElementsByTagName('head')[0],
@@ -103,7 +104,7 @@ var getScript = (function(window){
             script.async = async;
             
             // Apply the src
-            script.src = src;
+            script.src = path + src;
             
             // Go...
             head.appendChild(script);
@@ -173,23 +174,54 @@ var getScript = (function(window){
             }
         };
     };
+    
+    // An array of srcs is loaded in series, one after the next
     getScript.sync = function(srcs, callback, options){
-        return function(loaded){
-            if (loaded !== false){
-                var i = srcs.length - 1,
-                    callbacks = [];
-                
-                for (; i; i--){
-                    callbacks[i] = getScript.ready(srcs[i], callbacks[i + 1] || callback, options);
-                }
-                
-                return getScript(srcs[0], callbacks[1], options);
-            }
-            else if (callback){
-                callback(loaded);
-            }
-        };
+        var i = srcs.length - 1,
+            callbacks = [];
+        
+        for (; i; i--){
+            callbacks[i] = getScript.ready(srcs[i], callbacks[i + 1] || callback, options);
+        }
+        
+        return getScript(srcs[0], callbacks[1], options);
+    };
+    
+    // Array methods - from underscore.js
+    var slice = Array.prototype.slice,
+        toString = Object.prototype.toString;        
+    function toArray(iterable){
+        return slice.call(iterable);
+    }
+    function isArray(obj){
+        return toString.call(obj) === '[object Array]';
+    }
+    
+    getScript.sequence = function(srcs, callback, options){
+        var args = slice.call(arguments),
+            len = args.length,
+            last = args.slice(-1)[0],
+            secondLast = args.slice(-2,-1)[0],
+            srcEndPos = len - 2,
+            i;
+            
+        if (typeof last === "object" && !isArray(last)){
+            options = last;
+            callback = secondLast;
+        }
+        else {
+            options = null;
+            callback = last;
+            srcEndPos ++;
+        }
+        if (typeof callback !== "function"){
+            callback = null;
+            srcEndPos ++;
+        }
+        
+        srcs = args.slice(0, srcEndPos);
+        return getScript.sync(srcs, callback, options);
     };
 
-    return getScript;
+    return getScript.sequence;
 }(window));

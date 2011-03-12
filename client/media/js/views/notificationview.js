@@ -1,6 +1,4 @@
-// NOTIFICATION
-
-Notification = Backbone.View.extend({
+var Notification = Backbone.View.extend({
     tagName: "div",
 
     className: "notification",

@@ -1,4 +1,4 @@
-HubView = Backbone.View.extend({
+var HubView = Backbone.View.extend({
     tagName: "article",
     
     defaults: {

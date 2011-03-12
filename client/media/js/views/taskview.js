@@ -1,4 +1,4 @@
-TaskView = Backbone.View.extend({
+var TaskView = Backbone.View.extend({
     tagName: "li",
     
     events: {

@@ -1,5 +1,5 @@
 // ABSTRACT MODEL
-Model = Backbone.Model.extend({
+var Model = Backbone.Model.extend({
     url: function() {
         var base =  Tasket.endpoint + this.type + "s/";
         return this.isNew() ? base : base + this.id;
@@ -33,7 +33,7 @@ Model = Backbone.Model.extend({
     }
 });
 
-CollectionModel = Backbone.Collection.extend({
+var CollectionModel = Backbone.Collection.extend({
     initialize: function(){
         this.type = this.model.prototype.type;
     },

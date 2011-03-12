@@ -400,36 +400,40 @@
     </script>
     <script src="media/js/dev/getscript.js"></script>
     <script>
-        var path = "media/js/";
-        getScript(
+        getScript( // Each array contains non-dependent scripts; each successive argument is dependent on previous arguments
             [
-                path + "dependencies/jquery.min.js",
-                path + "dependencies/underscore.js",
-                path + "dependencies/tim.js"
+                "dependencies/jquery.min.js",
+                "dependencies/underscore.js",
+                "dependencies/tim.js"
             ],
-            getScript.sync(
-                [
-                    path + "dependencies/backbone.js",
-                    path + "core/core.js",
+
+            "dependencies/backbone.js",
+            "core/core.js",
+
+            [
+                "models/models.js",
+                "models/hub.js",
+                "models/task.js",
+                "models/user.js",
+                
+                "views/views.js",
+                "views/hubview.js",
+                "views/taskview.js",
+                "views/userview.js",
+                "views/notificationview.js",
+                "views/ui.js",
                     
-                    path + "models/models.js",
-                    path + "models/hub.js",
-                    path + "models/task.js",
-                    path + "models/user.js",
-                    
-                    path + "views/views.js",
-                    path + "views/hubview.js",
-                    path + "views/taskview.js",
-                    path + "views/userview.js",
-                    path + "views/notificationview.js",
-                    path + "views/ui.js",
-                    
-                    path + "core/api.js",
-                    path + "lang/en.js",
-                    path + "tasket-init.js"
-                ],
-                temporaryStubs
-            )
+                "core/api.js"
+            ],
+
+            "lang/en.js",
+            "init.js",
+            
+            // Callback on complete
+            temporaryStubs,
+            
+            // Options
+            {path:"media/js/"}
         );
         
         
