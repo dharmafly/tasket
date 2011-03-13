@@ -190,7 +190,7 @@ class ProfileView(PutView):
         self.res = HttpResponse(content_type='application/json')
     
     def get_single(self, request, user_id):
-        profile = get_object_or_404(Profile, pk=user_id)
+        profile = get_object_or_404(Profile, user=user_id)
         self.res.write(profile.as_json())
         return self.res
         
@@ -204,7 +204,7 @@ class ProfileView(PutView):
         if 'ids' in request.GET:
             ids = request.GET['ids']
             ids = [i.strip() for i in ids.split(',') if i]
-            users = users.filter(pk__in=ids)
+            users = users.filter(user__in=ids)
             
         self.res.write(users.as_json())
         return self.res

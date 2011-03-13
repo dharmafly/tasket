@@ -149,7 +149,7 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_data), 3)
 
     def test_user_get_single(self):
-        response = self.client.get('/users/1')
+        response = self.client.get('/users/2')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
 
