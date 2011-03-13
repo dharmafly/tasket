@@ -1,15 +1,15 @@
 {
 	"tasks": {
 		"claimed": [
-			"5"
 		], 
 		"verified": [
+			"4", 
+			"3"
 		], 
 		"done": [
 		], 
 		"owned": [
-			"6", 
-			"5"
+			"3"
 		]
 	}, 
 	"description": "This is a description", 
@@ -17,9 +17,9 @@
 	"location": "London", 
 	"hubs": {
 		"owned": [
-			"3"
+			"2"
 		]
 	}, 
 	"id": "2", 
-	"realname": "Test User 2"
+	"realname": "Test User 1"
 }

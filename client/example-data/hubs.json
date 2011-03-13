@@ -1,15 +1,14 @@
-    [
+[
 	{
 		"tasks": [
 			"5", 
-			"4",
-			"3"
+			"4"
 		], 
 		"description": "This one will have a verified task", 
 		"title": "Example Hub 2", 
 		"image": "/media/images/Puppy.jpg", 
 		"createdTime": 1298928843, 
-		"owner": "2", 
+		"owner": "3", 
 		"id": "3"
 	}, 
 	{
@@ -21,7 +20,7 @@
 		"title": "Example Hub", 
 		"image": "/media/images/Puppy.jpg", 
 		"createdTime": 1298928843, 
-		"owner": "1", 
+		"owner": "2", 
 		"id": "2"
 	}
 ]

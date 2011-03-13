@@ -3,13 +3,11 @@
 		"claimed": [
 		], 
 		"verified": [
-			"4", 
-			"3"
 		], 
 		"done": [
 		], 
 		"owned": [
-			"3"
+			"4"
 		]
 	}, 
 	"description": "This is a description", 
@@ -17,9 +15,8 @@
 	"location": "London", 
 	"hubs": {
 		"owned": [
-			"2"
 		]
 	}, 
-	"id": "1", 
-	"realname": "Test User 1"
+	"id": "4", 
+	"realname": "Test User 3"
 }
