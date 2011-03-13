@@ -87,7 +87,7 @@ class Task(models.Model):
             "description": self.description.strip(),
             "estimate": self.estimate,
             "state" : self.state,
-            "owner" : str(self.owner.pk),
+            "owner" : str(self.owner.user.pk),
             "claimedBy" : None,
             "verifiedBy" : None,
             "createdTime" : self.created_timestamp(),
@@ -97,9 +97,9 @@ class Task(models.Model):
         if self.image:
             obj_dict["image"] = self.image.url
         if self.claimedBy:
-            obj_dict["claimedBy"] = str(self.claimedBy.pk)
+            obj_dict["claimedBy"] = str(self.claimedBy.user.pk)
         if self.verifiedBy:
-            obj_dict["verifiedBy"] = str(self.verifiedBy.pk)
+            obj_dict["verifiedBy"] = str(self.verifiedBy.user.pk)
         
         return obj_dict
 
@@ -154,7 +154,7 @@ class Hub(models.Model):
             "id": str(self.pk),
             "title": self.title.strip(),
             "description": self.description.strip(),
-            "owner": str(self.owner.pk),
+            "owner": str(self.owner.user.pk),
             "tasks": [str(t.pk) for t in self.task_set.all()],
             "createdTime": self.created_timestamp(),
         }

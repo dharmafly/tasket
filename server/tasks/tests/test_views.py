@@ -69,7 +69,7 @@ class ViewTests(TestCase):
         response = self.client.get('/hubs/2')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['title'], 'Example Hub')
-        self.assertEqual(json_data['id'], '2')
+        self.assertEqual(json_data['owner'], '2')
     
     def test_hub_get_nonexistent(self):
         response = self.client.get('/hubs/100')
