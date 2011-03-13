@@ -15,9 +15,14 @@ function truncate(str, charLimit, continuationStr){
     }
 }
 
+function randomInt(length){
+    return Math.ceil((length || 2) * Math.random()) - 1;
+}
+
 
 /////
 
 
-var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView, ui, api,
-    body = jQuery("body");
+//var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView, ui, api,
+var Tasket = {},
+    bodyElem = jQuery("body");

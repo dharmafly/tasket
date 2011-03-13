@@ -1,5 +1,5 @@
 // PUBLIC API
-Tasket = _.extend({}, Backbone.Events, {
+_.extend(Tasket, Backbone.Events, {
     version: "0.1.0",
     endpoint: "http://tasket.ep.io/",
     // endpoint: "http://localhost:8000/",

@@ -1,5 +1,5 @@
 // HUB
-Hub = Model.extend({
+var Hub = Model.extend({
     type: "hub",
     
     required: ["owner"],
@@ -17,6 +17,6 @@ Hub = Model.extend({
 });
 
 // HUBS COLLECTION
-HubList = CollectionModel.extend({
+var HubList = CollectionModel.extend({
     model: Hub
 });

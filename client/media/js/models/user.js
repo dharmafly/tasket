@@ -1,5 +1,5 @@
 // USER
-User = Model.extend({    
+var User = Model.extend({    
     type: "user",
     
     required: ["realname"],
@@ -11,7 +11,7 @@ User = Model.extend({
     },
     
     initialize: function(){
-        Model.prototype.initialize.apply(this, arguments);
+        Model.prototype.initialize.call(this, arguments);
         this.hubs = {
             owned: new HubList()
         };
@@ -23,6 +23,6 @@ User = Model.extend({
 });
 
 // USERS COLLECTION
-UserList = CollectionModel.extend({
+var UserList = CollectionModel.extend({
     model: User
 });

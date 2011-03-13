@@ -12,13 +12,13 @@ function drawHubs(success){
             hubView = new HubView({
                 model: hub,
                
-                offset: {
-                    top: 300,
-                    left: 500
+                offset: { // TODO: Make useful
+                    left: randomInt(window.innerWidth - 550) + 50,
+                    top: randomInt(window.innerHeight - 200) + 100
                 },
             }).render();
             
-            body.append(hubView.elem);
+            bodyElem.append(hubView.elem);
             
             // TODO: temp
             window.hubView = hubView;

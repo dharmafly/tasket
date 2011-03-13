@@ -1,5 +1,5 @@
 // TASK STATES
-TaskStates = {
+var TaskStates = {
     NEW     : "new",
     CLAIMED : "claimed",
     DONE    : "done",
@@ -7,7 +7,7 @@ TaskStates = {
 };
 
 // TASK
-Task = Model.extend({
+var Task = Model.extend({
     // required: owner
         
     type: "task",
@@ -28,6 +28,6 @@ Task = Model.extend({
 Task.states = TaskStates;
 
 // TASKS COLLECTION
-TaskList = CollectionModel.extend({
+var TaskList = CollectionModel.extend({
     model: Task
 });
