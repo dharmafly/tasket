@@ -43,7 +43,7 @@ var TaskView = View.extend({
         });
         
         
-        O(data.owner); // TODO: change user.realname -> user.name?
+        //O(data.owner); // TODO: change user.realname -> user.name?
         // TODO: provide url for user
         // TODO: wrap hub nucleus image in url link
         

@@ -16,9 +16,10 @@ function drawHubs(success){
                     left: randomInt(window.innerWidth - 550) + 50,
                     top: randomInt(window.innerHeight - 200) + 100
                 },
-            }).render();
+            });
             
             bodyElem.append(hubView.elem);
+            hubView.render();
             
             // TODO: temp
             window.hubView = hubView;

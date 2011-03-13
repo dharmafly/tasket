@@ -4,7 +4,9 @@ var HubView = View.extend({
     
     defaults: {
         selected: false,
-        taskDistance: 20
+        taskDistance: 20,
+        strokeStyle: "#555",
+        lineWidth: 2
     },
     
     isSelected: function(){
@@ -35,6 +37,7 @@ var HubView = View.extend({
         this.trigger("deselect");
         this.elem.removeClass("select");
         this.clearTasks();
+        this.clearCanvas();
         return this;
     },
     
@@ -46,6 +49,57 @@ var HubView = View.extend({
                 });
             })
         );
+        return this;
+    },
+    
+    _canvasSetup: function(){
+        var canvasElem = this.canvasElem,
+            context = this.canvasContext = canvasElem[0].getContext && canvasElem[0].getContext("2d"),
+            width, radius;
+            
+        if (!context){
+            return false;
+        }
+            
+        width = this.canvasWidth = (this.get("taskDistance") * 2) + this.nucleusWidth;
+        radius = Math.round(width / 2);
+        
+        canvasElem
+            .attr({
+                width: width,
+                height: width
+            })
+            .css({
+                left: -radius,
+                top: -radius
+            });
+            
+        context.translate(radius, radius);
+        context.strokeStyle = this.get("strokeStyle");
+        context.lineWidth = this.get("lineWidth");
+        return this;
+    },
+    
+    clearCanvas: function(){
+        var context = this.canvasContext,
+            width = this.canvasWidth;
+            
+        if (context){
+            context.clearRect(-width / 2, -width / 2, width, width);
+        }
+        return this;
+    },
+    
+    line: function(x, y){
+        var context = this.canvasContext;
+        
+        if (context){
+            context.beginPath();
+            context.moveTo(0, 0);
+            context.lineTo(x, y);
+            context.stroke();
+            context.closePath();
+        }
         return this;
     },
     
@@ -63,22 +117,19 @@ var HubView = View.extend({
     
     */    
         var container = this.taskListElem,
-            nucleusRadius = this.nucleusElem.outerWidth(true) / 2,
+            nucleusRadius = this.nucleusWidth / 2,
             taskWidth, taskHeight, taskHalfWidth, taskHalfHeight,
             angle = ((2 * Math.PI) / this.taskViews.size()),
-            //svgElem = this.$("svg"),
             distance = this.get("taskDistance") + nucleusRadius;
             
             // TEMP: show distance boundary
             // TODO: find out why this is off-centre
-            var tempBorder = 3,
-                tempDistance = nucleusRadius + tempBorder,
-                tempWidth = (nucleusRadius - tempBorder) * 2;
-            container.append("<li style='border:" + tempBorder + "px solid #3c3; position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
+            var tempDistance = Math.round(distance),
+                tempWidth = tempDistance * 2;
+                
+            container.append("<li style='position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; background-color:#cc0; padding:0; border-style:none; opacity:0.2; pointer-events:none;' class='distanceMarker'></li>");
             
-            this.$("hgroup").remove();
-            return;
-            
+        
             
         this.taskViews.each(function(taskView, i){
             var taskElem = taskView.elem,
@@ -90,8 +141,8 @@ var HubView = View.extend({
             if (!taskWidth){
                 taskWidth  = taskElem.outerWidth(true);
                 taskHeight = taskElem.outerHeight(true);
-                taskHalfWidth  = taskElem.outerWidth(true) / 2;
-                taskHalfHeight = taskElem.outerHeight(true) / 2;
+                taskHalfWidth  = taskWidth / 2;
+                taskHalfHeight = taskHeight / 2;
             }
             top = Math.cos(angle * i) * distance;
             left = Math.sin(angle * i) * distance - taskHalfWidth;
@@ -108,12 +159,24 @@ var HubView = View.extend({
             if (top < 0){
                 top -= taskHeight;
             }
+            if (left < 0){
+                left -= taskHalfWidth;
+            }
+            else {
+                left += taskHalfWidth;
+            }
             
-            O(taskElem[0], top, left, taskWidth, nucleusRadius, angle);
+            top = Math.round(top);
+            left = Math.round(top);
+            
+            this.line(top, left);
+            
+            
+            O(taskElem[0], top, left, angle);
             
             taskView.offset({
-                top:  Math.round(top),
-                left: Math.round(left)
+                top:  top,
+                left: left
             });
             
         }, this);
@@ -135,8 +198,12 @@ var HubView = View.extend({
         
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("img.nucleus");
+        // NOTE: this calculation requires this.elem to be present in the document's DOM, for CSS styling
+        this.nucleusWidth = this.nucleusElem.outerWidth(true); // TODO: or use .set("nucleusWidth"); ?
         this.tasksElem = this.$("div.tasks");
         this.taskListElem = this.tasksElem.children("ul");
+        this.canvasElem = this.$("canvas");
+        this._canvasSetup();
             
         if (data.isSelected){
             this.renderTasks();
