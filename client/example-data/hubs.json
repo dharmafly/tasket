@@ -2,7 +2,8 @@
 	{
 		"tasks": [
 			"5", 
-			"4"
+			"4",
+			"3"
 		], 
 		"description": "This one will have a verified task", 
 		"title": "Example Hub 2", 

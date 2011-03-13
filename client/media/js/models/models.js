@@ -1,8 +1,8 @@
 // ABSTRACT MODEL
 var Model = Backbone.Model.extend({
     url: function() {
-        var base =  Tasket.endpoint + this.type + "s/";
-        return this.isNew() ? base : base + this.id;
+        var url = Tasket.endpoint + this.type + "s/";
+        return this.isNew() ? url : url + this.id;
     },
     
     initialize: function(){
@@ -39,8 +39,15 @@ var CollectionModel = Backbone.Collection.extend({
     },
 
     url: function(){
-        var base = Tasket.endpoint + this.type + "s/";
+        var url = Tasket.endpoint + this.type + "s/",
+            bootstrapping = this.seed && !this.length,
+            ids;
         // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
-        return this.seed && !this.length ? base : base + "?ids=" + this.pluck("id");
+        
+        if (!bootstrapping){
+            ids = this.pluck("id").sort();
+            url += "?ids=" + ids;
+        }
+        return url;
     }
 });

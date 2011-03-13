@@ -70,7 +70,15 @@ var HubView = View.extend({
             distance = this.get("taskDistance") + nucleusRadius;
             
             // TEMP: show distance boundary
-            container.append("<li style='border:3px solid #3c3; position:absolute; top:-162px; left:-162px; width:324px; height:324px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
+            // TODO: find out why this is off-centre
+            var tempBorder = 3,
+                tempDistance = nucleusRadius + tempBorder,
+                tempWidth = (nucleusRadius - tempBorder) * 2;
+            container.append("<li style='border:" + tempBorder + "px solid #3c3; position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; -moz-border-radius:30em; background-color:transparent; padding:0;' id='foo'></li>");
+            
+            this.$("hgroup").remove();
+            return;
+            
             
         this.taskViews.each(function(taskView, i){
             var taskElem = taskView.elem,
