@@ -52,6 +52,7 @@ else {
 
     // Get data from the server and draw
     Tasket.getOpenHubs(drawHubs);
+    // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
 }
 
 
@@ -62,15 +63,16 @@ function useCachedData(){
     Tasket.endpoint = "example-data/";
         
     Model.url = Hub.url = Task.url = User.url = function() {
-        var base = Tasket.endpoint + this.type + "s";
+        var url = Tasket.endpoint + this.type + "s";
         return this.isNew() ?
-            base + ".json" : base + this.id + ".json";
+            url + ".json" : url + this.id + ".json";
     };
     
     CollectionModel.url = HubList.url = TaskList.url = UserList.url = Tasket.hubs.url = Tasket.tasks.url = Tasket.users.url = function(){
-        var base = Tasket.endpoint + this.type + "s";
+        var url = Tasket.endpoint + this.type + "s";
         // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
-        return base + ".json";
+        // TODO: find out why tasks pluck is in two arrays
+        return url + ".json?ids=" + this.pluck("id").sort();
     }
 }
 
