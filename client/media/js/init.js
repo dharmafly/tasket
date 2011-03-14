@@ -1,6 +1,6 @@
 
 var dummyCode = false,
-    cachedCode = true,
+    cachedCode = false,
     notification = ui.notification,
     lang = Tasket.lang.en;
 
