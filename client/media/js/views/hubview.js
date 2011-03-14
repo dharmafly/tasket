@@ -4,7 +4,7 @@ var HubView = View.extend({
     
     defaults: {
         selected: false,
-        taskDistance: 20,
+        taskDistance: 120,
         strokeStyle: "#555",
         lineWidth: 2
     },
@@ -104,71 +104,40 @@ var HubView = View.extend({
     },
     
     renderTasks: function(){
-    
-    /*
-    
-    tasks width: (19.321 + (0.923×2) + (0.23075×2)) × 2 = 42.7955 em
-    hub: 90 px
-    padding: 5em;
-
-    tasks height: (6.4 + (0.923×2) + (0.23075×2)) × 2 = 17.415em
-    hub: 90 px
-    padding: 5em;
-    
-    */    
         var container = this.taskListElem,
             nucleusRadius = this.nucleusWidth / 2,
-            taskWidth, taskHeight, taskHalfWidth, taskHalfHeight,
-            angle = ((2 * Math.PI) / this.taskViews.size()),
-            distance = this.get("taskDistance") + nucleusRadius;
+            angleIncrement = ((2 * Math.PI) / this.taskViews.size()),
+            distance = this.get("taskDistance") + nucleusRadius,
+            taskWidth, taskHeight;
             
-            // TEMP: show distance boundary
-            // TODO: find out why this is off-centre
-            var tempDistance = Math.round(distance),
-                tempWidth = tempDistance * 2;
-                
-            container.append("<li style='position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; background-color:#cc0; padding:0; border-style:none; opacity:0.2; pointer-events:none;' class='distanceMarker'></li>");
-            
-        
+        // TEMP: show distance boundary
+        var tempDistance = Math.round(distance),
+            tempWidth = tempDistance * 2;
+        container.append("<li style='position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; background-color:#cc0; padding:0; border-style:none; opacity:0.2; pointer-events:none;' class='distanceMarker'></li>");
+
             
         this.taskViews.each(function(taskView, i){
-            var taskElem = taskView.elem,
-                left, top;
+            var taskElem = taskView.elem.appendTo(container),
+                angle = angleIncrement * i,
+                left, top, leftAdjust, topAdjust;
             
             taskView.render();
-            container.append(taskElem);
             
             if (!taskWidth){
                 taskWidth  = taskElem.outerWidth(true);
-                taskHalfWidth  = taskWidth / 2;
             }
-            // TODO: taskHeight currently varies each time
+            // TODO: taskHeight currently varies each time - change?
             taskHeight = taskElem.outerHeight(true);
-            taskHalfHeight = taskHeight / 2;
             
-            left = Math.sin(angle * i) * distance;
-            top = Math.cos(angle * i) * distance;
+            left = Math.sin(angle) * distance;
+            top  = Math.cos(angle) * distance;
             
+            // Draw line on canvas - TODO: needs rounding?
             this.line(left, top);
-            O("line", Math.round(left), Math.round(top));
             
-            /*
-            if (left < 0){
-                left += (left / (distance * 2)) * taskWidth;
-            }
-            else {
-                left += (left / (distance * 2)) * taskWidth * 2;
-            }
-            */
-            // TODO: need to do ratio of these values
             // RATIO OF DISTANCE
-            
-            // if l ===  d, l / d ===  1, lAdj === 0;
-            // if l ===  0, l / d ===  0, lAdj === -taskWidth / 2;
-            // if l === -d, l / d === -1, lAdj === -taskWidth;
-            
-            var leftAdjust = ((left / 2) - (distance / 2)) / distance * taskWidth,
-                topAdjust  = ((top  / 2) - (distance / 2)) / distance * taskHeight;
+            leftAdjust = (((left / 2) - (distance / 2)) / distance) * taskWidth;
+            topAdjust  = (((top  / 2) - (distance / 2)) / distance) * taskHeight;
             
             left += leftAdjust;
             top  += topAdjust;
@@ -176,14 +145,10 @@ var HubView = View.extend({
             left = Math.round(left);
             top = Math.round(top);
             
-            
-            O(taskElem[0], left, top, leftAdjust, topAdjust)//, angle, distance, taskHeight, taskHalfWidth);
-            
             taskView.offset({
                 left: left,
                 top:  top
-            });
-            
+            });            
         }, this);
         
         return this;

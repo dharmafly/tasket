@@ -32,6 +32,7 @@ function drawHubs(success){
             hubView.render();
             
             // TODO: temp
+            hubView.select();
             window.hv.push(hubView);
         });
     }
