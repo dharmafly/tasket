@@ -140,10 +140,12 @@ var HubView = View.extend({
             
             if (!taskWidth){
                 taskWidth  = taskElem.outerWidth(true);
-                taskHeight = taskElem.outerHeight(true);
                 taskHalfWidth  = taskWidth / 2;
-                taskHalfHeight = taskHeight / 2;
             }
+            // TODO: taskHeight currently varies each time
+            taskHeight = taskElem.outerHeight(true);
+            taskHalfHeight = taskHeight / 2;
+            
             left = Math.sin(angle * i) * distance;
             top = Math.cos(angle * i) * distance;
             
