@@ -133,7 +133,7 @@ var HubView = View.extend({
             
         this.taskViews.each(function(taskView, i){
             var taskElem = taskView.elem,
-                top, left;
+                left, top;
             
             taskView.render();
             container.append(taskElem);
@@ -144,8 +144,11 @@ var HubView = View.extend({
                 taskHalfWidth  = taskWidth / 2;
                 taskHalfHeight = taskHeight / 2;
             }
+            left = Math.sin(angle * i) * distance;
             top = Math.cos(angle * i) * distance;
-            left = Math.sin(angle * i) * distance - taskHalfWidth;
+            
+            this.line(left, top);
+            O("line", Math.round(left), Math.round(top));
             
             /*
             if (left < 0){
@@ -156,27 +159,27 @@ var HubView = View.extend({
             }
             */
             // TODO: need to do ratio of these values
-            if (top < 0){
-                top -= taskHeight;
-            }
-            if (left < 0){
-                left -= taskHalfWidth;
-            }
-            else {
-                left += taskHalfWidth;
-            }
+            // RATIO OF DISTANCE
             
+            // if l ===  d, l / d ===  1, lAdj === 0;
+            // if l ===  0, l / d ===  0, lAdj === -taskWidth / 2;
+            // if l === -d, l / d === -1, lAdj === -taskWidth;
+            
+            var leftAdjust = ((left / 2) - (distance / 2)) / distance * taskWidth,
+                topAdjust  = ((top  / 2) - (distance / 2)) / distance * taskHeight;
+            
+            left += leftAdjust;
+            top  += topAdjust;
+            
+            left = Math.round(left);
             top = Math.round(top);
-            left = Math.round(top);
-            
-            this.line(top, left);
             
             
-            O(taskElem[0], top, left, angle);
+            O(taskElem[0], left, top, leftAdjust, topAdjust)//, angle, distance, taskHeight, taskHalfWidth);
             
             taskView.offset({
-                top:  top,
-                left: left
+                left: left,
+                top:  top
             });
             
         }, this);
@@ -202,6 +205,7 @@ var HubView = View.extend({
         this.nucleusWidth = this.nucleusElem.outerWidth(true); // TODO: or use .set("nucleusWidth"); ?
         this.tasksElem = this.$("div.tasks");
         this.taskListElem = this.tasksElem.children("ul");
+        this.labelElem = this.$("hgroup");
         this.canvasElem = this.$("canvas");
         this._canvasSetup();
             

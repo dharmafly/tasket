@@ -1,3 +1,4 @@
+
 var dummyCode = false,
     cachedCode = true,
     notification = ui.notification,
@@ -5,16 +6,25 @@ var dummyCode = false,
 
 function drawHubs(success){
     var hubView;
+    
+    // TODO: temp
+    window.hv = [];
+    var skip = 1;
 
     if (success){
         notification.hide();
-        Tasket.hubs.each(function(hub){
+        Tasket.hubs.each(function(hub, i){
+            // TODO: temp
+            if (i === skip){
+                return;
+            }
+        
             hubView = new HubView({
                 model: hub,
                
                 offset: { // TODO: Make useful
-                    left: randomInt(window.innerWidth - 550) + 50,
-                    top: randomInt(window.innerHeight - 200) + 100
+                    left: window.innerWidth / 3, //randomInt(window.innerWidth - 550) + 50,
+                    top: window.innerHeight / 2 //randomInt(window.innerHeight - 200) + 100
                 },
             });
             
@@ -22,7 +32,7 @@ function drawHubs(success){
             hubView.render();
             
             // TODO: temp
-            window.hubView = hubView;
+            window.hv.push(hubView);
         });
     }
     else {
