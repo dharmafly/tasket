@@ -3,6 +3,57 @@ var dummyCode = false,
     cachedCode = false,
     notification = ui.notification,
     lang = Tasket.lang.en;
+    
+    
+/////
+
+
+function setupAjaxToDjango(){
+    var docCookie = window.document.cookie;
+
+    function getCookie(name) {
+        var cookieValue, cookies, cookie, i;
+        
+        if (docCookie && docCookie !== "") {
+            cookies = docCookie.split(";");
+            
+            for (i = 0; i < cookies.length; i++) {
+                cookie = jQuery.trim(cookies[i]);
+                // Does this cookie string begin with the name we want?
+                if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    
+    function sendCsrfToken(xhr, settings){
+        // Only send the token to the Tasket API            
+        if (settings.url.indexOf(Tasket.endpoint) === 0) {
+            O("CSRFToken", getCookie("csrftoken"));
+            xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+        }
+    }
+
+    jQuery.ajaxSetup({beforeSend:sendCsrfToken});
+}
+
+setupAjaxToDjango();
+
+
+function login(username, password, callback){
+    jQuery.post(Tasket.endpoint + "login/", {
+        username: username,
+        password: password
+    }, callback);
+}
+login("TestUser", "12345");
+
+
+/////
+    
 
 function drawHubs(success){
     var hubView;
