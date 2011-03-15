@@ -62,7 +62,8 @@ class ViewTests(TestCase):
             }
             )
     
-        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(json.loads(response.content)['error'], 'Forbidden')
     
     
     def test_hub_get(self):

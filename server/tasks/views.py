@@ -5,7 +5,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed, Http404
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
+# from django.contrib.auth.decorators import login_required
+from utils.decorators import json_login_required as login_required
 from django.conf import settings
 
 from utils.helpers import AllowJSONPCallback, PutView
