@@ -69,7 +69,7 @@ class PutView(View):
         self.kwargs = kwargs
         return handler(request, *args, **kwargs)
 
-    def options(self, request):
+    def options(self, request, *args, **kwargs):
         return HttpResponse()
 
     @classonlymethod
