@@ -2,6 +2,8 @@
 var View = Backbone.View.extend({
     // GET/SET
     
+    defaults: {},
+    
     getset: function(property, value){
         return _.isUndefined(value) ? this.get(property) : this.set(property, value);
     },

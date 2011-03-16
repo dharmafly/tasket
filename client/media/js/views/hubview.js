@@ -4,7 +4,7 @@ var HubView = View.extend({
     
     defaults: {
         selected: false,
-        taskDistance: 120,
+        taskDistance: 20,
         strokeStyle: "#555",
         lineWidth: 2
     },

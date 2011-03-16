@@ -1,6 +1,7 @@
 
 var dummyCode = false,
     cachedCode = false,
+    debugCsrfToken = "c31fb025ebb6cfacbf258d09540b9180",
     notification = ui.notification,
     lang = Tasket.lang.en;
     
@@ -32,8 +33,11 @@ function setupAjaxToDjango(){
     function sendCsrfToken(xhr, settings){
         // Only send the token to the Tasket API            
         if (settings.url.indexOf(Tasket.endpoint) === 0) {
-            O("CSRFToken", getCookie("csrftoken"));
-            xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+            var csrftoken = getCookie("csrftoken") || debugCsrfToken;
+            if (csrftoken){
+                _("sending csrftoken", csrftoken);
+                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+            }
         }
     }
 

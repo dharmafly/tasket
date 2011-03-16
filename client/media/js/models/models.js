@@ -19,7 +19,7 @@ var Model = Backbone.Model.extend({
         var missing, report;
     
         // Validate if this is not a stub of a model with just an id - i.e. only on creating from scratch
-        if (!this.id && this.required){
+        if (this.required && this.isNew()){
             missing = _.select(this.required, function(property){
                 return _.isUndefined(this.get(property));
             }, this);
