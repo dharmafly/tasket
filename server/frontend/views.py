@@ -6,6 +6,9 @@ from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllow
 from django.template import RequestContext
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.models import User
+from django.core.validators import validate_email
+from django.forms import ValidationError
 
 from utils.helpers import AllowJSONPCallback, PutView
 
@@ -97,4 +100,41 @@ class LogoutView(PutView):
         return self.res
         
         
+
+class RegisterView(PutView):
+    http_method_names = ['post',]
+    
+    def __init__(self):
+        self.res = HttpResponse(content_type='application/javascript')
+    
+    def invalid(self, *args):
+        self.res.write(json.dumps({
+            'errors' : args, 
+        }))
+        return self.res
+    
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        email = request.POST.get('email')
         
+        try:
+            validate_email(email)
+        except ValidationError:
+            return self.invalid('email')
+        
+        user = User.objects.create_user(username=username,
+                email=email,
+                password=password)
+        user.save()
+        user = authenticate(username=username, password=password)
+        login(request, user)
+
+        return self.res
+
+
+
+
+
+
+

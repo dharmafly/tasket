@@ -20,4 +20,27 @@ class ViewTests(TestCase):
         
         self.assertTrue(response.context['form'])
     
+    def test_register(self):
+        response = self.client.post(
+            '/register/', {
+                'username' : 'newuser',
+                'password' : '12345',
+                'email' : 'newuser@example.com'
+            })
+    
+        self.assertEqual(response.status_code, 200)
         
+        logged_in = self.client.login(username='newuser', password='12345')
+        self.assertEqual(logged_in, True)
+
+    def test_register_bad_email(self):
+        response = self.client.post(
+            '/register/', {
+                'username' : 'newuser',
+                'password' : '12345',
+                'email' : 'newuserexample.com'
+            })
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(json.loads(response.content)['errors'], ['email',])
+        
+
