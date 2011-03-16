@@ -1,6 +1,6 @@
 
 var dummyCode = false,
-    cachedCode = false,
+    cachedCode = true,
     debugCsrfToken = "c31fb025ebb6cfacbf258d09540b9180",
     notification = ui.notification,
     lang = Tasket.lang.en;
@@ -38,6 +38,7 @@ function setupAjaxToDjango(){
                 _("sending csrftoken", csrftoken);
                 xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
             }
+            "sessionid"
         }
     }
 
@@ -53,7 +54,9 @@ function login(username, password, callback){
         password: password
     }, callback);
 }
-login("TestUser", "12345");
+login("TestUser", "12345", function(rsp){
+    O("login results", rsp);
+});
 
 
 /////

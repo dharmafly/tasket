@@ -14,7 +14,7 @@ var HubView = View.extend({
     },
     
     events: {
-        "click": "toggleSelected"
+        "click img.nucleus": "toggleSelected"
     },
     
     toggleSelected: function(){
