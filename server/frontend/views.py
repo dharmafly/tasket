@@ -33,7 +33,7 @@ class LoginView(PutView):
         self.res = HttpResponse(content_type='application/javascript')
 
     def get(self, request):
-        
+        request.session.set_test_cookie()
         if request.user.is_authenticated():
             self.res.write(json.dumps(
                 {
