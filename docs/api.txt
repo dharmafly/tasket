@@ -44,11 +44,14 @@ Tasks
     "image": null,
     "estimate": null,
     "state": "new",
+    "hub": "hub_id"           *required
     "owner": "user_id",       *required
-    "claimedBy": "user_id",
-    "verifiedBy": "user_id",
-    "hub": "hub_id",          *required
     "createdTime": 1298567873
+    "claimedBy": "user_id",
+    "claimedTime": 1231214214,
+    "doneTime": 1231214214,
+    "verifiedBy": "user_id",
+    "verifiedTime": 1231214214
 }
 
 ### Task State Constants
