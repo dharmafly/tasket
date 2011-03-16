@@ -129,7 +129,14 @@ class RegisterView(PutView):
         user.save()
         user = authenticate(username=username, password=password)
         login(request, user)
-
+        
+        self.res.write(
+            json.dumps(
+                    {
+                        'user_id' : user.pk
+                    }
+                )
+            )
         return self.res
 
 

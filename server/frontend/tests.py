@@ -29,9 +29,9 @@ class ViewTests(TestCase):
             })
     
         self.assertEqual(response.status_code, 200)
-        
         logged_in = self.client.login(username='newuser', password='12345')
         self.assertEqual(logged_in, True)
+        self.assertEqual(json.loads(response.content)['user_id'], 5)
 
     def test_register_bad_email(self):
         response = self.client.post(
