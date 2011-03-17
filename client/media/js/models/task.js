@@ -21,8 +21,69 @@ var Task = Model.extend({
         state: TaskStates.NEW
     },
     
+    state: function(newState, userid){
+        if (!newState){
+            return this.get("state");
+        }
+        // If a permitted state, then set it
+        // TODO: only allow stepwise changes, including user and change time?
+        if (_(Task.states).include(newState)){
+            this.set({state: newState});
+        }
+        return this;
+    },
+    
+    _changeState: function(model, newState, userid){ // TODO: use bind to .set("state") or simply require method to be called directly?
+        var currentState = this.state,
+            now = Tasket.now();
+        
+        switch (newState){
+            case "new":
+                delete this.claimedBy;
+                delete this.claimedTime;
+                delete this.doneBy;
+                delete this.doneTime;
+                delete this.verifiedBy;
+                delete this.verifiedTime;
+            break;
+            
+            case "claimed":
+                if (userid){
+                    this.claimedBy = userid;
+                    this.claimedTime = now;
+                }
+                
+                delete this.doneBy;
+                delete this.doneTime;
+                delete this.verifiedBy;
+                delete this.verifiedTime;
+            break;
+            
+            case "done":
+                if (userid && currentState === "new"){
+                    this.doneBy = userid;
+                    this.doneTime = now;
+                }
+            
+                delete this.verifiedBy;
+                delete this.verifiedTime;
+            break;
+            
+            
+            case "verified":
+                if (userid && currentState === "done"){
+                    this.verifiedBy = userid;
+                    this.verifiedTime = now;
+                }
+            break;
+        }
+        
+        return this;
+    },
+    
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
+        this.bind("change:state", this._changeState);
     }
 });
 Task.states = TaskStates;
