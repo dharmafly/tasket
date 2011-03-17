@@ -22,60 +22,95 @@ var Task = Model.extend({
     },
     
     state: function(newState, userid){
+        var task = this,
+            currentState = this.get("state"),
+            now, error;
+        
         if (!newState){
-            return this.get("state");
+            return currentState;
         }
-        // If a permitted state, then set it
-        // TODO: only allow stepwise changes, including user and change time?
-        if (_(Task.states).include(newState)){
-            this.set({state: newState});
-        }
-        return this;
-    },
-    
-    _changeState: function(model, newState, userid){ // TODO: use bind to .set("state") or simply require method to be called directly?
-        var currentState = this.state,
-            now = Tasket.now();
+        
+        now = Tasket.now();
+        error = function(){
+            throw task.report(
+                "Can't change state from '" + currentState + "' to '" + newState + "'" +
+                (userid ?
+                    "" :
+                    " (no userid)"
+                )
+            );
+        };
         
         switch (newState){
-            case "new":
-                this.set("claimedBy", null);
-                delete this.claimedTime;
-                delete this.doneBy;
-                delete this.doneTime;
-                delete this.verifiedBy;
-                delete this.verifiedTime;
+            case TaskStates.NEW:
+                this.unset("claimedBy")
+                    .unset("claimedTime")
+                    .unset("doneBy")
+                    .unset("doneTime")
+                    .unset("verifiedBy")
+                    .unset("verifiedTime")
+                    .set({
+                        state: newState
+                    });
             break;
             
-            case "claimed":
-                if (userid){
-                    this.claimedBy = userid;
-                    this.claimedTime = now;
+            case TaskStates.CLAIMED:
+                if (userid && currentState === TaskStates.NEW){
+                    this.set({
+                        claimedBy: userid,
+                        claimedTime: now
+                    });
+                }
+                else if (!this.get("claimedBy")){
+                    error();
                 }
                 
-                delete this.doneBy;
-                delete this.doneTime;
-                delete this.verifiedBy;
-                delete this.verifiedTime;
+                this.unset("doneBy")
+                    .unset("doneTime")
+                    .unset("verifiedBy")
+                    .unset("verifiedTime")
+                    .set({
+                        state: newState
+                    });
             break;
             
-            case "done":
-                if (userid && currentState === "new"){
-                    this.doneBy = userid;
-                    this.doneTime = now;
+            case TaskStates.DONE:
+                if (userid && currentState === TaskStates.CLAIMED){
+                    this.set({
+                        doneBy: userid,
+                        doneTime: now
+                    });
+                }
+                else if (!this.get("doneBy")){
+                    error();
                 }
             
-                delete this.verifiedBy;
-                delete this.verifiedTime;
+                this.unset("verifiedBy")
+                    .unset("verifiedTime")
+                    .set({
+                        state: newState
+                    });
             break;
             
             
-            case "verified":
-                if (userid && currentState === "done"){
-                    this.verifiedBy = userid;
-                    this.verifiedTime = now;
+            case TaskStates.VERIFIED:
+                if (userid && currentState === TaskStates.DONE){
+                    this.set({
+                        verifiedBy: userid,
+                        verifiedTime: now
+                    });
                 }
+                else if (!this.get("verifiedBy")){
+                    error();
+                }
+                
+                this.set({
+                    state: newState
+                });
             break;
+            
+            default:
+            error();
         }
         
         return this;
@@ -83,7 +118,6 @@ var Task = Model.extend({
     
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        this.bind("change:state", this._changeState);
     }
 });
 Task.states = TaskStates;

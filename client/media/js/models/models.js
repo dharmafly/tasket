@@ -12,7 +12,7 @@ var Model = Backbone.Model.extend({
     },
     
     report: function(msg){
-        return "Tasket" + (this.type ? " " + this.type : "") + ": " + msg + " : " + this.cid;
+        return "Tasket" + (this.type ? " " + this.type : "") + ": " + msg + " : " + (this.id || this.cid);
     },
     
     validate: function(attrs) {

@@ -11,10 +11,15 @@ var dummyCode = false,
 
 app.setupAuthentication();
 
-Tasket.login(debugUsername, debugPassword, function(data){
-    _("login results", data);
-    app.authtoken = data.sessionid;
-});
+if (!app.authtoken){
+    Tasket.login(debugUsername, debugPassword, function(data){
+        _("login results", data);
+        app.authtoken = data.sessionid;
+    });
+    
+    // TODO: cache authtoken in localStorage (but expire it after some time)
+    // TODO: handle authtoken failure by logging in and repeating requests - need an abstract api() method?
+}
 
 
 /////
