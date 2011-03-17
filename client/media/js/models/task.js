@@ -39,7 +39,7 @@ var Task = Model.extend({
         
         switch (newState){
             case "new":
-                delete this.claimedBy;
+                this.set("claimedBy", null);
                 delete this.claimedTime;
                 delete this.doneBy;
                 delete this.doneTime;

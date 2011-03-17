@@ -1,66 +1,19 @@
 
 var dummyCode = false,
     cachedCode = false,
-    debugCsrfToken = "c31fb025ebb6cfacbf258d09540b9180",
-    notification = ui.notification,
+    debugUsername = "TestUser",
+    debugPassword = "12345",
+    notification = app.notification,
     lang = Tasket.lang.en;
     
     
 /////
 
-var sessionid;
+app.setupAuthentication();
 
-function setupAjaxToDjango(){
-    var docCookie = window.document.cookie;
-
-    function getCookie(name) {
-        var cookieValue, cookies, cookie, i;
-        
-        if (docCookie && docCookie !== "") {
-            cookies = docCookie.split(";");
-            
-            for (i = 0; i < cookies.length; i++) {
-                cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    
-    function sendCsrfToken(xhr, settings){
-        // Only send the token to the Tasket API            
-        if (settings.url.indexOf(Tasket.endpoint) === 0) {
-            var csrftoken = getCookie("csrftoken") || debugCsrfToken;
-            if (csrftoken){
-                _("sending csrftoken", csrftoken);
-                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-            }
-            xhr.setRequestHeader("Cookie", "sessionid=" + sessionid);
-        }
-    }
-
-    jQuery.ajaxSetup({beforeSend:sendCsrfToken});
-}
-
-setupAjaxToDjango();
-
-
-function login(username, password, callback){    
-    jQuery.ajax({
-        url: Tasket.endpoint + "login/",
-        type: "POST",
-        data: "username=" + username + "&password=" + password,
-        dataType: "json",
-        success: callback
-    });
-}
-login("TestUser", "12345", function(rsp){
-    console.log("login results", rsp);
-    sessionid = rsp.sessionid;
+Tasket.login(debugUsername, debugPassword, function(data){
+    _("login results", data);
+    app.authtoken = data.sessionid;
 });
 
 
@@ -70,32 +23,38 @@ login("TestUser", "12345", function(rsp){
 function drawHubs(success){
     var hubView;
     
-    // TODO: temp
+    // TODO: TEMP
     window.hv = [];
-    var skip = 1;
-
+    //var skip = 1;
+    
+    /////
+    
     if (success){
         notification.hide();
         Tasket.hubs.each(function(hub, i){
-            // TODO: temp
+            // TODO: TEMP
+            /*
             if (i === skip){
                 return;
             }
+            */
         
             hubView = new HubView({
                 model: hub,
                
                 offset: { // TODO: Make useful
-                    left: window.innerWidth / 3, //randomInt(window.innerWidth - 550) + 50,
-                    top: window.innerHeight / 2 //randomInt(window.innerHeight - 200) + 100
+                    left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
+                    top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
                 },
             });
             
             bodyElem.append(hubView.elem);
             hubView.render();
             
-            // TODO: temp
-            hubView.select();
+            /////
+            
+            // TODO: TEMP
+            //hubView.select();
             window.hv.push(hubView);
         });
     }
@@ -104,22 +63,7 @@ function drawHubs(success){
     }
 }
 
-
-/////
-
-
-if (dummyCode){
-    drawDummyData();
-}
-else {
-    // TODO: temp - requires localhost to serve static files
-    if (cachedCode){
-        useCachedData();
-    }
-    
-    /////
-
-
+function bootstrap(){
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
         notification.warning(lang.LOADING);
@@ -132,6 +76,26 @@ else {
 
 
 /////
+
+
+// TODO: TEMP
+if (dummyCode){
+    drawDummyData();
+}
+else {
+    // TODO: TEMP
+    if (cachedCode){
+        useCachedData();
+    }
+    
+    /////
+
+    // START
+    bootstrap();
+}
+
+
+/////     /////     /////     /////     /////     /////     /////
 
 
 function useCachedData(){
@@ -152,7 +116,7 @@ function useCachedData(){
 }
 
 
-/////
+/////     /////     /////     /////     /////     /////     /////
 
 
 function drawDummyData(){

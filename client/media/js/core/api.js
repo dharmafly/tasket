@@ -103,5 +103,15 @@ _.extend(Tasket, Backbone.Events, {
         hubs.fetch(fetchOptions);
                 
         return this;
+    },
+    
+    login: function(username, password, callback){    
+        jQuery.ajax({
+            url: Tasket.endpoint + "login/",
+            type: "POST",
+            data: "username=" + username + "&password=" + password,
+            dataType: "json",
+            success: callback
+        });
     }
 });

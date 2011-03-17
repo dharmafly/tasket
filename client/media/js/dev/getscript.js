@@ -29,7 +29,6 @@
                 an iframe or other window (global 'window' by default);
             keep:
                 boolean - should the script element in the document head remain after the script has loaded? (false by default)
-            async: whether async attribute is added (true by default)
             
         getScript('http://example.com/jquery.js', callback, {charset:'utf-8', target:window, keep:false});
         
@@ -68,9 +67,8 @@ var getScript = (function(window){
                 keep = options.keep,
                 target = options.target,
                 path = options.path || "",
-                async = (options.async !== false),
                 document = target.document,
-                head = document.getElementsByTagName('head')[0],
+                head = document.head || document.getElementsByTagName('head')[0],
                 script = document.createElement('script'),
                 loaded = false;
                 
@@ -101,7 +99,7 @@ var getScript = (function(window){
             script.onerror = finish;
             
             // Async loading (extra hinting for compliant browsers)
-            script.async = async;
+            script.async = true;
             
             // Apply the src
             script.src = path + src;
@@ -120,7 +118,6 @@ var getScript = (function(window){
          * @param {Array} srcs array of source files to load
          * @param {Function} callback
          */
-
         function multiple(srcs, callback, options){
             var length = srcs.length,
                 loadCount = 0,
@@ -154,17 +151,29 @@ var getScript = (function(window){
         callback = callback || function(){};        
         return method.call(window, srcs, callback, options);
     }
+    
+    // end main getScript function. What follows are some methods to allow syntactic sugar.
+    
 
-    // Allow chaining in callback:
-    /* getScript(
+    // **
+
+    /**
+     * Allow chaining in callback.
+     *
+        getScript(
             "foo.js",
-            getScript.ready(
+            ready(
                 "blah.js",
                 getScript.ready(["1.js", "2.js", "3.js")
             )
         );
-    */
-    getScript.ready = function(srcs, callback, options){
+     *
+     *
+     * @param {Array} srcs array of source files to load
+     * @param {Function} callback
+     * @param {Object} options to send through
+     */
+    function ready(srcs, callback, options){
         return function(loaded){
             if (loaded !== false){
                 getScript(srcs, callback, options);
@@ -173,37 +182,55 @@ var getScript = (function(window){
                 callback(loaded);
             }
         };
-    };
+    }
     
-    // An array of srcs is loaded in series, one after the next
-    getScript.sync = function(srcs, callback, options){
+
+    // **
+
+    /**
+     * Load an array of srcs is loaded in series, one after the next.
+     *
+     * @param {Array} srcs array of source files to load
+     * @param {Function} callback
+     * @param {Object} options to send through
+     */
+    function sync(srcs, callback, options){
         var i = srcs.length - 1,
             callbacks = [];
         
         for (; i; i--){
-            callbacks[i] = getScript.ready(srcs[i], callbacks[i + 1] || callback, options);
+            callbacks[i] = ready(srcs[i], callbacks[i + 1] || callback, options);
         }
         
         return getScript(srcs[0], callbacks[1], options);
-    };
-    
-    // Array methods - from underscore.js
-    var slice = Array.prototype.slice,
-        toString = Object.prototype.toString;        
-    function toArray(iterable){
-        return slice.call(iterable);
     }
+    
+    
+    // **
+
+    
+    // Array methods, from underscore.js
+    var slice = Array.prototype.slice,
+        toString = Object.prototype.toString; 
+        
     function isArray(obj){
         return toString.call(obj) === '[object Array]';
     }
-    
-    getScript.sequence = function(srcs, callback, options){
+
+
+    /**
+     * Load multiple arguments in series, one after the next. Arguments may be a string src or an array of string srcs.
+     *
+     * @param {Array} srcs array of source files to load
+     * @param {Function} callback
+     * @param {Object} options to send through
+     */
+    function inSequence(srcs, callback, options){
         var args = slice.call(arguments),
             len = args.length,
             last = args.slice(-1)[0],
             secondLast = args.slice(-2,-1)[0],
-            srcEndPos = len - 2,
-            i;
+            srcEndPos = len - 2;
             
         if (typeof last === "object" && !isArray(last)){
             options = last;
@@ -220,8 +247,8 @@ var getScript = (function(window){
         }
         
         srcs = args.slice(0, srcEndPos);
-        return getScript.sync(srcs, callback, options);
-    };
+        return sync(srcs, callback, options);
+    }
 
-    return getScript.sequence;
+    return inSequence;
 }(window));
