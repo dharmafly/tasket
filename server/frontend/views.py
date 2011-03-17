@@ -53,6 +53,7 @@ class LoginView(PutView):
             )
 
     def post(self, request):
+        request.session.set_test_cookie()
         form = AuthenticationForm(request, data=request.POST)
         if form.is_valid():
             username = request.POST['username']
@@ -61,28 +62,25 @@ class LoginView(PutView):
             if user is not None:
                 if user.is_active:
                     login(request, user)
-                    return HttpResponseRedirect('/login/')
-                else:
+                    
                     self.res.write(json.dumps(
                         {
-                            'logged_in' : False,
-                            'error': "Account disabled",
+                        'user' : user.profile.as_dict(),
+                        'sessionid' : request.session.session_key
                         }
-                        ))
-                    self.res.status_code = 403
+                    ))
                     return self.res
-            else:
-                # Return an 'invalid login' error message.
-                pass
         else:
-            return render_to_response(
-                'login.html',
+            self.res.write(json.dumps(
                 {
-                    'form' : form,
-                },
-                context_instance=RequestContext(request)
-                )
-
+                'error' : "Unauthorized",
+                'status' : 401
+                }
+            ))
+            return self.res
+                
+                
+                
 class LogoutView(PutView):
     http_method_names = ['get',]
 
