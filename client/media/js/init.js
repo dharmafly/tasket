@@ -1,6 +1,6 @@
 
 var dummyCode = false,
-    cachedCode = true,
+    cachedCode = false,
     debugCsrfToken = "c31fb025ebb6cfacbf258d09540b9180",
     notification = ui.notification,
     lang = Tasket.lang.en;
@@ -8,6 +8,7 @@ var dummyCode = false,
     
 /////
 
+var sessionid;
 
 function setupAjaxToDjango(){
     var docCookie = window.document.cookie;
@@ -38,7 +39,7 @@ function setupAjaxToDjango(){
                 _("sending csrftoken", csrftoken);
                 xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
             }
-            "sessionid"
+            xhr.setRequestHeader("Cookie", "sessionid=" + sessionid);
         }
     }
 
@@ -48,14 +49,18 @@ function setupAjaxToDjango(){
 setupAjaxToDjango();
 
 
-function login(username, password, callback){
-    jQuery.post(Tasket.endpoint + "login/", {
-        username: username,
-        password: password
-    }, callback);
+function login(username, password, callback){    
+    jQuery.ajax({
+        url: Tasket.endpoint + "login/",
+        type: "POST",
+        data: "username=" + username + "&password=" + password,
+        dataType: "json",
+        success: callback
+    });
 }
 login("TestUser", "12345", function(rsp){
-    O("login results", rsp);
+    console.log("login results", rsp);
+    sessionid = rsp.sessionid;
 });
 
 
