@@ -79,7 +79,7 @@
     "fields": {
         "user": 2,
         "realname": "Test User 1",
-        "description": "This is a description", 
+        "description": "This is a <b>description</b>", 
         "location": "London"
     }
 },

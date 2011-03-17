@@ -147,11 +147,12 @@ class ViewTests(TestCase):
     def test_user_get(self):
         response = self.client.get('/users/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 3)
+        self.assertEqual(len(json_data), 4)
 
     def test_user_get_single(self):
         response = self.client.get('/users/2')
         json_data = json.loads(response.content)
+        print json_data['description']
         self.assertEqual(json_data['description'].startswith("This is"), True)
 
     def test_user_get_by_id(self):
@@ -164,10 +165,11 @@ class ViewTests(TestCase):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
                 '/users/3',
-                data=json.dumps({"description" : "New description!"}),
+                data=json.dumps({"description" : "New <b>description!</b>"}),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
+        print json_data['description']
         self.assertEqual(json_data['description'].startswith("New"), True)
 
     def test_user_delete(self):

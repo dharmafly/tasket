@@ -1,6 +1,7 @@
 import django.forms
 from django import forms
 from django.contrib.auth.models import User
+from django.utils.html import escape
 
 from models import Task, Hub, Profile
 
@@ -71,6 +72,15 @@ class TaskForm(forms.ModelForm):
             message = "You can only change your own tasks."
             self._errors['claimedBy'] = self.error_class([message])
         return self.cleaned_data['claimedBy']
+
+    def clean(self):
+        cleaned_data = dict(self.cleaned_data)
+        
+        for k,v in cleaned_data.items():
+            if isinstance(v, unicode):
+                print escape(v)
+                cleaned_data[k] = escape(v)
+        return cleaned_data
 
 class HubForm(forms.ModelForm):
     

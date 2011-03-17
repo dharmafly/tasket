@@ -33,7 +33,7 @@ class ModelTest(TestCase):
                                 incididunt ut labore et dolore magna aliqua. 
                                 Ut enim ad minim veniam, quis nostrud 
                                 exercitation ullamco laboris nisi ut aliquip ex 
-                                ea commodo consequat. Duis aute irure dolor in 
+                                ea commodo <b>consequat</b>. Duis aute irure dolor in 
                                 reprehenderit in voluptate velit esse cillum 
                                 dolore eu fugiat nulla pariatur. Excepteur sint 
                                 occaecat cupidatat non proident, sunt in culpa 
@@ -74,19 +74,9 @@ class ModelTest(TestCase):
         H = Hub.unverified.all()
         self.assertEqual(len(H), 2)
 
-    def test_prifile(self):
-        P = Profile.objects.get(user=self.U)
-        # print dir(P)
-        # print P.owned_hubs.all()
-        # print P.as_dict()
-        # X = P.tasks_claimed.filter(verifiedBy__isnull=False)
-        # print X
-        # print X.query
-        
-        # self.assertEqual(len(H), 2)
-
-
-
+    
+    def test_html_fields(self):
+        pass
 
 
 
