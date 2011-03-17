@@ -104,6 +104,8 @@ CORS_PATHS = (
     ('/hubs/',  DEFAULT_TYPE , DEFAULT_HEADERS), 
     ('/tasks/', DEFAULT_TYPE , DEFAULT_HEADERS),
     ('/users/', DEFAULT_TYPE , DEFAULT_HEADERS),
+    ('/login/', DEFAULT_TYPE , DEFAULT_HEADERS),
+    ('/register/', DEFAULT_TYPE , DEFAULT_HEADERS),
 )
 
 
