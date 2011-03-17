@@ -10,6 +10,8 @@ _.extend(Tasket, Backbone.Events, {
     tasks: new TaskList(),
     users: new UserList(),
     
+    now: now,
+    
     // Helper function for fetching multiple collections and models in one go, with a callback on completion
     fetchAndAdd: function fetchAndAdd(ids, collection, callback){
         // Keep track of fetched collections, and trigger event on completion
