@@ -390,60 +390,10 @@
     
     <!--
     
-        SCRIPTS: DEV
-        ------------
+        SCRIPTS
+        -------
     -->
-    <script>
-        // Console logging
-        function O(){
-            console.log.apply(console, arguments);
-        }
-    </script>
     <script src="media/js/dev/getscript.js"></script>
-    <script>
-        getScript(
-            // Each array contains non-dependent scripts
-            // Each successive script or array of scripts is dependent on previous arguments
-            [
-                "dependencies/jquery.js",
-                "dependencies/underscore.js",
-                "dependencies/tim.js"
-            ],
-
-            "dependencies/backbone.js",
-            "core/core.js",
-            "models/models.js",
-            "views/views.js",
-            
-            [
-                "models/hub.js",
-                "models/task.js",
-                "models/user.js",
-                
-                "views/hubview.js",
-                "views/taskview.js",
-                "views/userview.js",
-                "views/notification.js",
-            ],
-            
-            [
-                "core/api.js",
-                "views/app.js"
-            ],
-            
-            "lang/en.js",
-            "init.js",
-            "temp.js",
-            
-            function(loaded){
-                if (!loaded){
-                    throw "Scripts not fully loaded";
-                }
-            },
-            
-            // Options
-            {path:"media/js/"}
-        );
-    </script>
+    <script src="media/js/tasket.js"></script>
 </body>
 </html>
