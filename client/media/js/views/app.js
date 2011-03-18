@@ -8,6 +8,7 @@ var app = {
     hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
     currentUser: null,
     notification: new Notification(),
+    tankController: new TankController(),
     
     getCookie: function(name){
         var docCookie = window.document.cookie,

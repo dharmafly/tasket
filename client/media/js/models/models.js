@@ -1,7 +1,7 @@
 // ABSTRACT MODEL
 var Model = Backbone.Model.extend({
-    url: function() {
-        var url = Tasket.endpoint + this.type + "s/";
+    url: function(relative) {
+        var url = (relative ? "" : Tasket.endpoint) + this.type + "s/";
         return this.isNew() ? url : url + this.id;
     },
     
@@ -38,8 +38,8 @@ var CollectionModel = Backbone.Collection.extend({
         this.type = this.model.prototype.type;
     },
 
-    url: function(){
-        var url = Tasket.endpoint + this.type + "s/",
+    url: function(relative){
+        var url = (relative ? "" : Tasket.endpoint) + this.type + "s/",
             bootstrapping = this.seed && !this.length,
             ids;
         // If the page has just loaded, and nothing is yet loaded, then seed this with default objects

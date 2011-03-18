@@ -38,7 +38,8 @@ getScript(
         "views/notification.js",
         "views/dashboard.js",
         "views/lightbox.js",
-        "views/newtask.js"
+        "views/newtask.js",
+        "controllers/controllers.js"
     ],
     
     [

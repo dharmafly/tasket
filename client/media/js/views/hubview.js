@@ -13,22 +13,57 @@ var HubView = View.extend({
         return this.get("selected");
     },
     
-    events: {
-        "click img.nucleus": "toggleSelected"
+    tasksVisible: function(){
+        return this.get("tasksVisible");
     },
+    
+    events: {
+        "click img.nucleus": "onclick"
+    },
+    
+    onclick: function(){
+        var isSelected = this.isSelected(),
+            tasksVisible = this.tasksVisible();
+    
+        if (isSelected){
+            this.toggleTasks();
+        }
+        else {
+            this.updateLocation();
+        }
+    },
+    
+    toggleTasks: function(){
+        if (this.tasksVisible()){
+            return this.clearTasks();
+        }
+        return this.renderTasks();
+    },
+    
+    
+    /*
+        on every click:
+            show arrows
+            update url
+            
+            if active:
+                hide tasks
+                
+            else:
+                show tasks
+    */
     
     toggleSelected: function(){
         if (this.isSelected()){
             return this.deselect();
         }
         return this.select();
-    },
+    },    
     
     select: function(){
         this.set("selected", true);
         this.trigger("select");
         this.elem.addClass("select");
-        this.renderTasks();
         return this;
     },
     
@@ -36,8 +71,6 @@ var HubView = View.extend({
         this.set("selected", false);
         this.trigger("deselect");
         this.elem.removeClass("select");
-        this.clearTasks();
-        this.clearCanvas();
         return this;
     },
     
@@ -151,11 +184,14 @@ var HubView = View.extend({
             });            
         }, this);
         
+        this.set("tasksVisible", true);
         return this;
     },
     
     clearTasks: function(){
         this.taskListElem.empty();
+        this.clearCanvas();
+        this.set("tasksVisible", false);
         return this;
     },
 

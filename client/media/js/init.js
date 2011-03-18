@@ -52,43 +52,10 @@ if (!app.authtoken){
 /////
 
 
-function drawHubs(success){
-    var hubView;
-
-    // TODO: TEMP
-    window.hv = [];
-    //var skip = 1;
-
-    /////
-
+function onReady(success){
     if (success){
         notification.hide();
-        Tasket.hubs.each(function(hub, i){
-            // TODO: TEMP
-            /*
-            if (i === skip){
-                return;
-            }
-            */
-
-            hubView = new HubView({
-                model: hub,
-
-                offset: { // TODO: Make useful
-                    left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
-                    top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
-                },
-            });
-
-            bodyElem.append(hubView.elem);
-            hubView.render();
-
-            /////
-
-            // TODO: TEMP
-            //hubView.select();
-            window.hv.push(hubView);
-        });
+        app.tankController.addHubs(Tasket.hubs.models);
     }
     else {
         notification.error(lang.DOWNLOAD_ERROR);
@@ -102,8 +69,10 @@ function bootstrap(){
     }, 0);
 
     // Get data from the server and draw
-    Tasket.getOpenHubs(drawHubs);
+    Tasket.getOpenHubs(onReady);
     // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
+    
+    Backbone.history.start();
 }
 
 
