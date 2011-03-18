@@ -6,26 +6,29 @@ var Dashboard = View.extend({
         this.elem.html(rendered);
 
         // Update each of the task lists.
-        _.each(['MyTasks', 'MyHubs', 'ManagedTasks'], function (method) {
+        _.each(['UserTasks', 'UserHubs', 'ManagedTasks'], function (method) {
             this['update' + method]();
         }, this);
 
         return this;
     },
     updateManagedTasks: function () {
-        this.updateList('.managed-tasks ul', this.model.tasks.owned);
+        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks').owned);
+        return this.updateList('.managed-tasks ul', tasks);
     },
-    updateMyTasks: function () {
-        this.updateList('.my-tasks ul', this.model.tasks.claimed);
+    updateUserTasks: function () {
+        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks').claimed);
+        return this.updateList('.my-tasks ul', tasks);
     },
-    updateMyHubs: function () {
-        this.updateList('.my-projects ul', this.model.hubs.owned);
+    updateUserHubs: function () {
+        var hubs = Tasket.hubs.filterByIds(this.model.get('hubs').owned);
+        return this.updateList('.my-projects ul', hubs);
     },
     updateList: function(selector, models){
         var mapped = models.map(function (model) {
             return {
-                href: '#/' + model.id,
-                title: model.get('title')
+                href: '#/' + model.type + '/' + model.id,
+                title: model.get('title') || 'Missing title'
             };
         });
 
