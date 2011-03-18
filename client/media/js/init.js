@@ -69,6 +69,10 @@ function drawHubs(success){
 }
 
 function bootstrap(){
+    var dashboard = new Dashboard();
+
+    $('body').append(dashboard.render().el);
+
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
         notification.warning(lang.LOADING);
