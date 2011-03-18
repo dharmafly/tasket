@@ -55,5 +55,29 @@ var CollectionModel = Backbone.Collection.extend({
         return new this.constructor(this.filter(function (model) {
             return _.indexOf(ids, model.id) > -1;
         }));
+    },
+    
+    
+    // TODO: check and improve efficiency if possible
+    parse: function(data){
+        var current = this.toJSON();
+        
+         _(data).each(function(newModel){
+            var found = false;
+            
+            // Using jQuery's .each instead of Underscore's, so that we can break the loop
+            jQuery(current).each(function(index, model){
+                if (model.id === newModel.id){
+                    current[index] = newModel;
+                    found = true;
+                    return false; // break the loop
+                }
+            });
+            
+            if (!found){
+                current.push(newModel);
+            }
+        });
+        return current;
     }
 });
