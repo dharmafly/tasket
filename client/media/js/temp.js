@@ -31,62 +31,7 @@ function removeClass(element, klass) {
     });
 }());
 
-(function () {
-    // A very basic lightweight lightbox implementation.
-    var lightbox = {
-        _classnames: {
-            display: 'show',
-            animate: 'fade-in'
-        },
-        _element: document.querySelector('.lightbox'),
-        _content: document.querySelector('.lightbox .content'),
-        show: function () {
-            addClass(lightbox._element, lightbox._classnames.display);
-
-            // Need to use a timer for the animation to trigger.
-            setTimeout(function () {
-                addClass(lightbox._element, lightbox._classnames.animate);
-            }, 0);
-
-            return this;
-        },
-        hide: function () {
-            var duration;
-
-            if (window.getComputedStyle) {
-                duration = parseFloat(window.getComputedStyle(lightbox._element, null)['-webkit-transition-duration']) || null;
-            }
-
-            removeClass(lightbox._element, lightbox._classnames.animate);
-            if (duration) {
-                setTimeout(function () {
-                    removeClass(lightbox._element, lightbox._classnames.display);
-                }, duration * 1000);
-            } else {
-                removeClass(lightbox._element, lightbox._classnames.display);
-            }
-
-            return this;
-        },
-        html: function (html) {
-            this._content.innerHTML = html;
-            return this;
-        }
-    };
-
-    // Close the lightbox if the background is clicked.
-    lightbox._element.onclick = function (event) {
-        event = event || window.event;
-        if (event.target === lightbox._element) {
-            lightbox.hide();
-        }
-    };
-
-    // Override the generic close button event set above.
-    document.querySelector('.lightbox .close').onclick = lightbox.hide;
-
-    window.lightbox = lightbox;
-}());
+window.lightbox = new Lightbox();
 
 // Set up the lightboxes.
 (function () {
@@ -101,7 +46,7 @@ function removeClass(element, klass) {
         var html = tim(template_name);
 
         $(selector).click(function (event) {
-            window.lightbox.html(html).show();
+            window.lightbox.render(html).show();
             event.preventDefault();
         });
     });
