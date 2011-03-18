@@ -49,5 +49,11 @@ var CollectionModel = Backbone.Collection.extend({
             url += "?ids=" + ids;
         }
         return url;
+    },
+
+    filterByIds: function(ids){
+        return new this.constructor(this.filter(function (model) {
+            return _.indexOf(ids, model.id) > -1;
+        }));
     }
 });
