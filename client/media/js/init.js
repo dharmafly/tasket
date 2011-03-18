@@ -4,36 +4,63 @@ var dummyCode = false,
     debugUsername = "TestUser",
     debugPassword = "12345",
     notification = app.notification,
-    lang = Tasket.lang.en;
-    
-    
+    lang = Tasket.lang.en,
+    dashboard = new Dashboard();
+
+$('body').append(dashboard.el);
+
+
+
 /////
 
 app.setupAuthentication();
 
 if (!app.authtoken){
     Tasket.login(debugUsername, debugPassword, function(data){
-        _("login results", data);
+        var user, tasks, hubs;
+
+        // Update current user details.
         app.authtoken = data.sessionid;
+        user = app.currentUser = new User(data.user);
+
+        // Update the dashboard with the current user.
+        dashboard.model = user;
+        dashboard.render();
+
+        // Fetch the users tasks and hubs. Then once they've been added to the cache
+        // update the Dashboard with the details.
+        tasks = _.flatten(
+            app.currentUser.get('tasks').owned,
+            app.currentUser.get('tasks').claimed
+        );
+        Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
+            // Update the dashboard.
+            dashboard.updateUserTasks().updateManagedTasks();
+        });
+
+        hubs = app.currentUser.get('hubs').owned;
+        Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
+            dashboard.updateUserHubs();
+        });
     });
-    
+
     // TODO: cache authtoken in localStorage (but expire it after some time)
     // TODO: handle authtoken failure by logging in and repeating requests - need an abstract api() method?
 }
 
 
 /////
-    
+
 
 function drawHubs(success){
     var hubView;
-    
+
     // TODO: TEMP
     window.hv = [];
     //var skip = 1;
-    
+
     /////
-    
+
     if (success){
         notification.hide();
         Tasket.hubs.each(function(hub, i){
@@ -43,21 +70,21 @@ function drawHubs(success){
                 return;
             }
             */
-        
+
             hubView = new HubView({
                 model: hub,
-               
+
                 offset: { // TODO: Make useful
                     left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
                     top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
                 },
             });
-            
+
             bodyElem.append(hubView.elem);
             hubView.render();
-            
+
             /////
-            
+
             // TODO: TEMP
             //hubView.select();
             window.hv.push(hubView);
@@ -69,10 +96,6 @@ function drawHubs(success){
 }
 
 function bootstrap(){
-    var dashboard = new Dashboard();
-
-    $('body').append(dashboard.render().el);
-
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
         notification.warning(lang.LOADING);
@@ -96,7 +119,7 @@ else {
     if (cachedCode){
         useCachedData();
     }
-    
+
     /////
 
     // START
@@ -109,13 +132,13 @@ else {
 
 function useCachedData(){
     Tasket.endpoint = "example-data/";
-        
+
     Model.url = Hub.url = Task.url = User.url = function() {
         var url = Tasket.endpoint + this.type + "s";
         return this.isNew() ?
             url + ".json" : url + this.id + ".json";
     };
-    
+
     CollectionModel.url = HubList.url = TaskList.url = UserList.url = Tasket.hubs.url = Tasket.tasks.url = Tasket.users.url = function(){
         var url = Tasket.endpoint + this.type + "s";
         // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
@@ -137,17 +160,17 @@ function drawDummyData(){
             image: "media/images/placeholder.png",
             owner: "5"
         }),
-        
+
         myHubView = new HubView({
             model: myHub,
-            
+
             // options
             selected: true,
             offset: {
                 top: 300,
                 left: 500
             },
-            
+
             collection: new TaskList([ // TODO: add these to the hub, not the hubview
                 {
                     description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
@@ -193,7 +216,7 @@ function drawDummyData(){
                 }
             ])
         });
-    
-        jQuery("body").append(myHubView.elem);   
+
+        jQuery("body").append(myHubView.elem);
         myHubView.render();
 }
