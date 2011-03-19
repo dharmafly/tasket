@@ -46,66 +46,6 @@
         </header>
     </div>
 
-    <section class="dashboard">
-        <ul class="listing notifications">
-            <li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
-            <li><a href="#/done/" title="View your completed tasks">3 tasks you’ve done have been approved</a></li>
-            <li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
-        </ul>
-        <section class="quicklinks">
-            <h1>My Projects</h1>
-            <p class="help">This section provides you a quick list of your recent projects</p>
-            <ul class="listing">
-                <li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-                <li class="current"><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-                <li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-            </ul>
-            <p>
-                <a class="button" href="#/projects/" title="View all projects">View All</a>
-                <a class="button" href="#/projects/new/" title="Create a new project">New</a>
-            </p>
-        </section>
-        <section class="quicklinks">
-            <h1>Tasks I’m Doing</h1>
-            <p class="help">This section provides you a quick list of your currently active tasks</p>
-            <ul class="listing">
-                <li><a href="#/tasks/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-                <li><a href="#/tasks/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-                <li><a href="#/tasks/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-            </ul>
-            <p>
-                <a class="button" href="#/tasks/" title="View all tasks">View All</a>
-            </p>
-        </section>
-        <section class="quicklinks">
-            <h1>Tasks I Manage</h1>
-            <p class="help">This section provides you a quick list of tasks you administer</p>
-            <ul class="listing">
-                <li><a href="#/projects/an-awesome-project/" title="View An awesome project">An awesome project</a></li>
-                <li><a href="#/projects/another-awesome-project/" title="View Another awesome project">Another awesome project</a></li>
-                <li><a href="#/projects/final-awesome-project/" title="View Final awesome project">Final awesome project</a></li>
-            </ul>
-            <p>
-                <a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
-            </p>
-        </section>
-        <footer>
-            <p class="statistics">
-                <img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
-                <em>2,030</em> tasks done by everyone</p>
-            <nav>
-                <ul>
-                    <li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
-                    <li><a href="#/blog/" title="Read the blog">Blog</a></li>
-                    <li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
-                </ul>
-            </nav>
-            <p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
-                App by <span class="df-name">Dharmafly</span>
-            </a></p>
-        </footer>
-    </section>
-
     <section class="lightbox">
         <div class="lightbox-inner">
             <div class="content"></div>
@@ -386,64 +326,65 @@
             </div>
         </form>
     </script>
-    
-    
+    <script type="text/tim" class="dashboard">
+        <ul class="listing notifications">
+            <li><a href="#/tasks/" title="View your tasks">5 tasks need your approval</a></li>
+            <li><a href="#/done/" title="View your completed tasks">3 tasks you’ve done have been approved</a></li>
+            <li><a href="#/admin/" title="View the member admin area">2 tasks need your approval</a></li>
+        </ul>
+        <section class="quicklinks my-projects">
+            <h1>My Projects</h1>
+            <p class="help">This section provides you a quick list of your recent projects</p>
+            <ul class="listing">
+            </ul>
+            <p>
+                <a class="button" href="#/projects/" title="View all projects">View All</a>
+                <a class="button" href="#/projects/new/" title="Create a new project">New</a>
+            </p>
+        </section>
+        <section class="quicklinks my-tasks">
+            <h1>Tasks I’m Doing</h1>
+            <p class="help">This section provides you a quick list of your currently active tasks</p>
+            <ul class="listing">
+            </ul>
+            <p>
+                <a class="button" href="#/tasks/" title="View all tasks">View All</a>
+            </p>
+        </section>
+        <section class="quicklinks managed-tasks">
+            <h1>Tasks I Manage</h1>
+            <p class="help">This section provides you a quick list of tasks you administer</p>
+            <ul class="listing">
+            </ul>
+            <p>
+                <a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
+            </p>
+        </section>
+        <footer>
+            <p class="statistics">
+                <img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
+                <em>2,030</em> tasks done by everyone</p>
+            <nav>
+                <ul>
+                    <li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
+                    <li><a href="#/blog/" title="Read the blog">Blog</a></li>
+                    <li><a href="#/contact/" title="Tell us what you think of Tasket">Contact Us</a></li>
+                </ul>
+            </nav>
+            <p><a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
+                App by <span class="df-name">Dharmafly</span>
+            </a></p>
+        </footer>
+    </script>
+    <script type="text/tim" class="dashboard-link">
+      {{links}}<li><a href="{{href}}" title="View {{title}}">{{title}}</a></li>{{/links}}
+    </script>
     <!--
     
-        SCRIPTS: DEV
-        ------------
+        SCRIPTS
+        -------
     -->
-    <script>
-        // Console logging
-        function O(){
-            console.log.apply(console, arguments);
-        }
-    </script>
     <script src="media/js/dev/getscript.js"></script>
-    <script>
-        getScript(
-            // Each array contains non-dependent scripts
-            // Each successive script or array of scripts is dependent on previous arguments
-            [
-                "dependencies/jquery.js",
-                "dependencies/underscore.js",
-                "dependencies/tim.js"
-            ],
-
-            "dependencies/backbone.js",
-            "core/core.js",
-            "models/models.js",
-            "views/views.js",
-            
-            [
-                "models/hub.js",
-                "models/task.js",
-                "models/user.js",
-                
-                "views/hubview.js",
-                "views/taskview.js",
-                "views/userview.js",
-                "views/notification.js",
-            ],
-            
-            [
-                "core/api.js",
-                "views/ui.js"
-            ],
-            
-            "lang/en.js",
-            "init.js",
-            "temp.js",
-            
-            function(loaded){
-                if (!loaded){
-                    throw "Scripts not fully loaded";
-                }
-            },
-            
-            // Options
-            {path:"media/js/"}
-        );
-    </script>
+    <script src="media/js/tasket.js"></script>
 </body>
 </html>

@@ -1,148 +1,113 @@
 
 var dummyCode = false,
     cachedCode = false,
-    debugCsrfToken = "c31fb025ebb6cfacbf258d09540b9180",
-    notification = ui.notification,
-    lang = Tasket.lang.en;
-    
-    
+    debugUsername = "TestUser",
+    debugPassword = "12345",
+    notification = app.notification,
+    lang = Tasket.lang.en,
+    dashboard = new Dashboard();
+
+$('body').append(dashboard.el);
+
+
+
 /////
 
-var sessionid;
+app.setupAuthentication();
 
-function setupAjaxToDjango(){
-    var docCookie = window.document.cookie;
+if (!app.authtoken){
+    Tasket.login(debugUsername, debugPassword, function(data){
+        var user, tasks, hubs;
 
-    function getCookie(name) {
-        var cookieValue, cookies, cookie, i;
-        
-        if (docCookie && docCookie !== "") {
-            cookies = docCookie.split(";");
-            
-            for (i = 0; i < cookies.length; i++) {
-                cookie = jQuery.trim(cookies[i]);
-                // Does this cookie string begin with the name we want?
-                if (cookie.substring(0, name.length + 1) == (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
-        }
-        return cookieValue;
-    }
-    
-    function sendCsrfToken(xhr, settings){
-        // Only send the token to the Tasket API            
-        if (settings.url.indexOf(Tasket.endpoint) === 0) {
-            var csrftoken = getCookie("csrftoken") || debugCsrfToken;
-            if (csrftoken){
-                _("sending csrftoken", csrftoken);
-                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
-            }
-            xhr.setRequestHeader("Cookie", "sessionid=" + sessionid);
-        }
-    }
+        // Update current user details.
+        app.authtoken = data.sessionid;
+        user = app.currentUser = new User(data.user);
 
-    jQuery.ajaxSetup({beforeSend:sendCsrfToken});
-}
+        // Update the dashboard with the current user.
+        dashboard.model = user;
+        dashboard.render();
 
-setupAjaxToDjango();
+        // Fetch the users tasks and hubs. Then once they've been added to the cache
+        // update the Dashboard with the details.
+        tasks = _.flatten(
+            app.currentUser.get('tasks').owned,
+            app.currentUser.get('tasks').claimed
+        );
+        Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
+            // Update the dashboard.
+            dashboard.updateUserTasks().updateManagedTasks();
+        });
 
-
-function login(username, password, callback){    
-    jQuery.ajax({
-        url: Tasket.endpoint + "login/",
-        type: "POST",
-        data: "username=" + username + "&password=" + password,
-        dataType: "json",
-        success: callback
+        hubs = app.currentUser.get('hubs').owned;
+        Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
+            dashboard.updateUserHubs();
+        });
     });
+
+    // TODO: cache authtoken in localStorage (but expire it after some time)
+    // TODO: handle authtoken failure by logging in and repeating requests - need an abstract api() method?
 }
-login("TestUser", "12345", function(rsp){
-    console.log("login results", rsp);
-    sessionid = rsp.sessionid;
-});
 
 
 /////
-    
 
-function drawHubs(success){
-    var hubView;
-    
-    // TODO: temp
-    window.hv = [];
-    var skip = 1;
 
+function onReady(success){
     if (success){
         notification.hide();
-        Tasket.hubs.each(function(hub, i){
-            // TODO: temp
-            if (i === skip){
-                return;
-            }
-        
-            hubView = new HubView({
-                model: hub,
-               
-                offset: { // TODO: Make useful
-                    left: window.innerWidth / 3, //randomInt(window.innerWidth - 550) + 50,
-                    top: window.innerHeight / 2 //randomInt(window.innerHeight - 200) + 100
-                },
-            });
-            
-            bodyElem.append(hubView.elem);
-            hubView.render();
-            
-            // TODO: temp
-            hubView.select();
-            window.hv.push(hubView);
-        });
+        app.tankController.addHubs(Tasket.hubs.models);
     }
     else {
         notification.error(lang.DOWNLOAD_ERROR);
     }
 }
 
-
-/////
-
-
-if (dummyCode){
-    drawDummyData();
-}
-else {
-    // TODO: temp - requires localhost to serve static files
-    if (cachedCode){
-        useCachedData();
-    }
-    
-    /////
-
-
+function bootstrap(){
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
         notification.warning(lang.LOADING);
     }, 0);
 
     // Get data from the server and draw
-    Tasket.getOpenHubs(drawHubs);
+    Tasket.getOpenHubs(onReady);
     // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
+    
+    Backbone.history.start();
 }
 
 
 /////
 
 
+// TODO: TEMP
+if (dummyCode){
+    drawDummyData();
+}
+else {
+    // TODO: TEMP
+    if (cachedCode){
+        useCachedData();
+    }
+
+    /////
+
+    // START
+    bootstrap();
+}
+
+
+/////     /////     /////     /////     /////     /////     /////
+
+
 function useCachedData(){
     Tasket.endpoint = "example-data/";
-        
+
     Model.url = Hub.url = Task.url = User.url = function() {
         var url = Tasket.endpoint + this.type + "s";
         return this.isNew() ?
             url + ".json" : url + this.id + ".json";
     };
-    
+
     CollectionModel.url = HubList.url = TaskList.url = UserList.url = Tasket.hubs.url = Tasket.tasks.url = Tasket.users.url = function(){
         var url = Tasket.endpoint + this.type + "s";
         // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
@@ -152,7 +117,7 @@ function useCachedData(){
 }
 
 
-/////
+/////     /////     /////     /////     /////     /////     /////
 
 
 function drawDummyData(){
@@ -164,17 +129,17 @@ function drawDummyData(){
             image: "media/images/placeholder.png",
             owner: "5"
         }),
-        
+
         myHubView = new HubView({
             model: myHub,
-            
+
             // options
             selected: true,
             offset: {
                 top: 300,
                 left: 500
             },
-            
+
             collection: new TaskList([ // TODO: add these to the hub, not the hubview
                 {
                     description: 'This is a task description, it should contain a few sentences detailing the nature of the task.',
@@ -220,7 +185,7 @@ function drawDummyData(){
                 }
             ])
         });
-    
-        jQuery("body").append(myHubView.elem);   
+
+        jQuery("body").append(myHubView.elem);
         myHubView.render();
 }

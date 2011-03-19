@@ -1,7 +1,7 @@
 // ABSTRACT MODEL
 var Model = Backbone.Model.extend({
-    url: function() {
-        var url = Tasket.endpoint + this.type + "s/";
+    url: function(relative) {
+        var url = (relative ? "" : Tasket.endpoint) + this.type + "s/";
         return this.isNew() ? url : url + this.id;
     },
     
@@ -12,7 +12,7 @@ var Model = Backbone.Model.extend({
     },
     
     report: function(msg){
-        return "Tasket" + (this.type ? " " + this.type : "") + ": " + msg + " : " + this.cid;
+        return "Tasket" + (this.type ? " " + this.type : "") + ": " + msg + " : " + (this.id || this.cid);
     },
     
     validate: function(attrs) {
@@ -38,8 +38,8 @@ var CollectionModel = Backbone.Collection.extend({
         this.type = this.model.prototype.type;
     },
 
-    url: function(){
-        var url = Tasket.endpoint + this.type + "s/",
+    url: function(relative){
+        var url = (relative ? "" : Tasket.endpoint) + this.type + "s/",
             bootstrapping = this.seed && !this.length,
             ids;
         // If the page has just loaded, and nothing is yet loaded, then seed this with default objects
@@ -49,5 +49,35 @@ var CollectionModel = Backbone.Collection.extend({
             url += "?ids=" + ids;
         }
         return url;
+    },
+
+    filterByIds: function(ids){
+        return new this.constructor(this.filter(function (model) {
+            return _.indexOf(ids, model.id) > -1;
+        }));
+    },
+    
+    
+    // TODO: check and improve efficiency if possible
+    parse: function(data){
+        var current = this.toJSON();
+        
+         _(data).each(function(newModel){
+            var found = false;
+            
+            // Using jQuery's .each instead of Underscore's, so that we can break the loop
+            jQuery(current).each(function(index, model){
+                if (model.id === newModel.id){
+                    current[index] = newModel;
+                    found = true;
+                    return false; // break the loop
+                }
+            });
+            
+            if (!found){
+                current.push(newModel);
+            }
+        });
+        return current;
     }
 });

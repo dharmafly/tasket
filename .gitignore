@@ -2,3 +2,10 @@ screenshot.png
 .DS_Store
 *.pyc
 web/local_settings.py
+.Python
+bin/
+build/
+include/
+lib/
+tasket.db
+web/pip-log.txt

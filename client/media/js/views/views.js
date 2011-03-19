@@ -19,6 +19,12 @@ var View = Backbone.View.extend({
         return this;
     },
     
+    /////
+    
+    // Set hash location
+    updateLocation: function(){
+        window.location.hash = "/" + this.model.url(true);
+    },
     
     /////
     

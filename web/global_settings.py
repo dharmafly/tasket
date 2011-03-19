@@ -96,7 +96,7 @@ DEFAULT_TYPE = (
 
 DEFAULT_HEADERS = (
     ('Access-Control-Allow-Origin', '*'),
-    ('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, Authorization, *'),
+    ('Access-Control-Allow-Headers', 'Content-Type, X-Requested-With, X-CSRFToken, Authorization, *'),
     ('Access-Control-Allow-Methods', 'POST, PUT, DELETE, GET, OPTIONS'),
     ('Access-Control-Allow-Credentials', 'true'),
 )

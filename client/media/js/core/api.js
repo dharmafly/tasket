@@ -1,8 +1,8 @@
 // PUBLIC API
 _.extend(Tasket, Backbone.Events, {
     version: "0.1.0",
-    endpoint: "http://tasket.ep.io/",
-    // endpoint: "http://localhost:8000/",
+    //endpoint: "http://tasket.ep.io/",
+    endpoint: "http://localhost:8000/",
     
     lang: {},
     
@@ -103,5 +103,15 @@ _.extend(Tasket, Backbone.Events, {
         hubs.fetch(fetchOptions);
                 
         return this;
+    },
+    
+    login: function(username, password, callback){    
+        jQuery.ajax({
+            url: Tasket.endpoint + "login/",
+            type: "POST",
+            data: "username=" + username + "&password=" + password,
+            dataType: "json",
+            success: callback
+        });
     }
 });
