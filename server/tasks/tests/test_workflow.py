@@ -70,9 +70,12 @@ class WorkflowTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(response.status_code, 500)
         
-        
-        
-        
-        
-        
-        
+    def test_authorization_header(self):
+        response = self.client.get('/')
+        self.assertTrue(response.has_header('Authorization'))
+
+
+
+
+
+

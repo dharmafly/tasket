@@ -88,7 +88,7 @@ class CORSAuthorizationMiddleware():
                         path=settings.SESSION_COOKIE_PATH,
                         secure=settings.SESSION_COOKIE_SECURE or None)
         
-        response['Authorization'] = request.session.session_key
+            response['Authorization'] = request.session.session_key
         
         return response
     
