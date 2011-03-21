@@ -21,5 +21,7 @@ urlpatterns = patterns('',
     url(r'^users/$',views.ProfileView.as_view(), name="user"),
     url(r'^users/(?P<user_id>\d+)$',views.ProfileView.as_view(), name="user"),
     
+    # Images
+    url(r'^thumb/(?P<size>[^/]+)/(?P<path>.*)$',views.thumbs),
     
    )

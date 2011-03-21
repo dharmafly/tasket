@@ -15,6 +15,9 @@ urlpatterns = patterns('',
     # Frontend
     (r'', include('frontend.urls')),
 
+    # sorl.thumbnail
+    (r'^', include('sorl.thumbnail.urls')),
+
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),
 

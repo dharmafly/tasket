@@ -82,9 +82,7 @@ INSTALLED_APPS = [
     # 'django.contrib.admindocs',
     'tasks',
     'frontend',
-    # 'south',
-    # 'django.contrib.gis',    
-    # 'devserver',
+    'sorl.thumbnail',
 ]
 
 DEFAULT_TYPE = (
@@ -110,3 +108,5 @@ CORS_PATHS = (
 )
 
 
+THUMBNAIL_DUMMY = True
+INTERNAL_IPS = ('127.0.0.1',)

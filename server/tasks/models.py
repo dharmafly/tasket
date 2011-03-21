@@ -14,6 +14,8 @@ from django.conf import settings
 
 import managers
 
+from sorl.thumbnail import ImageField
+
 class Task(models.Model):
     """
     A task's JSON object should look like this:
@@ -56,7 +58,7 @@ class Task(models.Model):
     )
     
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to="images/tasks/", blank=True, null=True)
+    image = ImageField(upload_to="images/tasks/", blank=True, null=True)
     estimate = models.IntegerField(blank=True, null=True, choices=TIME_ESTIMATE)
     state = models.IntegerField(blank=False, null=False, choices=TASK_STATES, default=STATE_NEW)
     owner = models.ForeignKey('Profile', related_name='tasks_owned')
@@ -96,6 +98,7 @@ class Task(models.Model):
         
         if self.image:
             obj_dict["image"] = self.image.url
+
         if self.claimedBy:
             obj_dict["claimedBy"] = str(self.claimedBy.user.pk)
         if self.verifiedBy:
@@ -127,7 +130,7 @@ class Hub(models.Model):
     
     title = models.CharField(blank=False, max_length=255)
     description = models.TextField(blank=True, null=True)
-    image = models.ImageField(upload_to='images/hubs/', null=True, blank=True)
+    image = ImageField(upload_to='images/hubs/', null=True, blank=True)
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
     
@@ -177,7 +180,7 @@ class Profile(models.Model):
     realname = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
     location = models.CharField(blank=True, max_length=255)
-    image = models.ImageField(upload_to='images/users/', null=True, blank=True)
+    image = ImageField(upload_to='images/users/', null=True, blank=True)
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
     admin = models.BooleanField(default=False)
 

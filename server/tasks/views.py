@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 import json
+import mimetypes
 
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed, Http404
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 # from django.contrib.auth.decorators import login_required
+
 from utils.decorators import json_login_required as login_required
 from django.conf import settings
 
+from sorl.thumbnail import get_thumbnail
 from utils.helpers import AllowJSONPCallback, PutView
 
 from models import Hub, Task, Profile
 import forms
+
 
 def home(reqeust):
     f = open("%s/client/index.html" % settings.ROOT_PATH, "r")
@@ -222,3 +226,21 @@ class ProfileView(PutView):
             self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
+
+def thumbs(request, size, path):
+        
+    im_obj = open("%s/%s" % (settings.MEDIA_ROOT, path))
+
+    crop = None
+    if 'square' in request.GET:
+        crop = 'center'
+    im = get_thumbnail(im_obj, size, quality=99, crop=crop)
+    
+    file_mimetype = mimetypes.guess_type(im_obj.name)
+    return HttpResponse(im.read(), mimetype=file_mimetype)
+
+
+
+
+
+
