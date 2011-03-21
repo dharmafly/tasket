@@ -78,7 +78,7 @@ class TaskForm(forms.ModelForm):
         
         for k,v in cleaned_data.items():
             if isinstance(v, unicode):
-                print escape(v)
+                # print escape(v)
                 cleaned_data[k] = escape(v)
         return cleaned_data
 
