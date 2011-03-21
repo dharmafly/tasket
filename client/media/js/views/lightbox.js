@@ -49,8 +49,8 @@ var Lightbox = View.extend({
         return this;
     },
     _onHide: function (event) {
-        event.preventDefault();
         if (event.target === this.el || $(event.target).hasClass('close')) {
+            event.preventDefault();
             this.hide();
         }
     }
