@@ -71,6 +71,9 @@ var TankController = Backbone.Controller.extend({
             if (event === 'close' || event === 'success') {
                 this.saveLocation('/');
             }
+            if (event === 'success') {
+                this.addHub(form.model);
+            }
         }, this));
     }
 });
