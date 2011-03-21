@@ -69,12 +69,60 @@ var TankController = Backbone.Controller.extend({
         form.render().show();
         form.bind('all', _.bind(function (event) {
             if (event === 'close' || event === 'success') {
-                this.saveLocation('/');
+                window.history.back();
             }
             if (event === 'success') {
                 this.addHub(form.model);
             }
         }, this));
+    }
+});
+
+// Handles signup/about/login etc.
+var PageController = Backbone.Controller.extend({
+    routes: {
+        '/about/':  'about',
+        '/login/':  'login',
+        '/logout/': 'logout',
+        '/signup/': 'signup'
+    },
+
+    constructor: function PageController() {
+        Backbone.Controller.prototype.constructor.apply(this, arguments);
+    },
+
+    about: function () {
+        lightbox.render(tim('about')).show().bind('close', function () {
+            window.history.back();
+        });
+    },
+
+    login: function () {
+    
+    },
+
+    logout: function () {
+    
+    },
+
+    signup: function () {
+
+    }
+});
+
+var DashboardController = Backbone.Controller.extend({
+    routes: {
+        '/dashboard/user/:id': 'showUser',
+        '/dashboard/tasks/':   'showCurrentUserTasks',
+        '/dashboard/hubs/':    'showCurrentUserHubs'
+    },
+
+    constructor: function DashboardController() {
+        Backbone.Controller.prototype.constructor.apply(this, arguments);
+    },
+
+    showCurrentUserTasks: function () {
+        var user = app.currentUser;
     }
 });
 
