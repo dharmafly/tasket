@@ -34,9 +34,10 @@ class ViewTests(TestCase):
     
         response = self.client.post(
             '/hubs/', 
-            {
+            json.dumps({
                 'title' : 'New Hub',
-            }
+            }),
+            content_type="application/json",
             )
         json_list = json.loads(response.content)
     
@@ -47,9 +48,10 @@ class ViewTests(TestCase):
     
         response = self.client.post(
             '/hubs/', 
-            {
+            json.dumps({
                 'wrong' : 'New Hub',
-            }
+            }),
+            content_type="application/json",
             )
         self.assertEqual(response.status_code, 500)
     
@@ -57,9 +59,10 @@ class ViewTests(TestCase):
     
         response = self.client.post(
             '/hubs/', 
-            {
+            json.dumps({
                 'title' : 'New Hub',
-            }
+            }),
+            content_type="application/json",
             )
     
         self.assertEqual(response.status_code, 403)
@@ -117,12 +120,14 @@ class ViewTests(TestCase):
         hub = Hub.objects.get(pk=2)
         response = self.client.post(
             '/tasks/',
-            {
+            json.dumps({
                 "description" : "Lorem ipsum dolor sit amet, consectetur",
                 "estimate" : 60*10,
                 "hub" : hub.pk,
-            }
+            }),
+            content_type='application/json',
             )
+
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("Lorem"), True)
 
@@ -152,7 +157,6 @@ class ViewTests(TestCase):
     def test_user_get_single(self):
         response = self.client.get('/users/2')
         json_data = json.loads(response.content)
-        print json_data['description']
         self.assertEqual(json_data['description'].startswith("This is"), True)
 
     def test_user_get_by_id(self):
@@ -169,7 +173,6 @@ class ViewTests(TestCase):
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
-        print json_data['description']
         self.assertEqual(json_data['description'].startswith("New"), True)
 
     def test_user_delete(self):

@@ -87,10 +87,16 @@ class PutView(View):
 
     def clean_request(self, request):
         """
-        Adds 'PUT' to a request ovject.  Assumes valid JSON as the content of 
+        Adds 'PUT' to a request object.  Assumes valid JSON as the content of 
         the PUT request.
         """
         if request.method in ('PUT',):
             request.PUT = json.loads(request.raw_post_data)
+        
+        try:
+            request.JSON = json.loads(request.raw_post_data)
+        except:
+            request.JSON = None
+        
         return request
 

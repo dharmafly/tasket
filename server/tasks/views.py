@@ -22,6 +22,7 @@ def home(reqeust):
     f = open("%s/client/index.html" % settings.ROOT_PATH, "r")
     return HttpResponse(f.read())
 
+
 class HubView(PutView):
     
     http_method_names = ['get', 'post', 'put', 'delete',]
@@ -67,7 +68,7 @@ class HubView(PutView):
         """
         res = HttpResponse()
         
-        form = forms.HubForm(request.POST)
+        form = forms.HubForm(request.JSON)
         if form.is_valid():
             H = form.save(commit=False)
             H.owner = request.user.profile
@@ -146,8 +147,8 @@ class TasksView(PutView):
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def post(self, request, task_id=None):
-        request.POST['state'] = request.POST.get('state', 0)
-        form = forms.TaskForm(request.POST, request=request)
+        request.JSON['state'] = request.JSON.get('state', 0)
+        form = forms.TaskForm(request.JSON, request=request)
         if form.is_valid():
             T = form.save(commit=False)
             T.owner = request.user.profile
@@ -226,6 +227,7 @@ class ProfileView(PutView):
             self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
+
 
 def thumbs(request, size, path):
         
