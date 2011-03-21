@@ -105,11 +105,15 @@ _.extend(Tasket, Backbone.Events, {
         return this;
     },
     
-    login: function(username, password, callback){    
+    login: function(username, password, callback) {
         return jQuery.ajax({
             url: Tasket.endpoint + "login/",
             type: "POST",
-            data: "username=" + username + "&password=" + password,
+            contentType: 'application/json',
+            data: JSON.encode({
+                username: username,
+                password: password
+            }),
             dataType: "json",
             success: callback
         });
