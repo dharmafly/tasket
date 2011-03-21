@@ -110,7 +110,7 @@ _.extend(Tasket, Backbone.Events, {
             url: Tasket.endpoint + "login/",
             type: "POST",
             contentType: 'application/json',
-            data: JSON.encode({
+            data: JSON.stringify({
                 username: username,
                 password: password
             }),

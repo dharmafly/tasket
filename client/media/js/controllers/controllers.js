@@ -98,11 +98,15 @@ var PageController = Backbone.Controller.extend({
     },
 
     login: function () {
-        
+        var form = new Login();
+        form.render().show();
+        form.bind('close', function () {
+            window.history.back();
+        });
     },
 
     logout: function () {
-        
+
     },
 
     signup: function () {
