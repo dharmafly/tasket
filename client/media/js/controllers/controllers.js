@@ -81,10 +81,10 @@ var TankController = Backbone.Controller.extend({
 // Handles signup/about/login etc.
 var PageController = Backbone.Controller.extend({
     routes: {
-        '/about/':  'about',
-        '/login/':  'login',
-        '/logout/': 'logout',
-        '/signup/': 'signup'
+        '/about/':   'about',
+        '/login/':   'login',
+        '/logout/':  'logout',
+        '/sign-up/': 'signup'
     },
 
     constructor: function PageController() {
@@ -98,15 +98,16 @@ var PageController = Backbone.Controller.extend({
     },
 
     login: function () {
-    
+        
     },
 
     logout: function () {
-    
+        
     },
 
     signup: function () {
-
+        var form = new SignUp();
+        form.render().show();
     }
 });
 
