@@ -39,7 +39,7 @@ window.lightbox = new Lightbox();
         'signup': '[href="#/sign-up/"]',
         'login': '.login a',
         'about': '[href="#/about/"]',
-        'new': '[href$="/new/"]'
+        //'new': '[href$="/new/"]'
     };
 
     $.each(templates, function (template_name, selector) {

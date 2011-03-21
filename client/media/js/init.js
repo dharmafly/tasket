@@ -67,6 +67,7 @@ app.init(function () {
         }
     });
 
+    // Return our deferred to the app.init() method.
     return deferred;
 }());
 

@@ -6,6 +6,9 @@ var Lightbox = View.extend({
         display: 'show',
         animate: 'fade-in'
     },
+    constructor: function Lightbox() {
+        View.prototype.constructor.apply(this, arguments);
+    },
     initialize: function(){
         View.prototype.initialize.apply(this, arguments);
 
@@ -14,11 +17,8 @@ var Lightbox = View.extend({
         this.el = this.elem[0];
         this.content = this.$('.content');
 
-        // Bind the callbacks to the current scope.
-        _.bind(this._onHide, this);
-
         // Delegate events on the .lightbox
-        this.delegateEvents();
+        this.delegateEvents(_.extend(this.events, Lightbox.prototype.events));
     },
     show: function () {
         this.elem.addClass(this.classes.display);
@@ -28,7 +28,7 @@ var Lightbox = View.extend({
             this.elem.addClass(this.classes.animate);
         }, this), 0);
 
-        return this;
+        return this.trigger('show');
     },
     hide: function () {
         var duration = this.elem.css('-webkit-transition-duration') || null;
@@ -42,7 +42,7 @@ var Lightbox = View.extend({
             this.elem.removeClass(this.classes.display);
         }
 
-        return this;
+        return this.trigger('close');
     },
     render: function (html) {
         this.content.html(html);

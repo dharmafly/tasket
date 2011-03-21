@@ -299,6 +299,25 @@
         </blockquote>
     </script>
 
+    <script type="text/tim" class="new-hub">
+      <h1>{{isNew}}Create a new hub{{/isNew}}{{isNotNew}}Edit: {{title}}{{/isNotNew}}</h1>
+        <form action="/hubs/" method="POST">
+            <ul>
+                <li>
+                    <label for="field-title">Title</label>
+                    <input id="field-title" name="title" placeholder="My new hub" value="{{title}}" />
+                </li>
+                <li>
+                    <label for="field-description">Description</label>
+                    <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
+                </li>
+            </ul>
+            <div class="actions">
+                <button type="submit">Create Hub</button>
+            </div>
+        </form>
+    </script>
+
     <script type="text/tim" class="new-task">
         <h1>Create a new task</h1>
         <form action="#/tasks/" method="POST">
@@ -338,8 +357,8 @@
             <ul class="listing">
             </ul>
             <p>
-                <a class="button" href="#/projects/" title="View all projects">View All</a>
-                <a class="button" href="#/projects/new/" title="Create a new project">New</a>
+                <a class="button" href="#/hubs/" title="View all projects">View All</a>
+                <a class="button" href="#/hubs/new/" title="Create a new project">New</a>
             </p>
         </section>
         <section class="quicklinks my-tasks">
