@@ -16,7 +16,9 @@ $('body').append(dashboard.el);
 app.setupAuthentication();
 
 if (!app.authtoken){
-    Tasket.login(debugUsername, debugPassword, function(data){
+    // Pass this into our bootstrap method as the app depends on
+    // on the user beign logged in.
+    app.init(Tasket.login(debugUsername, debugPassword, function(data){
         var user, tasks, hubs;
 
         // Update current user details.
@@ -42,38 +44,47 @@ if (!app.authtoken){
         Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
             dashboard.updateUserHubs();
         });
-    });
+    }));
 
     // TODO: cache authtoken in localStorage (but expire it after some time)
     // TODO: handle authtoken failure by logging in and repeating requests - need an abstract api() method?
 }
 
+// Get data from the server and draw.
+app.init(function () {
+    // Create a new jQuery deferred object to be returned to init().
+    var deferred = new jQuery.Deferred();
+
+    // Pass a callback to the getOpenHubs() method that updates our
+    // deferred with the status. We call resolve() if the hubs have
+    // loaded and reject() if there was an error.
+    Tasket.getOpenHubs(function (success) {
+        if (success === true) {
+            deferred.resolve();
+        } else {
+            notification.error(lang.DOWNLOAD_ERROR);
+            deferred.reject();
+        }
+    });
+
+    return deferred;
+}());
+
 
 /////
 
 
-function onReady(success){
-    if (success){
-        notification.hide();
-        app.tankController.addHubs(Tasket.hubs.models);
-    }
-    else {
-        notification.error(lang.DOWNLOAD_ERROR);
-    }
-}
-
-function bootstrap(){
-    // Timeout required to prevent notification appearing immediately (seen in Chrome)
-    window.setTimeout(function(){
-        notification.warning(lang.LOADING);
-    }, 0);
-
-    // Get data from the server and draw
-    Tasket.getOpenHubs(onReady);
-    // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
-    
+// Called when the app has all dependancies loaded.
+app.bind("ready", function onReady(){
+    notification.hide();
+    app.tankController.addHubs(Tasket.hubs.models);
     Backbone.history.start();
-}
+});
+
+// Called when the bootstrap methods fail.
+app.bind("error", function (data) {
+    // Any global error handling.
+});
 
 
 /////
@@ -91,8 +102,15 @@ else {
 
     /////
 
+    // Timeout required to prevent notification appearing immediately (seen in Chrome)
+    window.setTimeout(function(){
+        notification.warning(lang.LOADING);
+    }, 0);
+
+    // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
+
     // START
-    bootstrap();
+    app.init();
 }
 
 
