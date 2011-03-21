@@ -106,8 +106,16 @@ var PageController = Backbone.Controller.extend({
     },
 
     signup: function () {
-        var form = new SignUp();
+        var form = new SignUp({
+            model: new User({
+                realname: ''
+            })
+        });
+
         form.render().show();
+        form.bind('close', function () {
+            window.history.back();
+        });
     }
 });
 

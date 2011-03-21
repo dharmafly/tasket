@@ -36,9 +36,9 @@ window.lightbox = new Lightbox();
 // Set up the lightboxes.
 (function () {
     var template, templates = {
-        'signup': '[href="#/sign-up/"]',
+        //'signup': '[href="#/sign-up/"]',
         'login': '.login a',
-        'about': '[href="#/about/"]',
+        //'about': '[href="#/about/"]',
         //'new': '[href$="/new/"]'
     };
 
