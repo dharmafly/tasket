@@ -412,7 +412,9 @@ form ul,
 }
 
 .content form .error input,
-.content form .error textarea {
+.content form .error textarea,
+.content form input:invalid,
+.content form textarea:invalid  {
 	background-color: rgb(255, 234, 239);
 	border-color: rgb(255, 188, 192);
 	color: rgb(184, 26, 26);
