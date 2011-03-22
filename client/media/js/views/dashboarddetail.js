@@ -1,4 +1,4 @@
-var DashboardDetail = View.extend({
+var DashboardDetail = Lightbox.extend({
     events: {
         'click .back, .close': 'hide'
     },
@@ -8,25 +8,16 @@ var DashboardDetail = View.extend({
     className: 'detail',
 
     constructor: function DashboardDetail() {
-        View.prototype.constructor.apply(this, arguments);
+        Lightbox.prototype.constructor.apply(this, arguments);
     },
 
-    show: function () {
-        this.elem.show();
-        return this.trigger('show', this);
-    },
-
-    hide: function (event) {
-        if (event) {
-            event.preventDefault();
-        }
-        return this.trigger('hide', this);
+    title: function (title) {
+        this.$('h1').text(title);
+        return this;
     },
 
     render: function () {
-        var template = tim('dashboard-detail', {
-            title: this.model.get('title')
-        });
+        var template = tim('dashboard-detail');
         this.elem.html(template);
         return this;
     }
