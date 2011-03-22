@@ -7,6 +7,41 @@ var Dashboard = View.extend({
         View.prototype.constructor.apply(this, arguments);
     },
 
+    initialize: function () {
+        View.prototype.initialize.apply(this, arguments);
+
+        // Setup the user bindings.
+        this.setUser(this.model);
+    },
+
+    // Sets up bindings to update the dashbaord when the user changes.
+    setUser: function (user) {
+        var methodMap = {
+            hubs:       ['UserHubs'],
+            tasks:      ['UserTasks', 'ManagedTasks'],
+            statistics: ['Notifications']
+        };
+
+        // Update the user object if nessecary.
+        this.model = (user || null)  || this.model;
+
+        if (this.model) {
+            this.model.bind('change', _.bind(function (user) {
+                _.each(methodMap, function (method, property) {
+
+                    // For each propery in the methodMap see if it has changed
+                    // if so call the associated method.
+                    if (user.hasChanged(property)) {
+                        this['update' + method]();
+                    }
+                }, this);
+
+            }, this));
+        }
+
+        return this;
+    },
+
     render: function () {
         var rendered = tim('dashboard');
         this.elem.html(rendered);

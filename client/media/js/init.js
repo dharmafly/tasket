@@ -35,8 +35,7 @@ if (!app.authtoken){
         app.updateCurrentUser(user);
 
         // Update the dashboard with the current user.
-        dashboard.model = user;
-        dashboard.render();
+        dashboard.setUser(user).render();
 
         // Fetch the users tasks and hubs. Then once they've been added to the cache
         // update the Dashboard with the details.
