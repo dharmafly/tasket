@@ -3,6 +3,10 @@ var Dashboard = View.extend({
 
     className: 'dashboard',
 
+    classes: {
+        detailShown: 'detail-active'
+    },
+
     constructor: function Dashboard() {
         View.prototype.constructor.apply(this, arguments);
     },
@@ -12,6 +16,17 @@ var Dashboard = View.extend({
 
         // Setup the user bindings.
         this.setUser(this.model);
+
+        // Set up the detail instance.
+        this.detail = new DashboardDetail();
+        this.detail.bind('all', _.bind(function (event) {
+            if (event === 'show') {
+                this.elem.addClass(this.classes.detailShown);
+            }
+            else if (event === 'hide') {
+                this.elem.removeClass(this.classes.detailShown);
+            }
+        }, this));
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
@@ -27,12 +42,14 @@ var Dashboard = View.extend({
 
         if (this.model) {
             this.model.bind('change', _.bind(function (user) {
-                _.each(methodMap, function (method, property) {
+                _.each(methodMap, function (methods, property) {
 
                     // For each propery in the methodMap see if it has changed
-                    // if so call the associated method.
+                    // if so call the associated methods.
                     if (user.hasChanged(property)) {
-                        this['update' + method]();
+                        _.each(methods, function (method) {
+                            this['update' + method]();
+                        }, this);
                     }
                 }, this);
 
@@ -50,6 +67,8 @@ var Dashboard = View.extend({
         _.each(['Notifications', 'UserTasks', 'UserHubs', 'ManagedTasks'], function (method) {
             this['update' + method]();
         }, this);
+
+        this.elem.append(this.detail.hide().render().el);
 
         return this;
     },
