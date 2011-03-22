@@ -89,15 +89,6 @@ class HubForm(forms.ModelForm):
         exclude = ('owner', 'createdTime',)
 
 class ProfileForm(forms.ModelForm):
-    def __init__(self, *args, **kwargs):
-        if 'request' in kwargs:
-            self.request = kwargs['request']
-            del kwargs['request']
-        else:
-            raise Exception('Request MUST be passed to this form')
-
-        super(ProfileForm, self).__init__(*args, **kwargs)
-    
     
     class Meta:
         model = Profile

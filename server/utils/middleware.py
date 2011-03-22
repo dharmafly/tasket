@@ -73,7 +73,7 @@ class CORSAuthorizationMiddleware():
     def process_response(self, request, response):
         try:
             response['Authorization'] = request.session.session_key
-        except AttributeError:
+        except:
             pass
         
         return response

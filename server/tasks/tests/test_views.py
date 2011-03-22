@@ -165,6 +165,21 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_data), 2)
 
     
+    def test_user_post(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "realname" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['user_id'], 6)
+
     def test_user_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(

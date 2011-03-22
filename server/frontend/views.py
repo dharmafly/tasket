@@ -105,38 +105,6 @@ class RegisterView(PutView):
     def __init__(self):
         self.res = HttpResponse(content_type='application/javascript')
     
-    def invalid(self, *args):
-        self.res.write(json.dumps({
-            'errors' : args, 
-        }))
-        return self.res
-    
-    def post(self, request):
-        username = request.JSON.get('username')
-        password = request.JSON.get('password')
-        email = request.JSON.get('email')
-        
-        try:
-            validate_email(email)
-        except ValidationError:
-            return self.invalid('email')
-        
-        user = User.objects.create_user(username=username,
-                email=email,
-                password=password)
-        user.save()
-        user = authenticate(username=username, password=password)
-        login(request, user)
-        
-        self.res.write(
-            json.dumps(
-                    {
-                        'user_id' : user.pk
-                    }
-                )
-            )
-        return self.res
-
 
 
 

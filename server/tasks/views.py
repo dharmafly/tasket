@@ -6,7 +6,8 @@ from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed, Http404
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
-# from django.contrib.auth.decorators import login_required
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate, login, logout
 
 from utils.decorators import json_login_required as login_required
 from django.conf import settings
@@ -218,15 +219,59 @@ class ProfileView(PutView):
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def put(self, request, user_id=None):
-        profile = get_object_or_404(Profile, pk=user_id)
-        form = forms.ProfileForm(request.PUT, instance=profile, request=request)
+        profile = get_object_or_404(Profile, user=user_id)
+        form = forms.ProfileForm(request.PUT, instance=profile)
+
         if form.is_valid():
-            T = form.save()
+            T = form.save(commit=False)
+            T.user = profile.user
+            T.save()
             self.res.write(T.as_json())
         else:
             self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
+
+        def invalid(self, *args):
+            self.res.write(json.dumps({
+                'errors' : args, 
+            }))
+            return self.res
+
+    @method_decorator(AllowJSONPCallback)
+    def post(self, request):
+        request.POST = request.JSON
+        username = request.JSON.get('username')
+        password = request.JSON.get('password')
+        email = request.JSON.get('email')
+        
+        user = User.objects.create_user(username=username,
+                email=email,
+                password=password)
+        user.save()
+
+        user = authenticate(username=username, password=password)
+
+        form = forms.ProfileForm(request.JSON)
+        T = form.save(commit=False)
+        T.user = user
+        T.save()
+
+        
+        user = authenticate(username=username, password=password)
+        login(request, user)
+
+        self.res.write(
+            json.dumps(
+                    {
+                        'user_id' : user.pk
+                    }
+                )
+            )
+        return self.res
+
+
+
 
 
 def thumbs(request, size, path):
