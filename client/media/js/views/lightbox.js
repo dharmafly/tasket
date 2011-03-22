@@ -37,7 +37,7 @@ var Lightbox = View.extend({
             this.elem.removeClass(this.classes.display);
         }
 
-        return this.trigger('close');
+        return this.trigger('hide');
     },
     content: function (content) {
         var element = this.$('.content');
