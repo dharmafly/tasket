@@ -111,6 +111,9 @@ else {
 
     // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
 
+    // Run setup methods.
+    app.setupToolbar();
+
     // START
     app.init();
 }
