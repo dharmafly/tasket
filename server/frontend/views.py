@@ -54,10 +54,10 @@ class LoginView(PutView):
 
     def post(self, request):
         request.session.set_test_cookie()
-        form = AuthenticationForm(request, data=request.POST)
+        form = AuthenticationForm(request, data=request.JSON)
         if form.is_valid():
-            username = request.POST['username']
-            password = request.POST['password']
+            username = request.JSON['username']
+            password = request.JSON['password']
             user = authenticate(username=username, password=password)
             if user is not None:
                 if user.is_active:
@@ -112,9 +112,9 @@ class RegisterView(PutView):
         return self.res
     
     def post(self, request):
-        username = request.POST.get('username')
-        password = request.POST.get('password')
-        email = request.POST.get('email')
+        username = request.JSON.get('username')
+        password = request.JSON.get('password')
+        email = request.JSON.get('email')
         
         try:
             validate_email(email)
