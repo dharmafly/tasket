@@ -1005,6 +1005,7 @@ article .meta img {
 -----------------------------------------------------------------------------*/
 
 .detail {
+	display: none;
 	background-color: #333;
 	overflow: auto;
 	overflow-x: hidden;
@@ -1019,6 +1020,10 @@ article .meta img {
 	-ms-border-radius: -0.154em /* -2px */;
 	-o-border-radius: -0.154em /* -2px */;
 	border-radius: -0.154em /* -2px */;
+}
+
+.detail.show {
+	display: block;
 }
 
 .detail,
