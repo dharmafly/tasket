@@ -1,6 +1,6 @@
-var HubForm = LightboxForm.extend({
+var HubForm = Form.extend({
     constructor: function HubForm() {
-        LightboxForm.prototype.constructor.apply(this, arguments);
+        Form.prototype.constructor.apply(this, arguments);
     },
     render: function () {
         var template = tim('new-hub', {
@@ -10,8 +10,7 @@ var HubForm = LightboxForm.extend({
             isNotNew:   !this.model.isNew()
         });
 
-        // Call the parent method to render the full lightbox.
-        Lightbox.prototype.render.call(this, template);
+        this.elem.html(template);
 
         return this;
     }

@@ -2,23 +2,18 @@ var Lightbox = View.extend({
     events: {
         'click': '_onHide'
     },
+
+    tagName: 'section',
+
+    className: 'lightbox',
+
     classes: {
         display: 'show',
         animate: 'fade-in'
     },
+
     constructor: function Lightbox() {
         View.prototype.constructor.apply(this, arguments);
-    },
-    initialize: function(){
-        View.prototype.initialize.apply(this, arguments);
-
-        // All lightbox classes share the same lightbox element.
-        this.elem = $('.lightbox');
-        this.el = this.elem[0];
-        this.content = this.$('.content');
-
-        // Delegate events on the .lightbox
-        this.delegateEvents(_.extend(this.events, Lightbox.prototype.events));
     },
     show: function () {
         this.elem.addClass(this.classes.display);
@@ -44,8 +39,18 @@ var Lightbox = View.extend({
 
         return this.trigger('close');
     },
-    render: function (html) {
-        this.content.html(html);
+    content: function (content) {
+        var element = this.$('.content');
+        if (typeof content === 'string') {
+            element.html(content);
+        } else {
+            element.empty().append(content);
+        }
+        return this;
+    },
+    render: function () {
+        var template = tim('lightbox');
+        this.elem.html(template);
         return this;
     },
     _onHide: function (event) {

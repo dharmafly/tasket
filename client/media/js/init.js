@@ -7,9 +7,14 @@ var dummyCode = false,
     lang = Tasket.lang.en,
     dashboard = new Dashboard();
 
-$('body').append(dashboard.el);
+$('body')
+  .append(dashboard.el)
+  .append(app.lightbox.render().hide().el);
 
-
+// Return to the previous route when the lightbox closes.
+app.lightbox.bind('close', function () {
+    window.history.back();
+});
 
 /////
 

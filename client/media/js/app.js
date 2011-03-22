@@ -7,7 +7,8 @@ var app = _.extend({
     csrftoken: null,
     hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
     currentUser: null,
-    notification: new Notification(),
+    notification:   new Notification(),
+    lightbox:       new Lightbox(),
     tankController: new TankController(),
     pageController: new PageController(),
 

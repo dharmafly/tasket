@@ -1,6 +1,6 @@
-var Login = LightboxForm.extend({
+var Login = Form.extend({
     constructor: function Login() {
-        LightboxForm.prototype.constructor.apply(this, arguments);
+        Form.prototype.constructor.apply(this, arguments);
     },
 
     submit: function (event) {
@@ -10,7 +10,7 @@ var Login = LightboxForm.extend({
             event.preventDefault();
         }
 
-        credentials = _.map(this.$('form').serializeArray(), function (input) {
+        credentials = _.map(this.elem.serializeArray(), function (input) {
             return input.value;
         });
 
@@ -26,7 +26,7 @@ var Login = LightboxForm.extend({
 
     render: function () {
         var html = tim('login');
-        Lightbox.prototype.render.call(this, html);
+        this.elem.html(html);
         return this;
     }
 });

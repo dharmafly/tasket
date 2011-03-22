@@ -1,9 +1,10 @@
-var LightboxForm = Lightbox.extend({
+var Form = View.extend({
     events: {
-        "submit form": "submit"
+        "submit": "submit"
     },
-    constructor: function LightboxForm() {
-        Lightbox.prototype.constructor.apply(this, arguments);
+    tagName: 'form',
+    constructor: function Form() {
+        View.prototype.constructor.apply(this, arguments);
     },
     submit: function (event) {
         var data = {};
@@ -13,7 +14,7 @@ var LightboxForm = Lightbox.extend({
 
         this.reset();
 
-        this.$('form :input').each(function () {
+        this.$(':input').each(function () {
             data[this.name] = $(this).val();
         });
 
@@ -25,7 +26,7 @@ var LightboxForm = Lightbox.extend({
         this.trigger('submit');
     },
     errors: function (errors) {
-        var list = this.$('form :input');
+        var list = this.$(':input');
 
         list.each(function () {
             var input    = $(this),

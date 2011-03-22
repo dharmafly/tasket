@@ -1,11 +1,11 @@
-var SignUp = LightboxForm.extend({
+var SignUp = Form.extend({
     constructor: function SignUp() {
-        LightboxForm.prototype.constructor.apply(this, arguments);
+        Form.prototype.constructor.apply(this, arguments);
     },
 
     render: function () {
         var html = tim('signup');
-        Lightbox.prototype.render.call(this, html);
+        this.elem.html(html);
         return this;
     }
 });

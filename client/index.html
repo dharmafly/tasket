@@ -46,20 +46,19 @@
         </header>
     </div>
 
-    <section class="lightbox">
+    <!--
+
+        TEMPLATES
+        ---------
+    -->
+
+    <script type="text/tim" class="lightbox">
         <div class="lightbox-inner">
             <div class="content"></div>
             <button class="action close">Close Lightbox</button>
         </div>
-    </section>
-    
-    
-    <!--
-    
-        TEMPLATES
-        ---------
-    -->
-        
+    </script>
+
     <script type="text/tim" class="hub">
         <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
         <hgroup>
@@ -396,7 +395,7 @@
       {{links}}<li><a href="{{href}}" title="View {{title}}">{{title}}</a></li>{{/links}}
     </script>
     <!--
-    
+
         SCRIPTS
         -------
     -->

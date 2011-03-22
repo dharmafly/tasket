@@ -1,9 +1,9 @@
 // USER
 var User = Model.extend({    
     type: "user",
-    
+
     required: ["realname"],
-    
+
     defaults: {
         image: null,
         description: null,

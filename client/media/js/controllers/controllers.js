@@ -66,14 +66,9 @@ var TankController = Backbone.Controller.extend({
             })
         });
 
-        form.render().show();
-        form.bind('all', _.bind(function (event) {
-            if (event === 'close' || event === 'success') {
-                window.history.back();
-            }
-            if (event === 'success') {
-                this.addHub(form.model);
-            }
+        app.lightbox.content(form.render().el).show();
+        form.bind('success', _.bind(function (event) {
+            this.addHub(form.model);
         }, this));
     }
 });
@@ -92,17 +87,12 @@ var PageController = Backbone.Controller.extend({
     },
 
     about: function () {
-        lightbox.render(tim('about')).show().bind('close', function () {
-            window.history.back();
-        });
+        app.lightbox.content(tim('about')).show();
     },
 
     login: function () {
         var form = new Login();
-        form.render().show();
-        form.bind('close', function () {
-            window.history.back();
-        });
+        app.lightbox.content(form.render().el).show();
     },
 
     logout: function () {
@@ -116,10 +106,7 @@ var PageController = Backbone.Controller.extend({
             })
         });
 
-        form.render().show();
-        form.bind('close', function () {
-            window.history.back();
-        });
+        app.lightbox.content(form.render().el).show();
     }
 });
 
