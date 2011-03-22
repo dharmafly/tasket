@@ -92,24 +92,28 @@ _.extend(Tasket, Backbone.Events, {
                 }
             };
         
-        if (callback){            
+        if (callback){
             fetchOptions.error = function(){
                 callback(false);
             };
             Tasket.bind("fetchComplete", callback);
         }
-            
+
         hubs.seed = true;
         hubs.fetch(fetchOptions);
-                
+
         return this;
     },
     
-    login: function(username, password, callback){    
-        jQuery.ajax({
+    login: function(username, password, callback) {
+        return jQuery.ajax({
             url: Tasket.endpoint + "login/",
             type: "POST",
-            data: "username=" + username + "&password=" + password,
+            contentType: 'application/json',
+            data: JSON.stringify({
+                username: username,
+                password: password
+            }),
             dataType: "json",
             success: callback
         });

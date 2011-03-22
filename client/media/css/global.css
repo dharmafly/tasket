@@ -407,8 +407,17 @@ form ul,
 	margin-bottom: 0.769em /* 10px */;
 }
 
-.content form .error {
+.content form .error strong {
 	color: #ce0300;
+}
+
+.content form .error input,
+.content form .error textarea,
+.content form input:invalid,
+.content form textarea:invalid  {
+	background-color: rgb(255, 234, 239);
+	border-color: rgb(255, 188, 192);
+	color: rgb(184, 26, 26);
 }
 
 .content form label,

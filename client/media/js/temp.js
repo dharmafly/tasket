@@ -33,25 +33,6 @@ function removeClass(element, klass) {
 
 window.lightbox = new Lightbox();
 
-// Set up the lightboxes.
-(function () {
-    var template, templates = {
-        'signup': '[href="#/sign-up/"]',
-        'login': '.login a',
-        'about': '[href="#/about/"]',
-        'new': '[href$="/new/"]'
-    };
-
-    $.each(templates, function (template_name, selector) {
-        var html = tim(template_name);
-
-        $(selector).click(function (event) {
-            window.lightbox.render(html).show();
-            event.preventDefault();
-        });
-    });
-}());
-
 // Set up the dashbaord detail boxes.
 (function () {
     var details;

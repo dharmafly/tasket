@@ -1,6 +1,6 @@
 // UI SETTINGS
 
-var app = {
+var app = _.extend({
     useCsrfToken: false,
     useSessionId: true,
     authtoken: null,
@@ -9,7 +9,43 @@ var app = {
     currentUser: null,
     notification: new Notification(),
     tankController: new TankController(),
-    
+    pageController: new PageController(),
+
+    // init() accepts jQuery deferred objects as returned by $.ajax() or
+    // created manually using new jQuery.Deferred(). These objects are
+    // are queued up. When the method is called with no arguments it waits
+    // until all deferreds are resolved and triggers the "success" event.
+    //
+    // An all init functions should be passed to this method then it should
+    // be called with no arguments to kickstart the app. Any dependancies can
+    // listen for the "success" and "error" events.
+    init: (function () {
+        var callbacks = [];
+
+        return function (deferred) {
+            if (callbacks && deferred) {
+                // Push the callbacks into our queue.
+                callbacks.push(deferred);
+            }
+            else if (callbacks === null) {
+                throw "Cannot add more callbacks. init() has already been run";
+            }
+            else {
+                // Kick off init(). Trigger "success" if all deferreds return
+                // successfully. Else trigger an "error" event.
+                jQuery.when.apply(null, callbacks).then(
+                    function () {
+                        app.trigger('ready');
+                    },
+                    function () {
+                        app.trigger('error');
+                    }
+                );
+                callbacks = null;
+            }
+        };
+    })(),
+
     getCookie: function(name){
         var docCookie = window.document.cookie,
             cookieValue, cookies, cookie, i;
@@ -71,4 +107,5 @@ var app = {
             }
         });
     }
-};
+}, Backbone.Events);
+
