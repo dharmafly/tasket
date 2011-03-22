@@ -49,7 +49,7 @@ getScript(
     
     [
         "core/api.js",
-        "views/app.js"
+        "app.js"
     ],
     
     "lang/en.js",
@@ -66,3 +66,4 @@ getScript(
     // Options (path is relative to the calling HTML file)
     {path:"media/js/"}
 );
+
