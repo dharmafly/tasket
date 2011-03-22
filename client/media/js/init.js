@@ -4,18 +4,20 @@ var dummyCode = false,
     debugUsername = "TestUser",
     debugPassword = "12345",
     notification = app.notification,
-    lang = Tasket.lang.en,
-    dashboard = new Dashboard();
+    lang = Tasket.lang.en;
 
 $('body')
-  .append(dashboard.el)
+  .append(app.dashboard.el)
   .append(app.lightbox.render().hide().el);
 
 // Return to the previous route when the lightbox closes.
-app.lightbox.bind('close', function () {
+app.lightbox.bind('hide', function () {
     window.history.back();
 });
 
+app.dashboard.detail.bind('hide', function () {
+    window.history.back();
+});
 /////
 
 app.setupAuthentication();
@@ -40,7 +42,7 @@ if (!app.authtoken){
         app.updateCurrentUser(user);
 
         // Update the dashboard with the current user.
-        dashboard.setUser(user).render();
+        app.dashboard.setUser(user).render();
 
         // Fetch the users tasks and hubs. Then once they've been added to the cache
         // update the Dashboard with the details.
@@ -50,12 +52,12 @@ if (!app.authtoken){
         );
         Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
             // Update the dashboard.
-            dashboard.updateUserTasks().updateManagedTasks();
+            app.dashboard.updateUserTasks().updateManagedTasks();
         });
 
         hubs = app.currentUser.get('hubs').owned;
         Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
-            dashboard.updateUserHubs();
+            app.dashboard.updateUserHubs();
         });
     }));
 

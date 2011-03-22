@@ -9,8 +9,10 @@ var app = _.extend({
     currentUser: null,
     notification:   new Notification(),
     lightbox:       new Lightbox(),
+    dashboard:      new Dashboard(),
     tankController: new TankController(),
     pageController: new PageController(),
+    dashController: new DashboardController(),
 
     // init() accepts jQuery deferred objects as returned by $.ajax() or
     // created manually using new jQuery.Deferred(). These objects are
