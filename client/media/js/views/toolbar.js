@@ -59,10 +59,18 @@ app.setupToolbar = function () {
             method(user);
         });
 
-        // Watch the user model for changes to tasks. When they occur update
-        // the tasks box.
+        // Watch the user model for changes. When they occur update
+        // the appropraite areas.
         if (user) {
-            user.bind('change:tasks', actions.updateTasks);
+            user.bind('change', function () {
+                if (user.hasChanged('tasks')) {
+                    actions.updateTasks(user);
+                }
+
+                if (user.hasChanged('realname') || user.hasChanged('image')) {
+                    actions.updateUser(user);
+                }
+            });
         }
     });
 };
