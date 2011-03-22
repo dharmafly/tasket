@@ -48,7 +48,7 @@ getScript(
     ],
     
     [
-        "core/api.js",
+        "core/tasket.js",
         "app.js"
     ],
     
