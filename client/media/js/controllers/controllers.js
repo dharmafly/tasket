@@ -123,6 +123,11 @@ var DashboardController = Backbone.Controller.extend({
 
     showCurrentUserTasks: function () {
         var user = app.currentUser;
+    },
+
+    showCurrentUserHubs: function () {
+        var user = app.currentUser;
+        app.dashboard.detail.title('My Projects').show();
     }
 });
 

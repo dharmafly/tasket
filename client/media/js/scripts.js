@@ -39,6 +39,7 @@ getScript(
         "views/lightbox.js",
         "views/dashboard.js",
         "views/dashboard-detail.js",
+        "views/dashboard-detail-hub.js",
         "views/form.js",
         "views/signup.js",
         "views/login.js",

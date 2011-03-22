@@ -1,0 +1,4 @@
+var DashboardDetailHub = View.extend({
+
+});
+
