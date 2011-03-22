@@ -46,6 +46,10 @@ var app = _.extend({
         };
     })(),
 
+    updateCurrentUser: function (user) {
+        return app.trigger('change:currentUser', user);
+    },
+
     getCookie: function(name){
         var docCookie = window.document.cookie,
             cookieValue, cookies, cookie, i;

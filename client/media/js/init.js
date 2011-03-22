@@ -25,6 +25,9 @@ if (!app.authtoken){
         app.authtoken = data.sessionid;
         user = app.currentUser = new User(data.user);
 
+        // Fire an event to notify listeners the current user has cha
+        app.updateCurrentUser(user);
+
         // Update the dashboard with the current user.
         dashboard.model = user;
         dashboard.render();
