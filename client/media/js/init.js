@@ -25,6 +25,12 @@ if (!app.authtoken){
         app.authtoken = data.sessionid;
         user = app.currentUser = new User(data.user);
 
+        user.set({statistics: {
+            claimed: 2,
+            done: 4,
+            approved: 12
+        }});
+
         // Fire an event to notify listeners the current user has changed.
         app.updateCurrentUser(user);
 
