@@ -14,7 +14,21 @@ var Model = Backbone.Model.extend({
     report: function(msg){
         return "Tasket" + (this.type ? " " + this.type : "") + ": " + msg + " : " + (this.id || this.cid);
     },
-    
+
+    // Sets attributes on a model.
+    set: function (attributes, options) {
+        // Flatten the attributes into a object with only one level of properties.
+        attributes = jQuery.flatten(attributes);
+        return Backbone.Model.prototype.set.call(this, attributes, options);
+    },
+
+    // Returns the Model as a plain JavaScript object.
+    toJSON: function () {
+        // Expand the flattened attributes before returning.
+        var attributes = Backbone.Model.prototype.toJSON.apply(this, arguments);
+        return jQuery.expand(attributes);
+    },
+
     validate: function(attrs) {
         var missing, report;
     
