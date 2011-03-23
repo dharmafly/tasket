@@ -13,6 +13,9 @@ var TankController = Backbone.Controller.extend({
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
+
+        // Watch for new hubs and add them to the tank.
+        Tasket.hubs.bind('add', _.bind(this.addHub, this));
     },
 
     getHubView: function(id){
@@ -28,6 +31,10 @@ var TankController = Backbone.Controller.extend({
 
 
     addHub: function(hub){
+        if (this.getHubView(hub.id)) {
+            return;
+        }
+
         var hubView = this.hubViews[hub.cid] = new HubView({
             model: hub,
 
@@ -69,6 +76,7 @@ var TankController = Backbone.Controller.extend({
         app.lightbox.content(form.render().el).show();
         form.bind('success', _.bind(function (event) {
             this.addHub(form.model);
+            app.lightbox.hide();
         }, this));
     }
 });
