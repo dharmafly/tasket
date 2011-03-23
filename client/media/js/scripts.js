@@ -23,6 +23,7 @@ getScript(
     ],
 
     "dependencies/backbone.js",
+    "dependencies/flatten.js",
     "backbone-stack.js",
     "core/core.js",
     "models/models.js",
