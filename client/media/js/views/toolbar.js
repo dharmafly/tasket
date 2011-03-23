@@ -34,13 +34,15 @@ app.setupToolbar = function () {
         // Update the tasks status bar in the toolbar or hide it if there
         // is no current user.
         updateTasks: function (user) {
-            var taskLists;
-
             if (user) {
                 taskLists = user.get('tasks');
                 tasks.show();
-                tasks.find('.pending').text(taskLists.claimed.length);
-                tasks.find('.done').text(taskLists.done.length + taskLists.verified.length);
+                tasks.find('.pending').text(
+                    user.get('tasks.claimed').length
+                );
+                tasks.find('.done').text(
+                    user.get('tasks.done').length + user.get('tasks.verified').length
+                );
             } else {
                 tasks.hide();
             }
@@ -63,11 +65,16 @@ app.setupToolbar = function () {
         // the appropraite areas.
         if (user) {
             user.bind('change', function () {
-                if (user.hasChanged('tasks')) {
+                var taskKeys = ['tasks.claimed', 'tasks.verified', 'tasks.done'],
+                    userKeys = ['realname', 'image'],
+                    changedAttr = user.changedAttributes(),
+                    changedKeys = _.keys(changedAttr);
+
+                if (_.intersect(changedAttr, taskKeys).length) {
                     actions.updateTasks(user);
                 }
 
-                if (user.hasChanged('realname') || user.hasChanged('image')) {
+                if (_.intersect(changedAttr, userKeys)) {
                     actions.updateUser(user);
                 }
             });

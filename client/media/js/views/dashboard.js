@@ -93,19 +93,19 @@ var Dashboard = View.extend({
 
     // Updates the "Tasks I Manage" box.
     updateManagedTasks: function () {
-        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks').owned);
+        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks.owned'));
         return this.updateList('.managed-tasks ul', tasks);
     },
 
     // Updates the "My Tasks" box.
     updateUserTasks: function () {
-        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks').claimed);
+        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks.claimed'));
         return this.updateList('.my-tasks ul', tasks);
     },
 
     // Updates the "My Projects" box.
     updateUserHubs: function () {
-        var hubs = Tasket.hubs.filterByIds(this.model.get('hubs').owned);
+        var hubs = Tasket.hubs.filterByIds(this.model.get('hubs.owned'));
         return this.updateList('.my-projects ul', hubs);
     },
 

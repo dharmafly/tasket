@@ -43,15 +43,15 @@ if (!app.authtoken){
         // Fetch the users tasks and hubs. Then once they've been added to the cache
         // update the Dashboard with the details.
         tasks = _.flatten(
-            app.currentUser.get('tasks').owned,
-            app.currentUser.get('tasks').claimed
+            app.currentUser.get('tasks.owned'),
+            app.currentUser.get('tasks.claimed')
         );
         Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
             // Update the dashboard.
             app.dashboard.updateUserTasks().updateManagedTasks();
         });
 
-        hubs = app.currentUser.get('hubs').owned;
+        hubs = app.currentUser.get('hubs.owned');
         Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
             app.dashboard.updateUserHubs();
         });
