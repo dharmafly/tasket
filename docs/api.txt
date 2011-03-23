@@ -1,91 +1,100 @@
-Tasket API
+# Tasket API #
 
 Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hubs/3/tasks?page=2&per_page=10
 
 
-Hubs
-----
+## Hubs ##
 
-/hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
-/hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma delimited list of ids)
-/hubs/                  # POST:  Creates a hub (responds with new id & createdTime eg.
-                                     {"id": "hub_id", "createdTime": 1298567873})
-/hubs/:id               # GET:   Gets a single hub for :id
-/hubs/:id               # PUT:   Updates a single hub for :id
-/hubs/:id               # DELETE Deletes a single hub for :id
-/hubs/:id/tasks         # GET    Gets array of all unverified tasks for this hub
+    /hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
+    /hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma delimited list of ids)
+    /hubs/                  # POST:  Creates a hub (responds with new id & createdTime eg.
+                                         {"id": "hub_id", "createdTime": 1298567873})
+    /hubs/:id               # GET:   Gets a single hub for :id
+    /hubs/:id               # PUT:   Updates a single hub for :id
+    /hubs/:id               # DELETE Deletes a single hub for :id
+    /hubs/:id/tasks         # GET    Gets array of all unverified tasks for this hub
 
-Hub Model Data
---------------
+### Hub Model Data ###
 
-{
-    "id": "hub_id",           *required (assigned by server on creation)
-    "title": null,            *required
-    "description": null,
-    "image": null,
-    "owner": "user_id"        *required
-    "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */],
-    "createdTime": 1298567873
-}
+    {
+        "id": "hub_id",           *required (assigned by server on creation)
+        "title": null,            *required
+        "description": null,
+        "image": null,
+        "owner": "user_id"        *required
+        "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */],
+        "createdTime": 1298567873
+    }
 
-Tasks
------
+## Tasks ##
 
-/tasks/                  # GET:   Gets all unverified tasks
-/tasks/?ids=:ids         # GET:   Gets array of tasks matching :ids (comma delimited list of ids)
-/tasks/                  # POST:  Creates a task (responds with new id eg. {"id": "task_id"})
-/tasks/:id               # GET:   Gets a single task for :id
-/tasks/:id               # PUT:   Updates a single task for :id
-/tasks/:id               # DELETE Deletes a single task for :id
+    /tasks/                  # GET:   Gets all unverified tasks
+    /tasks/?ids=:ids         # GET:   Gets array of tasks matching :ids (comma delimited list of ids)
+    /tasks/                  # POST:  Creates a task (responds with new id eg. {"id": "task_id"})
+    /tasks/:id               # GET:   Gets a single task for :id
+    /tasks/:id               # PUT:   Updates a single task for :id
+    /tasks/:id               # DELETE Deletes a single task for :id
 
-{
-    "id": "task_id",          *required (assigned by server on creation)
-    "description": null,
-    "image": null,
-    "estimate": null,
-    "state": "new",
-    "hub": "hub_id"           *required
-    "owner": "user_id",       *required
-    "createdTime": 1298567873
-    "claimedBy": "user_id",
-    "claimedTime": 1231214214,
-    "doneTime": 1231214214,
-    "verifiedBy": "user_id",
-    "verifiedTime": 1231214214
-}
+### Task Model Data ###
 
-### Task State Constants
+    {
+        "id": "task_id",          *required (assigned by server on creation)
+        "description": null,
+        "image": null,
+        "estimate": null,
+        "state": "new",
+        "hub": "hub_id"           *required
+        "owner": "user_id",       *required
+        "createdTime": 1298567873
+        "claimedBy": "user_id",
+        "claimedTime": 1231214214,
+        "doneTime": 1231214214,
+        "verifiedBy": "user_id",
+        "verifiedTime": 1231214214
+    }
 
-NEW     : "new",
-CLAIMED : "claimed",
-DONE    : "done",
-VERIFIED: "verified"
+### Task State Constants ###
 
-Users
------
+NEW     : "new",  
+CLAIMED : "claimed",  
+DONE    : "done",  
+VERIFIED: "verified"  
 
-/users/               # GET:   Gets array of all users
-/users/?ids=:ids      # GET:   Gets array of users matching :ids (comma delimited list of ids)
-/users/               # POST:  Creates a user (responds with new id eg. {"id": "user_id"})
-/users/:id            # GET:   Gets a single user for :id
-/users/:id            # PUT:   Updates a single user for :id
-/users/:id            # DELETE Deletes a single user for :id
+## Users ##
 
-{
-    "id": "user_id",      *required (assigned by server on creation)
-    "realname": null,     *required
-    "description": null,
-    "location": null,
-    "image": null,
-    "admin": false,
-    "hubs": {
-        "owned": [/* hubs created by this user   */]
-    },
-    "tasks": {
-        "owned": [/* tasks created by this user  */]
-        "claimed": [/* tasks claimed by this user  */]
-        "done": [/* tasks done by this user     */]
-        "verified": [/* tasks verified by this user */]
-    },
-    "createdTime": 1298567873
-}
+     /users/               # GET:   Gets array of all users
+     /users/?ids=:ids      # GET:   Gets array of users matching :ids (comma delimited list of ids)
+     /users/               # POST:  Creates a user (responds with new id eg. {"id": "user_id"})
+     /users/:id            # GET:   Gets a single user for :id
+     /users/:id            # PUT:   Updates a single user for :id
+     /users/:id            # DELETE Deletes a single user for :id
+
+### User Model Data ###
+
+    {
+        "id": "user_id",      *required (assigned by server on creation)
+        "realname": null,     *required
+        "description": null,
+        "location": null,
+        "image": null,
+        "admin": false,
+        "hubs": {
+            "owned": [/* hubs created by this user   */]
+        },
+        "tasks": {
+            "owned": [/* tasks created by this user  */]
+            "claimed": [/* tasks claimed by this user  */]
+            "done": [/* tasks done by this user     */]
+            "verified": [/* tasks verified by this user */]
+        },
+        "createdTime": 1298567873
+    }
+
+
+## Images ##
+
+[image path] here is the value of the 'image' attribute on the models above.
+
+    /media/[image path]           #GET original uploaded image
+    /thumb/NxN/[image path]       #GET thumbnail constrained to N
+    /thumb/NxN/[image path]?crop  #GET thumbnail constrained to N and cropped form the centre

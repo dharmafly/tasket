@@ -279,7 +279,7 @@ def thumbs(request, size, path):
     im_obj = open("%s/%s" % (settings.MEDIA_ROOT, path))
 
     crop = None
-    if 'square' in request.GET:
+    if 'crop' in request.GET:
         crop = 'center'
     im = get_thumbnail(im_obj, size, quality=99, crop=crop)
     
