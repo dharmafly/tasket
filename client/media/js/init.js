@@ -12,11 +12,11 @@ $('body')
 
 // Return to the previous route when the lightbox closes.
 app.lightbox.bind('hide', function () {
-    window.history.back();
+    //window.history.back();
 });
 
 app.dashboard.detail.bind('hide', function () {
-    window.history.back();
+    //window.history.back();
 });
 /////
 

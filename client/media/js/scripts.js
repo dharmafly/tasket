@@ -31,7 +31,7 @@ getScript(
         "models/hub.js",
         "models/task.js",
         "models/user.js",
-        
+
         "views/hub-view.js",
         "views/task-view.js",
         "views/user-view.js",
@@ -39,15 +39,18 @@ getScript(
         "views/lightbox.js",
         "views/dashboard.js",
         "views/dashboard-detail.js",
-        "views/dashboard-detail-hub.js",
         "views/form.js",
         "views/signup.js",
         "views/login.js",
-        "views/task-form.js",
-        "views/hub-form.js",
         "controllers/controllers.js"
     ],
-    
+
+    [
+        "views/dashboard-detail-hub.js",
+        "views/task-form.js",
+        "views/hub-form.js",
+    ],
+
     [
         "core/tasket.js",
         "app.js"
