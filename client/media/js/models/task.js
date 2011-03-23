@@ -1,9 +1,17 @@
 // TASK STATES
+/*
 var TaskStates = {
     NEW     : "new",
     CLAIMED : "claimed",
     DONE    : "done",
     VERIFIED: "verified"
+};
+*/
+var TaskStates = {
+    NEW     : 0,
+    CLAIMED : 1,
+    DONE    : 2,
+    VERIFIED: 3
 };
 
 // TASK
@@ -114,6 +122,10 @@ var Task = Model.extend({
         }
         
         return this;
+    },
+    
+    isOpen: function(){
+        return this.state() === TaskStates.VERIFIED;
     },
     
     initialize: function(){

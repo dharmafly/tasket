@@ -15,7 +15,12 @@ var TankController = Backbone.Controller.extend({
         }
 
         // Watch for new hubs and add them to the tank.
-        Tasket.hubs.bind('add', _.bind(this.addHub, this));
+        Tasket.hubs.bind('add', _.bind(function(hub){
+            // If the hub isn't yet shown in the tank, and it still has open tasks
+            if (!this.getHubView(hub.id) && hub.isOpen()){
+                this.addHub(hub);
+            }
+        }, this));
     },
 
     getHubView: function(id){
