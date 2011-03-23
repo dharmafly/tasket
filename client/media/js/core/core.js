@@ -13,6 +13,7 @@ function truncate(str, charLimit, continuationStr){
             .replace(/\W?\s\S*$/m, "") +
             continuationStr;
     }
+    return str;
 }
 
 function randomInt(length){
