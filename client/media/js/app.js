@@ -53,6 +53,15 @@ var app = _.extend({
         return app.trigger('change:currentUser', user);
     },
 
+    // Update the location bar with the previous hash.
+    back: function(){
+        var prev = Backbone.history.getPrevious();
+        if (!prev) {
+            prev = '/';
+        }
+        Backbone.history.saveLocation(prev);
+    },
+
     getCookie: function(name){
         var docCookie = window.document.cookie,
             cookieValue, cookies, cookie, i;

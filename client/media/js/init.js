@@ -10,14 +10,6 @@ $('body')
   .append(app.dashboard.el)
   .append(app.lightbox.render().hide().el);
 
-app.back = function(){
-    var prev = Backbone.history.getPrevious();
-    if (!prev) {
-        prev = '/';
-    }
-    Backbone.history.saveLocation(prev);
-}
-
 // Return to the previous route when the lightbox closes.
 app.lightbox.bind('hide', app.back);
 app.dashboard.detail.bind('hide', app.back);
