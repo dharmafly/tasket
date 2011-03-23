@@ -22,10 +22,10 @@ var Task = Model.extend({
     
     required: ["owner", "hub"],
     
-    defaults: { // TODO: sending null values to and from server is a waste of bandwidth
-        description: null,
-        image: null,
-        estimate: null,
+    defaults: { // TODO: sending empty values to and from server is a waste of bandwidth
+        description: "",
+        image: "",
+        estimate: "",
         state: TaskStates.NEW
     },
     

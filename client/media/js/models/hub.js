@@ -5,9 +5,9 @@ var Hub = Model.extend({
     required: ["owner"],
     
     defaults: {
-        title: '',
-        description: '',
-        image: ''
+        title: "",
+        description: "",
+        image: ""
     },
     
     // TODO: cache a flag for this value, and update each time a task is opened or closed

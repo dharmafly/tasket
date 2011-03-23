@@ -26,22 +26,7 @@ var TaskView = View.extend({
             userModel = Tasket.users.get(data.owner);
             data.owner = userModel.attributes;
             data.owner.url = userModel.url();
-            
-            // TODO: temp
-            _(data.owner).each(function(value, key){
-                if (data.owner[key] === null){
-                    data.owner[key] = "";
-                }
-            });
-        }
-        
-        // TODO: make more elegant in Tim? Or use blank strings / undefined as default in models?
-        _(data).each(function(value, key){
-            if (data[key] === null){
-                data[key] = "";
-            }
-        });
-        
+        }        
         
         //O(data.owner); // TODO: change user.realname -> user.name?
         // TODO: provide url for user

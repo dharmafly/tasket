@@ -24,12 +24,13 @@ var HubView = View.extend({
     onclick: function(){
         var isSelected = this.isSelected(),
             tasksVisible = this.tasksVisible();
-    
+
         if (isSelected){
             this.toggleTasks();
         }
         else {
             this.updateLocation();
+            // this changes the location hash, which causes the controller to trigger the route "displayHub"
         }
     },
     
@@ -62,14 +63,14 @@ var HubView = View.extend({
     
     select: function(){
         this.set("selected", true);
-        this.trigger("select");
+        this.trigger("select", this);
         this.elem.addClass("select");
         return this;
     },
     
     deselect: function(){
         this.set("selected", false);
-        this.trigger("deselect");
+        this.trigger("deselect", this);
         this.elem.removeClass("select");
         return this;
     },
