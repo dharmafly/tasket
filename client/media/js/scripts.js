@@ -40,17 +40,20 @@ getScript(
         "views/notification.js",
         "views/lightbox.js",
         "views/dashboard.js",
-        "views/dashboard-detail.js",
         "views/form.js",
-        "views/signup.js",
-        "views/login.js",
         "controllers/controllers.js"
     ],
 
     [
-        "views/dashboard-detail-hub.js",
+        "views/login.js",
+        "views/signup.js",
         "views/task-form.js",
         "views/hub-form.js",
+        "views/dashboard-detail.js"
+    ],
+
+    [
+        "views/dashboard-detail-hub.js"
     ],
 
     [
