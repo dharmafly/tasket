@@ -44,7 +44,7 @@ var Form = View.extend({
         this.$('.error strong').remove();
     },
     _onSuccess: function () {
-        this.hide().trigger('success');
+        this.trigger('success');
     },
     _onError: function (model, xhr) {
         var errors = jQuery.parseJSON(xhr.responseText);
