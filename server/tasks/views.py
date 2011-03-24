@@ -141,7 +141,10 @@ class TasksView(PutView):
             ids = request.GET['ids']
             ids = [i.strip() for i in ids.split(',') if i]
             tasks = tasks.filter(pk__in=ids)
-            
+        
+        if 'state' in request.GET:
+            tasks = tasks.filter(state=request.GET['state'])
+        
         self.res.write(tasks.as_json())
         return self.res
         

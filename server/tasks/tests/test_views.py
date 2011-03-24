@@ -114,6 +114,11 @@ class ViewTests(TestCase):
         response = self.client.get('/tasks/?ids=4,5')
         json_data = json.loads(response.content)
         self.assertEqual(len(json_data), 2)
+
+    def test_task_get_by_state(self):
+        response = self.client.get('/tasks/?state=done')
+        json_data = json.loads(response.content)
+        self.assertEqual(len(json_data), 1)
     
     def test_task_create(self):
         self.client.login(username='TestUser', password='12345')

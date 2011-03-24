@@ -215,12 +215,19 @@ class Profile(models.Model):
             "hubs": {
                 "owned": [str(h.pk) for h in self.owned_hubs.all()],
                 },
-            "tasks": {
-                "owned": [str(t.pk) for t in self.tasks_owned.all()],
-                "claimed": [str(t.pk) for t in self.tasks_claimed.all()],
-                "done": [str(t.pk) for t in self.tasks_claimed.filter(verifiedBy__isnull=False)],
-                "verified": [str(t.pk) for t in self.tasks_verified.all()],
-            },            
+            "tasks" : {
+                "owned": {
+                    "new": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_NEW)],
+                    "claimed": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_CLAIMED)],
+                    "done": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_DONE)],
+                    "verified": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_VERIFIED)],
+                },
+                "claimed": {
+                    "claimed": [str(t.pk) for t in self.tasks_claimed.filter(state=Task.STATE_CLAIMED)],
+                    "done": [str(t.pk) for t in self.tasks_claimed.filter(state=Task.STATE_DONE)],
+                    "verified": [str(t.pk) for t in self.tasks_claimed.filter(state=Task.STATE_VERIFIED)],
+                },
+            },
             "createdTime": self.created_timestamp(),
         }
         
@@ -230,7 +237,6 @@ class Profile(models.Model):
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
-        
         return obj_dict
         
     def as_json(self):
