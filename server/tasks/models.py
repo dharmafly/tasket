@@ -111,6 +111,9 @@ class Task(models.Model):
         if self.verifiedBy:
             obj_dict["verifiedBy"] = str(self.verifiedBy.user.pk)
         
+        for k,v in obj_dict.items():
+            if v == None:
+                obj_dict[k] = ""
         return obj_dict
 
     def as_json(self):
@@ -171,6 +174,10 @@ class Hub(models.Model):
         
         if self.image:
             obj_dict["image"] = self.image.url
+
+        for k,v in obj_dict.items():
+            if v == None:
+                obj_dict[k] = ""
         
         return obj_dict
 
@@ -219,6 +226,10 @@ class Profile(models.Model):
         
         if self.image:
             obj_dict["image"] = self.image.url
+
+        for k,v in obj_dict.items():
+            if v == None:
+                obj_dict[k] = ""
         
         return obj_dict
         
