@@ -106,8 +106,15 @@ class RegisterView(PutView):
         self.res = HttpResponse(content_type='application/javascript')
     
 
-
-
-
-
-
+def handle404(request):
+    res = HttpResponse()
+    res.write(json.dumps(
+            {
+            'error' : "404 Page not found"
+            }))
+    res.status_code=404
+    return res
+    
+    
+    
+    

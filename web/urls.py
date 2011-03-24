@@ -30,3 +30,5 @@ if settings.DEBUG:
       {'document_root': settings.MEDIA_ROOT}),
 
 )
+
+handler404 = 'frontend.views.handle404'

@@ -3,7 +3,7 @@ import sys
 sys.path.append('../server')
 from global_settings import *
 
-DEBUG = True
+
 
 # Epio hack – local_settings.py wont exist on epio
 try:
@@ -11,3 +11,4 @@ try:
 except ImportError:
     pass
 
+DEBUG = False
