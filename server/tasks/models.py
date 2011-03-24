@@ -65,6 +65,9 @@ class Task(models.Model):
     claimedBy = models.ForeignKey('Profile', related_name='tasks_claimed', null=True, blank=True)
     verifiedBy = models.ForeignKey('Profile', related_name='tasks_verified', null=True, blank=True)
     createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    claimedTime = models.DateTimeField(blank=True, null=True)
+    doneTime = models.DateTimeField(blank=True, null=True)
+    verifiedTime = models.DateTimeField(blank=True, null=True)
     hub = models.ForeignKey('Hub')
 
     objects = managers.TaskManager()
@@ -73,8 +76,9 @@ class Task(models.Model):
     def __unicode__(self):
         return self.description[:10]
     
-    def created_timestamp(self):
-        return int(time.mktime(self.createdTime.timetuple()))
+    def format_timestamp(self, t):
+        if t:
+            return int(time.mktime(t.timetuple()))
     
 
     def as_dict(self):
@@ -92,7 +96,10 @@ class Task(models.Model):
             "owner" : str(self.owner.user.pk),
             "claimedBy" : None,
             "verifiedBy" : None,
-            "createdTime" : self.created_timestamp(),
+            "createdTime" : self.format_timestamp(self.createdTime),
+            "claimedTime" : self.format_timestamp(self.claimedTime),
+            "doneTime" : self.format_timestamp(self.doneTime),
+            "verifiedTime" : self.format_timestamp(self.verifiedTime),
             "hub" : str(self.hub.pk),
         }
         
@@ -176,7 +183,7 @@ class Hub(models.Model):
 
 
 class Profile(models.Model):
-    user = models.OneToOneField(User)
+    user = models.OneToOneField(User, primary_key=True)
     realname = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
     location = models.CharField(blank=True, max_length=255)

@@ -43,7 +43,7 @@ class ModelTest(TestCase):
                 
             )
         H.save()
-        # H.image.save('Puppy', ContentFile(img.read()))
+        H.image.save('Puppy', ContentFile(img.read()))
         
         self.H = H
         
@@ -73,11 +73,6 @@ class ModelTest(TestCase):
     def test_verified(self):
         H = Hub.unverified.all()
         self.assertEqual(len(H), 2)
-
-    
-    def test_html_fields(self):
-        pass
-
 
 
 

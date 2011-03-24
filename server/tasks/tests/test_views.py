@@ -131,6 +131,22 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("Lorem"), True)
 
+    def test_task_create_with_html(self):
+        self.client.login(username='TestUser', password='12345')
+        hub = Hub.objects.get(pk=2)
+        response = self.client.post(
+            '/tasks/',
+            json.dumps({
+                "description" : "<b>Lorem</b> ipsum dolor sit amet, consectetur",
+                "estimate" : 60*10,
+                "hub" : hub.pk,
+            }),
+            content_type='application/json',
+            )
+
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['description'].startswith("&lt;b&gt;Lorem&lt;/b&gt;"), True)
+
     def test_task_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(

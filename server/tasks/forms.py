@@ -1,3 +1,5 @@
+import datetime
+
 import django.forms
 from django import forms
 from django.contrib.auth.models import User
@@ -19,67 +21,89 @@ class TaskForm(forms.ModelForm):
         model = Task
         exclude = ('owner', 'createdTime')
 
-    def clean_state(self):
+    def state_logic(self):
         """
         State testing
-        
-        
-        TODO: find a better way of doing this.
         """
+        cleaned_data = dict(self.cleaned_data)
+        
         if self.request.user.profile.admin:
             return new_state
         new_state = self.cleaned_data.get('state', 0)
         old_state = self.instance.state
+        claimedBy = self.request.user
 
-        def state_error(message):
-            self._errors['state'] = self.error_class([message])
-            STATE_NEW       = 0
-            STATE_CLAIMED   = 1
-            STATE_DONE      = 2
-            STATE_VERIFIED  = 3
-            
-
-        # This is a 'new' task being updated somehow 
-        if old_state == Task.STATE_NEW:
-            if new_state == Task.STATE_CLAIMED:
-                # Someone is claiming the task.
-                # This is always fine
-                pass
-            if new_state in range(2,3):
-                # Someone is compleating a task that has not been claimed.
-                # This is never fine
-                state_error("You cannot complete or verify a new task before it's claimed")
-            if old_state == Task.STATE_CLAIMED:
-                if new_state == STATE_NEW:
-                    # Reverting to new.
-                    # This is fine only if performed by the claimant
-                    if self.request.user.profile != self.self.cleaned_data['claimedBy']:
-                        state_error("You can only change your own tasks")
-            # if old_state == Task.STATE_DONE:
-            #     if new_state == Task.STATE_NEW:
-            if old_state == Task.STATE_DONE:
-                if new_state == Task.STATE_VERIFIED:
-                    # Only the Task Owner can verify a task
-                    if self.cleaned_data['owner'] != self.request.user.profile:
-                        state_error("You can only verify tasks you own.")
         
-        # Everything's OK
-        return new_state
+        def state_error(message):
+            self._errors['error'] = self.error_class([message])
+        
+        def reset(new_state):
+            """
+            Logic for 'clearing down' times and users.
+            
+            For example, when a task goes from claimed to new (because someone 
+            didn't mark the task finished in time, or they dropped it) the 
+            claimedTime and claimedBy fields (and all other time/user fields 
+            apart from createdTime/owner) needs to be set to None.
+            """
+            if new_state == Task.STATE_NEW:
+                # Reset all times
+                self.instance.claimedTime = None
+                self.instance.doneTime = None
+                self.instance.verifiedTime = None
 
-    def clean_claimedBy(self):
-        # Make sure someone can't claim someone elses claimed task
-        if self.cleaned_data['claimedBy'] != self.instance.claimedBy:
-            message = "You can only change your own tasks."
-            self._errors['claimedBy'] = self.error_class([message])
-        return self.cleaned_data['claimedBy']
+                self.instance.claimedBy = None
+                self.instance.verifiedBy = None
+                
+            if new_state == Task.STATE_CLAIMED:
+                # Reset all times
+                self.instance.doneTime = None
+                self.instance.verifiedTime = None
+                self.instance.verifiedBy = None
+
+            if new_state == Task.STATE_DONE:
+                # Reset all times
+                self.instance.verifiedTime = None
+        reset(new_state)
+
+        # This is a 'new' task being updated somehow
+        if new_state == Task.STATE_CLAIMED:
+            if old_state == Task.STATE_NEW:
+                cleaned_data['claimedBy'] = self.request.user.profile
+                cleaned_data['claimedTime'] = datetime.datetime.now()
+            if old_state == Task.STATE_CLAIMED:
+                if self.instance.claimedBy != self.request.user.profile:
+                    state_error("This Task has already been claimed")
+                
+
+        if new_state == Task.STATE_DONE:
+            if old_state == Task.STATE_NEW:
+                state_error("Only claimed tasks can be 'done'")
+            if old_state == Task.STATE_CLAIMED:
+                if self.request.user.profile != self.instance.claimedBy:
+                    state_error("You cannot mark this task as done.")
+                else:
+                    cleaned_data['doneTime'] = datetime.datetime.now()
+
+        if new_state == Task.STATE_VERIFIED:
+            if old_state in [Task.STATE_NEW, Task.STATE_CLAIMED]:
+                state_error("New and claimed tasks can't be verified")
+            else:
+                cleaned_data['verifiedBy'] = self.request.user.profile
+                cleaned_data['verifiedTime'] = datetime.datetime.now()
+
+        return cleaned_data
 
     def clean(self):
+        super(TaskForm, self).clean()
+
         cleaned_data = dict(self.cleaned_data)
         
         for k,v in cleaned_data.items():
             if isinstance(v, unicode):
-                # print escape(v)
                 cleaned_data[k] = escape(v)
+        self.cleaned_data = cleaned_data
+        cleaned_data = self.state_logic()
         return cleaned_data
 
 class HubForm(forms.ModelForm):
