@@ -6,7 +6,7 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 ## Hubs ##
 
     /hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
-    /hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma delimited list of ids)
+    /hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma-delimited list of ids)
     /hubs/                  # POST:  Creates a hub (responds with new id & createdTime eg.
                                          {"id": "hub_id", "createdTime": 1298567873})
     /hubs/:id               # GET:   Gets a single hub for :id
@@ -17,11 +17,11 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 ### Hub Model Data ###
 
     {
-        "id": "hub_id",           *required (assigned by server on creation)
-        "title": null,            *required
-        "description": null,
-        "image": null,
-        "owner": "user_id"        *required
+        "id": "HUB_ID",           *required (assigned by server on creation)
+        "title": "TITLE",         *required
+        "owner": "USER_ID",       *required
+        "description": "",
+        "image": "",
         "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */],
         "createdTime": 1298567873
     }
@@ -29,7 +29,9 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 ## Tasks ##
 
     /tasks/                  # GET:   Gets all unverified tasks
-    /tasks/?ids=:ids         # GET:   Gets array of tasks matching :ids (comma delimited list of ids)
+    /tasks/?ids=:ids         # GET:   Gets array of tasks matching :ids (comma-delimited list of ids)
+    /tasks/?state=:state     # GET:   Gets array of tasks that are in the state :state, or a comma-delimited list of states
+                                          (possible states: "new", "claimed", "done", "verified")
     /tasks/                  # POST:  Creates a task (responds with new id eg. {"id": "task_id"})
     /tasks/:id               # GET:   Gets a single task for :id
     /tasks/:id               # PUT:   Updates a single task for :id
@@ -38,13 +40,13 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 ### Task Model Data ###
 
     {
-        "id": "task_id",          *required (assigned by server on creation)
-        "description": null,
-        "image": null,
-        "estimate": null,
+        "id": "TASK_ID",          *required (assigned by server on creation)
+        "hub": "HUB_ID"           *required
+        "owner": "USER_ID",       *required
+        "estimate": ESTIMATE_TIME,*required
+        "description": "",
+        "image": "",
         "state": "new",
-        "hub": "hub_id"           *required
-        "owner": "user_id",       *required
         "createdTime": 1298567873
         "claimedBy": "user_id",
         "claimedTime": 1231214214,
@@ -72,20 +74,27 @@ VERIFIED: "verified"
 ### User Model Data ###
 
     {
-        "id": "user_id",      *required (assigned by server on creation)
-        "realname": null,     *required
-        "description": null,
-        "location": null,
-        "image": null,
+        "id": "USER_ID",      *required (assigned by server on creation)
+        "name": "DISPLAY_NAME", *required
+        "description": "",
+        "location": "",
+        "image": "",
         "admin": false,
         "hubs": {
             "owned": [/* hubs created by this user   */]
         },
         "tasks": {
-            "owned": [/* tasks created by this user  */]
-            "claimed": [/* tasks claimed by this user  */]
-            "done": [/* tasks done by this user     */]
-            "verified": [/* tasks verified by this user */]
+            "owned": {
+                "new":      [/* tasks owned by this user that have not been claimed */]
+                "claimed":  [/* tasks owned by this user that have been claimed but not done */],
+                "done":     [/* tasks owned by this user that have been done but not verified */],
+                "verified": [/* tasks owned by this user that have been verified */]
+            },
+            "claimed": {
+                "claimed":  [/* tasks claimed by this user that have not yet been done */],
+                "done":     [/* tasks claimed by this user that have been done but not verified */],
+                "verified": [/* tasks claimed by this user that have been verified */]
+            }
         },
         "createdTime": 1298567873
     }
