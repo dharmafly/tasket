@@ -75,7 +75,10 @@ var TankController = Backbone.Controller.extend({
             hubView = this.getHubView(id);
 
         if (hubView){
-            hubView.select().renderTasks();
+            hubView.select();
+            if (!hubView.tasksVisible()){
+                hubView.renderTasks();
+            }
         }
         else {
             Tasket.fetchAndAdd(id, Tasket.hubs, function(){

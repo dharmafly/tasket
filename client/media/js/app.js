@@ -1,11 +1,13 @@
 // UI SETTINGS
 
 var app = _.extend({
+    hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
+    hubPlaceholderImage: "images/placeholder.png",
+    userPlaceholderImage: "images/placeholder.png",
     useCsrfToken: false,
     useSessionId: true,
     authtoken: null,
     csrftoken: null,
-    hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
     currentUser: null,
     notification:   new Notification(),
     lightbox:       new Lightbox(),

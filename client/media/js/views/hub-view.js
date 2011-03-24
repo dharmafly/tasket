@@ -9,6 +9,16 @@ var HubView = View.extend({
         lineWidth: 2
     },
     
+    imageSrc: function(src){
+        if (src){
+            return this.set({
+                image:src
+            });
+        }
+        src = this.get("image");
+        return src ? src : app.hubPlaceholderImage;
+    },
+    
     isSelected: function(){
         return this.get("selected");
     },
@@ -41,19 +51,6 @@ var HubView = View.extend({
         return this.renderTasks();
     },
     
-    
-    /*
-        on every click:
-            show arrows
-            update url
-            
-            if active:
-                hide tasks
-                
-            else:
-                show tasks
-    */
-    
     toggleSelected: function(){
         if (this.isSelected()){
             return this.deselect();
@@ -77,7 +74,7 @@ var HubView = View.extend({
     
     _generateTaskViews: function(){        
         this.taskViews = _( // TODO: This is an Underscore collection. Confusing? Or genius?
-            _(this.model.tasks).map(function(id){
+            _(this.model.get("tasks")).map(function(id){
                 return new TaskView({
                     model: Tasket.tasks.get(id)
                 });
@@ -149,7 +146,6 @@ var HubView = View.extend({
             tempWidth = tempDistance * 2;
         container.append("<li style='position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; -moz-border-radius:30em; -webkit-border-radius:30em; -o-border-radius:30em; -ms-border-radius:30em; background-color:#cc0; padding:0; border-style:none; opacity:0.2; pointer-events:none;' class='distanceMarker'></li>");
 
-            
         this.taskViews.each(function(taskView, i){
             var taskElem = taskView.elem.appendTo(container),
                 angle = angleIncrement * i,
@@ -202,6 +198,7 @@ var HubView = View.extend({
         
         data.isSelected = this.isSelected();
         data.description = truncate(data.description, app.hubDescriptionTruncate);
+        data.image = this.imageSrc();
         
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("img.nucleus");

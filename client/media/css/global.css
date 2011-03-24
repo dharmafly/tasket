@@ -741,12 +741,12 @@ article .description {
 	margin: 0 0 0.461em /* 6px */;
 }
 
-article .meta .owner,
+article .meta .claimedBy,
 article .meta form {
 	float: left;
 }
 
-article .meta .owner {
+article .meta .claimedBy {
 	position: relative;
 	color: #676767;
 	padding: 0.538em /* 7px */ 0.769em /* 10px */ 0 1.538em /* 20px */;

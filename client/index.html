@@ -75,14 +75,14 @@
         <p class="description">{{description}}</p>
         <aside class="meta">
             {{hasUser}}
-                <p class="owner">
+                <p class="claimedBy">
                     {{isOwner}}
-                        <img src="{{owner.image}}" width="14" height="14" alt="Your avatar" />
-                        <a href="{{owner.url}}" title="See your tasks">You’re</a> doing this
+                        <img src="{{claimedBy.image}}" width="14" height="14" alt="Your avatar" />
+                        <a href="{{claimedBy.url}}" title="See your tasks">You’re</a> doing this
                     {{/isOwner}}
                     {{isNotOwner}}
-                        <img src="{{owner.image}}" width="14" height="14" alt="{{owner.realname}}’s avatar" />
-                        <a href="{{owner.url}}" title="See {{owner.realname}}’s tasks">{{owner.realname}}</a><br /> is doing this task
+                        <img src="{{claimedBy.image}}" width="14" height="14" alt="{{claimedBy.name}}’s avatar" />
+                        <a href="{{claimedBy.url}}" title="See {{claimedBy.name}}’s tasks">{{claimedBy.name}}</a><br /> is doing this task
                     {{/isNotOwner}}
                 </p>
             {{/hasUser}}

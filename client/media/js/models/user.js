@@ -5,9 +5,9 @@ var User = Model.extend({
     required: ["realname"],
 
     defaults: {
-        image: null,
-        description: null,
-        location: null
+        image: "",
+        description: "",
+        location: ""
     },
 
     constructor: function User() {
