@@ -145,7 +145,7 @@
         "claimedBy": 2,
         "createdTime": "2011-02-25 09:15:03",
         "owner": 3,
-        "state": 3,
+        "state": "verified",
         "estimate": 600
     }
 },
@@ -159,7 +159,7 @@
         "createdTime": "2011-02-25 09:15:03",
         "verifiedBy": 2,
         "owner": 2, 
-        "state": 2,
+        "state": "done",
         "estimate": 600
     }
 },
@@ -173,7 +173,7 @@
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 3, 
         "verifiedBy": 4,
-        "state": 3,
+        "state": "verified",
         "estimate": 600
     }
 },
@@ -188,7 +188,7 @@
         "claimedTime": "2011-02-25 09:25:03", 
         "owner": 2,
         "claimedBy": 2,
-        "state": 1,
+        "state": "claimed",
         "estimate": 600
     }
 },
@@ -201,7 +201,7 @@
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 2,
-        "state": 0,
+        "state": "new",
         "estimate": 600
     }
 }

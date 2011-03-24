@@ -143,7 +143,6 @@ class ViewTests(TestCase):
             }),
             content_type='application/json',
             )
-
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("&lt;b&gt;Lorem&lt;/b&gt;"), True)
 

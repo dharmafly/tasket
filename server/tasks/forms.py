@@ -29,7 +29,7 @@ class TaskForm(forms.ModelForm):
         
         if self.request.user.profile.admin:
             return new_state
-        new_state = self.cleaned_data.get('state', 0)
+        new_state = self.cleaned_data.get('state', Task.STATE_NEW)
         old_state = self.instance.state
         claimedBy = self.request.user
 

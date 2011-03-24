@@ -27,11 +27,11 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U2.user.username, password='12345')
         response = self.client.put(
                 '/tasks/3',
-                data=json.dumps({"state" : 3}),
+                data=json.dumps({"state" : Task.STATE_VERIFIED}),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
-        self.assertEqual(json_data['state'], 3)
+        self.assertEqual(json_data['state'], Task.STATE_VERIFIED)
     
     def test_verify_task_not_owner(self):
         """
@@ -43,7 +43,7 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U1.user.username, password='12345')
         response = self.client.put(
                 '/tasks/5',
-                data=json.dumps({"state" : 3}),
+                data=json.dumps({"state" : Task.STATE_VERIFIED}),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
@@ -54,7 +54,7 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U3.user.username, password='12345')
         response = self.client.put(
                 '/tasks/5',
-                data=json.dumps({"state" : 1}),
+                data=json.dumps({"state" : Task.STATE_CLAIMED}),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
@@ -64,7 +64,7 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U3.user.username, password='12345')
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 2}),
+                data=json.dumps({"state" : Task.STATE_DONE}),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
@@ -78,12 +78,12 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U1.user.username, password='12345')
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 1}),
+                data=json.dumps({"state" : Task.STATE_CLAIMED}),
                 content_type='application/json',
             )
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 0}),
+                data=json.dumps({"state" : Task.STATE_NEW}),
                 content_type='application/json',
             )
     
@@ -91,14 +91,14 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U1.user.username, password='12345')
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 1}),
+                data=json.dumps({"state" : Task.STATE_CLAIMED}),
                 content_type='application/json',
             )
         self.assertNotEquals(json.loads(response.content)['claimedBy'], None)
 
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 2}),
+                data=json.dumps({"state" : Task.STATE_DONE}),
                 content_type='application/json',
             )
 
@@ -108,13 +108,13 @@ class WorkflowTests(TestCase):
         self.client.login(username=self.U1.user.username, password='12345')
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 1}),
+                data=json.dumps({"state" : Task.STATE_CLAIMED}),
                 content_type='application/json',
             )
         self.client.login(username=self.U2.user.username, password='12345')
         response = self.client.put(
                 '/tasks/6',
-                data=json.dumps({"state" : 2}),
+                data=json.dumps({"state" : Task.STATE_CLAIMED}),
                 content_type='application/json',
             )
         self.assertTrue('error' in json.loads(response.content))

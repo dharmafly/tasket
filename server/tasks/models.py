@@ -45,10 +45,10 @@ class Task(models.Model):
         (60*60*12, 'More than Eight hours'),
     )
     
-    STATE_NEW       = 0
-    STATE_CLAIMED   = 1
-    STATE_DONE      = 2
-    STATE_VERIFIED  = 3
+    STATE_NEW       = 'new'
+    STATE_CLAIMED   = 'claimed'
+    STATE_DONE      = 'done'
+    STATE_VERIFIED  = 'verified'
     
     TASK_STATES = (
         (STATE_NEW, 'New'),
@@ -60,7 +60,7 @@ class Task(models.Model):
     description = models.TextField(blank=True, null=True)
     image = ImageField(upload_to="images/tasks/", blank=True, null=True)
     estimate = models.IntegerField(blank=True, null=True, choices=TIME_ESTIMATE)
-    state = models.IntegerField(blank=False, null=False, choices=TASK_STATES, default=STATE_NEW)
+    state = models.CharField(blank=False, null=False, choices=TASK_STATES, default=STATE_NEW, max_length=10)
     owner = models.ForeignKey('Profile', related_name='tasks_owned')
     claimedBy = models.ForeignKey('Profile', related_name='tasks_claimed', null=True, blank=True)
     verifiedBy = models.ForeignKey('Profile', related_name='tasks_verified', null=True, blank=True)

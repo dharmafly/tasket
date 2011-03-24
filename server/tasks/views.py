@@ -148,7 +148,7 @@ class TasksView(PutView):
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def post(self, request, task_id=None):
-        request.JSON['state'] = request.JSON.get('state', 0)
+        request.JSON['state'] = request.JSON.get('state', Task.STATE_NEW)
         form = forms.TaskForm(request.JSON, request=request)
         if form.is_valid():
             T = form.save(commit=False)
@@ -165,7 +165,7 @@ class TasksView(PutView):
     def put(self, request, task_id=None):
         task = get_object_or_404(Task, pk=task_id)
         request.PUT['hub'] = task.hub.pk
-        request.PUT['state'] = request.PUT.get('state', 0)
+        request.PUT['state'] = request.PUT.get('state', Task.STATE_NEW)
         form = forms.TaskForm(request.PUT, instance=task, request=request)
         if form.is_valid():
             T = form.save()
