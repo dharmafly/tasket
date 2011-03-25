@@ -25,7 +25,7 @@ app.setupToolbar = function () {
                 if (user.get('image')) {
                     userbar.find('img').attr('src', user.get('image'));
                 }
-                userbar.find('span').text(user.get('realname'));
+                userbar.find('span').text(user.get('name'));
             } else {
                 userbar.hide();
             }
@@ -66,7 +66,7 @@ app.setupToolbar = function () {
         if (user) {
             user.bind('change', function () {
                 var taskKeys = ['tasks.claimed.claimed', 'tasks.claimed.verified', 'tasks.claimed.done'],
-                    userKeys = ['realname', 'image'],
+                    userKeys = ['name', 'image'],
                     changedAttr = user.changedAttributes(),
                     changedKeys = _.keys(changedAttr);
 
