@@ -12,6 +12,7 @@ $('body')
 
 // Return to the previous route when the lightbox closes.
 app.lightbox.bind('hide', app.back);
+app.bind('change:currentUser', _.bind(app.dashboard.setUser, app.dashboard));
 app.dashboard.detail.bind('hide', app.back);
 
 /////
