@@ -53,7 +53,7 @@ var app = _.extend({
 
     updateCurrentUser: function (user) {
         app.currentUser = user;
-        return app.trigger('change:currentUser', user);
+        return app.trigger('change:currentUser', user); // see dashboard.js > Dashboard.setUser()
     },
 
     // Update the location bar with the previous hash.

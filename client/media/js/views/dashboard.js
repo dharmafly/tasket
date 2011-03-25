@@ -75,6 +75,16 @@ var Dashboard = View.extend({
 
         return this;
     },
+    
+    userStatistics: function(){
+        var user = this.model;
+        O(user);
+        return {
+            ownedClaimed:  user.get('tasks.owned.claimed').length,
+            adminedDone:     user.get('tasks.owned.done').length,      // TODO: if an admin, this should include all done tasks
+            claimedVerified: user.get('tasks.claimed.verified').length // TODO: should be recent verified tasks
+        };
+    },
 
     // Updates the user status box.
     updateNotifications: function () {
@@ -84,9 +94,17 @@ var Dashboard = View.extend({
         if (stats) {
             notifications.show();
             notifications.find('a').each(function () {
-                var type = this.getAttribute('data-type');
+                var anchor = jQuery(this),
+                    listItem = anchor.parent(),
+                    type = this.getAttribute('data-type'),
+                    elem = anchor.find('span');
+                
                 if (stats[type]) {
-                    $(this).find('span').text(stats[type]);
+                    elem.text(stats[type]);
+                    listItem.show();
+                }
+                else {
+                    listItem.hide();
                 }
             });
         } else {

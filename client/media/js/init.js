@@ -1,4 +1,3 @@
-
 var dummyCode = false,
     cachedCode = false,
     debugUsername = "TestUser",
@@ -20,6 +19,7 @@ app.dashboard.detail.bind('hide', app.back);
 app.setupAuthentication();
 
 if (!app.authtoken){
+<<<<<<< HEAD
     if (debugUsername && debugPassword) {
         // Pass this into our bootstrap method as the app depends on
         // on the user beign logged in.
