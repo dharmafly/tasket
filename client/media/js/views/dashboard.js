@@ -30,7 +30,7 @@ var Dashboard = View.extend({
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
-    setUser: function (user) {
+    setUser: function (user, options) {
         var methodMap = {
             hubs:       ['UserHubs'],
             tasks:      ['UserTasks', 'ManagedTasks'],
@@ -38,7 +38,7 @@ var Dashboard = View.extend({
         };
 
         // Update the user object if nessecary.
-        this.model = (user || null)  || this.model;
+        this.model = arguments.length ? user : this.model;
 
         if (this.model) {
             this.model.bind('change', _.bind(function (user) {
@@ -52,8 +52,11 @@ var Dashboard = View.extend({
                         }, this);
                     }
                 }, this);
-
             }, this));
+
+            if (!options || options.silent !== true) {
+                this.render();
+            }
         }
 
         return this;
