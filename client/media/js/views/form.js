@@ -23,7 +23,7 @@ var Form = View.extend({
             error:   _.bind(this._onError, this)
         });
 
-        this.trigger('submit', this.model, this);
+        return this.trigger('submit', this.model, this);
     },
     errors: function (errors) {
         var list = this.$(':input');
@@ -39,9 +39,12 @@ var Form = View.extend({
                 });
             }
         });
+
+        return this;
     },
     reset: function () {
         this.$('.error strong').remove();
+        return this;
     },
     _onSuccess: function () {
         this.trigger('success', this.model, this);
