@@ -95,7 +95,6 @@ class WorkflowTests(TestCase):
                 content_type='application/json',
             )
         self.assertNotEquals(json.loads(response.content)['claimedBy'], None)
-
         response = self.client.put(
                 '/tasks/6',
                 data=json.dumps({"state" : Task.STATE_DONE}),
@@ -103,6 +102,7 @@ class WorkflowTests(TestCase):
             )
 
         self.assertTrue('doneTime' in json.loads(response.content))
+        
 
     def test_claim_then_done_someone_else(self):
         self.client.login(username=self.U1.user.username, password='12345')

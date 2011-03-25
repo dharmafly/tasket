@@ -19,7 +19,7 @@ class TaskForm(forms.ModelForm):
     
     class Meta:
         model = Task
-        exclude = ('owner', 'createdTime')
+        exclude = ('owner', 'createdTime',)
 
     def state_logic(self):
         """
@@ -98,6 +98,11 @@ class TaskForm(forms.ModelForm):
         super(TaskForm, self).clean()
 
         cleaned_data = dict(self.cleaned_data)
+        
+        if cleaned_data['estimate'] == None:
+            cleaned_data['estimate'] = self.instance.estimate
+            if self.instance.estimate == None:
+                self._errors['error'] = self.error_class(['Estimate is required'])
         
         for k,v in cleaned_data.items():
             if isinstance(v, unicode):
