@@ -32,11 +32,6 @@ var Login = Form.extend({
 
     _onSuccess: function (data) {
         var user = new User(data.user);
-
-        // Should this be set elsewhere?
-        app.authtoken = data.sessionid;
-        app.updateCurrentUser(user);
-
         this.trigger('success', user, this);
     }
 });
