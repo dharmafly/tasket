@@ -28,8 +28,8 @@
                     <li><a href="#/about/" title="About the Tasket project">About</a></li>
                     <li><a href="#/sign-up/" title="Sign up for an account">Sign up</a></li>
                     <li class="login">
-                        <a href="/login/" title="Login to Tasket">Login</a>
-                        <form action="#/logout" method="POST">
+                        <a href="#/login/" title="Login to Tasket">Login</a>
+                        <form action="/logout" method="POST">
                             <button class="link" type="submit">Logout</button>
                         </form>
                     </li>
@@ -300,51 +300,43 @@
     </script>
 
     <script type="text/tim" class="new-hub">
-      <h1>{{isNew}}Create a new hub{{/isNew}}{{isNotNew}}Edit: {{title}}{{/isNotNew}}</h1>
-        <form action="/hubs/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-title">Title</label>
-                    <input id="field-title" name="title" placeholder="My new hub" value="{{title}}" />
-                </li>
-                <li>
-                    <label for="field-description">Description</label>
-                    <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Create Hub</button>
-            </div>
-        </form>
+        <h1>{{isNew}}Create a new hub{{/isNew}}{{isNotNew}}Edit: {{title}}{{/isNotNew}}</h1>
+        <ul>
+            <li>
+                <label for="field-title">Title</label>
+                <input id="field-title" name="title" placeholder="My new hub" value="{{title}}" />
+            </li>
+            <li>
+                <label for="field-description">Description</label>
+                <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Create Hub</button>
+        </div>
     </script>
 
     <script type="text/tim" class="new-task">
-        <h1>Create a new task</h1>
-        <form action="#/tasks/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-title">Title</label>
-                    <input id="field-title" name="title" placeholder="My new task" value="" />
-                </li>
-                <li>
-                    <label for="field-timespan">Time required</label>
-                    <select id="field-timespan" name="timespan">
-                        <option value="600">Ten minutes</option>
-                        <option value="600">Half an hour</option>
-                        <option value="600">One day</option>
-                        <option value="600">Three days</option>
-                    </select>
-                </li>
-                <li>
-                    <label for="field-summary">Summary</label>
-                    <textarea id="field-summary" name="summary" cols="30" rows="6" placeholder="Description&hellip;"></textarea>
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Create Task</button>
-            </div>
-        </form>
+        <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}{{/isNotNew}}</h1>
+        <ul>
+            <li>
+                <label for="field-description">Summary</label>
+                <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
+            </li>
+            <li>
+                <label for="field-timespan">Time required</label>
+                <select id="field-timespan" name="estimate">
+                {{estimates}}
+                    <option value="{{value}}"{{selected}} selected{{/selected}}>{{text}}</option>
+                {{/estimates}}
+                </select>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Create Task</button>
+        </div>
     </script>
+
     <script type="text/tim" class="dashboard">
         <ul class="listing notifications">
             <li><a data-type="claimed" href="#/tasks/" title="View your tasks"><span>5</span> of your tasks have been claimed</a></li>
