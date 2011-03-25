@@ -3,17 +3,17 @@ import json
 from django.http import HttpResponse
 from django.conf import settings
 
-def default_403_response(request, *args, **kwargs):
+def default_401_response(request, *args, **kwargs):
     res = {
-           "status": 403,
-           "error": "Forbidden"
+           "status": 401,
+           "error": "Unauthorized"
        }
-    return HttpResponse(json.dumps(res), status=403)
+    return HttpResponse(json.dumps(res), status=401)
 
 
 def json_login_required(orig=None):
     
-    response = getattr(settings, 'JSON_403_RESPONSE_VIEW', default_403_response)
+    response = getattr(settings, 'JSON_401_RESPONSE_VIEW', default_401_response)
     
     def wrapped(request, *args, **kwargs):
         if request.user.is_authenticated():

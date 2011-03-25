@@ -65,8 +65,8 @@ class ViewTests(TestCase):
             content_type="application/json",
             )
     
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(json.loads(response.content)['error'], 'Forbidden')
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(json.loads(response.content)['error'], 'Unauthorized')
     
     
     def test_hub_get(self):
