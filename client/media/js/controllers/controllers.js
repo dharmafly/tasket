@@ -1,7 +1,8 @@
 var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
-        "/hubs/:id/": "displayHub"
+        "/hubs/:id/": "displayHub",
+        "/hubs/:id/tasks/new/": "newTask"
     },
 
     constructor: function TankController() {
@@ -97,7 +98,7 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
-       form = new HubForm({
+        form = new HubForm({
             model: new Hub({
                 owner: app.currentUser.id
             })
@@ -106,6 +107,28 @@ var TankController = Backbone.Controller.extend({
         app.lightbox.content(form.render().el).show();
         form.bind('success', _.bind(function (event) {
             this.addHub(form.model);
+            app.lightbox.hide();
+        }, this));
+    },
+
+    newTask: function(id){
+        var form;
+
+        if (!app.currentUser) {
+            app.notification.error('You must be logged in to create a hub');
+            this.saveLocation('/');
+            return;
+        }
+
+        form = new TaskForm({
+            model: new Task({
+                hub: id, // NOTE: Verify this when refactoring hubs.
+                owner: app.currentUser.id
+            })
+        });
+
+        app.lightbox.content(form.render().el).show();
+        form.bind('success', _.bind(function (event) {
             app.lightbox.hide();
         }, this));
     }
