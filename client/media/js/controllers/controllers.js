@@ -21,7 +21,7 @@ var TankController = Backbone.Controller.extend({
                 this.addHub(hub);
             }
         }, this));
-        
+
         _.bindAll(this, "_onSelectHubs");
     },
 
@@ -35,7 +35,7 @@ var TankController = Backbone.Controller.extend({
         _(hubs).each(this.addHub, this);
         return this;
     },
-    
+
     _onSelectHubs: function(hubToExclude){
         _(this.hubViews)
             .chain()
@@ -43,7 +43,7 @@ var TankController = Backbone.Controller.extend({
                 return view.model.id === hubToExclude.model.id;
             })
             .invoke("deselect");
-            
+
         return this;
     },
 
@@ -60,7 +60,7 @@ var TankController = Backbone.Controller.extend({
                 top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
             }
         });
-        
+
         hubView.bind("select", this._onSelectHubs);
 
         // TODO: move bodyElem to app.bodyElem
@@ -123,6 +123,11 @@ var PageController = Backbone.Controller.extend({
     login: function () {
         var form = new Login();
         app.lightbox.content(form.render().el).show();
+
+        form.bind('success', function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide();
+        });
     },
 
     logout: function () {
@@ -140,7 +145,7 @@ var PageController = Backbone.Controller.extend({
 
         form.bind('success', function (user) {
             app.updateCurrentUser(user);
-            app.lightbox.hide({silent: true});
+            app.lightbox.hide();
             app.notification.success('Your account has been created!');
         });
     }
