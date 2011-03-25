@@ -21,13 +21,18 @@ var Login = Form.extend({
                 this._onError({}, xhr);
             }, this));
 
-        return this.trigger('submit');
+        return this.trigger('submit', this);
     },
 
     render: function () {
         var html = tim('login');
         this.elem.html(html);
         return this;
+    },
+
+    _onSuccess: function (data) {
+        app.authtoken = data.sessionid;
+        this.trigger('success', new User(data.user), this);
     }
 });
 
