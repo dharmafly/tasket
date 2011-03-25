@@ -75,7 +75,7 @@ var Dashboard = View.extend({
 
     // Updates the user status box.
     updateNotifications: function () {
-        var stats = this.model.get('statistics'),
+        var stats = this.model && this.model.get('statistics'),
             notifications = this.$('.notifications');
 
         if (stats) {
@@ -93,34 +93,49 @@ var Dashboard = View.extend({
 
     // Updates the "Tasks I Manage" box.
     updateManagedTasks: function () {
-        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks.owned.done'));
-        return this.updateList('.managed-tasks ul', tasks);
+        var tasks = null;
+        if (this.model) {
+            tasks = Tasket.tasks.filterByIds(this.model.get('tasks.owned.done'));
+        }
+        return this.updateList('.managed-tasks', tasks);
     },
 
     // Updates the "My Tasks" box.
     updateUserTasks: function () {
-        var tasks = Tasket.tasks.filterByIds(this.model.get('tasks.claimed.claimed'));
-        return this.updateList('.my-tasks ul', tasks);
+        var tasks = null;
+        if (this.model) {
+            tasks = Tasket.tasks.filterByIds(this.model.get('tasks.claimed.claimed'));
+        }
+        return this.updateList('.my-tasks', tasks);
     },
 
     // Updates the "My Projects" box.
     updateUserHubs: function () {
-        var hubs = Tasket.hubs.filterByIds(this.model.get('hubs.owned'));
-        return this.updateList('.my-projects ul', hubs);
+        var hubs = null;
+        if (this.model) {
+            hubs = Tasket.hubs.filterByIds(this.model.get('hubs.owned'));
+        }
+        return this.updateList('.my-projects', hubs);
     },
 
     // Updates a list of tasks/hubs based on the selector & collection.
     updateList: function(selector, models){
-        var mapped = models.map(function (model) {
-            return {
-                href: '#/' + model.type + '/' + model.id,
-                title: model.get('title') || 'Missing title'
-            };
-        });
+        var mapped;
 
-        this.$(selector).html(tim('dashboard-link', {
-           links: mapped
-        }));
+        if (models) {
+            mapped = models.map(function (model) {
+                return {
+                    href: '#/' + model.type + '/' + model.id,
+                    title: model.get('title') || 'Missing title'
+                };
+            });
+            this.$(selector).show().find('ul').html(tim('dashboard-link', {
+                links: mapped
+            }));
+        } else {
+            this.$(selector).hide();
+        }
+
         return this;
     }
 });
