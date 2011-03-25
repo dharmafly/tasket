@@ -116,7 +116,6 @@ var PageController = Backbone.Controller.extend({
     routes: {
         '/about/':   'about',
         '/login/':   'login',
-        '/logout/':  'logout',
         '/sign-up/': 'signup'
     },
 
@@ -138,10 +137,6 @@ var PageController = Backbone.Controller.extend({
         });
     },
 
-    logout: function () {
-
-    },
-
     signup: function () {
         var form = new SignUp({
             model: new User({
@@ -152,6 +147,7 @@ var PageController = Backbone.Controller.extend({
         app.lightbox.content(form.render().el).show();
 
         form.bind('success', function (user) {
+            app.updateCurrentUser(user);
             app.lightbox.hide();
             app.notification.success('Your account has been created!');
         });
