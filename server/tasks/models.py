@@ -191,7 +191,7 @@ class Hub(models.Model):
 
 class Profile(models.Model):
     user = models.OneToOneField(User, primary_key=True)
-    realname = models.CharField(blank=True, max_length=255)
+    name = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
     location = models.CharField(blank=True, max_length=255)
     image = ImageField(upload_to='images/users/', null=True, blank=True)
@@ -209,7 +209,7 @@ class Profile(models.Model):
     def as_dict(self):
         obj_dict = {
             "id": str(self.user.pk),
-            "realname": self.realname.strip(),
+            "name": self.name.strip(),
             "description": self.description.strip(),
             "location": self.location.strip(),
             "hubs": {

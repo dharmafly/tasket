@@ -78,7 +78,7 @@
     "model": "tasks.profile", 
     "fields": {
         "user": 2,
-        "realname": "Test User 1",
+        "name": "Test User 1",
         "description": "This is a <b>description</b>", 
         "location": "London"
     }
@@ -88,7 +88,7 @@
     "model": "tasks.profile", 
     "fields": {
         "user": 3,
-        "realname": "Test User 2",
+        "name": "Test User 2",
         "description": "This is a description", 
         "location": "London"
     }
@@ -98,7 +98,7 @@
     "model": "tasks.profile", 
     "fields": {
         "user": 4,
-        "realname": "Test User 3",
+        "name": "Test User 3",
         "description": "This is a description", 
         "location": "London"
     }
@@ -108,7 +108,7 @@
     "model": "tasks.profile", 
     "fields": {
         "user": 5,
-        "realname": "Admin User",
+        "name": "Admin User",
         "description": "This is a description", 
         "location": "London",
         "admin": 1
