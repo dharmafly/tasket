@@ -1,5 +1,5 @@
 // USER
-var User = Model.extend({    
+var User = Model.extend({
     type: "user",
 
     required: ["realname"],
@@ -16,13 +16,6 @@ var User = Model.extend({
 
     initialize: function(){
         Model.prototype.initialize.call(this, arguments);
-        this.hubs = {
-            owned: new HubList()
-        };
-        this.tasks = {
-            owned:   new TaskList(),
-            claimed: new TaskList()
-        };
     }
 });
 

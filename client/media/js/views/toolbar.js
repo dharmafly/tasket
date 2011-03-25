@@ -38,10 +38,10 @@ app.setupToolbar = function () {
                 taskLists = user.get('tasks');
                 tasks.show();
                 tasks.find('.pending').text(
-                    user.get('tasks.claimed').length
+                    user.get('tasks.claimed.claimed').length
                 );
                 tasks.find('.done').text(
-                    user.get('tasks.done').length + user.get('tasks.verified').length
+                    user.get('tasks.claimed.done').length + user.get('tasks.claimed.verified').length
                 );
             } else {
                 tasks.hide();
@@ -65,7 +65,7 @@ app.setupToolbar = function () {
         // the appropraite areas.
         if (user) {
             user.bind('change', function () {
-                var taskKeys = ['tasks.claimed', 'tasks.verified', 'tasks.done'],
+                var taskKeys = ['tasks.claimed.claimed', 'tasks.claimed.verified', 'tasks.claimed.done'],
                     userKeys = ['realname', 'image'],
                     changedAttr = user.changedAttributes(),
                     changedKeys = _.keys(changedAttr);
