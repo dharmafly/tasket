@@ -137,6 +137,12 @@ var PageController = Backbone.Controller.extend({
         });
 
         app.lightbox.content(form.render().el).show();
+
+        form.bind('success', function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide({silent: true});
+            app.notification.success('Your account has been created!');
+        });
     }
 });
 

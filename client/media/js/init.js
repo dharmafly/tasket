@@ -2,12 +2,12 @@
 var dummyCode = false,
     cachedCode = false,
     debugUsername = "TestUser",
-    debugPassword = "12345",
+    debugPassword = null,
     notification = app.notification,
     lang = Tasket.lang.en;
 
 $('body')
-  .append(app.dashboard.el)
+  .append(app.dashboard.render().el)
   .append(app.lightbox.render().hide().el);
 
 // Return to the previous route when the lightbox closes.
@@ -19,46 +19,45 @@ app.dashboard.detail.bind('hide', app.back);
 app.setupAuthentication();
 
 if (!app.authtoken){
-    // Pass this into our bootstrap method as the app depends on
-    // on the user beign logged in.
-    app.init(Tasket.login(debugUsername, debugPassword, function(data){
-        var user, tasks, hubs;
+    if (debugUsername && debugPassword) {
+        // Pass this into our bootstrap method as the app depends on
+        // on the user beign logged in.
+        app.init(Tasket.login(debugUsername, debugPassword, function(data){
+            var user, tasks, hubs;
 
-        // Update current user details.
-        app.authtoken = data.sessionid;
-        user = app.currentUser = new User(data.user);
+            // Update current user details.
+            app.authtoken = data.sessionid;
+            user = app.currentUser = new User(data.user);
 
-        user.set({statistics: {
-            claimed: 2,
-            done: 4,
-            approved: 12
-        }});
+            user.set({statistics: {
+                claimed: 2,
+                done: 4,
+                approved: 12
+            }});
 
-        // Fire an event to notify listeners the current user has changed.
-        app.updateCurrentUser(user);
+            // Fire an event to notify listeners the current user has changed.
+            app.updateCurrentUser(user);
 
-        // Update the dashboard with the current user.
-        app.dashboard.setUser(user).render();
+            // Fetch the users tasks and hubs. Then once they've been added to the cache
+            // update the Dashboard with the details.
+            tasks = _.flatten(
+                app.currentUser.get('tasks.owned'),
+                app.currentUser.get('tasks.claimed')
+            );
+            Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
+                // Update the dashboard.
+                app.dashboard.updateUserTasks().updateManagedTasks();
+            });
 
-        // Fetch the users tasks and hubs. Then once they've been added to the cache
-        // update the Dashboard with the details.
-        tasks = _.flatten(
-            app.currentUser.get('tasks.owned'),
-            app.currentUser.get('tasks.claimed')
-        );
-        Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
-            // Update the dashboard.
-            app.dashboard.updateUserTasks().updateManagedTasks();
-        });
+            hubs = app.currentUser.get('hubs.owned');
+            Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
+                app.dashboard.updateUserHubs();
+            });
+        }));
 
-        hubs = app.currentUser.get('hubs.owned');
-        Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
-            app.dashboard.updateUserHubs();
-        });
-    }));
-
-    // TODO: cache authtoken in localStorage (but expire it after some time)
-    // TODO: handle authtoken failure by logging in and repeating requests - need an abstract api() method?
+        // TODO: cache authtoken in localStorage (but expire it after some time)
+        // TODO: handle authtoken failure by logging in and repeating requests - need an abstract api() method?
+    }
 }
 
 // Get data from the server and draw.
@@ -121,7 +120,7 @@ else {
 
     // Run setup methods.
     app.setupToolbar();
-
+    app.updateCurrentUser(null);
     // START
     app.init();
 }
