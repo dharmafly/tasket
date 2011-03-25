@@ -2,7 +2,7 @@
 var User = Model.extend({
     type: "user",
 
-    required: ["realname"],
+    required: ["name"],
 
     defaults: {
         image: "",
@@ -36,3 +36,4 @@ var User = Model.extend({
 var UserList = CollectionModel.extend({
     model: User
 });
+

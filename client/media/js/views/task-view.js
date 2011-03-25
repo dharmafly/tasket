@@ -29,9 +29,6 @@ var TaskView = View.extend({
             claimedBy = data.claimedBy = claimedByModel.attributes;
             claimedBy.url = claimedByModel.url();
             claimedBy.image = claimedBy.image || app.userPlaceholderImage;
-            
-            // TODO TEMP
-            claimedBy.name = claimedBy.realname;
         }        
         
         // TODO: provide url for user

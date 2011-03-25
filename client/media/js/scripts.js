@@ -18,6 +18,7 @@ getScript(
     // Each successive argument contains a script or scripts that are dependent on the previous argument.
     [
         "dependencies/jquery.js",
+        //"dependencies/jquery-1.4.4.js",
         "dependencies/underscore.js",
         "dependencies/tim.js"
     ],
