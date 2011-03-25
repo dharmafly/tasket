@@ -89,7 +89,15 @@ var TankController = Backbone.Controller.extend({
     },
 
     newHub: function(){
-        var form = new HubForm({
+        var form;
+
+        if (!app.currentUser) {
+            app.notification.error('You must be logged in to create a hub');
+            this.saveLocation('/');
+            return;
+        }
+
+       form = new HubForm({
             model: new Hub({
                 owner: app.currentUser.id
             })
@@ -144,7 +152,6 @@ var PageController = Backbone.Controller.extend({
         app.lightbox.content(form.render().el).show();
 
         form.bind('success', function (user) {
-            app.updateCurrentUser(user);
             app.lightbox.hide();
             app.notification.success('Your account has been created!');
         });
