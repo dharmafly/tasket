@@ -7,7 +7,20 @@ var User = Model.extend({
     defaults: {
         image: "",
         description: "",
-        location: ""
+        location: "",
+        tasks: {
+            owned: {
+                "new": [],
+                "claimed": [],
+                "done": [],
+                "verified": []
+            },
+            claimed: {
+                "claimed": [],
+                "done": [],
+                "verified": []
+            }
+        }
     },
 
     constructor: function User() {
