@@ -79,7 +79,6 @@ class Task(models.Model):
     def format_timestamp(self, t):
         if t:
             return int(time.mktime(t.timetuple()))
-    
 
     def as_dict(self):
         """
@@ -201,7 +200,7 @@ class Profile(models.Model):
     objects = managers.ProfileManager()
 
     def __unicode__(self):
-        return u"%s" % self.realname
+        return u"%s" % self.name
 
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
