@@ -109,9 +109,11 @@ class RegisterView(PutView):
 def handle404(request):
     res = HttpResponse()
     res.write(json.dumps(
-            {
-            'error' : "404 Page not found"
-            }))
+        {
+            status: 404,
+            error: "Not Found"
+        }
+    ))
     res.status_code=404
     return res
     

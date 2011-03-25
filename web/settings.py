@@ -11,4 +11,4 @@ try:
 except ImportError:
     pass
 
-DEBUG = False
+DEBUG = True
