@@ -101,9 +101,10 @@ class HubView(PutView):
         if form.is_valid():
             H = form.save()
             res.write(json.dumps({'image' : H.image.name}))
+            res.status_code = 201
         else:
             res.write(json.dumps({'error' : 'Cannot upload image'}))
-            res.status_code = 500
+            res.status_code = 400
         return res
 
     @method_decorator(login_required)
@@ -200,9 +201,10 @@ class TasksView(PutView):
         if form.is_valid():
             T = form.save()
             res.write(json.dumps({'image' : T.image.name}))
+            res.status_code = 201
         else:
             res.write(json.dumps({'error' : 'Cannot upload image'}))
-            res.status_code = 500
+            res.status_code = 400
         return res
     
     @method_decorator(login_required)
@@ -328,9 +330,10 @@ class ProfileView(PutView):
         if form.is_valid():
             P = form.save()
             res.write(json.dumps({'image' : P.image.name}))
+            res.status_code = 201
         else:
             res.write(json.dumps({'error' : 'Cannot upload image'}))
-            res.status_code = 500
+            res.status_code = 400
         return res
 
 
