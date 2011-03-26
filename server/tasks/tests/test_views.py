@@ -4,6 +4,7 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 from django.contrib.auth.models import User
 
@@ -67,7 +68,16 @@ class ViewTests(TestCase):
     
         self.assertEqual(response.status_code, 401)
         self.assertEqual(json.loads(response.content)['error'], 'Unauthorized')
-    
+
+    def test_hubs_post_image(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/hubs/2/image/',
+            {'image' : f,},
+            )
+            
+        self.assertTrue('image' in json.loads(response.content))
     
     def test_hub_get(self):
         response = self.client.get('/hubs/2')
@@ -166,6 +176,17 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("&lt;b&gt;Lorem&lt;/b&gt;"), True)
 
+    def test_task_post_image(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/tasks/3/image/',
+            {'image' : f,},
+            )
+        self.assertTrue('image' in json.loads(response.content))
+
+
+
     def test_task_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
@@ -214,6 +235,16 @@ class ViewTests(TestCase):
             )
         json_data = json.loads(response.content)
         self.assertEqual(json_data['user_id'], 6)
+
+    def test_user_post_image(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/image/',
+            {'image' : f,},
+            )
+        self.assertTrue('image' in json.loads(response.content))
+
 
     def test_user_put(self):
         self.client.login(username='TestUser', password='12345')
