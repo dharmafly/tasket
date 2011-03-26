@@ -110,8 +110,8 @@ def handle404(request):
     res = HttpResponse()
     res.write(json.dumps(
         {
-            status: 404,
-            error: "Not Found"
+            'status': 404,
+            'error': "Not Found"
         }
     ))
     res.status_code=404
