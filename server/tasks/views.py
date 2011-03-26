@@ -44,7 +44,7 @@ class HubView(PutView):
     
     
     @method_decorator(AllowJSONPCallback)
-    def get(self, request, hub_id=None, tasks=None):
+    def get(self, request, hub_id=None, tasks=None, image=None):
         if hub_id:
             return self.get_single(request, hub_id)
         if hub_id and tasks:
@@ -63,10 +63,14 @@ class HubView(PutView):
         
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
-    def post(self, request):
+    def post(self, request, hub_id=None, image=None):
         """
         Create a hub
         """
+        
+        if image:
+            return self.image_upload(request, hub_id)
+
         res = HttpResponse()
         
         form = forms.HubForm(request.JSON)
@@ -85,7 +89,23 @@ class HubView(PutView):
             self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
+    
+    def image_upload(self, request, hub_id):
+        res = HttpResponse()
+
+        # Handle image upload
+        hub = get_object_or_404(Hub, pk=hub_id)
         
+        request.POST['title'] = hub.title
+        form = forms.HubForm(request.POST, request.FILES, instance=hub)
+        if form.is_valid():
+            H = form.save()
+            res.write(json.dumps({'image' : H.image.name}))
+        else:
+            res.write(json.dumps({'error' : 'Cannot upload image'}))
+            res.status_code = 500
+        return res
+
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def put(self, request, hub_id):
@@ -150,7 +170,11 @@ class TasksView(PutView):
         
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
-    def post(self, request, task_id=None):
+    def post(self, request, task_id=None, image=None):
+        
+        if image:
+            return self.image_upload(request, task_id)
+        
         request.JSON['state'] = request.JSON.get('state', Task.STATE_NEW)
         form = forms.TaskForm(request.JSON, request=request)
         if form.is_valid():
@@ -162,7 +186,25 @@ class TasksView(PutView):
             self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
         return self.res
-            
+    
+    def image_upload(self, request, task_id):
+        res = HttpResponse()
+
+        # Handle image upload
+        task = get_object_or_404(Task, pk=task_id)
+        
+        request.POST['hub'] = task.hub.pk
+        request.POST['state'] = task.state
+        
+        form = forms.TaskForm(request.POST, request.FILES, instance=task, request=request)
+        if form.is_valid():
+            T = form.save()
+            res.write(json.dumps({'image' : T.image.name}))
+        else:
+            res.write(json.dumps({'error' : 'Cannot upload image'}))
+            res.status_code = 500
+        return res
+    
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def put(self, request, task_id=None):
@@ -242,7 +284,10 @@ class ProfileView(PutView):
             return self.res
 
     @method_decorator(AllowJSONPCallback)
-    def post(self, request):
+    def post(self, request, image=None):
+        if image:
+            return self.image_upload(request)
+        
         request.POST = request.JSON
         username = request.JSON.get('username')
         password = request.JSON.get('password')
@@ -273,8 +318,20 @@ class ProfileView(PutView):
             )
         return self.res
 
+    def image_upload(self, request):
+        res = HttpResponse()
 
+        # Handle image upload
+        profile = request.user.profile
 
+        form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            P = form.save()
+            res.write(json.dumps({'image' : P.image.name}))
+        else:
+            res.write(json.dumps({'error' : 'Cannot upload image'}))
+            res.status_code = 500
+        return res
 
 
 def thumbs(request, size, path):
