@@ -229,12 +229,33 @@ class ViewTests(TestCase):
                     "username" : "test99",
                     "email" : "foo@example.com",
                     "password" : "12345",
-                    "realname" : "Test User 99",
+                    "name" : "Test User 99",
                     }),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
         self.assertEqual(json_data['id'], 6)
+
+
+    def test_user_post_not_admin(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "name" : "Test User 99",
+                    "admin" : True,
+                    }),
+                content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['id'], 6)
+        
+        response = self.client.get('/users/6')
+        json_data = json.loads(response.content)
+        self.assertFalse(json_data['admin'])
 
     def test_user_post_image(self):
         self.client.login(username='TestUser', password='12345')

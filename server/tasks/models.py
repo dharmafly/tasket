@@ -210,6 +210,7 @@ class Profile(models.Model):
         obj_dict = {
             "id": str(self.user.pk),
             "name": self.name.strip(),
+            "admin": self.admin,
             "description": self.description.strip(),
             "location": self.location.strip(),
             "hubs": {
