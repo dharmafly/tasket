@@ -201,7 +201,7 @@ class Profile(models.Model):
     objects = managers.ProfileManager()
 
     def __unicode__(self):
-        return u"%s" % self.realname
+        return u"%s" % self.user
 
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
