@@ -17,7 +17,12 @@ class ViewTests(TestCase):
     def test_now_logged_in(self):
         response = self.client.get('/login/')
         self.assertTrue(response.context['form'])
-
+    
+    def test_logout(self):
+        response = self.client.get('/logout/')
+        self.assertEqual(response.status_code, 302)
+        
+    
     def test_log_in(self):
         response = self.client.post(
             '/login/',

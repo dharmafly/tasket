@@ -9,6 +9,7 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.forms import ValidationError
+from django.core.urlresolvers import reverse
 
 from utils.helpers import AllowJSONPCallback, PutView
 
@@ -89,11 +90,14 @@ class LogoutView(PutView):
     
     def get(self, request):
         logout(request)
-        self.res.write(json.dumps(
-            {
-                'logged_out' : True,
-            }
-        ))
+        if 'application/json' in request.META['CONTENT_TYPE']:
+            self.res.write(json.dumps(
+                {
+                    'logged_out' : True,
+                }
+            ))
+        else:
+            return HttpResponseRedirect(reverse('home'))
         
         return self.res
         
