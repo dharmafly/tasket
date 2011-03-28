@@ -234,7 +234,7 @@ class ViewTests(TestCase):
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
-        self.assertEqual(json_data['user_id'], 6)
+        self.assertEqual(json_data['id'], 6)
 
     def test_user_post_image(self):
         self.client.login(username='TestUser', password='12345')

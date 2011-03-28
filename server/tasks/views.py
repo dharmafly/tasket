@@ -314,7 +314,7 @@ class ProfileView(PutView):
         self.res.write(
             json.dumps(
                     {
-                        'user_id' : user.pk
+                        'id' : user.pk
                     }
                 )
             )
