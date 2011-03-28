@@ -23,7 +23,7 @@ var Form = View.extend({
             error:   _.bind(this._onError, this)
         });
 
-        this.trigger('submit');
+        return this.trigger('submit', this.model, this);
     },
     errors: function (errors) {
         var list = this.$(':input');
@@ -39,16 +39,19 @@ var Form = View.extend({
                 });
             }
         });
+
+        return this;
     },
     reset: function () {
         this.$('.error strong').remove();
+        return this;
     },
     _onSuccess: function () {
-        this.trigger('success');
+        this.trigger('success', this.model, this);
     },
     _onError: function (model, xhr) {
         var errors = jQuery.parseJSON(xhr.responseText);
-        this.errors(errors).trigger('error');
+        this.errors(errors).trigger('error', this.model, this);
     }
 });
 

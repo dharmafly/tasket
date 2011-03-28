@@ -83,6 +83,10 @@ INSTALLED_APPS = [
     'tasks',
     'frontend',
     'sorl.thumbnail',
+    'indexer',
+    'paging',
+    'sentry',
+    'sentry.client',
 ]
 
 DEFAULT_TYPE = (

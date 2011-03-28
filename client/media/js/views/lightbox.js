@@ -15,7 +15,7 @@ var Lightbox = View.extend({
     constructor: function Lightbox() {
         View.prototype.constructor.apply(this, arguments);
     },
-    show: function () {
+    show: function (options) {
         this.elem.addClass(this.classes.display);
 
         // Need to use a timer for the animation to trigger.
@@ -23,9 +23,9 @@ var Lightbox = View.extend({
             this.elem.addClass(this.classes.animate);
         }, this), 0);
 
-        return this.trigger('show');
+        return this.trigger(options, 'show', this);
     },
-    hide: function () {
+    hide: function (options) {
         var duration = this.elem.css('-webkit-transition-duration') || null;
 
         this.elem.removeClass(this.classes.animate);
@@ -37,7 +37,7 @@ var Lightbox = View.extend({
             this.elem.removeClass(this.classes.display);
         }
 
-        return this.trigger('hide');
+        return this._trigger(options, 'hide', this);
     },
     content: function (content) {
         var element = this.$('.content');
@@ -52,6 +52,16 @@ var Lightbox = View.extend({
         var template = tim('lightbox');
         this.elem.html(template);
         return this;
+    },
+    _trigger: function () {
+      var options = arguments[0] || {},
+          args = Array.prototype.slice.call(arguments, 1);
+
+      if (!options.silent) {
+        this.trigger.apply(this, args);
+      }
+
+      return this;
     },
     _onHide: function (event) {
         if (event.target === this.el || $(event.target).hasClass('close')) {

@@ -6,7 +6,7 @@ import views
 
 urlpatterns = patterns('',
     # Home
-    url(r'^$',views.home),
+    url(r'^$',views.home, name="home"),
 
     # Hub Methods
     url(r'^hubs/(?P<hub_id>\d+)$',views.HubView.as_view()),

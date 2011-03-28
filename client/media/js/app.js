@@ -52,6 +52,7 @@ var app = _.extend({
     })(),
 
     updateCurrentUser: function (user) {
+        app.currentUser = user;
         return app.trigger('change:currentUser', user);
     },
 

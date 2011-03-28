@@ -1,7 +1,8 @@
 var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
-        "/hubs/:id/": "displayHub"
+        "/hubs/:id/": "displayHub",
+        "/hubs/:id/tasks/new/": "newTask"
     },
 
     constructor: function TankController() {
@@ -21,7 +22,7 @@ var TankController = Backbone.Controller.extend({
                 this.addHub(hub);
             }
         }, this));
-        
+
         _.bindAll(this, "_onSelectHubs");
     },
 
@@ -35,7 +36,7 @@ var TankController = Backbone.Controller.extend({
         _(hubs).each(this.addHub, this);
         return this;
     },
-    
+
     _onSelectHubs: function(hubToExclude){
         _(this.hubViews)
             .chain()
@@ -43,7 +44,7 @@ var TankController = Backbone.Controller.extend({
                 return view.model.id === hubToExclude.model.id;
             })
             .invoke("deselect");
-            
+
         return this;
     },
 
@@ -60,7 +61,7 @@ var TankController = Backbone.Controller.extend({
                 top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
             }
         });
-        
+
         hubView.bind("select", this._onSelectHubs);
 
         // TODO: move bodyElem to app.bodyElem
@@ -89,7 +90,15 @@ var TankController = Backbone.Controller.extend({
     },
 
     newHub: function(){
-        var form = new HubForm({
+        var form;
+
+        if (!app.currentUser) {
+            app.notification.error('You must be logged in to create a hub');
+            this.saveLocation('/');
+            return;
+        }
+
+        form = new HubForm({
             model: new Hub({
                 owner: app.currentUser.id
             })
@@ -100,6 +109,28 @@ var TankController = Backbone.Controller.extend({
             this.addHub(form.model);
             app.lightbox.hide();
         }, this));
+    },
+
+    newTask: function(id){
+        var form;
+
+        if (!app.currentUser) {
+            app.notification.error('You must be logged in to create a hub');
+            this.saveLocation('/');
+            return;
+        }
+
+        form = new TaskForm({
+            model: new Task({
+                hub: id, // NOTE: Verify this when refactoring hubs.
+                owner: app.currentUser.id
+            })
+        });
+
+        app.lightbox.content(form.render().el).show();
+        form.bind('success', _.bind(function (event) {
+            app.lightbox.hide();
+        }, this));
     }
 });
 
@@ -108,7 +139,6 @@ var PageController = Backbone.Controller.extend({
     routes: {
         '/about/':   'about',
         '/login/':   'login',
-        '/logout/':  'logout',
         '/sign-up/': 'signup'
     },
 
@@ -123,10 +153,11 @@ var PageController = Backbone.Controller.extend({
     login: function () {
         var form = new Login();
         app.lightbox.content(form.render().el).show();
-    },
 
-    logout: function () {
-
+        form.bind('success', function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide();
+        });
     },
 
     signup: function () {
@@ -137,6 +168,12 @@ var PageController = Backbone.Controller.extend({
         });
 
         app.lightbox.content(form.render().el).show();
+
+        form.bind('success', function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide();
+            app.notification.success('Your account has been created!');
+        });
     }
 });
 

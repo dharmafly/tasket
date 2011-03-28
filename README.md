@@ -6,7 +6,7 @@
     easy_install pip
     pip install -r requirements.txt
     cd web
-    cp local_setting.py.example local_settings.py
+    cp local_settings.py.example local_settings.py
 
 Edit _local_settings.py_ for the correct database settings - e.g. sqlite3
 

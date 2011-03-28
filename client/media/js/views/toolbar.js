@@ -25,7 +25,7 @@ app.setupToolbar = function () {
                 if (user.get('image')) {
                     userbar.find('img').attr('src', user.get('image'));
                 }
-                userbar.find('span').text(user.get('realname'));
+                userbar.find('span').text(user.get('name'));
             } else {
                 userbar.hide();
             }
@@ -38,10 +38,10 @@ app.setupToolbar = function () {
                 taskLists = user.get('tasks');
                 tasks.show();
                 tasks.find('.pending').text(
-                    user.get('tasks.claimed').length
+                    user.get('tasks.claimed.claimed').length
                 );
                 tasks.find('.done').text(
-                    user.get('tasks.done').length + user.get('tasks.verified').length
+                    user.get('tasks.claimed.done').length + user.get('tasks.claimed.verified').length
                 );
             } else {
                 tasks.hide();
@@ -65,8 +65,8 @@ app.setupToolbar = function () {
         // the appropraite areas.
         if (user) {
             user.bind('change', function () {
-                var taskKeys = ['tasks.claimed', 'tasks.verified', 'tasks.done'],
-                    userKeys = ['realname', 'image'],
+                var taskKeys = ['tasks.claimed.claimed', 'tasks.claimed.verified', 'tasks.claimed.done'],
+                    userKeys = ['name', 'image'],
                     changedAttr = user.changedAttributes(),
                     changedKeys = _.keys(changedAttr);
 

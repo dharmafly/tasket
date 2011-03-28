@@ -71,6 +71,22 @@ VERIFIED: "verified"
      /users/:id            # PUT:   Updates a single user for :id
      /users/:id            # DELETE Deletes a single user for :id
 
+### User registration ###
+
+POSTing to /users/ with the following JSON object will create a user and log 
+them in.  The newly created profile object ID will be returned.
+
+POST JSON:
+
+{
+    'username': 'test99', 
+    'email': 'foo@example.com', 
+    'password': '12345', 
+    'description': 'New description!', 
+    'name': 'Test User 99'
+}
+
+
 ### User Model Data ###
 
     {

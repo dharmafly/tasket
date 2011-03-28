@@ -1,43 +1,46 @@
 // TASK STATES
-/*
+
 var TaskStates = {
     NEW     : "new",
     CLAIMED : "claimed",
     DONE    : "done",
     VERIFIED: "verified"
 };
-*/
-var TaskStates = {
-    NEW     : 0,
-    CLAIMED : 1,
-    DONE    : 2,
-    VERIFIED: 3
+
+var TaskEstimates = {
+    'Ten Minutes':           60*10,
+    'Half an Hour':          60*30,
+    'One Hour':              60*60,
+    'Two hours':             60*60*2,
+    'Four hours':            60*60*4,
+    'Eight hours':           60*60*8,
+    'More than Eight hours': 60*60*12
 };
 
 // TASK
 var Task = Model.extend({
     // required: owner
-        
+
     type: "task",
-    
+
     required: ["owner", "hub"],
-    
+
     defaults: { // TODO: sending empty values to and from server is a waste of bandwidth
         description: "",
         image: "",
-        estimate: "",
+        estimate: TaskEstimates['Half an Hour'],
         state: TaskStates.NEW
     },
-    
+
     state: function(newState, userid){
         var task = this,
             currentState = this.get("state"),
             now, error;
-        
+
         if (!newState){
             return currentState;
         }
-        
+
         now = Tasket.now();
         error = function(){
             throw task.report(
@@ -48,7 +51,7 @@ var Task = Model.extend({
                 )
             );
         };
-        
+
         switch (newState){
             case TaskStates.NEW:
                 this.unset("claimedBy")
@@ -61,7 +64,7 @@ var Task = Model.extend({
                         state: newState
                     });
             break;
-            
+
             case TaskStates.CLAIMED:
                 if (userid && currentState === TaskStates.NEW){
                     this.set({
@@ -72,7 +75,7 @@ var Task = Model.extend({
                 else if (!this.get("claimedBy")){
                     error();
                 }
-                
+
                 this.unset("doneBy")
                     .unset("doneTime")
                     .unset("verifiedBy")
@@ -81,7 +84,7 @@ var Task = Model.extend({
                         state: newState
                     });
             break;
-            
+
             case TaskStates.DONE:
                 if (userid && currentState === TaskStates.CLAIMED){
                     this.set({
@@ -92,15 +95,15 @@ var Task = Model.extend({
                 else if (!this.get("doneBy")){
                     error();
                 }
-            
+
                 this.unset("verifiedBy")
                     .unset("verifiedTime")
                     .set({
                         state: newState
                     });
             break;
-            
-            
+
+
             case TaskStates.VERIFIED:
                 if (userid && currentState === TaskStates.DONE){
                     this.set({
@@ -111,26 +114,28 @@ var Task = Model.extend({
                 else if (!this.get("verifiedBy")){
                     error();
                 }
-                
+
                 this.set({
                     state: newState
                 });
             break;
-            
+
             default:
             error();
         }
-        
+
         return this;
     },
-    
+
     isOpen: function(){
         return this.state() === TaskStates.VERIFIED;
     },
-    
+
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
     }
+}, {
+    ESTIMATES: TaskEstimates
 });
 Task.states = TaskStates;
 

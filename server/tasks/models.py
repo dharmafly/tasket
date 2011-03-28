@@ -201,7 +201,7 @@ class Profile(models.Model):
     objects = managers.ProfileManager()
 
     def __unicode__(self):
-        return u"%s" % self.realname
+        return u"%s" % self.user
 
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
@@ -210,6 +210,7 @@ class Profile(models.Model):
         obj_dict = {
             "id": str(self.user.pk),
             "name": self.name.strip(),
+            "admin": self.admin,
             "description": self.description.strip(),
             "location": self.location.strip(),
             "hubs": {
