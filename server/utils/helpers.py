@@ -97,7 +97,7 @@ class PutView(View):
             if request.META['CONTENT_TYPE'] in ['application/json',]:
                 try:
                     request.JSON = json.loads(request.raw_post_data)
-                except:
+                except Exception, e:
                     request.JSON = None
         
         return request

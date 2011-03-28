@@ -8,6 +8,7 @@ from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.core.validators import email_re
 
 from utils.decorators import json_login_required as login_required
 from django.conf import settings
@@ -294,6 +295,20 @@ class ProfileView(PutView):
         username = request.JSON.get('username')
         password = request.JSON.get('password')
         email = request.JSON.get('email')
+        
+        
+
+        def is_valid_email(email):
+            if email_re.match(email):
+                return True
+            return False
+        
+        if not is_valid_email(email):
+            self.res.write(json.dumps({
+                'error': 'invalid email'
+            }))
+            self.res.status_code = 500
+            return self.res
         
         user = User.objects.create_user(username=username,
                 email=email,
