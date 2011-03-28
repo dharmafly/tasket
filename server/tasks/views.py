@@ -350,7 +350,32 @@ def thumbs(request, size, path):
     return HttpResponse(im.read(), mimetype=file_mimetype)
 
 
+def statistics(request):
+    """
+    Stats on objects in the database.
+    
+    Something like:
+    
+    { 
+        'new': 23, # Total tasks with "new" status
+        'claimed': 123, # Total tasks with "claimed" status etc.
+        'done': 23,
+        'verified': 345,
+    }
+    """
+
+    stats = {
+        'tasks' : {
+            'new' : str(Task.objects.filter(state=Task.STATE_NEW).count()),
+            'claimed' : str(Task.objects.filter(state=Task.STATE_CLAIMED).count()),
+            'done' : str(Task.objects.filter(state=Task.STATE_DONE).count()),
+            'verified' : str(Task.objects.filter(state=Task.STATE_VERIFIED).count()),
+        }
+    }
+    
 
 
 
 
+
+    return HttpResponse(json.dumps(stats))
