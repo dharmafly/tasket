@@ -12,3 +12,4 @@ except ImportError:
     pass
 
 DEBUG = False
+TEMPLATE_DEBUG = True
