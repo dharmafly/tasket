@@ -26,5 +26,8 @@ urlpatterns = patterns('',
     
     # Images
     url(r'^thumb/(?P<size>[^/]+)/(?P<path>.*)$',views.thumbs),
+
+    # Statistics
+    url(r'^statistics/$',views.statistics),
     
    )

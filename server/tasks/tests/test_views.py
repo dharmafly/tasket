@@ -261,3 +261,19 @@ class ViewTests(TestCase):
         response = self.client.delete('/users/3')
 
         self.assertEqual(response.status_code, 405)
+
+
+    def test_statistics(self):
+        response = self.client.get('/statistics/')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['tasks']['new'], "1")
+        self.assertEqual(json_data['tasks']['claimed'], "1")
+        self.assertEqual(json_data['tasks']['done'], "1")
+        self.assertEqual(json_data['tasks']['verified'], "1")
+
+
+
+
+
+
+
