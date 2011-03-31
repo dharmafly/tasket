@@ -157,6 +157,7 @@
         "hub": 2, 
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03",
+        "doneTime": "2010-02-25 09:15:03",
         "verifiedBy": 2,
         "owner": 2, 
         "state": "done",
@@ -172,7 +173,7 @@
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 3, 
-        "verifiedBy": 4,
+        "verifiedBy": 3,
         "state": "verified",
         "estimate": 600
     }
@@ -202,6 +203,21 @@
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 2,
         "state": "new",
+        "estimate": 600
+    }
+},
+
+{
+    "pk": 7, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "claimed too long ago", 
+        "hub": 2, 
+        "image": "images/ACH_4307_3.jpg", 
+        "createdTime": "2010-01-25 09:15:03", 
+        "claimedTime": "2011-01-25 09:25:03",
+        "owner": 2,
+        "state": "claimed",
         "estimate": 600
     }
 }

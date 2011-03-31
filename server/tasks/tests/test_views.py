@@ -113,7 +113,7 @@ class ViewTests(TestCase):
     def test_task_get(self):
         response = self.client.get('/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 4)
+        self.assertEqual(len(json_data), 5)
     
     def test_task_get_single(self):
         response = self.client.get('/tasks/3')
@@ -298,7 +298,7 @@ class ViewTests(TestCase):
         response = self.client.get('/statistics/')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['tasks']['new'], "1")
-        self.assertEqual(json_data['tasks']['claimed'], "1")
+        self.assertEqual(json_data['tasks']['claimed'], "2")
         self.assertEqual(json_data['tasks']['done'], "1")
         self.assertEqual(json_data['tasks']['verified'], "1")
 
