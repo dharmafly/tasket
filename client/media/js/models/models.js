@@ -69,9 +69,11 @@ var CollectionModel = Backbone.Collection.extend({
         return new this.constructor(this.filter(function (model) {
             return _.indexOf(ids, model.id) > -1;
         }));
-    },
-    
-    
+    }
+
+    /*
+    REMOVED: Commented out as Tasket.getModels() now manages the contents of the
+             global cache rather than on a collection by collection basis.
     // TODO: check and improve efficiency if possible
     parse: function(data){
         var current = this.toJSON();
@@ -94,4 +96,5 @@ var CollectionModel = Backbone.Collection.extend({
         });
         return current;
     }
+    */
 });
