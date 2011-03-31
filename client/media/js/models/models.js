@@ -29,6 +29,25 @@ var Model = Backbone.Model.extend({
         return jQuery.expand(attributes);
     },
 
+    /* Checks to see if all required attributes are present in the model.
+     *
+     * Examples
+     *
+     *   model.isComplete();
+     *
+     * Returns true if all required attributes are present.
+     */
+    isComplete: function () {
+        if (this.required) {
+            // If any required attributes are undefined then .any() will return
+            // true and method returns false.
+            return !_.any(this.required, function(property){
+                return _.isUndefined(this.get(property));
+            }, this);
+        }
+        return true;
+    },
+
     validate: function(attrs) {
         var missing, report;
     
@@ -69,6 +88,17 @@ var CollectionModel = Backbone.Collection.extend({
         return new this.constructor(this.filter(function (model) {
             return _.indexOf(ids, model.id) > -1;
         }));
+    },
+
+    /* Check to see if all models in the collection are complete, ie. have
+     * allrequired properties.
+     *
+     * Returns true if all models are complete.
+     */
+    isComplete: function () {
+        return !this.any(function (model) {
+            return !model.isComplete();
+        });
     }
 
     /*
