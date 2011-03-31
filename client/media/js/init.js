@@ -38,15 +38,15 @@ if (!app.authtoken){
                 app.currentUser.get('tasks.owned.done'),
                 app.currentUser.get('tasks.claimed.claimed')
             );
-            Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
-                // Update the dashboard.
-                app.dashboard.updateUserTasks().updateManagedTasks();
-            });
+            // Tasket.fetchAndAdd(tasks, Tasket.tasks, function () {
+            //     // Update the dashboard.
+            //     app.dashboard.updateUserTasks().updateManagedTasks();
+            // });
 
             hubs = app.currentUser.get('hubs.owned');
-            Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
-                app.dashboard.updateUserHubs();
-            });
+            // Tasket.fetchAndAdd(hubs, Tasket.hubs, function () {
+            //     app.dashboard.updateUserHubs();
+            // });
         }));
 
         // TODO: cache authtoken in localStorage (but expire it after some time)
@@ -54,26 +54,16 @@ if (!app.authtoken){
     }
 }
 
-// Get data from the server and draw.
-app.init(function () {
-    // Create a new jQuery deferred object to be returned to init().
-    var deferred = new jQuery.Deferred();
-
-    // Pass a callback to the getOpenHubs() method that updates our
-    // deferred with the status. We call resolve() if the hubs have
-    // loaded and reject() if there was an error.
-    Tasket.getOpenHubs(function (success) {
-        if (success === true) {
-            deferred.resolve();
-        } else {
-            notification.error(lang.DOWNLOAD_ERROR);
-            deferred.reject();
-        }
-    });
-
-    // Return our deferred to the app.init() method.
-    return deferred;
-}());
+// Bootstrap the app with all open hubs.
+app.init(jQuery.ajax({
+    url: "/hubs/",
+    success: function (json) {
+        Tasket.hubs.add(json);
+    },
+    error: function () {
+        notification.error(lang.DOWNLOAD_ERROR);
+    }
+}));
 
 /////
 
