@@ -23,12 +23,12 @@ var Task = Model.extend({
 
     type: "task",
 
-    required: ["owner", "hub"],
+    required: ["owner", "hub", "estimate"],
 
     defaults: { // TODO: sending empty values to and from server is a waste of bandwidth
         description: "",
         image: "",
-        estimate: TaskEstimates['Half an Hour'],
+        estimate: TaskEstimates["Half an Hour"],
         state: TaskStates.NEW
     },
 
