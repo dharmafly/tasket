@@ -113,7 +113,9 @@ var HubView = View.extend({
 
     generateTaskViews: function(){
         this.taskViews = _( // TODO: This is an Underscore collection. Confusing? Or genius?
-            this.tasks.map(function(task){
+            this.tasks.filter(function (task) {
+                return task.get('state') !== Task.states.VERIFIED;
+            }).map(function(task){
                 return new TaskView({
                     model: task
                 });
