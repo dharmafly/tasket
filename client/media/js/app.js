@@ -51,6 +51,10 @@ var app = _.extend({
         };
     })(),
 
+    isCurrentUser: function (id) {
+        return id === app.currentUser.id;
+    },
+
     updateCurrentUser: function (user) {
         app.currentUser = user;
         return app.trigger('change:currentUser', user); // see dashboard.js > Dashboard.setUser()
