@@ -21,7 +21,7 @@ _.extend(Tasket, Backbone.Events, {
      *
      * Examples
      *
-     *   var users = Holla.getUsers([1, 2, 3, 4]);
+     *   var users = Tasket.getUsers([1, 2, 3, 4]);
      *   users.bind('refresh', updateUserDisplay);
      *
      * Returns a UserList object.
@@ -39,7 +39,7 @@ _.extend(Tasket, Backbone.Events, {
      *
      * Examples
      *
-     *   var tasks = Holla.getTasks([1, 2, 3, 4]);
+     *   var tasks = Tasket.getTasks([1, 2, 3, 4]);
      *   tasks.bind('refresh', updateTaskDisplay);
      *
      * Returns a TaskList object.
@@ -57,7 +57,7 @@ _.extend(Tasket, Backbone.Events, {
      *
      * Examples
      *
-     *   var hubs = Holla.getHubs([1, 2, 3, 4]);
+     *   var hubs = Tasket.getHubs([1, 2, 3, 4]);
      *   hubs.bind('refresh', updateHubDisplay);
      *
      * Returns a HubList object.
@@ -67,8 +67,7 @@ _.extend(Tasket, Backbone.Events, {
     },
 
     /* Fetch models from the global cache provided. If the model is not cached
-     * an empty promise is created with just an id. The collection is then
-     * fetched to get new models and update old ones. Once the collection has
+     * an empty promise is created with just an id. Once the collection has
      * refreshed any ids that do not exist on the server will be removed from
      * the collection. So in order to display the correct data it's best to
      * listen to the "refresh" event to be notified when the fetch completes.
@@ -78,31 +77,47 @@ _.extend(Tasket, Backbone.Events, {
      *
      * Examples
      *
-     *   var hubs = Holla.getModels(Tasket.hubs, [1, 2, 3, 4]);
+     *   var hubs = Tasket.getModels(Tasket.hubs, [1, 2, 3, 4]);
      *   hubs.bind('refresh', updateHubDisplay);
      *
      * Returns a Collection object.
      */
     getModels: function (collection, ids) {
-        var subset = new collection.constructor();
+        var subset = new collection.constructor(),
+            toLoad = new collection.constructor(),
+            toLoadCopy = new collection.constructor();
 
         _.each(ids, function (id) {
             var model = collection.get(id);
             if (!model) {
                 model = new collection.model({id: id});
+                toLoad.add(model);
+                toLoadCopy.add(model);
             }
             subset.add(model);
         });
 
-        subset.fetch({
-            success: function () {
-                subset.each(function (model) {
+        if (toLoad.length) {
+            toLoad.fetch().bind('refresh', function (c) {
+                toLoad.each(function (model) {
                     if (!collection.get(model.id)) {
                         collection.add(model);
                     }
+                    // Update the model in the subset with the new data.
+                    subset.get(model.id).set(model.toJSON()); 
                 });
-            }
-        });
+
+                // Remove all models from subset that appear in toLoadCopy
+                // but not in toLoad. As they do not exist on the server.
+                toLoadCopy.each(function (task) {
+                    if (!toLoad.get(task.id)) {
+                        subset.remove(task);
+                    }
+                });
+
+                subset.trigger("refresh", subset, {});
+            });
+        }
 
         return subset;
     },
