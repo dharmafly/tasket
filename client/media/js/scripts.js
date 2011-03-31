@@ -56,12 +56,9 @@ getScript(
     [
         "views/dashboard-detail-hub.js"
     ],
-
-    [
-        "core/tasket.js",
-        "app.js"
-    ],
     
+    "core/tasket.js",
+    "app.js",
     "lang/en.js",
     "views/toolbar.js",
     "init.js",
