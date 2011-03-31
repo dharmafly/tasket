@@ -14,7 +14,7 @@ var TaskView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
-        _.bindAll(this, "render");
+        _.bindAll(this, "render", "updateClaimedBy");
         this.model.bind("change", this.render);
     },
 
@@ -23,30 +23,43 @@ var TaskView = View.extend({
             currentUser = app.currentUser,
             claimedByModel, claimedBy;
 
-        data.hasUser = !!data.claimedBy;
-        if (data.hasUser){
-            data.isOwner = (data.owner === currentUser.id);
-            data.isNotOwner = !data.isOwner;
-        }
-        
-        data.showTakeThisButton = !data.hasUser;
-        data.showDoneThisButton = (data.claimedBy === currentUser);
-        
-        if (data.claimedBy){
-            claimedByModel = Tasket.getUsers([data.claimedBy]).at(0);
+        data.isClaimed = !!data.claimedBy;
 
-            // TODO - will this always have been fetched?
-            claimedBy = data.claimedBy = claimedByModel.attributes;
-            claimedBy.url = claimedByModel.url();
-            claimedBy.image = claimedBy.image || app.userPlaceholderImage;
-        }        
-        
         // TODO: provide url for user
         // TODO: wrap hub nucleus image in url link
-        
-        this.elem
-            .html(tim("task", data));
-            
+        this.elem.html(tim("task", data));
+        this.updateClaimedBy();
+
+        data.showTakeThisButton = !data.hasUser;
+        data.showDoneThisButton = (data.claimedBy === currentUser);
+
         return this.offsetApply();
+    },
+
+    updateClaimedBy: function () {
+        var templateName = "task-claimed-by-user",
+            claimedById = this.model.get("claimedBy"),
+            model;
+
+        if (!claimedById) {
+            return this;
+        }
+
+        if (claimedById === app.currentUser.id) {
+            model = app.currentUser;
+            templateName = "task-claimed-by-you";
+        } else {
+            model = Tasket.getUsers(claimedById).at(0);
+            model.bind("change", this.updateClaimedBy);
+            return this;
+        }
+
+        this.$(".claimedBy").html(tim(templateName, {
+            name: model.get("name"),
+            image: model.get("image"),
+            url: model.url()
+        }));
+
+        return this;
     }
 });

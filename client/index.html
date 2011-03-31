@@ -74,27 +74,24 @@
     <script type="text/tim" class="task">
         <p class="description">{{description}}</p>
         <aside class="meta">
-            {{hasUser}}
-                <p class="claimedBy">
-                    {{isOwner}}
-                        <img src="{{claimedBy.image}}" width="14" height="14" alt="Your avatar" />
-                        <a href="{{claimedBy.url}}" title="See your tasks">You’re</a> doing this
-                    {{/isOwner}}
-                    {{isNotOwner}}
-                        <img src="{{claimedBy.image}}" width="14" height="14" alt="{{claimedBy.name}}’s avatar" />
-                        <a href="{{claimedBy.url}}" title="See {{claimedBy.name}}’s tasks">{{claimedBy.name}}</a><br /> is doing this task
-                    {{/isNotOwner}}
-                </p>
-            {{/hasUser}}
-            {{showTakeThisButton}}
-                <form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
-            {{/showTakeThisButton}}
-            {{showDoneThisButton}}
-                <form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
-            {{/showDoneThisButton}}
+            {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
+            <div class="form"></div>
         </aside>
     </script>
-
+    <script type="text/tim" class="task-claim">
+        <form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
+    </script>
+    <script type="text/tim" class="task-done">
+        <form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
+    </script>
+    <script type="text/tim" class="task-claimed-by-you">
+        <img src="{{image}}" width="14" height="14" alt="Your avatar" />
+        <a href="{{url}}" title="See your tasks">You’re</a> doing this
+    </script>
+    <script type="text/tim" class="task-claimed-by-user">
+        <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
+        <a href="{{url}}" title="See {{name}}’s tasks">{{name}}</a><br /> is doing this task
+    </script>
     <script type="text/tim" class="dashboard-detail">
         <h1>{{title}}</h1>
         <button class="action close">Close</button>
