@@ -1,9 +1,9 @@
 var TaskView = View.extend({
     tagName: "li",
     className: "task",
-    
+
     defaults: {},
-    
+
     events: {
         //"click button": "completeTask"
     },
@@ -28,12 +28,38 @@ var TaskView = View.extend({
         // TODO: provide url for user
         // TODO: wrap hub nucleus image in url link
         this.elem.html(tim("task", data));
+
         this.updateClaimedBy();
-
-        data.showTakeThisButton = !data.hasUser;
-        data.showDoneThisButton = (data.claimedBy === currentUser);
-
+        this.updateControls();
         return this.offsetApply();
+    },
+
+    updateControls: function () {
+        var controls    = this.$(".controls"),
+            template    = tim("task-control"),
+            claimedById = this.model.get("claimedBy"),
+            data;
+
+        if (!claimedById) {
+            data = {
+                type: "claim",
+                text: "I'll do it"
+            };
+        }
+        else if (app.isCurrentUser(claimedById)) {
+            data = {
+                type: "done",
+                text: "I've done it"
+            };
+        }
+
+        if (data) {
+            controls.html(tim("task-control", data));
+        } else {
+            controls.empty();
+        }
+
+        return this;
     },
 
     updateClaimedBy: function () {
@@ -45,7 +71,7 @@ var TaskView = View.extend({
             return this;
         }
 
-        if (claimedById === app.currentUser.id) {
+        if (app.isCurrentUser(claimedById)) {
             model = app.currentUser;
             templateName = "task-claimed-by-you";
         } else {

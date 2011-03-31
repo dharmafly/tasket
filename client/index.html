@@ -75,14 +75,11 @@
         <p class="description">{{description}}</p>
         <aside class="meta">
             {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
-            <div class="form"></div>
+            <div class="controls"></div>
         </aside>
     </script>
-    <script type="text/tim" class="task-claim">
-        <form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
-    </script>
-    <script type="text/tim" class="task-done">
-        <form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
+    <script type="text/tim" class="task-control">
+        <button class="{{type}}">{{text}}</button>
     </script>
     <script type="text/tim" class="task-claimed-by-you">
         <img src="{{image}}" width="14" height="14" alt="Your avatar" />
