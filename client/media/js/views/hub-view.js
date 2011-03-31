@@ -43,12 +43,26 @@ var HubView = View.extend({
             // this changes the location hash, which causes the controller to trigger the route "displayHub"
         }
     },
-    
+
+    showTasks: function () {
+        this.select();
+        this.set("tasksVisible", true);
+
+        if (!this.tasks) {
+            this.refreshTasks();
+        }
+
+        if (this.tasks.isComplete()) {
+            return this.renderTasks();
+        }
+        return this.loading();
+    },
+
     toggleTasks: function(){
         if (this.tasksVisible()){
             return this.clearTasks();
         }
-        return this.renderTasks();
+        return this.showTasks();
     },
     
     toggleSelected: function(){
@@ -57,6 +71,12 @@ var HubView = View.extend({
         }
         return this.select();
     },    
+    
+    loading: function (active) {
+        var method = (active === false) ? "removeClass" : "addClass";
+        this.elem[method]("loading");
+        return this;
+    },
     
     select: function(){
         this.set("selected", true);
@@ -71,12 +91,31 @@ var HubView = View.extend({
         this.elem.removeClass("select");
         return this;
     },
-    
-    _generateTaskViews: function(){        
+
+    refreshTasks: function () {
+        var hubView = this;
+
+        this.tasks = Tasket.getTasks(this.model.get("tasks"));
+        this.tasks.bind("refresh", function () {
+            // Regenerate the task views.
+            hubView.generateTaskViews();
+
+            if (hubView.tasksVisible()) {
+                // If the tasks are displayed re-render them.
+                hubView.renderTasks();
+            }
+        });
+        if (this.tasks.isComplete()) {
+            this.generateTaskViews();
+        }
+        return this;
+    },
+
+    generateTaskViews: function(){
         this.taskViews = _( // TODO: This is an Underscore collection. Confusing? Or genius?
-            _(this.model.get("tasks")).map(function(id){
+            this.tasks.map(function(task){
                 return new TaskView({
-                    model: Tasket.tasks.get(id)
+                    model: task
                 });
             })
         );
@@ -180,8 +219,7 @@ var HubView = View.extend({
                 top:  top
             });            
         }, this);
-        
-        this.set("tasksVisible", true);
+
         return this;
     },
     
@@ -215,9 +253,11 @@ var HubView = View.extend({
         }
         return this.offsetApply();
     },
-    
+
     initialize: function(){
         View.prototype.initialize.apply(this, arguments);
-        this._generateTaskViews(); // Note, this requires all task models to have been fetched
+        this.model.bind("change:tasks", function () {
+            this.refreshTasks();
+        });
     }
 });
