@@ -130,9 +130,6 @@
         <section class="quicklinks">
             <h1>My Projects</h1>
             <ul class="listing">
-                {{projects}}
-                    <li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/project/{{slug}}/" title="View {{title}}">{{title}}</a></li>
-                {{/projects}}
             </ul>
             <p>
                 <a class="button" href="#/projects/" title="View all projects">View All</a>
@@ -388,7 +385,12 @@
         </footer>
     </script>
     <script type="text/tim" class="dashboard-link">
-      {{links}}<li><a href="{{href}}" title="View {{title}}">{{title}}</a></li>{{/links}}
+      {{links}}
+      <li>
+        <a href="{{href}}" title="View {{title}}">{{title}}</a>
+        <a href="{{href}}/tasks/new">Add task</a>
+      </li>
+      {{/links}}
     </script>
     <!--
 
