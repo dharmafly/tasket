@@ -123,3 +123,16 @@ POST JSON:
     /media/[image path]           #GET original uploaded image
     /thumb/NxN/[image path]       #GET thumbnail constrained to N
     /thumb/NxN/[image path]?crop  #GET thumbnail constrained to N and cropped form the centre
+    
+    
+## Statistics ##
+
+    /statistics/     #GET hash of relevant global statistics
+
+### Statistics data ###
+    {
+        new: 23      // Total tasks with "new" status
+        claimed: 123 // Total tasks with "claimed" status etc.
+        done: 23
+        verified: 345
+    }
