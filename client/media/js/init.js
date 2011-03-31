@@ -1,7 +1,7 @@
 var dummyCode = false,
     cachedCode = false,
     debugUsername = "TestUser",
-    debugPassword = null,
+    debugPassword = null, // 
     notification = app.notification,
     lang = Tasket.lang.en;
 

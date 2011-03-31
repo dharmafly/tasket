@@ -2,8 +2,8 @@
 
 var app = _.extend({
     hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
-    hubPlaceholderImage: "images/placeholder.png",
-    userPlaceholderImage: "images/placeholder.png",
+    hubPlaceholderImage: "/media/images/placeholder.png",
+    userPlaceholderImage: "/media/images/placeholder.png",
     useCsrfToken: false,
     useSessionId: true,
     authtoken: null,

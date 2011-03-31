@@ -78,7 +78,6 @@ var Dashboard = View.extend({
     
     userStatistics: function(){
         var user = this.model;
-        O(user);
         return {
             ownedClaimed:  user.get('tasks.owned.claimed').length,
             adminedDone:     user.get('tasks.owned.done').length,      // TODO: if an admin, this should include all done tasks
