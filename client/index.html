@@ -337,35 +337,26 @@
         <section class="quicklinks my-projects">
             <h1>My Projects</h1>
             <p class="help">This section provides you a quick list of your recent projects</p>
-            <ul class="listing">
-            </ul>
+            <ul class="listing"></ul>
             <p>
-                <a class="button" href="#/dashboard/hubs/" title="View all your projects">View All</a>
                 <a class="button" href="#/hubs/new/" title="Create a new project">New</a>
             </p>
         </section>
         <section class="quicklinks my-tasks">
             <h1>Tasks I’m Doing</h1>
             <p class="help">This section provides you a quick list of your currently active tasks</p>
-            <ul class="listing">
-            </ul>
-            <p>
-                <a class="button" href="#/tasks/" title="View all tasks">View All</a>
-            </p>
+            <ul class="listing"></ul>
         </section>
         <section class="quicklinks managed-tasks">
             <h1>Tasks I Manage</h1>
             <p class="help">This section provides you a quick list of tasks you administer</p>
-            <ul class="listing">
-            </ul>
-            <p>
-                <a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
-            </p>
+            <ul class="listing"></ul>
         </section>
         <footer>
             <p class="statistics">
                 <img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
-                <em>2,030</em> tasks done by everyone</p>
+                <em>2,030</em> tasks done by everyone
+            </p>
             <nav>
                 <ul>
                     <li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
@@ -382,7 +373,8 @@
       {{links}}
       <li>
         <a href="{{href}}" title="View {{title}}">{{title}}</a>
-        <a href="{{href}}/tasks/new">Add task</a>
+        {{isHub}}<a href="{{href}}/tasks/new">Add task</a>{{/isHub}}
+        {{isTask}}<button class="done">Done</button>{{/isTask}}
       </li>
       {{/links}}
     </script>

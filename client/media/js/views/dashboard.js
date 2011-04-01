@@ -14,6 +14,13 @@ var Dashboard = View.extend({
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
 
+        _.bindAll(this,
+            'updateNotifications',
+            'updateUserTasks',
+            'updateUserHubs',
+            'updateManagedTasks'
+        );
+
         // Setup the user bindings.
         this.setUser(this.model);
 
@@ -31,28 +38,33 @@ var Dashboard = View.extend({
 
     // Sets up bindings to update the dashbaord when the user changes.
     setUser: function (user, options) {
-        var methodMap = {
-            hubs:       ['UserHubs'],
-            tasks:      ['UserTasks', 'ManagedTasks'],
-            statistics: ['Notifications']
+        var dashboard = this,
+            methodMap;
+
+        methodMap = {
+            'UserHubs':      ['hubs.owned'],
+            'UserTasks':     ['tasks.claimed.claimed'],
+            'ManagedTasks':  ['tasks.owned.done'],
+            'Notifications': [
+              'tasks.owned.claimed', 'tasks.owned.done', 'tasks.claimed.verified'
+            ]
         };
 
         // Update the user object if nessecary.
         this.model = arguments.length ? user : this.model;
 
         if (this.model) {
-            this.model.bind('change', _.bind(function (user) {
-                _.each(methodMap, function (methods, property) {
-
-                    // For each propery in the methodMap see if it has changed
-                    // if so call the associated methods.
-                    if (user.hasChanged(property)) {
-                        _.each(methods, function (method) {
-                            this['update' + method]();
-                        }, this);
-                    }
-                }, this);
-            }, this));
+            this.model.bind('change', function (user) {
+                _.each(methodMap, function (attributes, method) {
+                    // For each of the attributes in the methodMap see if it has
+                    // changed if so call the associated method.
+                    _.each(attributes, function (attribute) {
+                        if (user.hasChanged(attribute)) {
+                            dashboard['update' + method]();
+                        }
+                    });
+                });
+            });
 
             if (!options || options.silent !== true) {
                 this.render();
@@ -75,11 +87,11 @@ var Dashboard = View.extend({
 
         return this;
     },
-    
+
     userStatistics: function(){
         var user = this.model;
         return {
-            ownedClaimed:  user.get('tasks.owned.claimed').length,
+            ownedClaimed:    user.get('tasks.owned.claimed').length,
             adminedDone:     user.get('tasks.owned.done').length,      // TODO: if an admin, this should include all done tasks
             claimedVerified: user.get('tasks.claimed.verified').length // TODO: should be recent verified tasks
         };
@@ -97,7 +109,7 @@ var Dashboard = View.extend({
                     listItem = anchor.parent(),
                     type = this.getAttribute('data-type'),
                     elem = anchor.find('span');
-                
+
                 if (stats[type]) {
                     elem.text(stats[type]);
                     listItem.show();
@@ -115,7 +127,8 @@ var Dashboard = View.extend({
     updateManagedTasks: function () {
         var tasks = null;
         if (this.model) {
-            tasks = Tasket.tasks.filterByIds(this.model.get('tasks.owned.done'));
+            tasks = Tasket.getTasks(this.model.get('tasks.owned.done'));
+            tasks.bind('refresh', this.updateManagedTasks);
         }
         return this.updateList('.managed-tasks', tasks);
     },
@@ -124,7 +137,8 @@ var Dashboard = View.extend({
     updateUserTasks: function () {
         var tasks = null;
         if (this.model) {
-            tasks = Tasket.tasks.filterByIds(this.model.get('tasks.claimed.claimed'));
+            tasks = Tasket.getTasks(this.model.get('tasks.claimed.claimed'));
+            tasks.bind('refresh', this.updateUserTasks);
         }
         return this.updateList('.my-tasks', tasks);
     },
@@ -133,7 +147,8 @@ var Dashboard = View.extend({
     updateUserHubs: function () {
         var hubs = null;
         if (this.model) {
-            hubs = Tasket.hubs.filterByIds(this.model.get('hubs.owned'));
+            hubs = Tasket.getHubs(this.model.get('hubs.owned'));
+            hubs.bind('refresh', this.updateUserHubs);
         }
         return this.updateList('.my-projects', hubs);
     },
@@ -144,9 +159,12 @@ var Dashboard = View.extend({
 
         if (models) {
             mapped = models.map(function (model) {
+                var title = model.get('title') || model.get('description');
                 return {
-                    href: '#/' + model.type + '/' + model.id,
-                    title: model.get('title') || 'Missing title'
+                    href:   '#/' + model.type + '/' + model.id,
+                    title:  truncate(title, 15),
+                    isHub:  model.type === 'hub',
+                    isTask: model.type === 'task'
                 };
             });
             this.$(selector).show().find('ul').html(tim('dashboard-link', {
