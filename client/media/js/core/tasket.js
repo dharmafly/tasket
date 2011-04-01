@@ -10,6 +10,12 @@ _.extend(Tasket, Backbone.Events, {
     tasks: new TaskList(),
     users: new UserList(),
 
+    failed: {
+        hub:  [],
+        task: [],
+        user: []
+    },
+
     now: now,
 
     /* Fetch users by id from the global cache. Returns a UserList of promise
@@ -83,12 +89,18 @@ _.extend(Tasket, Backbone.Events, {
      * Returns a Collection object.
      */
     getModels: function (collection, ids) {
-        var subset = new collection.constructor(),
-            toLoad = new collection.constructor(),
+        var wrapped = _(ids),
+            type    = collection.model.prototype.type,
+            subset  = new collection.constructor(),
+            toLoad  = new collection.constructor(),
             toLoadCopy = new collection.constructor();
+
+        // Removed previously failed ids.
+        ids = wrapped.without.apply(wrapped, Tasket.failed[type]);
 
         _.each(ids, function (id) {
             var model = collection.get(id);
+
             if (!model) {
                 model = new collection.model({id: id});
                 toLoad.add(model);
@@ -98,20 +110,23 @@ _.extend(Tasket, Backbone.Events, {
         });
 
         if (toLoad.length) {
-            toLoad.fetch().bind('refresh', function (c) {
+            toLoad.fetch().bind('refresh', function () {
                 toLoad.each(function (model) {
                     if (!collection.get(model.id)) {
                         collection.add(model);
                     }
                     // Update the model in the subset with the new data.
-                    subset.get(model.id).set(model.toJSON()); 
+                    subset.get(model.id).set(model.toJSON());
                 });
 
                 // Remove all models from subset that appear in toLoadCopy
                 // but not in toLoad. As they do not exist on the server.
-                toLoadCopy.each(function (task) {
-                    if (!toLoad.get(task.id)) {
-                        subset.remove(task);
+                toLoadCopy.each(function (model) {
+                    if (!toLoad.get(model.id)) {
+                        subset.remove(model);
+
+                        // Cache the failed model id.
+                        Tasket.failed[model.type].push(model.id);
                     }
                 });
 
@@ -122,7 +137,8 @@ _.extend(Tasket, Backbone.Events, {
         return subset;
     },
 
-    // Helper function for fetching multiple collections and models in one go, with a callback on completion
+    // Helper function for fetching multiple collections and models in one go,
+    // with a callback on completion
     fetchAndAdd: function fetchAndAdd(ids, collection, callback){
         // Keep track of fetched collections, and trigger event on completion
         function callbackIfComplete(){
@@ -176,7 +192,8 @@ _.extend(Tasket, Backbone.Events, {
         }
     },
 
-    // Bootstrap data on page load: fetch all open hubs, their owners and tasks, and the users involved in those tasks
+    // Bootstrap data on page load: fetch all open hubs, their owners and tasks,
+    // and the users involved in those tasks
     getOpenHubs: function(callback){
         var pending = 0,
             hubs = this.hubs,
