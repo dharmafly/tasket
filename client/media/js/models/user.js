@@ -5,6 +5,7 @@ var User = Model.extend({
     required: ["name"],
 
     defaults: {
+        name: "",
         image: "",
         description: "",
         location: "",

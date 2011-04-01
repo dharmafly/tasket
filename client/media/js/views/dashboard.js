@@ -157,7 +157,7 @@ var Dashboard = View.extend({
     updateList: function(selector, models){
         var mapped;
 
-        if (models && models.length) {
+        if (models && (models.length || models.type === 'hub')) {
             mapped = models.map(function (model) {
                 var title = model.get('title') || model.get('description');
                 return {
