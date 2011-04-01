@@ -32,6 +32,10 @@ var Task = Model.extend({
         state: TaskStates.NEW
     },
 
+    constructor: function Task() {
+        Model.prototype.constructor.apply(this, arguments);
+    },
+
     state: function(newState, userid){
         var task = this,
             currentState = this.get("state"),
