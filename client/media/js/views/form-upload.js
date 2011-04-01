@@ -107,8 +107,14 @@ var FormUpload = Form.extend({
      */
     _onSuccess: function () {
         var view = this,
-            form = $("form", this.iframe.contentWindow.document.body)[0],
+            form = $("form", this.iframe.contentWindow.document.body),
             iframe = $(this.iframe);
+
+        // Bail early if no file is present.
+        if (!form.find('input').val()) {
+            view.trigger("success", view.model, view);
+            return;
+        }
 
         // Hide the iframe and show loading text.
         this.toggleLoading();
@@ -122,6 +128,9 @@ var FormUpload = Form.extend({
             view.model.set(data);
             view.trigger("success", view.model, view);
         }
+
+        // Grab the element from the jQuery wrapper.
+        form = form[0];
 
         // Update the form action.
         form.action = this.url();
