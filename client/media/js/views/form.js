@@ -14,7 +14,7 @@ var Form = View.extend({
 
         this.reset();
 
-        this.$(':input').each(function () {
+        this.$(':input:not([type=file])').each(function () {
             data[this.name] = $(this).val();
         });
 

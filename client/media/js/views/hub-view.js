@@ -9,13 +9,28 @@ var HubView = View.extend({
         lineWidth: 2
     },
 
+    constructor: function HubView() {
+        View.prototype.constructor.apply(this, arguments);
+    },
+
+    initialize: function () {
+        View.prototype.initialize.apply(this, arguments);
+        _.bindAll(this, "updateImage");
+        this.model.bind("change:image", this.updateImage);
+    },
+
+    updateImage: function () {
+        this.$("img.nucleus").attr('src', this.imageSrc());
+        return this;
+    },
+
     imageSrc: function(src){
         if (src){
             return this.set({
                 image:src
             });
         }
-        src = this.get("image");
+        src = this.model.get("image");
         return src ? src : app.hubPlaceholderImage;
     },
 

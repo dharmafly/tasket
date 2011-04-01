@@ -97,6 +97,10 @@ var TankController = Backbone.Controller.extend({
         });
 
         app.lightbox.content(form.render().el).show();
+
+        // Append our iFrame element for upload.
+        form.updateFrame();
+
         form.bind('success', _.bind(function (event) {
             this.addHub(form.model);
             app.lightbox.hide();
