@@ -44,7 +44,7 @@ getScript(
         "views/form.js",
         "controllers/controllers.js"
     ],
-
+    "views/form-upload.js",
     [
         "views/login.js",
         "views/signup.js",

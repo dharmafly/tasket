@@ -301,10 +301,25 @@
                 <label for="field-description">Description</label>
                 <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
             </li>
+            <li>
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
         </ul>
         <div class="actions">
             <button type="submit">Create Hub</button>
         </div>
+    </script>
+
+    <script type="text/tim" class="iframe-upload">
+        <!doctype html>
+        <head>
+            <style>body, form { margin: 0; }</style>
+        </head>
+        <form action="" method="post" enctype="multipart/form-data">
+            <input type="file" name="{{name}}" />
+        </form>
     </script>
 
     <script type="text/tim" class="new-task">
