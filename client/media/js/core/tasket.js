@@ -1,5 +1,6 @@
 // PUBLIC API
 _.extend(Tasket, Backbone.Events, {
+    namespace: "tasket", // used for settings such as localStorage namespacing
     version: "0.1.0",
     //endpoint: "http://tasket.ep.io/",
     endpoint: "http://localhost:8000/",
