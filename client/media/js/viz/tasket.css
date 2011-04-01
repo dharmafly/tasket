@@ -1,0 +1,145 @@
+#main{
+font:13px/1.5 Helvetica Neue,Arial,Helvetica,'Liberation Sans',FreeSans,sans-serif;
+width:990px;
+}
+
+#left-col{
+width:250px;
+float:left;
+background:#eee;
+}
+
+.logo{
+float:left;
+margin-left:-85px;
+margin-top:-130px;
+}
+
+.logo img{
+border:none;
+}
+
+.logo a{
+line-height:0;
+}
+
+#intro{
+/*margin-top:-15px;*/
+padding:0 5px;
+}
+
+#blurb{
+font-size: 14px;
+}
+
+#intro h2{
+line-height:1.1;
+margin:5px 0;
+}
+
+#faq{
+padding:0 5px;
+font-size: 11px;
+}
+
+#world_canvas{
+width:400px;
+margin:0 10px;
+}
+
+#mycanvas{
+margin:0;
+}
+
+/* Twitter hackery */
+
+#button_panel{
+width:385px;
+margin:auto;
+}
+
+#twitterBox{
+width:300px;
+float:left;
+}
+
+#tweetsFeed{
+width:300px;
+/*float:left;*/
+display: inline-block;
+}
+
+.jta-tweet-body{
+font-size:12px;
+}
+
+.jta-tweet-profile-image{
+width:24px;
+}
+
+.jta-tweet-profile-image img{
+border:none;
+width:24px;
+height:24px;
+}
+
+.jta-tweet-body-list-profile-image-present{
+margin-left:34px;
+}
+
+.jta-tweet-list{
+margin-top:0;
+}
+
+.jta-tweet-list-item{
+padding:8px;
+}
+
+#twitterProfile{
+background:#fff;
+width:300px;
+display:none;
+float:left;
+padding-bottom:7px;
+}
+
+.profile-image-container{
+float:left;
+margin:10px 0px 10px 10px;
+}
+
+.profile-details{
+float:left;
+margin: 10px 0 0 15px;
+display: inline-block;
+width:220px;
+}
+
+.profile-details .bio{
+color:#777777;
+font-family:Georgia,serif;
+font-size:14px;
+font-style:italic;
+line-height:18px;
+}
+
+.profile-details .full-name h2 {
+font-size:24px;
+font-weight:bold;
+line-height:30px;
+margin:0;
+padding:0;
+}
+
+.profile-details .url{
+}
+
+#available-conf, #twitter-set{
+width:100%;
+text-align:center;
+font-size:20px;
+}
+
+.img_button a:hover img{
+  border:1px solid red;
+}
