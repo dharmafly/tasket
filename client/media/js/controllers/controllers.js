@@ -165,6 +165,9 @@ var PageController = Backbone.Controller.extend({
 
         app.lightbox.content(form.render().el).show();
 
+        // Append iframe for avatar upload.
+        form.updateFrame();
+
         form.bind('success', function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();

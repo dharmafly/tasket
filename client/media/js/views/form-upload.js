@@ -57,9 +57,10 @@ var FormUpload = Form.extend({
         }
 
         this.iframe.contentWindow.document.open();
-        this.iframe.contentWindow.document.write(
-            tim("iframe-upload", { name: this.name })
-        );
+        this.iframe.contentWindow.document.write(tim("iframe-upload", {
+            name: this.name,
+            stylesheet: $('link[rel=stylesheet]')[0].href
+        }));
         this.iframe.contentWindow.document.close();
 
         return this;
@@ -82,7 +83,7 @@ var FormUpload = Form.extend({
             allowTransparency: true,
             css: {
                 width: "100%",
-                height: input.parent().height(),
+                height: input.outerHeight(),
                 margin: 0,
                 padding: 0,
                 overflow: "hidden",

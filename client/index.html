@@ -267,6 +267,11 @@
                     <label for="field-password-confirm">Confirm Password</label>
                     <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
                 </li>
+                <li>
+                    <label for="field-image">Image</label>
+                    <input id="field-image" type="file" name="image" />
+                    <p class="loading">Uploading image</p>
+                </li>
             </ul>
             <div class="actions">
                 <button type="submit">Sign Up</button>
@@ -315,11 +320,18 @@
     <script type="text/tim" class="iframe-upload">
         <!doctype html>
         <head>
-            <style>body, form { margin: 0; }</style>
+            <link rel="stylesheet" href="{{stylesheet}}" />
+            <style>
+                html, body, form, form input[type=file] {
+                    background: none; border: none; margin: 0;
+                }
+            </style>
         </head>
-        <form action="" method="post" enctype="multipart/form-data">
-            <input type="file" name="{{name}}" />
-        </form>
+        <body class="content">
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="{{name}}" />
+            </form>
+        </body>
     </script>
 
     <script type="text/tim" class="new-task">
