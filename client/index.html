@@ -373,8 +373,11 @@
       {{links}}
       <li>
         <a href="{{href}}" title="View {{title}}">{{title}}</a>
-        {{isHub}}<a href="{{href}}/tasks/new">Add task</a>{{/isHub}}
-        {{isTask}}<button class="done">Done</button>{{/isTask}}
+        {{isHub}}<a href="{{href}}/tasks/new/">Add task</a>{{/isHub}}
+        {{isTask}}
+            {{showDone}}<button class="done">Done</button>{{/showDone}}
+            {{showVerify}}<button class="verify">Verify</button>{{/showVerify}}
+        {{/isTask}}
       </li>
       {{/links}}
     </script>

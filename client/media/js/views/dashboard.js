@@ -161,10 +161,12 @@ var Dashboard = View.extend({
             mapped = models.map(function (model) {
                 var title = model.get('title') || model.get('description');
                 return {
-                    href:   '#/' + model.type + '/' + model.id,
-                    title:  truncate(title, 15),
-                    isHub:  model.type === 'hub',
-                    isTask: model.type === 'task'
+                    href:        '#/' + model.type + '/' + model.id,
+                    title:       truncate(title, 15),
+                    isHub:       model.type === 'hub',
+                    isTask:      model.type === 'task',
+                    showDone:    app.isCurrentUser(model.get('claimedBy')),
+                    showVerify: !app.isCurrentUser(model.get('claimedBy'))
                 };
             });
             this.$(selector).show().find('ul').html(tim('dashboard-link', {
