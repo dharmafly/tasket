@@ -22,6 +22,9 @@ getScript(
         "dependencies/underscore.js",
         "dependencies/tim.js"
     ],
+    
+    "dependencies/vec2.js",
+    "dependencies/forcedirected.js",
 
     "dependencies/backbone.js",
     "dependencies/flatten.js",

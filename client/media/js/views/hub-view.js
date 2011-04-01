@@ -194,6 +194,16 @@ var HubView = View.extend({
         }
         return this;
     },
+    
+    xrenderTasks: function(){
+        
+        
+
+        taskView.offset({
+            left: left,
+            top:  top
+        });
+    },
 
     renderTasks: function(){
         var container = this.taskListElem,

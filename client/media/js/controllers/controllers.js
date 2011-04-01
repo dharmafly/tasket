@@ -48,18 +48,29 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
 
-    addHub: function(hub){
+    addHub: function(hub, options){
+        var hubView, offset;
+    
         if (this.getHubView(hub.id)) {
             return this;
         }
-
-        var hubView = this.hubViews[hub.cid] = new HubView({
-            model: hub,
-
-            offset: { // TODO: Make useful
+        
+        if (options.left && options.top){
+            offset = {
+                left: options.left,
+                top: options.top
+            }
+        }
+        else {
+            offset = { // TODO TEMP
                 left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
                 top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
             }
+        }
+
+        hubView = this.hubViews[hub.cid] = new HubView({
+            model: hub,
+            offset: offset
         });
 
         hubView.bind("select", this._onSelectHubs);
@@ -67,8 +78,14 @@ var TankController = Backbone.Controller.extend({
         // TODO: move bodyElem to app.bodyElem
         bodyElem.append(hubView.elem);
         hubView.render();
+        
+        // TODO TEMP
+        if (!window.hubViews){
+            window.hubViews = [];
+        }
+        window.hubViews.push(hubView);
 
-        return this;
+        return hubView;
     },
 
     displayHub: function(id){

@@ -316,7 +316,7 @@ TaskNode = function(world, params){
 
 TaskNode.prototype = {
 	getPos: function(){
-		return {'x':p[0], 'y':p[1]};
+		return {'x':this.p[0], 'y':this.p[1]};
 	},
 
 	setHeight: function(h){

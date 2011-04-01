@@ -17,6 +17,7 @@ var cache = new Cache(Tasket.namespace),
         tankController: new TankController(),
         pageController: new PageController(),
         dashController: new DashboardController(),
+        forcedirected:  new Tasketter(),
 
         // init() accepts jQuery deferred objects as returned by jQuery.ajax() or
         // created manually using new jQuery.Deferred(). These objects are
