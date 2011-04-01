@@ -23,6 +23,8 @@ var Lightbox = View.extend({
             this.elem.addClass(this.classes.animate);
         }, this), 0);
 
+        this._updateMargin();
+
         return this.trigger(options, 'show', this);
     },
     hide: function (options) {
@@ -51,6 +53,14 @@ var Lightbox = View.extend({
     render: function () {
         var template = tim('lightbox');
         this.elem.html(template);
+        return this;
+    },
+    _updateMargin: function () {
+        var inner = this.$('.lightbox-inner');
+        inner.css({
+            top: '50%',
+            'margin-top': inner.outerHeight() / 2 * -1
+        });
         return this;
     },
     _trigger: function () {
