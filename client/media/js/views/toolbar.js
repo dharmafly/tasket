@@ -54,9 +54,10 @@ app.setupToolbar = function () {
             toolbar.find('[href*=sign-up]')[state]();
         }
     };
-
+O("binding");
     // Watch for changes to the current user and update the toolbar accordinly.
     app.bind('change:currentUser', function (user) {
+        O(user);
         _.each(actions, function (method) {
             method(user);
         });

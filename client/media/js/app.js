@@ -57,12 +57,29 @@ var cache = new Cache(Tasket.namespace),
         isCurrentUser: function (id) {
             return id === app.currentUser.id;
         },
+        
+        restoreCache: function(){
+            var currentUserData = app.cache.get("currentUser"),
+                currentUser;
+                
+            if (currentUserData){
+                currentUser = app.updateCurrentUser(currentUserData, false);
+                currentUser.fetch();
+            }
+        
+            app.authtoken = app.cache.get("authtoken");
+            app.csrftoken = app.cache.get("csrftoken");
+            return app;
+        },
 
-        updateCurrentUser: function (userData) {
+        updateCurrentUser: function (userData, cache) {
+            O(userData);
             if (userData){
                 app.currentUser = new User(userData);
-                app.cache.set("currentUser", userData);
-                app.trigger('change:currentUser', user); // see dashboard.js > Dashboard.setUser()
+                if (cache !== false){
+                    app.cache.set("currentUser", userData);
+                }
+                app.trigger('change:currentUser', app.currentUser); // see dashboard.js > Dashboard.setUser()
             }
             return app.currentUser;
         },
@@ -133,17 +150,6 @@ var cache = new Cache(Tasket.namespace),
                 }
             }
             return xhr;
-        },
-        
-        restoreCache: function(){
-            var currentUser = app.cache.get("currentUser");
-            if (currentUser){
-                app.currentUser = new User(currentUser);
-            }
-        
-            app.authtoken = app.cache.get("authtoken");
-            app.csrftoken = app.cache.get("csrftoken");
-            return app;
         },
         
         setupAuthentication: function(){

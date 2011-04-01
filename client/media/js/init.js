@@ -15,9 +15,13 @@ app.dashboard.detail.bind('hide', app.back);
 
 /////
 
+
+// Run setup methods.
+app.setupToolbar(); // TODO: move setupToolbar to app object from the start and create toolbar view
+
 app.restoreCache()
    .setupAuthentication();
-
+   
 if (!app.authtoken){
     if (debugUsername && debugPassword) {
         // Pass this into our bootstrap method as the app depends on
@@ -78,9 +82,6 @@ window.setTimeout(function(){
 }, 0);
 
 // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
-
-// Run setup methods.
-app.setupToolbar();
 
 // START
 app.init();
