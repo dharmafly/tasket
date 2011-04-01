@@ -65,6 +65,7 @@ app.bind("ready", function onReady(){
     app.notification.hide();
     app.tankController.addHubs(Tasket.hubs.models);
     Backbone.history.start();
+    app.loaded = true;
 });
 
 // Called when the bootstrap methods fail.
@@ -78,7 +79,9 @@ app.bind("error", function (data) {
 
 // Timeout required to prevent notification appearing immediately (seen in Chrome)
 window.setTimeout(function(){
-    app.notification.warning(lang.LOADING);
+    if (!app.loaded){
+        app.notification.warning(lang.LOADING);
+    }
 }, 0);
 
 // TODO: setTimeout in case of non-load -> show error and cancel all open xhr

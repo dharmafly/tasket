@@ -5,6 +5,7 @@ var cache = new Cache(Tasket.namespace),
         hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
         hubPlaceholderImage: "/media/images/placeholder.png",
         userPlaceholderImage: "/media/images/placeholder.png",
+        loaded: false,
         useCsrfToken: false,
         useSessionId: true,
         authtoken: null,
