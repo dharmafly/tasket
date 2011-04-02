@@ -646,6 +646,7 @@ form ul,
 article {
 	z-index: 0;
 	position: absolute;
+	min-width:20.7em; /* allows hgroup to extend to fill width */
 }
 
 article > img {
@@ -653,9 +654,10 @@ article > img {
 	left: 0;
 	width:2em;
 	height:2em;
-	margin-top: -3.5em;
 	padding: 1.6em;
 	border: 0.8em solid #111;
+	margin-left: -3.4em; /* (width / 2) + padding + border-width */
+	margin-top: -3.4em; /* (height / 2) + padding + border-width */
 	background-color: #aaa;
 	-webkit-border-radius: 4em;
 	-moz-border-radius: 4em;
@@ -673,23 +675,23 @@ article > img.selected {
 }
 
 article > hgroup {
-    margin-top:-2.7em; /* TODO: needs revising, to accommodate varying sizes of text */
+    margin-top:-3.4em; /* match this to article > img (=3.4em); minus any desired padding */
+	min-height:5.2em; /* overall height of article > img (=5.2em); minus any desired padding x2 */
     position:absolute;
-	margin-left: 6em;
+	margin-left:3em;
 	min-width:10em;
-	padding: 0.769em /* 10px */ 1.538em /* 20px */;
+	padding: 0.8em 1.6em;
 	background-color: #111;
 	color: #fff;
 }
 
 article > div.tasks {
     position:absolute;
-	margin-left:3.4em;
 }
 
 article > div.tasks > canvas {
     position:absolute;
-    top:0;
+    top:0;	
 }
 
 article > div.tasks > ul {

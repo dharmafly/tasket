@@ -273,7 +273,7 @@ var HubView = View.extend({
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("img.nucleus");
         // NOTE: this calculation requires this.elem to be present in the document's DOM, for CSS styling
-        this.nucleusWidth = this.nucleusElem.outerWidth(true); // TODO: or use .set("nucleusWidth"); ?
+        this.nucleusWidth = this.nucleusElem.outerWidth(); // TODO: or use .set("nucleusWidth"); ?
         this.tasksElem = this.$("div.tasks");
         this.taskListElem = this.tasksElem.children("ul");
         this.labelElem = this.$("hgroup");

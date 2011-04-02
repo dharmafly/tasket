@@ -70,7 +70,7 @@ app.bind("ready", function onReady(){
 
 // Called when the bootstrap methods fail.
 app.bind("error", function (data) {
-    // Any global error handling.
+    app.notification.error(lang.INIT_ERROR);
 });
 
 

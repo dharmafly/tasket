@@ -56,16 +56,14 @@ getScript(
         "views/dashboard-detail.js"
     ],
 
-    [
-        "views/dashboard-detail-hub.js"
-    ],
-    
+    "views/dashboard-detail-hub.js",
     "core/tasket.js",
     "app.js",
     "lang/en.js",
     "views/toolbar.js",
     "init.js",
     "temp.js",
+    //"viz/test.js",
     
     // Callback function once all are loaded
     function(loaded){
