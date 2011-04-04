@@ -4,7 +4,8 @@ var SignUp = FormUpload.extend({
     },
 
     url: function () {
-        return this.model.url() + '/images/';
+        // API requires a URL without user ID.
+        return '/users/image/';
     },
 
     render: function () {
