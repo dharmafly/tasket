@@ -1,7 +1,7 @@
 var dummyCode = false,
     cachedCode = false,
     debugUsername = "TestUser",
-    debugPassword = "12345", // "12345"
+    debugPassword = "", // "12345"
     lang = Tasket.lang.en;
 
 $('body')
@@ -21,7 +21,7 @@ app.setupToolbar(); // TODO: move setupToolbar to app object from the start and 
 
 app.restoreCache()
    .setupAuthentication();
-   
+
 if (!app.authtoken){
     if (debugUsername && debugPassword) {
         // Pass this into our bootstrap method as the app depends on
@@ -38,7 +38,7 @@ if (!app.authtoken){
                 app.currentUser.get('tasks.owned.done'),
                 app.currentUser.get('tasks.claimed.claimed')
             );
-            
+
             hubs = app.currentUser.get('hubs.owned');
         }));
 
@@ -64,6 +64,14 @@ app.init(jQuery.ajax({
 app.bind("ready", function onReady(){
     app.notification.hide();
     app.tankController.addHubs(Tasket.hubs.models);
+
+    // Destory the cached user details when the logout button is clicked.
+    // This block can be removed once Ticket #84 has been resolved and the
+    // server deletes the "sessionid" cookie on logout.
+    $('form[action="/logout/"]').submit(function (event) {
+        app.destroyCache();
+    });
+
     Backbone.history.start();
     app.loaded = true;
 });
