@@ -1,16 +1,23 @@
 var SignUp = FormUpload.extend({
     constructor: function SignUp() {
         Form.prototype.constructor.apply(this, arguments);
+
+        // Remove the password fields from the User model.
+        this.bind("submit", function (user) {
+            _.each(["password", "password-confirm"], function (attribute) {
+                user.unset(attribute, {silent: true});
+            });
+        });
     },
 
     url: function () {
         // API requires a URL without user ID.
-        return '/users/image/';
+        return "/users/image/";
     },
 
     render: function () {
-        var html = tim('signup');
-        this.elem.html(html).find('.loading').hide();
+        var html = tim("signup");
+        this.elem.html(html).find(".loading").hide();
         return this;
     }
 });
