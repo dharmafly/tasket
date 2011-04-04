@@ -204,6 +204,10 @@ var HubView = View.extend({
             top:  top
         });
     },
+    
+    weight: function(){
+    
+    },
 
     renderTasks: function(){
         var container = this.taskListElem,
