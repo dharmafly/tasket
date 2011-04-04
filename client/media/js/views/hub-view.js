@@ -31,7 +31,9 @@ var HubView = View.extend({
             });
         }
         src = this.model.get("image");
-        return src ? src : app.hubPlaceholderImage;
+        
+        // Return cropped thumbnail or placeholder if no image.
+        return src ? '/thumb/30x30/' + src + '?crop' : app.hubPlaceholderImage;
     },
 
     isSelected: function(){
