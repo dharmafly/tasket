@@ -59,23 +59,33 @@ var cache = new Cache(Tasket.namespace),
         isCurrentUser: function (id) {
             return id === app.currentUser.id;
         },
-        
+
         restoreCache: function(){
-            var currentUserData = app.cache.get("currentUser"),
-                currentUser;
-                
-            if (currentUserData){
+            var currentUserData, currentUser;
+
+            // If we don't have a session cookie, destroy the cache.
+            if (!this.getCookie("sessionid")) {
+                this.destroyCache();
+            }
+
+            currentUserData = app.cache.get("currentUser");
+            if (currentUserData && this.getCookie("sessionid")){
                 currentUser = app.updateCurrentUser(currentUserData, false);
                 currentUser.fetch();
             }
-        
+
             app.authtoken = app.cache.get("authtoken");
             app.csrftoken = app.cache.get("csrftoken");
             return app;
         },
 
+        destroyCache: function () {
+            app.cache.remove("currentUser");
+            app.cache.remove("authtoken");
+            app.cache.remove("csrftoken");
+        },
+
         updateCurrentUser: function (userData, cache) {
-            O(userData);
             if (userData){
                 app.currentUser = new User(userData);
                 if (cache !== false){
@@ -85,7 +95,7 @@ var cache = new Cache(Tasket.namespace),
             }
             return app.currentUser;
         },
-        
+
         setAuthtoken: function(authtoken){
             app.authtoken = authtoken;
             app.cache.set("authtoken", app.authtoken);
@@ -105,14 +115,14 @@ var cache = new Cache(Tasket.namespace),
         getCookie: function(name){
             var docCookie = window.document.cookie,
                 cookieValue, cookies, cookie, i;
-            
+
             if (docCookie && docCookie !== "") {
                 cookies = docCookie.split(";");
-                
+
                 for (i = 0; i < cookies.length; i++) {
                     cookie = jQuery.trim(cookies[i]);
                     // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) == (name + '=')) {
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
                     }
@@ -120,7 +130,7 @@ var cache = new Cache(Tasket.namespace),
             }
             return cookieValue;
         },
-        
+
         sendCsrfToken: function(xhr){
             var csrftoken = app.csrftoken;
             if (!csrftoken){
@@ -131,19 +141,19 @@ var cache = new Cache(Tasket.namespace),
             }
             return xhr;
         },
-        
+
         sendSessionId: function(xhr){
             if (app.authtoken){
                 xhr.setRequestHeader("Authorization", app.authtoken);
             }
             return xhr;
         },
-        
+
         sendAuthorization: function(xhr, url){
-            // Only send authorisation for requests sent to the Tasket API            
+            // Only send authorisation for requests sent to the Tasket API
             if (url.indexOf(Tasket.endpoint) === 0){
                 xhr.withCredentials = true;
-                
+
                 if (app.useCsrfToken){
                     app.sendCsrfToken(xhr);
                 }
@@ -153,7 +163,7 @@ var cache = new Cache(Tasket.namespace),
             }
             return xhr;
         },
-        
+
         setupAuthentication: function(){
             jQuery.ajaxSetup({
                 beforeSend: function(xhr, settings){
