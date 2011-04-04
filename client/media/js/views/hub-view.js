@@ -17,6 +17,9 @@ var HubView = View.extend({
         View.prototype.initialize.apply(this, arguments);
         _.bindAll(this, "updateImage");
         this.model.bind("change:image", this.updateImage);
+        this.model.bind("change:tasks", function () {
+            this.refreshTasks();
+        });
     },
 
     updateImage: function () {
@@ -216,11 +219,11 @@ var HubView = View.extend({
             nucleusRadius = this.nucleusWidth / 2,
             angleIncrement = ((2 * Math.PI) / this.taskViews.size()),
             distance = this.get("taskDistance") + nucleusRadius,
-            taskWidth, taskHeight;
+            taskWidth, taskHeight, tempDistance, tempWidth;
 
         // TEMP: show distance boundary
-        var tempDistance = Math.round(distance),
-            tempWidth = tempDistance * 2;
+        tempDistance = Math.round(distance);
+        tempWidth = tempDistance * 2;
         container.append("<li style='position:absolute; top:-" + tempDistance + "px; left:-" + tempDistance + "px; width:" + tempWidth + "px; height:" + tempWidth + "px; border-radius:30em; -moz-border-radius:30em; -webkit-border-radius:30em; -o-border-radius:30em; -ms-border-radius:30em; background-color:#cc0; padding:0; border-style:none; opacity:0.2; pointer-events:none;' class='distanceMarker'></li>");
 
         this.taskViews.each(function(taskView, i){
@@ -268,6 +271,13 @@ var HubView = View.extend({
         return this;
     },
 
+    // Vertically centres the hub title/description.
+    _updateMargin: function () {
+        var content = this.$('hgroup');
+        content.css('margin-top', content.outerHeight() / 2 * -1);
+        return this;
+    },
+
     render: function(){
         var data = this.model.toJSON(),
             desc = data.description;
@@ -285,17 +295,10 @@ var HubView = View.extend({
         this.labelElem = this.$("hgroup");
         this.canvasElem = this.$("canvas");
         this._canvasSetup();
-
+        this._updateMargin();
         if (data.isSelected){
             this.renderTasks();
         }
         return this.offsetApply();
-    },
-
-    initialize: function(){
-        View.prototype.initialize.apply(this, arguments);
-        this.model.bind("change:tasks", function () {
-            this.refreshTasks();
-        });
     }
 });

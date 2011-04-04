@@ -60,7 +60,9 @@
     </script>
 
     <script type="text/tim" class="hub">
-        <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
+        <a href="#/hubs/{{id}}" class="nucleus-wrapper">
+            <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
+        </a>
         <hgroup>
             <h1>{{title}}</h1>
             <h2>{{description}}</h2>

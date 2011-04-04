@@ -1,3 +1,5 @@
+/* @override http://localhost:8000/media/css/global.css?v0.1 */
+
 /* @group Base Elements
 -----------------------------------------------------------------------------*/
 
@@ -649,11 +651,12 @@ article {
 	min-width:20.7em; /* allows hgroup to extend to fill width */
 }
 
-article > img {
+article .nucleus-wrapper {
+	display: block;
 	position: absolute;
 	left: 0;
-	width:2em;
-	height:2em;
+	width: 30px;
+	height: 30px;
 	padding: 1.6em;
 	border: 0.8em solid #111;
 	margin-left: -3.4em; /* (width / 2) + padding + border-width */
@@ -668,19 +671,18 @@ article > img {
 	z-index: 1;
 }
 
-article > img.selected {
+article .nucleus-wrapper img.selected {
 	background-image: url(../images/sprites.png);
 	background-repeat: no-repeat;
 	background-position: 5px -235px;
 }
 
 article > hgroup {
-    margin-top:-3.4em; /* match this to article > img (=3.4em); minus any desired padding */
-	min-height:5.2em; /* overall height of article > img (=5.2em); minus any desired padding x2 */
-    position:absolute;
-	margin-left:3em;
-	min-width:10em;
-	padding: 0.8em 1.6em;
+    margin-top: -2em; /* Set this dynamically to .outerHeight() / 2  */
+    position: absolute;
+	margin-left: 0;
+	min-width: 10em;
+	padding: 0.8em 1.6em 0.8em 4em;
 	background-color: #111;
 	color: #fff;
 }
@@ -711,7 +713,6 @@ article > div.tasks > ul > li {
 	border: 0.23075em /* 3px */ solid #aaa;
 	background-color: #fff;
 	height:6.4em; /* TODO: verify */
-	
 	opacity:0.6;
 }
 
