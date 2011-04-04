@@ -119,7 +119,7 @@ var Dashboard = View.extend({
                 }
             });
         } else {
-            notifications.hide();
+            //notifications.hide();
         }
     },
 

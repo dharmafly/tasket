@@ -837,13 +837,24 @@ article .meta img {
 }
 
 .dashboard .notifications li {
+	position: relative;
 	margin-bottom: 0.769em /* 10px */;
 	padding-left: 1.154em /* 15px */;
-	background: url(../images/sprites.png) no-repeat 0 -58px;
 }
 
 .dashboard .notifications li:last-child {
 	margin-bottom: 0;
+}
+
+.dashboard .notifications li::after {
+	content: "";
+	display: block;
+	width: 10px;
+	height: 10px;
+	position: absolute;
+	left: 0;
+	top: 3px;
+	background: url(../images/sprites.png) no-repeat 0 -60px;
 }
 
 .dashboard .quicklinks {
