@@ -699,7 +699,7 @@ article > hgroup {
     position: absolute;
 	margin-left: 0;
 	min-width: 10em;
-	padding: 0.8em 1.6em 0.8em 4em;
+	padding: 0.8em 0.8em 0.8em 4em;
 	background-color: #111;
 	color: #fff;
 }
@@ -749,6 +749,37 @@ article > div.tasks > ul > li {
 	-ms-border-radius: 0.385em /* 5px */;
 	-o-border-radius: 0.385em /* 5px */;
 	border-radius: 0.385em /* 5px */;
+}
+
+article > hgroup .actions {
+	float: right;
+}
+
+article > hgroup .actions a {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url(../images/sprites.png?v1.1) 0 -390px;
+	text-indent: -900em;
+	opacity: 0;
+	-webkit-transition: opacity 0.15s ease-in;
+	-moz-transition: opacity 0.15s ease-in;
+	-ms-transition: opacity 0.15s ease-in;
+	-o-transition: opacity 0.15s ease-in;
+	transition: opacity 0.15s ease-in;
+}
+
+article > hgroup:hover .actions a {
+	opacity: 0.7;
+}
+
+article > hgroup .actions a.add {
+	background-position: 0 -420px;
+}
+
+article > hgroup .actions a:hover {
+	border: none;
+	opacity: 1;
 }
 
 article .meta {

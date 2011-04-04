@@ -289,6 +289,7 @@ var HubView = View.extend({
         data.isSelected = this.isSelected();
         data.description = truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
+        data.canEdit = app.isCurrentUser(data.owner);
 
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("img.nucleus");

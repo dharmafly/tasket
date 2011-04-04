@@ -64,6 +64,12 @@
             <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" />
         </a>
         <hgroup>
+            {{canEdit}}
+            <span class="actions">
+                <a class="add" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
+                <a class="edit" href="#/hubs/{{id}}/edit/">Edit</a>
+            </span>
+            {{/canEdit}}
             <h1>{{title}}</h1>
             <h2>{{description}}</h2>
         </hgroup>
