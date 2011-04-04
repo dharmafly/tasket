@@ -61,13 +61,13 @@ var TankController = Backbone.Controller.extend({
             offset = {
                 left: options.left,
                 top: options.top
-            }
+            };
         }
         else {
             offset = { // TODO TEMP
                 left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
                 top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
-            }
+            };
         }
 
         hubView = this.hubViews[hub.cid] = new HubView({
@@ -103,22 +103,11 @@ var TankController = Backbone.Controller.extend({
     newHub: function(){
         var form;
 
-        if (!app.currentUser) {
-            app.notification.error('You must be logged in to create a hub');
-            this.saveLocation('/');
+        if (!this._isLoggedIn('You must be logged in to create a hub')) {
             return;
         }
 
-        form = new HubForm({
-            model: new Hub({
-                owner: app.currentUser.id
-            })
-        });
-
-        app.lightbox.content(form.render().el).show();
-
-        // Append our iFrame element for upload.
-        form.updateFrame();
+        form = this._createHubForm(hub);
 
         form.bind('success', _.bind(function (hub) {
             var hubs = _.clone(app.currentUser.get('hubs.owned'));
@@ -132,14 +121,40 @@ var TankController = Backbone.Controller.extend({
             });
 
             this.addHub(hub);
-            app.lightbox.hide();
         }, this));
     },
 
     editHub: function (id) {
-        var hub = Tasket.getHubs([id]).at(0),
-            form;
-            
+        var hub = Tasket.getHubs([id]).at(0);
+        if (!this._isLoggedIn('You must be logged in to edit a hub')) {
+            return;
+        }
+        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+            return;
+        }
+        this._createHubForm(hub);
+    },
+
+    _isLoggedIn: function (message) {
+        if (!app.currentUser) {
+            app.notification.error(message || 'You must be logged in');
+            app.back();
+        }
+        return !!app.currentUser;
+    },
+
+    _isOwner: function (id, message) {
+        var isUser = app.isCurrentUser(id);
+        if (!isUser) {
+            app.notification.error(
+                message || 'You do not have permission to access this'
+            );
+            app.back();
+        }
+        return isUser;
+    },
+
+    _createHubForm: function (hub) {
         form = new HubForm({
             model: hub
         });
@@ -147,18 +162,22 @@ var TankController = Backbone.Controller.extend({
 
         // Append our iFrame element for upload.
         form.updateFrame();
-
         form.bind('success', _.bind(function () {
             app.lightbox.hide();
         }, this));
+
+        return form;
     },
 
     newTask: function(id){
-        var form;
+        var hub = Tasket.getHubs([id]).at(0),
+            form;
 
-        if (!app.currentUser) {
-            app.notification.error('You must be logged in to create a hub');
-            this.saveLocation('/');
+        if (!this._isLoggedIn('You must be logged in to create a task')) {
+            return;
+        }
+
+        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
             return;
         }
 
