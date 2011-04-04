@@ -368,7 +368,7 @@
             <p class="help">This section provides you a quick list of your recent projects</p>
             <ul class="listing"></ul>
             <p>
-                <a class="button" href="#/hubs/new/" title="Create a new project">New</a>
+                <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
             </p>
         </section>
         <section class="quicklinks my-tasks">
@@ -402,7 +402,7 @@
       {{links}}
       <li>
         <a href="{{href}}" title="View {{title}}">{{title}}</a>
-        {{isHub}}<a href="{{href}}/tasks/new/">Add task</a>{{/isHub}}
+        {{isHub}}<a class="button add" href="{{href}}/tasks/new/">Add task</a>{{/isHub}}
         {{isTask}}
             {{showDone}}<button class="done">Done</button>{{/showDone}}
             {{showVerify}}<button class="verify">Verify</button>{{/showVerify}}

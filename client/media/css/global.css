@@ -894,7 +894,8 @@ article .meta img {
 	background: #fafafa;
 }
 
-.dashboard .quicklinks button {
+.dashboard .quicklinks li button,
+.dashboard .quicklinks li .button {
 	position: absolute;
 	top: 50%;
 	right: 0;
@@ -907,8 +908,8 @@ article .meta img {
 	height: 16px;
 	width: 16px;
 	min-height: 0;
-	background: transparent url(../images/sprites.png) 0 -330px;
-	opacity: 0.3;
+	background: transparent url(../images/sprites.png?cache) 0 -327px;
+	opacity: 0.15;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
 	-ms-box-shadow: none;
@@ -916,12 +917,19 @@ article .meta img {
 	box-shadow: none;
 }
 
-.dashboard .quicklinks button:hover,
-.dashboard .quicklinks button:focus {
-  opacity: 0.9;
+.dashboard .quicklinks li .add {
+	background-position: 0 -360px;
 }
 
-.dashboard .quicklinks button:active {
+.dashboard .quicklinks li button:hover,
+.dashboard .quicklinks li button:focus,
+.dashboard .quicklinks li .button:hover,
+.dashboard .quicklinks li .button:focus {
+  opacity: 0.8;
+}
+
+.dashboard .quicklinks li button:active,
+.dashboard .quicklinks li .button:active {
   opacity: 1;
 }
 
