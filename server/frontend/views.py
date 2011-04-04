@@ -83,12 +83,12 @@ class LoginView(PutView):
                 
                 
 class LogoutView(PutView):
-    http_method_names = ['get',]
+    http_method_names = ['post',]
 
     def __init__(self):
         self.res = HttpResponse(content_type='application/javascript')
     
-    def get(self, request):
+    def post(self, request):
         logout(request)
         if 'application/json' in request.META['CONTENT_TYPE']:
             self.res.write(json.dumps(

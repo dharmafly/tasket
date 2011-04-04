@@ -29,7 +29,7 @@ class ViewTests(TestCase):
         self.assertTrue(response.context['form'])
     
     def test_logout(self):
-        response = self.client.get('/logout/')
+        response = self.client.post('/logout/')
         self.assertEqual(response.status_code, 302)
         
     
