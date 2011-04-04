@@ -559,6 +559,10 @@ form ul,
 	right: 0;
 }
 
+.header-container .login form {
+	display: none;
+}
+
 .header-container nav .login a,
 .header-container nav .login button {
 	font-size: 0.923em /* 12px */;
@@ -592,6 +596,7 @@ form ul,
 .header-container .tasks {
 	margin-top: 0.615em /* 8px */;
 	float: right;
+	display: none;
 }
 
 .header-container .tasks {
