@@ -9,6 +9,10 @@ var HubView = View.extend({
         lineWidth: 2
     },
 
+    events: {
+        "click .nucleus-wrapper": "onclick"
+    },
+
     constructor: function HubView() {
         View.prototype.constructor.apply(this, arguments);
     },
@@ -47,13 +51,11 @@ var HubView = View.extend({
         return this.get("tasksVisible");
     },
 
-    events: {
-        "click img.nucleus": "onclick"
-    },
-
-    onclick: function(){
+    onclick: function (event) {
         var isSelected = this.isSelected(),
             tasksVisible = this.tasksVisible();
+
+        event.preventDefault();
 
         if (isSelected){
             this.toggleTasks();
@@ -220,6 +222,8 @@ var HubView = View.extend({
             angleIncrement = ((2 * Math.PI) / this.taskViews.size()),
             distance = this.get("taskDistance") + nucleusRadius,
             taskWidth, taskHeight, tempDistance, tempWidth;
+
+        this.loading(false);
 
         // TEMP: show distance boundary
         tempDistance = Math.round(distance);

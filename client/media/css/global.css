@@ -1,5 +1,3 @@
-/* @override http://localhost:8000/media/css/global.css?v0.1 */
-
 /* @group Base Elements
 -----------------------------------------------------------------------------*/
 
@@ -667,8 +665,27 @@ article .nucleus-wrapper {
 	-ms-border-radius: 4em;
 	-o-border-radius: 4em;
 	border-radius: 4em;
-	cursor: pointer; /* TODO: remove if link is wrapped aroung img */
 	z-index: 1;
+}
+
+article.loading .nucleus-wrapper::after {
+	position: absolute;
+	display: block;
+	top: 50%;
+	left: 50%;
+	margin-left: -15px;
+	margin-top: -15px;
+	height: 30px;
+	width: 30px;
+	content: "";
+	background: url(../images/hub-spinner.gif) no-repeat center center;
+	opacity: 0.7;
+}
+
+article .nucleus-wrapper img {
+  display: block;
+  width: 30px;
+  height: 30px;
 }
 
 article .nucleus-wrapper img.selected {
@@ -858,11 +875,43 @@ article .meta img {
 }
 
 .dashboard .quicklinks li {
-	padding: 0.231em /* 3px */ 0;
+	position: relative;
+	padding: 0.231em /* 3px */ 16px 0.231em 0;
 }
 
 .dashboard .quicklinks .current {
 	background: #fafafa;
+}
+
+.dashboard .quicklinks button {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	color: #333;
+	text-shadow: none;
+	text-indent: -900em;
+	line-height: 1;
+	margin-top: -8px;
+	padding: 0;
+	height: 16px;
+	width: 16px;
+	min-height: 0;
+	background: transparent url(../images/sprites.png) 0 -330px;
+	opacity: 0.3;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-ms-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
+}
+
+.dashboard .quicklinks button:hover,
+.dashboard .quicklinks button:focus {
+  opacity: 0.9;
+}
+
+.dashboard .quicklinks button:active {
+  opacity: 1;
 }
 
 .dashboard .quicklinks .info {
