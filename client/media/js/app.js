@@ -57,7 +57,7 @@ var cache = new Cache(Tasket.namespace),
         })(),
 
         isCurrentUser: function (id) {
-            return id === app.currentUser.id;
+            return !!(app.currentUser && id === app.currentUser.id);
         },
 
         restoreCache: function(){
