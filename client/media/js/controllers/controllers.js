@@ -55,6 +55,7 @@ var TankController = Backbone.Controller.extend({
             return this;
         }
         
+        options = options || {};
         if (options.left && options.top){
             offset = {
                 left: options.left,
