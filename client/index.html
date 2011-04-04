@@ -303,7 +303,7 @@
         </blockquote>
     </script>
 
-    <script type="text/tim" class="new-hub">
+    <script type="text/tim" class="hub-form">
         <h1>{{isNew}}Create a new hub{{/isNew}}{{isNotNew}}Edit: {{title}}{{/isNotNew}}</h1>
         <ul>
             <li>
@@ -321,7 +321,7 @@
             </li>
         </ul>
         <div class="actions">
-            <button type="submit">Create Hub</button>
+            <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Hub</button>
         </div>
     </script>
 

@@ -2,6 +2,7 @@ var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
         "/hubs/:id/": "displayHub",
+        "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask"
     },
 
@@ -131,6 +132,23 @@ var TankController = Backbone.Controller.extend({
             });
 
             this.addHub(hub);
+            app.lightbox.hide();
+        }, this));
+    },
+
+    editHub: function (id) {
+        var hub = Tasket.getHubs([id]).at(0),
+            form;
+            
+        form = new HubForm({
+            model: hub
+        });
+        app.lightbox.content(form.render().el).show();
+
+        // Append our iFrame element for upload.
+        form.updateFrame();
+
+        form.bind('success', _.bind(function () {
             app.lightbox.hide();
         }, this));
     },

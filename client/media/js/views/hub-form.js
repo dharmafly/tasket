@@ -18,7 +18,7 @@ var HubForm = FormUpload.extend({
      * Returns itself.
      */
     render: function () {
-        var template = tim("new-hub", {
+        var template = tim("hub-form", {
             title:       this.model.get("title") || "",
             description: this.model.get("description") || "",
             isNew:       this.model.isNew(),

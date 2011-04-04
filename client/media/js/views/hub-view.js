@@ -19,11 +19,21 @@ var HubView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
-        _.bindAll(this, "updateImage");
+        _.bindAll(this, "updateImage", "updateTitle");
+
+        this.model.bind("change:title", this.updateTitle);
+        this.model.bind("change:description", this.updateTitle);
         this.model.bind("change:image", this.updateImage);
         this.model.bind("change:tasks", function () {
             this.refreshTasks();
         });
+    },
+
+    updateTitle: function () {
+        this.$("h1").html(this.model.escape("title"));
+        this.$("h2").html(this.model.escape("description"));
+        this._updateMargin();
+        return this;
     },
 
     updateImage: function () {
