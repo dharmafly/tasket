@@ -104,7 +104,7 @@ class Task(models.Model):
         }
         
         if self.image:
-            obj_dict["image"] = self.image.url
+            obj_dict["image"] = self.image.name
 
         if self.claimedBy:
             obj_dict["claimedBy"] = str(self.claimedBy.user.pk)
@@ -173,7 +173,7 @@ class Hub(models.Model):
         }
         
         if self.image:
-            obj_dict["image"] = self.image.url
+            obj_dict["image"] = self.image.name
 
         for k,v in obj_dict.items():
             if v == None:
@@ -233,7 +233,7 @@ class Profile(models.Model):
         }
         
         if self.image:
-            obj_dict["image"] = self.image.url
+            obj_dict["image"] = self.image.name
 
         for k,v in obj_dict.items():
             if v == None:

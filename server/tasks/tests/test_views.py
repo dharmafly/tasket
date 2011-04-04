@@ -119,6 +119,7 @@ class ViewTests(TestCase):
         response = self.client.get('/tasks/3')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
+        print json_data['image']
     
     def test_task_get_by_id(self):
         response = self.client.get('/tasks/?ids=4,5')
