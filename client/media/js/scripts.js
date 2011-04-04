@@ -55,8 +55,10 @@ getScript(
         "views/hub-form.js",
         "views/dashboard-detail.js"
     ],
-
-    "views/dashboard-detail-hub.js",
+    [
+        "views/dashboard-detail-hub.js",
+        "views/account.js"
+    ],
     "core/tasket.js",
     "app.js",
     "lang/en.js",

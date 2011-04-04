@@ -200,7 +200,8 @@ var PageController = Backbone.Controller.extend({
     routes: {
         '/about/':   'about',
         '/login/':   'login',
-        '/sign-up/': 'signup'
+        '/sign-up/': 'signup',
+        '/account/': 'account'
     },
 
     constructor: function PageController() {
@@ -237,6 +238,26 @@ var PageController = Backbone.Controller.extend({
             app.updateCurrentUser(user);
             app.lightbox.hide();
             app.notification.success('Your account has been created!');
+        });
+    },
+
+    account: function () {
+        var form = new Account({
+            model: app.currentUser
+        });
+
+        if (!app.currentUser) {
+            window.location.hash = '#/login';
+        }
+
+        app.lightbox.content(form.render().el).show();
+
+        // Append iframe for avatar upload.
+        form.updateFrame();
+
+        form.bind('success', function (user) {
+            app.lightbox.hide();
+            app.notification.success('Your account has been updated!');
         });
     }
 });
