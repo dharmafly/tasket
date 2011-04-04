@@ -14,7 +14,7 @@ import tasks
 
 class ViewTests(TestCase):
     fixtures = ['test_data.json',]
-
+    
     def test_hubs_get(self):
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
