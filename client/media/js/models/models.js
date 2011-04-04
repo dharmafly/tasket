@@ -22,6 +22,14 @@ var Model = Backbone.Model.extend({
         return Backbone.Model.prototype.set.call(this, attributes, options);
     },
 
+    // Coerce ids to strings to ensure sane comparisons.
+    parse: function (response) {
+        if (response && response.id) {
+            response.id = "" + response.id;
+        }
+        return response;
+    },
+
     // Returns the Model as a plain JavaScript object.
     toJSON: function () {
         // Expand the flattened attributes before returning.
