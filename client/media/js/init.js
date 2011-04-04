@@ -27,19 +27,10 @@ if (!app.authtoken){
         // Pass this into our bootstrap method as the app depends on
         // on the user beign logged in.
         app.init(Tasket.login(debugUsername, debugPassword, function(data){
-            var user, tasks, hubs;
 
             // Update current user details & fire an event to notify listeners the current user has changed.
             app.setAuthtoken(data.sessionid);
-            user = app.updateCurrentUser(data.user);
-
-            // Fetch the users tasks and hubs. Then once they've been added to the Tasket global collections, update the Dashboard with the details.
-            tasks = _.flatten(
-                app.currentUser.get('tasks.owned.done'),
-                app.currentUser.get('tasks.claimed.claimed')
-            );
-
-            hubs = app.currentUser.get('hubs.owned');
+            app.updateCurrentUser(new User(data.user));
         }));
 
         // TODO: cache authtoken in localStorage (but expire it after some time)

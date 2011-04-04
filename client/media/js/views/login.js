@@ -31,7 +31,8 @@ var Login = Form.extend({
     },
 
     _onSuccess: function (data) {
-        this.trigger('success', data.user, this);
+        var user = new User(data.user);
+        this.trigger('success', user, this);
     }
 });
 

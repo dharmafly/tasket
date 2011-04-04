@@ -70,7 +70,7 @@ var cache = new Cache(Tasket.namespace),
 
             currentUserData = app.cache.get("currentUser");
             if (currentUserData && this.getCookie("sessionid")){
-                currentUser = app.updateCurrentUser(currentUserData, false);
+                currentUser = app.updateCurrentUser(new User(currentUserData), false);
                 currentUser.fetch();
             }
 
@@ -85,11 +85,12 @@ var cache = new Cache(Tasket.namespace),
             app.cache.remove("csrftoken");
         },
 
-        updateCurrentUser: function (userData, cache) {
-            if (userData){
-                app.currentUser = new User(userData);
+        // Requires User model.
+        updateCurrentUser: function (user, cache) {
+            if (user){
+                app.currentUser = user;
                 if (cache !== false){
-                    app.cache.set("currentUser", userData);
+                    app.cache.set("currentUser", app.currentUser.toJSON());
                 }
                 app.trigger('change:currentUser', app.currentUser); // see dashboard.js > Dashboard.setUser()
             }
