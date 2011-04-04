@@ -245,5 +245,10 @@ _.extend(Tasket, Backbone.Events, {
             dataType: "json",
             success: callback
         });
+    },
+
+    thumbnail: function (image, width, height, crop) {
+        var url = '/thumb/' + width + 'x' + height + '/' + image;
+        return crop ? url + '?crop' : url;
     }
 });

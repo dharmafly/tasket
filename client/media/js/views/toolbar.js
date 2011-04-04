@@ -23,7 +23,9 @@ app.setupToolbar = function () {
             if (user) {
                 userbar.show();
                 if (user.get('image')) {
-                    userbar.find('img').attr('src', user.get('image'));
+                    userbar.find('img').attr(
+                        'src', Tasket.thumbnail(user.get('image'), 16, 16, true)
+                    );
                 }
                 userbar.find('span').text(user.get('name'));
             } else {
