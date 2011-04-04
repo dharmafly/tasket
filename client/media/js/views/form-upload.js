@@ -107,8 +107,7 @@ var FormUpload = Form.extend({
      */
     _onSuccess: function () {
         var view = this,
-            form = $("form", this.iframe.contentWindow.document.body),
-            iframe = $(this.iframe);
+            form = $("form", this.iframe.contentWindow.document.body);
 
         // Bail early if no file is present.
         if (!form.find('input').val()) {
@@ -120,14 +119,18 @@ var FormUpload = Form.extend({
         this.toggleLoading();
 
         // Set the onload handler for when the iframe reloads.
-        this.iframe.onload = function () {
+        this.iframe.onload = function onload() {
             var response = this.contentWindow.document.body.innerHTML,
-                data = $.parseJSON(response);
+                data;
 
-            view.updateFrame().toggleLoading();
-            view.model.set(data);
-            view.trigger("success", view.model, view);
-        }
+            try {
+                data = $.parseJSON(response);
+                view.model.set(data);
+                view.updateFrame().toggleLoading();
+                view.trigger("success", view.model, view);
+                this.onload = null;
+            } catch (error) {}
+        };
 
         // Grab the element from the jQuery wrapper.
         form = form[0];
