@@ -933,6 +933,7 @@ article .meta img {
 	width: 13.846em /* 180px */;
 	padding: 0.679em /* 10px */;
 	color: #fff;
+	z-index: 2;
 	background-color: #000;
 	background-color: rgba(0, 0, 0, 0.8);
 	-webkit-border-radius: 0.385em /* 5px */;
