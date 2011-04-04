@@ -119,8 +119,18 @@ var TankController = Backbone.Controller.extend({
         // Append our iFrame element for upload.
         form.updateFrame();
 
-        form.bind('success', _.bind(function (event) {
-            this.addHub(form.model);
+        form.bind('success', _.bind(function (hub) {
+            var hubs = _.clone(app.currentUser.get('hubs.owned'));
+
+            // Add hubs to global cache.
+            Tasket.hubs.add(hub);
+
+            hubs.push(hub.id);
+            app.currentUser.set({
+                'hubs.owned': hubs
+            });
+
+            this.addHub(hub);
             app.lightbox.hide();
         }, this));
     },
