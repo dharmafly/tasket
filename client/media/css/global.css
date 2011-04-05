@@ -693,7 +693,7 @@ article .nucleus-wrapper img {
   height: 30px;
 }
 
-article .nucleus-wrapper img.selected {
+article.select .nucleus-wrapper {
 	background-image: url(../images/sprites.png);
 	background-repeat: no-repeat;
 	background-position: 5px -235px;
