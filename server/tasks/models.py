@@ -224,6 +224,8 @@ class Profile(models.Model):
         obj_dict = {
             "id": str(self.user.pk),
             "name": self.name.strip(),
+            "username": self.user.username,
+            "email": self.user.email,
             "admin": self.admin,
             "description": self.description.strip(),
             "location": self.location.strip(),

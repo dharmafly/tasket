@@ -66,6 +66,11 @@ class ModelTest(TestCase):
         json_data = json.loads(self.H.as_json())
         self.assertTrue('tasks' in json_data)
         self.assertEqual(json_data['title'], 'Test Hub')
+
+    def test_profile_as_json(self):
+        json_data = json.loads(self.P.as_json())
+        self.assertTrue('tasks' in json_data)
+        self.assertEqual(json_data['username'], 'TestUser')
     
     def test_hub_queryset_as_json(self):
         obs = Hub.objects.all().as_json()
