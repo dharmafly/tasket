@@ -1,6 +1,15 @@
 var Login = Form.extend({
     constructor: function Login() {
         Form.prototype.constructor.apply(this, arguments);
+
+        // Add some very basic error handling.
+        this.bind('error', _.bind(function (data) {
+           if (data.status === 401) {
+               this.errors({
+                   username: ["Invalid username and password"]
+               });
+           }
+        }, this));
     },
 
     submit: function (event) {
@@ -31,8 +40,14 @@ var Login = Form.extend({
     },
 
     _onSuccess: function (data) {
-        var user = new User(data.user);
-        this.trigger('success', user, this);
+        var user;
+
+        if (!data.error) {
+            user = new User(data.user);
+            this.trigger('success', user, this);
+        } else {
+            this.trigger('error', data, this);
+        }
     }
 });
 
