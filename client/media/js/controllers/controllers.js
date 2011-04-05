@@ -108,7 +108,9 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
-        form = this._createHubForm(hub);
+        form = this._createHubForm(new Hub({
+            owner: app.currentUser.id
+        }));
 
         form.bind('success', _.bind(function (hub) {
             var hubs = _.clone(app.currentUser.get('hubs.owned'));
