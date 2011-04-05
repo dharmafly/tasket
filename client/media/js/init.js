@@ -63,6 +63,27 @@ app.bind("ready", function onReady(){
         app.destroyCache();
     });
 
+    // Watch for button clicks that affect the state of tasks. These buttons
+    // should have two attributes:
+    //
+    // data-task-state - The new task state.
+    // data-task-id    - The id of the task to update.
+    //
+    // Example:
+    //
+    // <button data-task-state="verify" data-task-id="2">Verify Task</button>
+    $("[data-task-state][data-task-id]").live("click", function () {
+        var button = $(this),
+            state = button.data('task-state'),
+            id = button.data('task-id'),
+            task;
+
+        task = Tasket.getTasks([id]).at(0);
+        if (task && state) {
+            task.state(state, app.currentUser.id).save();
+        }
+    });
+
     Backbone.history.start();
     app.loaded = true;
 });

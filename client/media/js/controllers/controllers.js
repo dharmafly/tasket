@@ -311,4 +311,3 @@ var DashboardController = Backbone.Controller.extend({
         app.dashboard.detail.title('My Projects').show();
     }
 });
-

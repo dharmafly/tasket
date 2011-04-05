@@ -45,14 +45,18 @@ var TaskView = View.extend({
 
         if (!claimedById) {
             data = {
+                id: this.model.id,
                 type: "claim",
-                text: "I'll do it"
+                text: "I'll do it",
+                state: Task.states.CLAIMED
             };
         }
         else if (app.isCurrentUser(claimedById)) {
             data = {
+                id: this.model.id,
                 type: "done",
-                text: "I've done it"
+                text: "I've done it",
+                state: Task.states.DONE
             };
         }
 

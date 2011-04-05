@@ -158,6 +158,7 @@ var Dashboard = View.extend({
             mapped = models.map(function (model) {
                 var title = model.get("title") || model.get("description");
                 return {
+                    id:          model.id,
                     href:        "#/" + model.type + "s/" + model.id,
                     title:       truncate(title, 15),
                     isHub:       model.type === "hub",
