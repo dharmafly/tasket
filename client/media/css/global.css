@@ -886,6 +886,7 @@ article .meta img {
 	padding-left: 1.154em /* 15px */;
 }
 
+.dashboard .notifications li.last,
 .dashboard .notifications li:last-child {
 	margin-bottom: 0;
 }

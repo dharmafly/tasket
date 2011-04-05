@@ -100,7 +100,8 @@ var Dashboard = View.extend({
     // Updates the user status box.
     updateNotifications: function () {
         var stats = this.model && this.userStatistics(),
-            notifications = this.$(".notifications");
+            notifications = this.$(".notifications"),
+            items = notifications.children('li');
 
         if (stats) {
             notifications.show();
@@ -117,6 +118,10 @@ var Dashboard = View.extend({
                 else {
                     listItem.hide();
                 }
+
+                // Remove margin from the last item.
+                items.removeClass("last");
+                items.filter(':visible').last().addClass('last');
             });
         } else {
             notifications.hide();
