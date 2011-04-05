@@ -11,8 +11,7 @@ var SignUp = FormUpload.extend({
     },
 
     url: function () {
-        // API requires a URL without user ID.
-        return "/users/image/";
+        return this.model.url() + "/image/";
     },
 
     render: function () {
