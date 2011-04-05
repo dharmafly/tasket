@@ -39,5 +39,8 @@ var Hub = Model.extend({
 
 // HUBS COLLECTION
 var HubList = CollectionModel.extend({
-    model: Hub
+    model: Hub,
+    constructor: function HubList(){
+        CollectionModel.prototype.constructor.apply(this, arguments);
+    },
 });
