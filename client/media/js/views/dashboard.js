@@ -101,7 +101,7 @@ var Dashboard = View.extend({
     updateNotifications: function () {
         var stats = this.model && this.userStatistics(),
             notifications = this.$(".notifications"),
-            items = notifications.children('li');
+            items = notifications.children("li");
 
         if (stats) {
             notifications.show();
@@ -121,7 +121,7 @@ var Dashboard = View.extend({
 
                 // Remove margin from the last item.
                 items.removeClass("last");
-                items.filter(':visible').last().addClass('last');
+                items.filter(":visible").last().addClass("last");
             });
         } else {
             notifications.hide();
