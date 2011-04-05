@@ -50,6 +50,27 @@ class WorkflowTests(TestCase):
         self.assertTrue('error' in json_data)
     
     
+    def test_claim_new(self):
+        for u in [self.U1, self.U2, self.U3,]:
+            self.client.login(username=u.user.username, password='12345')
+            response = self.client.put(
+                    '/tasks/6',
+                    data=json.dumps({"state" : Task.STATE_CLAIMED}),
+                    content_type='application/json',
+                )
+            json_data = json.loads(response.content)
+            self.assertEqual(json_data['state'], Task.STATE_CLAIMED)
+            self.assertEqual(json_data['claimedBy'], str(u.pk))
+
+            response = self.client.put(
+                    '/tasks/6',
+                    data=json.dumps({"state" : Task.STATE_NEW}),
+                    content_type='application/json',
+                )
+            json_data = json.loads(response.content)
+            self.assertEqual(json_data['state'], Task.STATE_NEW)
+            self.assertEqual(json_data['claimedBy'], '')
+
     def test_claim_already(self):
         self.client.login(username=self.U3.user.username, password='12345')
         response = self.client.put(

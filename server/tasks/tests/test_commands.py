@@ -7,7 +7,7 @@ from django.core.management import call_command
 
 from tasks.models import Task
 
-class WorkflowTests(TestCase):
+class CommandsTests(TestCase):
     fixtures = ['test_data.json',]
     
     CLAIMED_TIME_LIMIT = int(getattr(settings, "CLAIMED_TIME_LIMIT", 24))
