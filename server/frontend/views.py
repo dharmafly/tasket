@@ -78,6 +78,7 @@ class LoginView(PutView):
                 'status' : 401
                 }
             ))
+            self.res.status_code = 401
             return self.res
                 
                 
