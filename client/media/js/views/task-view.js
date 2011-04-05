@@ -51,7 +51,7 @@ var TaskView = View.extend({
                 state: Task.states.CLAIMED
             };
         }
-        else if (app.isCurrentUser(claimedById)) {
+        else if (app.isCurrentUser(claimedById) && !this.model.get("doneTime")) {
             data = {
                 id: this.model.id,
                 type: "done",
@@ -72,6 +72,8 @@ var TaskView = View.extend({
     updateClaimedBy: function () {
         var templateName = "task-claimed-by-user",
             claimedById = this.model.get("claimedBy"),
+            isDone = !!this.model.get("doneTime"),
+            status,
             model;
 
         if (!claimedById) {
@@ -81,15 +83,18 @@ var TaskView = View.extend({
         if (app.isCurrentUser(claimedById)) {
             model = app.currentUser;
             templateName = "task-claimed-by-you";
+
+            status = isDone ? "have done" : "are doing";
         } else {
             model = Tasket.getUsers(claimedById).at(0);
             model.bind("change", this.updateClaimedBy);
-            return this;
+            status = isDone ? "has done" : "is doing";
         }
 
         this.$(".claimedBy").html(tim(templateName, {
             name: model.get("name"),
             image: model.get("image"),
+            status: status,
             url: model.url()
         }));
 

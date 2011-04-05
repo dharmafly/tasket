@@ -253,9 +253,7 @@ var PageController = Backbone.Controller.extend({
 
     signup: function () {
         var form = new SignUp({
-            model: new User({
-                realname: ''
-            })
+            model: new User()
         });
 
         app.lightbox.content(form.render().el).show();
