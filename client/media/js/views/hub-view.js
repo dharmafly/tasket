@@ -132,7 +132,7 @@ var HubView = View.extend({
     refreshTasks: function () {
         var hubView = this;
 
-        this.tasks = Tasket.getTasks(this.model.get("tasks"));
+        this.tasks = Tasket.getTasks(this.getDisplayTasks());
         this.tasks.bind("refresh", function () {
             // Regenerate the task views.
             hubView.generateTaskViews();
@@ -142,10 +142,21 @@ var HubView = View.extend({
                 hubView.renderTasks();
             }
         });
+
         if (this.tasks.isComplete()) {
             this.generateTaskViews();
         }
         return this;
+    },
+
+    // Gets an array of task ids to display from the model object.
+    getDisplayTasks: function () {
+        return _(["new", "claimed", "done"])
+          .chain().map(function (key) {
+              return this.get("tasks." + key + ".ids");
+          }, this.model)
+          .flatten()
+          .value();
     },
 
     generateTaskViews: function(){
