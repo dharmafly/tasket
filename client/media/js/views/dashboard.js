@@ -99,7 +99,7 @@ var Dashboard = View.extend({
 
     // Updates the user status box.
     updateNotifications: function () {
-        var stats = this.model && this.model.get("statistics"),
+        var stats = this.model && this.userStatistics(),
             notifications = this.$(".notifications");
 
         if (stats) {
@@ -127,7 +127,7 @@ var Dashboard = View.extend({
     updateManagedTasks: function () {
         var tasks = null;
         if (this.model) {
-            tasks = this._getCollection("getTasks", "tasks.claimed.claimed", this.updateManagedTasks);
+            tasks = this._getCollection("getTasks", "tasks.owned.done", this.updateManagedTasks);
         }
         return this.updateList(".managed-tasks", tasks);
     },
