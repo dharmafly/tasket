@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
+from django.db.models import Sum
 
 from django.conf import settings
 
@@ -156,19 +157,32 @@ class Hub(models.Model):
 
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
-
+    
+    
     def as_dict(self):
         """
         Custom method for returning specifically formatted JSON.
     
         Handy for outputting related objects as a list, etc.
         """
+        
+        def format_time_dict(qs):
+            d = {}
+            d['estimate'] = qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
+            d['ids'] = [str(o.pk) for o in qs]
+            return d
+        
         obj_dict = {
             "id": str(self.pk),
             "title": self.title.strip(),
             "description": self.description.strip(),
             "owner": str(self.owner.user.pk),
-            "tasks": [str(t.pk) for t in self.task_set.all()],
+            "tasks": {
+                        "new" : format_time_dict(self.task_set.filter(state=Task.STATE_NEW)),
+                        "claimed" : format_time_dict(self.task_set.filter(state=Task.STATE_CLAIMED)),
+                        "done" : format_time_dict(self.task_set.filter(state=Task.STATE_DONE)),
+                        "verified" : format_time_dict(self.task_set.filter(state=Task.STATE_VERIFIED)),
+                     },
             "createdTime": self.created_timestamp(),
         }
         

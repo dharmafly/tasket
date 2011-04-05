@@ -48,7 +48,7 @@ class ModelTest(TestCase):
         self.H = H
         
         # TODO: add more fields
-        self.T = Task(description="Example Task", hub=H, owner=self.P)
+        self.T = Task(description="Example Task", hub=H, owner=self.P, estimate=60*10)
         self.T.save()
     
     def test_hub_unicode(self):
@@ -63,7 +63,9 @@ class ModelTest(TestCase):
         self.assertEqual(len(Hub.objects.all()), 3)
     
     def test_hub_as_json(self):
-        self.assertEqual(json.loads(self.H.as_json())['title'], 'Test Hub')
+        json_data = json.loads(self.H.as_json())
+        self.assertTrue('tasks' in json_data)
+        self.assertEqual(json_data['title'], 'Test Hub')
     
     def test_hub_queryset_as_json(self):
         obs = Hub.objects.all().as_json()
