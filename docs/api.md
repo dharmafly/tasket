@@ -13,6 +13,7 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
     /hubs/:id               # PUT:   Updates a single hub for :id
     /hubs/:id               # DELETE Deletes a single hub for :id
     /hubs/:id/tasks         # GET    Gets array of all unverified tasks for this hub
+    /hubs/:id/image         # POST   Uploads an image to the hub with :id (requires multipart/form-data)
 
 ### Hub Model Data ###
 
@@ -36,6 +37,7 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
     /tasks/:id               # GET:   Gets a single task for :id
     /tasks/:id               # PUT:   Updates a single task for :id
     /tasks/:id               # DELETE Deletes a single task for :id
+    /tasks/:id/image         # POST   Uploads an image to the task with :id (requires multipart/form-data)
 
 ### Task Model Data ###
 
@@ -70,6 +72,7 @@ VERIFIED: "verified"
      /users/:id            # GET:   Gets a single user for :id
      /users/:id            # PUT:   Updates a single user for :id
      /users/:id            # DELETE Deletes a single user for :id
+     /users/:id/image      # POST   Uploads an image to the user with :id (requires multipart/form-data)
 
 ### User registration ###
 

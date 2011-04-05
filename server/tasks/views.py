@@ -289,9 +289,9 @@ class ProfileView(PutView):
             return self.res
 
     @method_decorator(AllowJSONPCallback)
-    def post(self, request, image=None):
+    def post(self, request, user_id=None, image=None):
         if image:
-            return self.image_upload(request)
+            return self.image_upload(request, user_id)
         
         request.POST = request.JSON
         username = request.JSON.get('username')
@@ -336,9 +336,18 @@ class ProfileView(PutView):
             )
         return self.res
 
-    def image_upload(self, request):
+    def image_upload(self, request, user_id):
         res = HttpResponse()
-
+        if int(user_id) != request.user.pk:
+            res.write(json.dumps(
+                {
+                'error' : "Unauthorized",
+                'status' : 401
+                }
+            ))
+            res.status_code = 401
+            return res
+        
         # Handle image upload
         profile = request.user.profile
 

@@ -22,7 +22,7 @@ urlpatterns = patterns('',
     # User Methods
     url(r'^users/$',views.ProfileView.as_view(), name="user"),
     url(r'^users/(?P<user_id>\d+)$',views.ProfileView.as_view(), name="user"),
-    url(r'^users/(?P<image>image)/$',views.ProfileView.as_view(), name="user_image"),
+    url(r'^users/(?P<user_id>\d+)/(?P<image>image)/$',views.ProfileView.as_view(), name="user_image"),
     
     # Images
     url(r'^thumb/(?P<size>[^/]+)/(?P<path>.*)$',views.thumbs),
