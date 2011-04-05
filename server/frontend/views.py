@@ -90,6 +90,7 @@ class LogoutView(PutView):
     
     def post(self, request):
         logout(request)
+        request.session.set_expiry(0)
         if 'application/json' in request.META['CONTENT_TYPE']:
             self.res.write(json.dumps(
                 {

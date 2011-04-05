@@ -83,7 +83,7 @@ class HubView(PutView):
             H.save()
         
             response_json =  {
-                "id": H.pk, 
+                "id": str(H.pk), 
                 "createdTime": H.created_timestamp()
                 }
             self.res.write(json.dumps(response_json))
@@ -118,7 +118,7 @@ class HubView(PutView):
         if form.is_valid():
             H = form.save()
             response_json =  {
-                "id": H.pk,
+                "id": str(H.pk),
                 "updated" : True,
                 "hub" : H.as_dict()
                 }
@@ -137,7 +137,7 @@ class HubView(PutView):
         self.res.write(json.dumps(
             {
                 "deleted" : True,
-                "hub_id" : hub_id,
+                "hub_id" : str(hub_id),
             }
             ))
         return self.res
@@ -234,7 +234,7 @@ class TasksView(PutView):
         self.res.write(json.dumps(
             {
                 "deleted" : True,
-                "task_id" : task_id,
+                "task_id" : str(task_id),
             }
             ))
         return self.res
