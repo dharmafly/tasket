@@ -40,23 +40,34 @@ var TaskView = View.extend({
     updateControls: function () {
         var controls    = this.$(".controls"),
             template    = tim("task-control"),
+            states      = Task.states,
+            state       = this.model.get("state"),
+            owner       = this.model.get("owner"),
             claimedById = this.model.get("claimedBy"),
             data;
 
         if (!claimedById) {
             data = {
                 id: this.model.id,
-                type: "claim",
+                type: "claimed",
                 text: "I'll do it",
                 state: Task.states.CLAIMED
             };
         }
-        else if (app.isCurrentUser(claimedById) && !this.model.get("doneTime")) {
+        else if (app.isCurrentUser(claimedById) && state === states.CLAIMED) {
             data = {
                 id: this.model.id,
                 type: "done",
                 text: "I've done it",
                 state: Task.states.DONE
+            };
+        }
+        else if (app.isCurrentUser(owner) && state === states.DONE) {
+            data = {
+                id: this.model.id,
+                type: "verify",
+                text: "Verify",
+                state: Task.states.VERIFIED
             };
         }
 
