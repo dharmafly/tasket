@@ -127,8 +127,7 @@ var Dashboard = View.extend({
     updateManagedTasks: function () {
         var tasks = null;
         if (this.model) {
-            tasks = Tasket.getTasks(this.model.get("tasks.owned.done"));
-            tasks.bind("refresh", this.updateManagedTasks);
+            tasks = this._getCollection("getTasks", "tasks.claimed.claimed", this.updateManagedTasks);
         }
         return this.updateList(".managed-tasks", tasks);
     },
@@ -137,8 +136,7 @@ var Dashboard = View.extend({
     updateUserTasks: function () {
         var tasks = null;
         if (this.model) {
-            tasks = Tasket.getTasks(this.model.get("tasks.claimed.claimed"));
-            tasks.bind("refresh", this.updateUserTasks);
+            tasks = this._getCollection("getTasks", "tasks.claimed.claimed", this.updateUserTasks);
         }
         return this.updateList(".my-tasks", tasks);
     },
@@ -147,8 +145,7 @@ var Dashboard = View.extend({
     updateUserHubs: function () {
         var hubs = null;
         if (this.model) {
-            hubs = Tasket.getHubs(this.model.get("hubs.owned"));
-            hubs.bind("refresh", this.updateUserHubs);
+            hubs = this._getCollection("getHubs", "hubs.owned", this.updateUserHubs);
         }
         return this.updateList(".my-projects", hubs);
     },
@@ -177,5 +174,18 @@ var Dashboard = View.extend({
         }
 
         return this;
+    },
+
+    // Retrieves a collection of models from a Tasket cache.
+    // method   - the Tasket getter for the models eg. "getTasks"
+    // key      - the Model attribute containing the ids to fetch
+    // callback - a function to call when the collection or models change
+    _getCollection: function (method, key, callback) {
+        collection = Tasket[method](this.model.get(key));
+        collection.bind("refresh", callback);
+
+        // Currentlt only display the title so only re-render if this changes.
+        collection.invoke("bind", "change:title", callback);
+        return collection;
     }
 });
