@@ -22,20 +22,20 @@ var Login = Form.extend({
                 form.errors({
                     username: ["Invalid username and password"]
                 });
-                form.trigger('error', xhr, form);
+                form.trigger("error", xhr, form);
             });
 
-        return this.trigger('submit', this);
+        return this.trigger("submit", this);
     },
 
     render: function () {
-        var html = tim('login');
+        var html = tim("login");
         this.elem.html(html);
         return this;
     },
 
     _onSuccess: function (data) {
         var user = new User(data.user);
-        this.trigger('success', user, this);
+        this.trigger("success", user, this);
     }
 });
