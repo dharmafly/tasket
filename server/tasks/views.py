@@ -363,8 +363,10 @@ class ProfileView(PutView):
 
 
 def thumbs(request, size, path):
-        
-    im_obj = open("%s/%s" % (settings.MEDIA_ROOT, path))
+    try:
+        im_obj = open("%s%s" % (settings.MEDIA_ROOT, path))
+    except Exception, e:
+        raise Http404(json.dumps({'error' : 'image not found'}))
 
     crop = None
     if 'crop' in request.GET:

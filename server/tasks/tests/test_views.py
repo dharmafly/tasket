@@ -328,6 +328,28 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['tasks']['done'], "1")
         self.assertEqual(json_data['tasks']['verified'], "1")
 
+    def test_thumb(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/2/image/',
+            {'image' : f,},
+            )
+
+        response = self.client.get('/thumb/30x30/images/users/Puppy.jpg?crop')
+        self.assertEqual(response.status_code, 200)
+
+    def test_thumb_404(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/2/image/',
+            {'image' : f,},
+            )
+
+        response = self.client.get('/thumb/30x30/images/users/foo.jpg?crop')
+        self.assertEqual(response.status_code, 404)
+
 
 
 
