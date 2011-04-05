@@ -21,6 +21,9 @@ var TaskView = View.extend({
     render: function(){
         var data = this.model.toJSON();
 
+        data.isNew = this.model.isNew();
+        data.isNotNew = !this.model.isNew();
+
         data.hubId = data.hub;
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;

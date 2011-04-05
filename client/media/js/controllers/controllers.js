@@ -3,7 +3,8 @@ var TankController = Backbone.Controller.extend({
         "/hubs/new/": "newHub",
         "/hubs/:id/": "displayHub",
         "/hubs/:id/edit/": "editHub",
-        "/hubs/:id/tasks/new/": "newTask"
+        "/hubs/:id/tasks/new/": "newTask",
+        "/hubs/:hub_id/tasks/:id/edit/": "editTask"
     },
 
     constructor: function TankController() {
@@ -51,11 +52,11 @@ var TankController = Backbone.Controller.extend({
 
     addHub: function(hub, options){
         var hubView, offset;
-    
+
         if (this.getHubView(hub.id)) {
             return this;
         }
-        
+
         options = options || {};
         if (options.left && options.top){
             offset = {
@@ -80,7 +81,7 @@ var TankController = Backbone.Controller.extend({
         // TODO: move bodyElem to app.bodyElem
         bodyElem.append(hubView.elem);
         hubView.render();
-        
+
         // TODO TEMP
         if (!window.hubViews){
             window.hubViews = [];
@@ -137,8 +138,7 @@ var TankController = Backbone.Controller.extend({
 
     _isLoggedIn: function (message) {
         if (!app.currentUser) {
-            app.notification.error(message || 'You must be logged in');
-            app.back();
+            this.error(message || 'You must be logged in');
         }
         return !!app.currentUser;
     },
@@ -146,18 +146,16 @@ var TankController = Backbone.Controller.extend({
     _isOwner: function (id, message) {
         var isUser = app.isCurrentUser(id);
         if (!isUser) {
-            app.notification.error(
-                message || 'You do not have permission to access this'
-            );
-            app.back();
+            this.error(message || 'You do not have permission to do this');
         }
         return isUser;
     },
 
     _createHubForm: function (hub) {
-        form = new HubForm({
+        var form = new HubForm({
             model: hub
         });
+
         app.lightbox.content(form.render().el).show();
 
         // Append our iFrame element for upload.
@@ -169,8 +167,8 @@ var TankController = Backbone.Controller.extend({
         return form;
     },
 
-    newTask: function(id){
-        var hub = Tasket.getHubs([id]).at(0),
+    newTask: function(hubId){
+        var hub = Tasket.getHubs([hubId]).at(0),
             form;
 
         if (!this._isLoggedIn('You must be logged in to create a task')) {
@@ -181,17 +179,46 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
-        form = new TaskForm({
-            model: new Task({
-                hub: id, // NOTE: Verify this when refactoring hubs.
-                owner: app.currentUser.id
-            })
-        });
+        this._createTaskForm(hub, new Task({
+            hub: hubId, // NOTE: Verify this when refactoring hubs.
+            owner: app.currentUser.id
+        }));
+    },
+
+    editTask: function (hubId, taskId) {
+        var hub  = Tasket.getHubs([hubId]).at(0),
+            task = Tasket.getTasks([taskId]).at(0);
+
+        if (_.indexOf(hub.get("tasks"), taskId) < 0) {
+            this.error("This task does not exist on this hub");
+            return;
+        }
+
+        if (!this._isLoggedIn('You must be logged in to create a task')) {
+            return;
+        }
+
+        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+            return;
+        }
+
+        this._createTaskForm(hub, task);
+    },
+
+    _createTaskForm: function (hub, task) {
+        var form = new TaskForm({model: task});
 
         app.lightbox.content(form.render().el).show();
         form.bind('success', _.bind(function (event) {
             app.lightbox.hide();
         }, this));
+    },
+
+    error: function (message) {
+        app.notification.error(
+            message || 'You do not have permission to access this'
+        );
+        app.back();
     }
 });
 

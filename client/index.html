@@ -85,7 +85,7 @@
     <script type="text/tim" class="task">
         {{canEdit}}
         <span class="actions">
-            <a class="edit" href="#/hubs/{{hubId}}/task/{{id}}/edit/">Edit</a>
+            <a class="edit" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
         </span>
         {{/canEdit}}
         <p class="description">{{description}}</p>
@@ -379,7 +379,7 @@
     </script>
 
     <script type="text/tim" class="new-task">
-        <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}{{/isNotNew}}</h1>
+        <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}Edit task{{/isNotNew}}</h1>
         <ul>
             <li>
                 <label for="field-description">Summary</label>
@@ -395,7 +395,7 @@
             </li>
         </ul>
         <div class="actions">
-            <button type="submit">Create Task</button>
+            <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Task</button>
         </div>
     </script>
 
