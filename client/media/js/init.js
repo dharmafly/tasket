@@ -42,7 +42,7 @@ if (!app.authtoken){
 app.init(jQuery.ajax({
     url: "/hubs/",
     success: function (json) {
-        Tasket.hubs.add(json);
+        Tasket.hubs.refresh(json);
     },
     error: function () {
         app.notification.error(lang.DOWNLOAD_ERROR);
