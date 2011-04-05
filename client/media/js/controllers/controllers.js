@@ -191,7 +191,7 @@ var TankController = Backbone.Controller.extend({
         var hub  = Tasket.getHubs([hubId]).at(0),
             task = Tasket.getTasks([taskId]).at(0);
 
-        if (_.indexOf(hub.get("tasks"), taskId) < 0) {
+        if (_.indexOf(hub.getTasks(), taskId) < 0) {
             this.error("This task does not exist on this hub");
             return;
         }
