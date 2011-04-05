@@ -83,6 +83,11 @@
     </script>
 
     <script type="text/tim" class="task">
+        {{canEdit}}
+        <span class="actions">
+            <a class="edit" href="#/hubs/{{hubId}}/task/{{id}}/edit/">Edit</a>
+        </span>
+        {{/canEdit}}
         <p class="description">{{description}}</p>
         <aside class="meta">
             {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}

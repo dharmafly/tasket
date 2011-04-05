@@ -19,10 +19,10 @@ var TaskView = View.extend({
     },
 
     render: function(){
-        var data = this.model.toJSON(),
-            currentUser = app.currentUser,
-            claimedByModel, claimedBy;
+        var data = this.model.toJSON();
 
+        data.hubId = data.hub;
+        data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
 
         // TODO: provide url for user
