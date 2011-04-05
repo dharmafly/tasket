@@ -54,7 +54,7 @@ var cache = new Cache(Tasket.namespace),
                 }
                 return app;
             };
-        })(),
+        }()),
 
         isCurrentUser: function (id) {
             return !!(app.currentUser && id === app.currentUser.id);
@@ -63,7 +63,9 @@ var cache = new Cache(Tasket.namespace),
         restoreCache: function(){
             var currentUserData, currentUser;
 
-            // If we don't have a session cookie, destroy the cache.
+            // If we don't have a session cookie, destroy the cache. Django will
+            // continually set this cookie so this will only really work if the
+            // cookie itself expires.
             if (!this.getCookie("sessionid")) {
                 this.destroyCache();
             }
@@ -120,7 +122,7 @@ var cache = new Cache(Tasket.namespace),
             if (docCookie && docCookie !== "") {
                 cookies = docCookie.split(";");
 
-                for (i = 0; i < cookies.length; i++) {
+                for (i = 0; i < cookies.length; i+=1) {
                     cookie = jQuery.trim(cookies[i]);
                     // Does this cookie string begin with the name we want?
                     if (cookie.substring(0, name.length + 1) === (name + '=')) {
