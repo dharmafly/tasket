@@ -9,9 +9,11 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.validators import email_re
+from django.conf import settings
+from django.contrib.auth import forms as userforms
 
 from utils.decorators import json_login_required as login_required
-from django.conf import settings
+
 
 from sorl.thumbnail import get_thumbnail
 from utils.helpers import AllowJSONPCallback, PutView
@@ -296,24 +298,23 @@ class ProfileView(PutView):
         password = request.JSON.get('password')
         email = request.JSON.get('email')
         
-        
-
-        def is_valid_email(email):
-            if email_re.match(email):
-                return True
-            return False
-        
-        if not is_valid_email(email):
+        form = userforms.UserCreationForm(
+                {
+                    'username': username,
+                    'email' : email,
+                    'password1' : password,
+                    'password2' : password
+                }
+                )
+        if not form.is_valid():
             self.res.write(json.dumps({
-                'error': 'invalid email'
+                'error': v for k,v in form.errors.items()
             }))
             self.res.status_code = 500
             return self.res
-        
-        user = User.objects.create_user(username=username,
-                email=email,
-                password=password)
-        user.save()
+
+            
+        form.save()
 
         user = authenticate(username=username, password=password)
 

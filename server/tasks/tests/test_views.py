@@ -119,7 +119,6 @@ class ViewTests(TestCase):
         response = self.client.get('/tasks/3')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
-        print json_data['image']
     
     def test_task_get_by_id(self):
         response = self.client.get('/tasks/?ids=4,5')
@@ -236,6 +235,32 @@ class ViewTests(TestCase):
             )
         json_data = json.loads(response.content)
         self.assertEqual(json_data['id'], 6)
+
+    def test_user_post_dupe(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertTrue('error' in json_data)
 
 
     def test_user_post_not_admin(self):
