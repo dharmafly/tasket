@@ -343,13 +343,13 @@ a.action.locate {
 	background-position: 2px -178px;
 }
 
-/* Tank task & hub actions */
+/* Tank task & hub controls */
 
-.actions {
+.admin-actions {
 	float: right;
 }
 
-.actions a {
+.admin-actions a {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
@@ -363,20 +363,20 @@ a.action.locate {
 	transition: opacity 0.15s ease-in;
 }
 
-:hover > .actions a {
+:hover > .admin-actions a {
 	opacity: 0.7;
 }
 
-.actions a.add {
+.admin-actions a.add {
 	background-position: 0 -420px;
 }
 
-.actions a:hover {
+.admin-actions a:hover {
 	border: none;
 	opacity: 1;
 }
 
-.task .actions a.edit {
+.task .admin-actions a.edit {
 	background-position: 0 -390px;
 }
 
