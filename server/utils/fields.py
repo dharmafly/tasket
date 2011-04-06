@@ -11,9 +11,7 @@ class UnixTimestampField(models.DateTimeField):
     def to_python(self, value):
         try:
             value = datetime.datetime.fromtimestamp(value)
-            # print value
         except:
             pass
-            # print "\tfailed: %s" % value
         
         return value
