@@ -292,6 +292,18 @@ class ViewTests(TestCase):
             )
         self.assertTrue('image' in json.loads(response.content))
 
+    def test_user_post_image_model_fields(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/2/image/',
+            {'image' : f,},
+            )
+        self.assertTrue('image' in json.loads(response.content))
+        response = self.client.get('/users/2')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['name'], "Test User 1")
+
 
     def test_user_post_image_wrong_user(self):
         self.client.login(username='TestUser', password='12345')

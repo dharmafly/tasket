@@ -99,7 +99,10 @@ class HubView(PutView):
         # Handle image upload
         hub = get_object_or_404(Hub, pk=hub_id)
         
-        request.POST['title'] = hub.title
+        for k,v in hub.as_dict().items():
+            if k not in request.POST:
+                request.POST[k] = v
+
         form = forms.HubForm(request.POST, request.FILES, instance=hub)
         if form.is_valid():
             H = form.save()
@@ -197,8 +200,8 @@ class TasksView(PutView):
         # Handle image upload
         task = get_object_or_404(Task, pk=task_id)
         
-        request.POST['hub'] = task.hub.pk
         request.POST['state'] = task.state
+        request.POST['hub'] = task.hub_id
         
         form = forms.TaskForm(request.POST, request.FILES, instance=task, request=request)
         if form.is_valid():
@@ -350,7 +353,11 @@ class ProfileView(PutView):
         
         # Handle image upload
         profile = request.user.profile
-
+        
+        for k,v in profile.as_dict().items():
+            if k not in request.POST:
+                request.POST[k] = v
+        
         form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             P = form.save()
