@@ -25,5 +25,4 @@ function randomInt(length){
 
 
 //var Tasket, Model, CollectionModel, TaskList, Task, TaskStates, HubList, Hub, User, UserList, Notification, HubView, TaskView, app;
-var Tasket = {},
-    bodyElem = jQuery("body");
+var Tasket = {};

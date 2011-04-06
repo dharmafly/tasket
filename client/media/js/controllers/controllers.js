@@ -78,8 +78,7 @@ var TankController = Backbone.Controller.extend({
 
         hubView.bind("select", this._onSelectHubs);
 
-        // TODO: move bodyElem to app.bodyElem
-        bodyElem.append(hubView.elem);
+        app.bodyElem.append(hubView.elem);
         hubView.render();
 
         // TODO TEMP

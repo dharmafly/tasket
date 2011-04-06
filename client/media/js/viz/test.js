@@ -148,7 +148,7 @@ window.setTimeout(function(){ // TODO: callback
     }
     draw();
     
-    bodyElem.click(function(){
+    app.bodyElem.click(function(){
         f.updateCycle(1);
         draw();
     });
