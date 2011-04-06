@@ -260,6 +260,7 @@ class ViewTests(TestCase):
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
+        print json_data
         self.assertTrue('error' in json_data)
 
 

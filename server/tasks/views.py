@@ -310,9 +310,8 @@ class ProfileView(PutView):
                 }
                 )
         if not form.is_valid():
-            self.res.write(json.dumps({
-                'error': [v for k,v in form.errors.items()]
-            }))
+            error_dict = dict(form.errors.items())
+            self.res.write(json.dumps(error_dict))
             self.res.status_code = 500
             return self.res
 
