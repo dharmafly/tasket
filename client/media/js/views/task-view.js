@@ -101,6 +101,7 @@ var TaskView = View.extend({
         }
 
         this.$(".claimedBy").html(tim(templateName, {
+            id: model.id,
             name: model.get("name"),
             image: model.get("image"),
             status: status,
