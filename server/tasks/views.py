@@ -48,11 +48,12 @@ class HubView(PutView):
     
     @method_decorator(AllowJSONPCallback)
     def get(self, request, hub_id=None, tasks=None, image=None):
-        if hub_id:
+
+        if hub_id and not tasks:
             return self.get_single(request, hub_id)
         if hub_id and tasks:
             return self.get_hub_tasks(request, hub_id, tasks)
-        
+
         hubs = Hub.objects.all()
         
         if 'ids' in request.GET:

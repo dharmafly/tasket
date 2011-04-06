@@ -108,7 +108,7 @@ class ViewTests(TestCase):
     def test_hub_task_list(self):
         response = self.client.get('/hubs/2/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 7)
+        self.assertEqual(len(json_data), 3)
     
     def test_task_get(self):
         response = self.client.get('/tasks/')

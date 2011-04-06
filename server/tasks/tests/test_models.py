@@ -69,6 +69,7 @@ class ModelTest(TestCase):
 
     def test_profile_as_json(self):
         json_data = json.loads(self.P.as_json())
+        self.assertTrue('estimates' in json_data)
         self.assertTrue('tasks' in json_data)
         self.assertEqual(json_data['username'], 'TestUser')
     

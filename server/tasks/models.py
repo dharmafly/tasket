@@ -159,11 +159,17 @@ class Hub(models.Model):
         Handy for outputting related objects as a list, etc.
         """
         
-        def format_time_dict(qs):
-            d = {}
-            d['estimate'] = qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
-            d['ids'] = [str(o.pk) for o in qs]
-            return d
+        def format_estimate_list(qs):
+            return qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
+
+        def format_id_list(qs):
+            return [str(o.pk) for o in qs]
+        
+        # Querysets for 'Tasks' and 'Estimates' properties.
+        new_qs      = self.task_set.filter(state=Task.STATE_NEW)
+        claimed_qs  = self.task_set.filter(state=Task.STATE_CLAIMED)
+        done_qs     = self.task_set.filter(state=Task.STATE_DONE)
+        verified_qs = self.task_set.filter(state=Task.STATE_VERIFIED)
         
         obj_dict = {
             "id": str(self.pk),
@@ -171,10 +177,16 @@ class Hub(models.Model):
             "description": self.description.strip(),
             "owner": str(self.owner.user.pk),
             "tasks": {
-                        "new" : format_time_dict(self.task_set.filter(state=Task.STATE_NEW)),
-                        "claimed" : format_time_dict(self.task_set.filter(state=Task.STATE_CLAIMED)),
-                        "done" : format_time_dict(self.task_set.filter(state=Task.STATE_DONE)),
-                        "verified" : format_time_dict(self.task_set.filter(state=Task.STATE_VERIFIED)),
+                        "new" : format_id_list(new_qs),
+                        "claimed" : format_id_list(claimed_qs),
+                        "done" : format_id_list(done_qs),
+                        "verified" : format_id_list(verified_qs),
+                     },
+            "estimates": {
+                        "new" : format_estimate_list(new_qs),
+                        "claimed" : format_estimate_list(claimed_qs),
+                        "done" : format_estimate_list(done_qs),
+                        "verified" : format_estimate_list(verified_qs),
                      },
             "createdTime": self.created_timestamp(),
         }
@@ -214,6 +226,23 @@ class Profile(models.Model):
         return int(time.mktime(self.createdTime.timetuple()))
 
     def as_dict(self):
+        
+        def format_estimate_list(qs):
+            return qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
+
+        def format_id_list(qs):
+            return [str(o.pk) for o in qs]
+        
+        # Querysets for 'Tasks' and 'Estimates' properties.
+        owned_new_qs      = self.tasks_owned.filter(state=Task.STATE_NEW)
+        owned_claimed_qs  = self.tasks_owned.filter(state=Task.STATE_CLAIMED)
+        owned_done_qs     = self.tasks_owned.filter(state=Task.STATE_DONE)
+        owned_verified_qs = self.tasks_owned.filter(state=Task.STATE_VERIFIED)
+        claimed_new_qs      = self.tasks_claimed.filter(state=Task.STATE_NEW)
+        claimed_claimed_qs  = self.tasks_claimed.filter(state=Task.STATE_CLAIMED)
+        claimed_done_qs     = self.tasks_claimed.filter(state=Task.STATE_DONE)
+        claimed_verified_qs = self.tasks_claimed.filter(state=Task.STATE_VERIFIED)
+        
         obj_dict = {
             "id": str(self.user.pk),
             "name": self.name.strip(),
@@ -227,15 +256,28 @@ class Profile(models.Model):
                 },
             "tasks" : {
                 "owned": {
-                    "new": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_NEW)],
-                    "claimed": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_CLAIMED)],
-                    "done": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_DONE)],
-                    "verified": [str(t.pk) for t in self.tasks_owned.filter(state=Task.STATE_VERIFIED)],
+                    "new": format_id_list(owned_new_qs),
+                    "claimed": format_id_list(owned_claimed_qs),
+                    "done": format_id_list(owned_done_qs),
+                    "verified": format_id_list(owned_verified_qs),
                 },
                 "claimed": {
-                    "claimed": [str(t.pk) for t in self.tasks_claimed.filter(state=Task.STATE_CLAIMED)],
-                    "done": [str(t.pk) for t in self.tasks_claimed.filter(state=Task.STATE_DONE)],
-                    "verified": [str(t.pk) for t in self.tasks_claimed.filter(state=Task.STATE_VERIFIED)],
+                    "claimed": format_id_list(claimed_new_qs),
+                    "done": format_id_list(claimed_done_qs),
+                    "verified": format_id_list(claimed_done_qs),
+                },
+            },
+            "estimates" : {
+                "owned": {
+                    "new": format_estimate_list(owned_new_qs),
+                    "claimed": format_estimate_list(owned_claimed_qs),
+                    "done": format_estimate_list(owned_done_qs),
+                    "verified": format_estimate_list(owned_verified_qs),
+                },
+                "claimed": {
+                    "claimed": format_estimate_list(claimed_new_qs),
+                    "done": format_estimate_list(claimed_done_qs),
+                    "verified": format_estimate_list(claimed_done_qs),
                 },
             },
             "createdTime": self.created_timestamp(),
