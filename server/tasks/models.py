@@ -13,6 +13,7 @@ from django.db.models import Sum
 
 from django.conf import settings
 
+from utils.fields import UnixTimestampField
 import managers
 
 from sorl.thumbnail import ImageField
@@ -65,10 +66,10 @@ class Task(models.Model):
     owner = models.ForeignKey('Profile', related_name='tasks_owned')
     claimedBy = models.ForeignKey('Profile', related_name='tasks_claimed', null=True, blank=True)
     verifiedBy = models.ForeignKey('Profile', related_name='tasks_verified', null=True, blank=True)
-    createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
-    claimedTime = models.DateTimeField(blank=True, null=True)
-    doneTime = models.DateTimeField(blank=True, null=True)
-    verifiedTime = models.DateTimeField(blank=True, null=True)
+    createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
+    claimedTime = UnixTimestampField(blank=True, null=True)
+    doneTime = UnixTimestampField(blank=True, null=True)
+    verifiedTime = UnixTimestampField(blank=True, null=True)
     hub = models.ForeignKey('Hub')
 
     objects = managers.TaskManager()
@@ -79,6 +80,8 @@ class Task(models.Model):
     
     def format_timestamp(self, t):
         if t:
+            if isinstance(t, int):
+                return t
             return int(time.mktime(t.timetuple()))
     
 
@@ -143,7 +146,7 @@ class Hub(models.Model):
     description = models.TextField(blank=True, null=True)
     image = ImageField(upload_to='images/hubs/', null=True, blank=True)
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
-    createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     
     # objects = managers.HubManager()
     objects = managers.HubManager()
@@ -209,7 +212,7 @@ class Profile(models.Model):
     description = models.TextField(blank=True)
     location = models.CharField(blank=True, max_length=255)
     image = ImageField(upload_to='images/users/', null=True, blank=True)
-    createdTime = models.DateTimeField(blank=True, default=datetime.datetime.now)
+    createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     admin = models.BooleanField(default=False)
 
     objects = managers.ProfileManager()

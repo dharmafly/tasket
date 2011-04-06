@@ -82,4 +82,8 @@ class ModelTest(TestCase):
         self.assertEqual(len(H), 2)
 
 
+    def test_timestamp_field(self):
+        T = Task(claimedTime=123456789, owner_id=2, hub_id=2, description="asd")
+        T.save()
+        self.assertEqual(T.as_dict()['claimedTime'], 123456789)
 
