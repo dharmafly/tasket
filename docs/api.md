@@ -23,7 +23,18 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
         "owner": "USER_ID",       *required
         "description": "",
         "image": "",
-        "tasks": [/* ids of tasks that are incomplete, i.e. unverified tasks */],
+        "tasks": {
+            "new":      [/* ids of tasks */],
+            "claimed":  [/* ids of tasks */],
+            "done":     [/* ids of tasks */],
+            "verified": [/* ids of tasks */]
+        },
+        "estimates": {
+            "new":      232, // total estimated time for all new tasks, in seconds
+            "claimed":  2224,
+            "done":     44554,
+            "verified": 4534
+        },
         "createdTime": 1298567873
     }
 
@@ -113,6 +124,19 @@ POST JSON:
                 "claimed":  [/* tasks claimed by this user that have not yet been done */],
                 "done":     [/* tasks claimed by this user that have been done but not verified */],
                 "verified": [/* tasks claimed by this user that have been verified */]
+            }
+        },
+        "estimates": {
+            "owned": {
+                "new":      232, // total estimated time for all new tasks owned by this user, in seconds
+                "claimed":  232, // total estimated time for all claimed tasks owned by this user, in seconds
+                "done":     232, // total estimated time for all done tasks owned by this user, in seconds
+                "verified": 232  // total estimated time for all verified tasks owned by this user, in seconds
+            },
+            "claimed": {
+                "claimed":  232, // total estimated time for all tasks claimed by this user that are not yet done, in seconds
+                "done":     232, // total estimated time for all tasks claimed by this user that are done but not verified, in seconds
+                "verified": 232  // total estimated time for all tasks claimed by this user that have been verified, in seconds
             }
         },
         "createdTime": 1298567873
