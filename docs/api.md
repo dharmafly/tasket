@@ -139,3 +139,9 @@ POST JSON:
         done: 23
         verified: 345
     }
+
+
+## Settings ##
+
+    /settings/      #GET JSON object containing key/value pairs of settings, as 
+                     white listed in settings.EXPOSED_SETTINGS
