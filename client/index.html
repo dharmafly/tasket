@@ -49,11 +49,7 @@
         </header>
     </div>
 
-    <!--
-
-        TEMPLATES
-        ---------
-    -->
+    <!-- TEMPLATES -->
 
     <script type="text/tim" class="lightbox">
         <div class="lightbox-inner">
@@ -99,11 +95,11 @@
     </script>
     <script type="text/tim" class="task-claimed-by-you">
         <img src="{{image}}" width="14" height="14" alt="Your avatar" />
-        <a href="{{url}}" title="See your tasks">You</a> {{status}} this
+        <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this
     </script>
     <script type="text/tim" class="task-claimed-by-user">
         <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
-        <a href="{{url}}" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task
+        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task
     </script>
     <script type="text/tim" class="dashboard-detail">
         <h1>{{title}}</h1>

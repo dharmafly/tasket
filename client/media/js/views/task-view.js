@@ -28,7 +28,6 @@ var TaskView = View.extend({
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
 
-        // TODO: provide url for user
         this.elem.html(tim("task", data));
 
         this.updateClaimedBy();
