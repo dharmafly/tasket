@@ -64,7 +64,6 @@ getScript(
     "lang/en.js",
     "views/toolbar.js",
     "init.js",
-    "temp.js",
     //"viz/test.js",
     
     // Callback function once all are loaded
