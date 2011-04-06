@@ -29,7 +29,6 @@ var TaskView = View.extend({
         data.isClaimed = !!data.claimedBy;
 
         // TODO: provide url for user
-        // TODO: wrap hub nucleus image in url link
         this.elem.html(tim("task", data));
 
         this.updateClaimedBy();

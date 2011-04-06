@@ -93,8 +93,7 @@ _.extend(Tasket, Backbone.Events, {
         var wrapped = _(ids),
             type    = collection.model.prototype.type,
             subset  = new collection.constructor(),
-            toLoad  = new collection.constructor(),
-            toLoadCopy = new collection.constructor();
+            toLoad  = new collection.constructor();
 
         // Removed previously failed ids.
         ids = wrapped.without.apply(wrapped, Tasket.failed[type]);
@@ -105,26 +104,24 @@ _.extend(Tasket, Backbone.Events, {
             if (!model) {
                 model = new collection.model({id: id});
                 toLoad.add(model);
-                toLoadCopy.add(model);
+                collection.add(model);
             }
             subset.add(model);
-        });
+        }, this);
 
         if (toLoad.length) {
             toLoad.fetch().bind('refresh', function () {
                 toLoad.each(function (model) {
-                    if (!collection.get(model.id)) {
-                        collection.add(model);
-                    }
                     // Update the model in the subset with the new data.
                     subset.get(model.id).set(model.toJSON());
                 });
 
                 // Remove all models from subset that appear in toLoadCopy
                 // but not in toLoad. As they do not exist on the server.
-                toLoadCopy.each(function (model) {
+                _.clone(collection).each(function (model) {
                     if (!toLoad.get(model.id)) {
                         subset.remove(model);
+                        collection.remove(model);
 
                         // Cache the failed model id.
                         Tasket.failed[model.type].push(model.id);
