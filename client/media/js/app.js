@@ -2,24 +2,36 @@
 
 var cache = new Cache(Tasket.namespace),
     app = _.extend({
-        bodyElem: jQuery("body"),
-        hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
-        hubPlaceholderImage: "/media/images/placeholder.png",
-        userPlaceholderImage: "/media/images/placeholder.png",
-        loaded: false,
-        useCsrfToken: false,
-        useSessionId: true,
-        authtoken: null,
-        csrftoken: null,
-        currentUser: null,
-        cache: cache,
-        notification:   new Notification(),
-        lightbox:       new Lightbox(),
-        dashboard:      new Dashboard(),
-        tankController: new TankController(),
-        pageController: new PageController(),
-        dashController: new DashboardController(),
-        forcedirected:  new Tasketter(),
+        // Sets up the app. Called by init on app "ready".
+        setup: function () {
+            this.bodyElem = jQuery("body");
+
+            return _.extend(this, {
+                hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
+                hubPlaceholderImage: "/media/images/placeholder.png",
+                userPlaceholderImage: "/media/images/placeholder.png",
+                loaded: false,
+                useCsrfToken: false,
+                useSessionId: true,
+                authtoken: null,
+                csrftoken: null,
+                currentUser: null,
+                cache: cache,
+                notification:   new Notification(),
+                lightbox:       new Lightbox(),
+                dashboard:      new Dashboard()
+            });
+        },
+
+        // Sets up the app. Called by init on app "ready".
+        ready: function () {
+            return _.extend(this, {
+                tankController: new TankController(),
+                pageController: new PageController(),
+                dashController: new DashboardController(),
+                forcedirected:  new Tasketter()
+            });
+        },
 
         // init() accepts jQuery deferred objects as returned by jQuery.ajax() or
         // created manually using new jQuery.Deferred(). These objects are
@@ -40,15 +52,21 @@ var cache = new Cache(Tasket.namespace),
                 else if (callbacks === null) {
                     throw "Cannot add more callbacks. init() has already been run";
                 }
-                else {
+                else if (app.loaded !== true) {
+                    // Setup app properties that are not dependant on anything.
+                    app.setup();
+                    app.trigger("setup", app);
+
                     // Kick off init(). Trigger "success" if all deferreds return
                     // successfully. Else trigger an "error" event.
                     jQuery.when.apply(null, callbacks).then(
                         function () {
-                            app.trigger("ready");
+                            app.ready();
+                            app.trigger("ready", app);
+                            app.loaded = true;
                         },
                         function () {
-                            app.trigger("error");
+                            app.trigger("error", app);
                         }
                     );
                     callbacks = null;
@@ -177,4 +195,3 @@ var cache = new Cache(Tasket.namespace),
             return app;
         }
     }, Backbone.Events);
-
