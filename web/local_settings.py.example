@@ -19,3 +19,6 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+
+TASK_ESTIMATE_MAX = 14400

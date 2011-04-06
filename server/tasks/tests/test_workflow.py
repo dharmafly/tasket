@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core.files.base import ContentFile
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from tasks.models import Hub, Task, Profile
 import tasks
@@ -142,6 +143,38 @@ class WorkflowTests(TestCase):
         self.assertFalse('doneTime' in json.loads(response.content))
 
 
+    def test_maximum_times(self):
+        self.client.login(username='TestUser', password='12345')
+        hub = Hub.objects.get(pk=2)
+        
+        maximum_time = settings.TASK_ESTIMATE_MAX
+        
+        response = self.client.post(
+            '/tasks/',
+            json.dumps({
+                "description" : "Lorem ipsum dolor sit amet, consectetur",
+                "estimate" : maximum_time-10,
+                "hub" : hub.pk,
+            }),
+            content_type='application/json',
+            )
 
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['estimate'], maximum_time-10)
+
+
+        response = self.client.post(
+            '/tasks/',
+            json.dumps({
+                "description" : "Lorem ipsum dolor sit amet, consectetur",
+                "estimate" : maximum_time+10,
+                "hub" : hub.pk,
+            }),
+            content_type='application/json',
+            )
+
+        json_data = json.loads(response.content)
+        self.assertTrue(json_data['estimate'][0].startswith("Estimate is too high"))
+    
 
 

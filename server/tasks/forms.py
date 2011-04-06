@@ -4,6 +4,7 @@ import django.forms
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.html import escape
+from django.conf import settings
 
 from models import Task, Hub, Profile
 
@@ -93,16 +94,22 @@ class TaskForm(forms.ModelForm):
                 cleaned_data['verifiedTime'] = datetime.datetime.now()
 
         return cleaned_data
-
+    
+    def clean_estimate(self):
+        estimate = self.cleaned_data['estimate']
+        if estimate > settings.TASK_ESTIMATE_MAX:
+            self._errors['estimate'] = self.error_class(['Estimate is too high, enter a value less than %s' % settings.TASK_ESTIMATE_MAX])
+        return estimate
+    
     def clean(self):
         super(TaskForm, self).clean()
 
         cleaned_data = dict(self.cleaned_data)
         
-        if cleaned_data['estimate'] == None:
+        if not cleaned_data.get('estimate'):
             cleaned_data['estimate'] = self.instance.estimate
             if self.instance.estimate == None:
-                self._errors['error'] = self.error_class(['Estimate is required'])
+                self._errors['estimate'] = self.error_class(['Estimate is required'])
         
         for k,v in cleaned_data.items():
             if isinstance(v, unicode):

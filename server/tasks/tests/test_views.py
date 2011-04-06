@@ -159,7 +159,7 @@ class ViewTests(TestCase):
             )
 
         json_data = json.loads(response.content)
-        self.assertTrue('error' in json_data)
+        self.assertTrue(json_data['estimate'][0].startswith("Estimate is required"))
 
     def test_task_create_with_html(self):
         self.client.login(username='TestUser', password='12345')
@@ -260,7 +260,7 @@ class ViewTests(TestCase):
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
-        self.assertTrue('error' in json_data)
+        self.assertTrue(json_data['username'][0].startswith("A user with that username already exists."))
 
 
     def test_user_post_not_admin(self):

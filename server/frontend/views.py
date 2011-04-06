@@ -10,6 +10,7 @@ from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.forms import ValidationError
 from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from utils.helpers import AllowJSONPCallback, PutView
 
@@ -127,3 +128,15 @@ def handle404(request):
     
     
     
+def settings_view(request):
+    exposed_settings = getattr(settings, "EXPOSED_SETTINGS", ())
+    
+    settings_dict = {}
+    
+    for setting in exposed_settings:
+        if hasattr(settings, setting):
+            settings_dict[setting] = getattr(settings, setting)
+    
+    return HttpResponse(json.dumps(settings_dict))
+
+
