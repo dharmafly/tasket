@@ -14,7 +14,7 @@ var Form = View.extend({
 
         this.reset();
 
-        this.jQuery(':input[name]:not([type=file])').each(function () {
+        this.$(':input[name]:not([type=file])').each(function () {
             data[this.name] = jQuery(this).val();
         });
 
@@ -26,7 +26,7 @@ var Form = View.extend({
         return this.trigger('submit', this.model, this);
     },
     errors: function (errors) {
-        var list = this.jQuery(':input');
+        var list = this.$(':input');
 
         list.each(function () {
             var input    = jQuery(this),
@@ -43,7 +43,7 @@ var Form = View.extend({
         return this;
     },
     reset: function () {
-        this.jQuery('.error strong').remove();
+        this.$('.error strong').remove();
         return this;
     },
     _onSuccess: function () {

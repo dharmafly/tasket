@@ -12,7 +12,7 @@ var DashboardDetail = Lightbox.extend({
     },
 
     title: function (title) {
-        this.jQuery('h1').text(title);
+        this.$('h1').text(title);
         return this;
     },
 

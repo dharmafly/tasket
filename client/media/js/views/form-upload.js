@@ -26,7 +26,7 @@ var FormUpload = Form.extend({
      * Returns itself.
      */
     toggleLoading: function() {
-        var loading = this.jQuery(".loading");
+        var loading = this.$(".loading");
         if (loading.is(":visible")) {
             loading.hide();
             jQuery(this.iframe).show();
@@ -73,7 +73,7 @@ var FormUpload = Form.extend({
      * Returns iframe element.
      */
     _createFrame: function () {
-        var input = this.jQuery("input[type=file]");
+        var input = this.$("input[type=file]");
 
         this.name = input.attr("name");
         this.iframe = jQuery("<iframe>", {

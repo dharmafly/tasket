@@ -42,7 +42,7 @@ var Lightbox = View.extend({
         return this._trigger(options, 'hide', this);
     },
     content: function (content) {
-        var element = this.jQuery('.content');
+        var element = this.$('.content');
         if (typeof content === 'string') {
             element.html(content);
         } else {
@@ -56,7 +56,7 @@ var Lightbox = View.extend({
         return this;
     },
     _updateMargin: function () {
-        var inner = this.jQuery('.lightbox-inner');
+        var inner = this.$('.lightbox-inner');
         inner.css({
             top: '50%',
             'margin-top': inner.outerHeight() / 2 * -1
