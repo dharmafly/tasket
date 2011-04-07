@@ -1,14 +1,3 @@
-// Bootstrap the app with all open hubs.
-app.init(jQuery.ajax({
-    url: "/hubs/",
-    success: function (json) {
-        Tasket.hubs.refresh(json);
-    },
-    error: function () {
-        app.notification.error(Tasket.lang.en.DOWNLOAD_ERROR);
-    }
-}));
-
 // Run after app properties have been setup.
 app.bind("setup", function onSetup() {
     // Setup the app.
@@ -72,18 +61,39 @@ app.bind("error", function (data) {
     app.notification.error(Tasket.lang.INIT_ERROR);
 });
 
+if (app.supported()) {
 
-/////
+    // Bootstrap the app with all open hubs.
+    app.init(jQuery.ajax({
+        url: "/hubs/",
+        success: function (json) {
+            Tasket.hubs.refresh(json);
+        },
+        error: function () {
+            app.notification.error(Tasket.lang.en.DOWNLOAD_ERROR);
+        }
+    }));
 
+    // Timeout required to prevent notification appearing immediately (seen in Chrome)
+    window.setTimeout(function(){
+        if (!app.loaded){
+            app.notification.warning(Tasket.lang.en.LOADING);
+        }
+    }, 0);
 
-// Timeout required to prevent notification appearing immediately (seen in Chrome)
-window.setTimeout(function(){
-    if (!app.loaded){
-        app.notification.warning(Tasket.lang.en.LOADING);
-    }
-}, 0);
+    // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
+    app.init();
 
-// TODO: setTimeout in case of non-load -> show error and cancel all open xhr
+} else {
+    (function () {
 
-// START
-app.init();
+        // Display friendly unsupported message to the user.
+        var lightbox = new Lightbox();
+        jQuery("body")
+            .find(':not(script)')
+            .remove()
+            .end()
+            .append(lightbox.render().el);
+        lightbox.content(tim("unsupported")).show();
+    }());
+}
