@@ -178,6 +178,7 @@ var HubView = View.extend({
             width, radius;
 
         if (!context){
+            this.canvasContext = null;
             return false;
         }
 
