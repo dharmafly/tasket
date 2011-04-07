@@ -153,7 +153,7 @@ var HubView = View.extend({
     getDisplayTasks: function () {
         return _(["new", "claimed", "done"])
           .chain().map(function (key) {
-              return this.get("tasks." + key + ".ids");
+              return this.get("tasks." + key);
           }, this.model)
           .flatten()
           .value();
