@@ -83,7 +83,7 @@ var Dashboard = View.extend({
             this["update" + method]();
         }, this);
 
-        this.elem.append(this.detail.hide().render().el);
+        this.elem.append(this.detail.hide({silent: true}).render().el);
 
         return this;
     },
