@@ -91,19 +91,21 @@ class Task(models.Model):
             "claimedBy" : None,
             "verifiedBy" : None,
             "createdTime" : self.format_timestamp(self.createdTime),
-            "claimedTime" : self.format_timestamp(self.claimedTime),
-            "doneTime" : self.format_timestamp(self.doneTime),
-            "verifiedTime" : self.format_timestamp(self.verifiedTime),
             "hub" : str(self.hub.pk),
         }
         
         if self.image:
             obj_dict["image"] = self.image.name
-
         if self.claimedBy:
             obj_dict["claimedBy"] = str(self.claimedBy.user.pk)
         if self.verifiedBy:
             obj_dict["verifiedBy"] = str(self.verifiedBy.user.pk)
+        if self.claimedTime: 
+            obj_dict["claimedTime"] = self.format_timestamp(self.claimedTime)
+        if self.doneTime: 
+            obj_dict["doneTime"] = self.format_timestamp(self.doneTime)
+        if self.verifiedTime: 
+            obj_dict["verifiedTime"] = self.format_timestamp(self.verifiedTime)
         
         for k,v in obj_dict.items():
             if v == None:
