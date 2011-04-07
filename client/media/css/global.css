@@ -68,6 +68,10 @@ a:hover, a:active, a:focus,
 	border-bottom: 1px solid;
 }
 
+img {
+	border: none;
+}
+
 .form-button {
 	display: inline-block;
 }
