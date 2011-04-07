@@ -733,9 +733,9 @@ article .nucleus-wrapper img {
 }
 
 article.select .nucleus-wrapper {
-	background-image: url(../images/sprites.png);
+	background-image: url(../images/hub-selected.png);
 	background-repeat: no-repeat;
-	background-position: 5px -235px;
+	background-position: center center;
 }
 
 article > hgroup {
