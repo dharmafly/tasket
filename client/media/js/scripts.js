@@ -40,7 +40,6 @@ getScript(
         "views/toolbar.js",
         "views/hub-view.js",
         "views/task-view.js",
-        "views/user-view.js",
         "views/notification.js",
         "views/lightbox.js",
         "views/dashboard.js",
