@@ -255,62 +255,58 @@
     <script type="text/tim" class="signup">
         <h1>Register for a Tasket Account</h1>
         <p>Please provide the following details and we’ll create an account for you.</p>
-        <form action="#/sign-up/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-username">Username</label>
-                    <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
-                </li>
-                <li>
-                    <label for="field-email">Email Address</label>
-                    <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
-                </li>
-                <li>
-                    <label for="field-name">Your Name</label>
-                    <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="" />
-                </li>
-                <li>
-                    <label for="field-password">Password</label>
-                    <input type="password" id="field-password" name="password" placeholder="password" value="" />
-                </li>
-                <li>
-                    <label for="field-password-confirm">Confirm Password</label>
-                    <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
-                </li>
-                <li>
-                    <label for="field-image">Image</label>
-                    <input id="field-image" type="file" name="image" />
-                    <p class="loading">Uploading image</p>
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Sign Up</button>
-            </div>
-        </form>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+            </li>
+            <li>
+                <label for="field-name">Your Name</label>
+                <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="" />
+            </li>
+            <li>
+                <label for="field-password">Password</label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password-confirm">Confirm Password</label>
+                <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
+            </li>
+            <li>
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Sign Up</button>
+        </div>
     </script>
 
     <script type="text/tim" class="account">
         <h1>Update your Account Details</h1>
-        <form action="#/user/{{id}}/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-name">Your Name</label>
-                    <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="{{name}}" />
-                </li>
-                <li>
-                    <label for="field-email">Email Address</label>
-                    <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="{{email}}" />
-                </li>
-                <li>
-                    <label for="field-image">Image</label>
-                    <input id="field-image" type="file" name="image" />
-                    <p class="loading">Uploading image</p>
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Update</button>
-            </div>
-        </form>
+        <ul>
+            <li>
+                <label for="field-name">Your Name</label>
+                <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="{{name}}" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="{{email}}" />
+            </li>
+            <li>
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Update</button>
+        </div>
     </script>
 
     <script type="text/tim" class="about">
