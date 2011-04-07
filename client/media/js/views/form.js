@@ -18,6 +18,8 @@ var Form = View.extend({
             data[this.name] = jQuery(this).val();
         });
 
+        this.trigger("beforeSave", data, this.model, this);
+
         this.model.save(data, {
             success: _.bind(this._onSuccess, this),
             error:   _.bind(this._onError, this)
