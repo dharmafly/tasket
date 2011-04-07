@@ -58,6 +58,12 @@ app.bind("ready", function onReady () {
         }
     });
 
+    // If user lands on root update the url to "/#/" for consistency. This
+    // can be removed should the history API be implemented.
+    if (!window.location.hash) {
+        window.location.hash = "/";
+    }
+
     Backbone.history.start();
 });
 
