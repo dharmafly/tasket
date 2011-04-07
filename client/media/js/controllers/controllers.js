@@ -34,8 +34,14 @@ var TankController = Backbone.Controller.extend({
         });
     },
 
-    addHubs: function(hubs){
-        _(hubs).each(this.addHub, this);
+    addHubs: function(hubs, options){
+        _(hubs).each(function(hub){
+            this.addHub(hub, {dontDraw:true});
+        }, this);
+        
+        if (!options || !options.dontDraw){
+            this.forcedirectHubs(false, true);
+        }
         return this;
     },
 
@@ -65,9 +71,9 @@ var TankController = Backbone.Controller.extend({
             };
         }
         else {
-            offset = { // TODO TEMP
-                left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
-                top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
+            offset = { // TODO IMPROVE
+                left: window.innerWidth / 2 + (100 * Math.random() - 50),
+                top: window.innerHeight / 2 + (100 * Math.random() - 50)
             };
         }
 
@@ -81,11 +87,9 @@ var TankController = Backbone.Controller.extend({
         app.bodyElem.append(hubView.elem);
         hubView.render();
 
-        // TODO TEMP
-        if (!window.hubViews){
-            window.hubViews = [];
+        if (!options.dontDraw){
+            this.forcedirectHubs();
         }
-        window.hubViews.push(hubView);
 
         return hubView;
     },
@@ -220,6 +224,95 @@ var TankController = Backbone.Controller.extend({
             message || 'You do not have permission to access this'
         );
         app.back();
+    },
+      
+    forcedirectHubs: function(callback, animate){        
+        var f = app.forcedirector,
+            hubViews = this.hubViews,
+            nucleusWidth, width, descriptionWidth, hubHubBuffer, wallBuffer, wallRight, wallLeft, wallTop, wallBottom, halfNucleusWidth,
+            numCycles = 200,
+            inCoulombK = 750,
+            updateStep = 1,
+            fps = 60,
+            i = 0,            
+            deltaTMin = 0.2,
+            deltaTEase = 1.5,
+            deltaTFactor = 0.01;
+            
+        f.reset();
+        f.inCoulombK = inCoulombK;
+        
+        _.each(this.hubViews, function(hubView){
+            var offset = hubView.offset(),
+                id = hubView.model.id,
+                height = hubView.nucleusWidth + hubView.labelElem.outerHeight(true); // NOTE height can vary for different hub descriptions
+                
+            if (!width){
+                descriptionWidth = hubView.labelElem.outerWidth(true); // TODO ensure we only use dimensions of collapsed label
+                nucleusWidth = hubView.nucleusWidth;
+                halfNucleusWidth = nucleusWidth / 2;
+                hubHubBuffer = nucleusWidth;
+                width = hubView.nucleusWidth + descriptionWidth + hubHubBuffer;
+                wallBuffer = halfNucleusWidth;
+                wallRight = jQuery("section.dashboard").offset().left - wallBuffer;
+                wallLeft = wallBuffer;
+                wallTop = window.innerHeight - wallBuffer - jQuery("div.header-container").outerHeight(true);
+                wallBottom = wallBuffer;
+                
+                f.wallsFlag = true;
+                f.top = wallTop;
+                f.bottom = wallBottom;
+                f.left = wallLeft;
+                f.right = wallRight;
+            }
+            
+            hubView.offsetValues({
+                left: offset.left,
+                top: (wallTop - wallBottom) - (hubView.model.weight() * (wallTop - wallBottom)) // TODO: move into hubView method; spread across all y
+            });
+            
+            // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
+            hubView.forcedNode = f.addTask({key:id, x:offset.left, y:offset.top, width: width, height: height});
+        });
+        
+        // Show walls
+        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (wallRight-wallLeft) + "px; top:" + (window.innerHeight - wallTop) + "px; height: " + (wallTop - wallBottom) + "px; left:" + wallLeft + "px;'></div>").appendTo("body");
+        
+        function updateHubViewsOffset(){
+            _.each(hubViews, function(hubView){
+                var pos = hubView.forcedNode.getPos();
+                
+                hubView.offset({
+                    left: pos.x - descriptionWidth / 2,
+                    top: pos.y + halfNucleusWidth
+                });
+            });
+        }
+        
+        function loop(){
+            f.updateCycle(deltaTMin + deltaTEase);
+            deltaTEase = deltaTEase - (deltaTEase * deltaTFactor);
+            
+            if (i <= numCycles){
+                if (animate){
+                    updateHubViewsOffset();
+                    
+                    window.setTimeout(function(){
+                        loop(++i);
+                    }, 1000 / fps);
+                }
+                else {
+                    loop(++i);
+                }
+            }
+            else if (callback){
+                callback();
+            }
+        }
+        loop();
+        updateHubViewsOffset();
+        
+        return this;
     }
 });
 

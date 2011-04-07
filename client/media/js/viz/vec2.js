@@ -7,7 +7,7 @@ if(typeof Float32Array != 'undefined') {
 }
 
 
-vec2 = {};
+var vec2 = {};
 
 
 vec2.create = function(vec) {
@@ -78,8 +78,8 @@ vec2.scale2 = function(vec, val, dest) {
 vec2.normalize = function(vec, dest) {
 	if(!dest) { dest = vec; }
 	
-	var x = vec[0], y = vec[1];//, z = vec[2];
-	var len = Math.sqrt(x*x + y*y);
+	var x = vec[0], y = vec[1], len;//, z = vec[2];
+	len = Math.sqrt(x*x + y*y);
 	
 	if (!len) {
 		dest[0] = 0;
@@ -107,12 +107,13 @@ vec2.length = function(vec){
 
 
 vec2.dist = function(vec, vec2){
-	var dx = vec[0] - vec2[0];
-	var dy = vec[1] - vec2[1];
+	var dx, dy;
+	dx = vec[0] - vec2[0];
+	dy = vec[1] - vec2[1];
 	return Math.sqrt(dx*dx + dy*dy);
 };
 
 vec2.dot = function(vec, vec2){
+
 	return vec[0]*vec2[0] + vec[1]*vec2[1];// + vec[2]*vec2[2];
 };
-

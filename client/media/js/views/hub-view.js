@@ -231,10 +231,6 @@ var HubView = View.extend({
             top:  top
         });
     },
-    
-    weight: function(){
-    
-    },
 
     renderTasks: function(){
         var container = this.taskListElem,
@@ -312,7 +308,7 @@ var HubView = View.extend({
         data.canEdit = app.isCurrentUser(data.owner);
 
         this.elem.html(tim("hub", data));
-        this.nucleusElem = this.elem.children("img.nucleus");
+        this.nucleusElem = this.elem.children("a.nucleus-wrapper");
         // NOTE: this calculation requires this.elem to be present in the document's DOM, for CSS styling
         this.nucleusWidth = this.nucleusElem.outerWidth(); // TODO: or use .set("nucleusWidth"); ?
         this.tasksElem = this.$("div.tasks");

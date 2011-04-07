@@ -34,6 +34,14 @@ var Hub = Model.extend({
         return _(keys).chain().map(function (key) {
             return this.get("tasks." + key);
         }, this).flatten().value();
+    },
+    
+    weight: function(){
+        var maxMinutes = app.TASK_ESTIMATE_MAX * app.HUB_MAX_TASKS,
+            unclaimedMinutes = this.get("estimates.claimed"),
+            weight = unclaimedMinutes / maxMinutes;
+            
+        return weight || 0;
     }
 });
 

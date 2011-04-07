@@ -43,7 +43,7 @@ jQuery("<div style='position:absolute; outline:1px solid green; width:" + (wallR
 
 //////////////
 
-f = app.forcedirected;
+var f = app.forcedirected;
 f.reset();
 var h1 = hubViews[1];
 

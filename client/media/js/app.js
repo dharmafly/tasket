@@ -2,11 +2,13 @@
 
 var cache = new Cache(Tasket.namespace),
     app = _.extend({
-        // Sets up the app. Called by init on app "ready".
+        // Sets up the app. Called by init()
         setup: function () {
             this.bodyElem = jQuery("body");
 
             return _.extend(this, {
+                TASK_ESTIMATE_MAX: 14400,
+                HUB_MAX_TASKS: 8,
                 hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
                 hubPlaceholderImage: "/media/images/placeholder.png",
                 userPlaceholderImage: "/media/images/placeholder.png",
@@ -20,17 +22,18 @@ var cache = new Cache(Tasket.namespace),
                 toolbar:        new Toolbar({el: jQuery('.header-container')[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
-                dashboard:      new Dashboard()
+                dashboard:      new Dashboard(),                
+                forcedirector:  new Tasketter()
             });
         },
 
-        // Sets up the app. Called by init on app "ready".
+        // Sets up the app. Called by init() on app "ready".
         ready: function () {
             return _.extend(this, {
+                // The controllers will make Ajax calls on their init, so are created after app init
                 tankController: new TankController(),
                 pageController: new PageController(),
-                dashController: new DashboardController(),
-                forcedirected:  new Tasketter()
+                dashController: new DashboardController()
             });
         },
 
