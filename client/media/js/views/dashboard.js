@@ -100,7 +100,7 @@ var Dashboard = View.extend({
     // Updates the user status box.
     updateNotifications: function () {
         var stats = this.model && this.userStatistics(),
-            notifications = this.$(".notifications"),
+            notifications = this.jQuery(".notifications"),
             items = notifications.children("li"),
             visible;
 
@@ -177,11 +177,11 @@ var Dashboard = View.extend({
                     showVerify: !app.isCurrentUser(model.get("claimedBy"))
                 };
             });
-            this.$(selector).show().find("ul").html(tim("dashboard-link", {
+            this.jQuery(selector).show().find("ul").html(tim("dashboard-link", {
                 links: mapped
             }));
         } else {
-            this.$(selector).hide();
+            this.jQuery(selector).hide();
         }
 
         return this;

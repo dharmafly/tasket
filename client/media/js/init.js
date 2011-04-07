@@ -15,7 +15,7 @@ app.bind("setup", function onSetup() {
        .setupAuthentication();
 
     // Setup the app.
-    $('body')
+    jQuery('body')
       .append(app.dashboard.render().el)
       .append(app.lightbox.render().hide().el);
 
@@ -36,7 +36,7 @@ app.bind("ready", function onReady () {
     // Destory the cached user details when the logout button is clicked.
     // This block can be removed once Ticket #84 has been resolved and the
     // server deletes the "sessionid" cookie on logout.
-    $('form[action="/logout/"]').submit(function (event) {
+    jQuery('form[action="/logout/"]').submit(function (event) {
         app.destroyCache();
     });
 
@@ -49,8 +49,8 @@ app.bind("ready", function onReady () {
     // Example:
     //
     // <button data-task-state="verify" data-task-id="2">Verify Task</button>
-    $("[data-task-state][data-task-id]").live("click", function () {
-        var button = $(this),
+    jQuery("[data-task-state][data-task-id]").live("click", function () {
+        var button = jQuery(this),
             state = button.data('task-state'),
             id = button.data('task-id'),
             task;

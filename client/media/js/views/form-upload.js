@@ -26,13 +26,13 @@ var FormUpload = Form.extend({
      * Returns itself.
      */
     toggleLoading: function() {
-        var loading = this.$(".loading");
+        var loading = this.jQuery(".loading");
         if (loading.is(":visible")) {
             loading.hide();
-            $(this.iframe).show();
+            jQuery(this.iframe).show();
         } else {
              loading.show();
-             $(this.iframe).hide();
+             jQuery(this.iframe).hide();
         }
         return this;
     },
@@ -46,7 +46,7 @@ var FormUpload = Form.extend({
      *
      * Examples
      *
-     *   $("#content").append(view.render().el);
+     *   jQuery("#content").append(view.render().el);
      *   view.updateFrame();
      *
      * Returns itself.
@@ -59,7 +59,7 @@ var FormUpload = Form.extend({
         this.iframe.contentWindow.document.open();
         this.iframe.contentWindow.document.write(tim("iframe-upload", {
             name: this.name,
-            stylesheet: $('link[rel=stylesheet]')[0].href
+            stylesheet: jQuery('link[rel=stylesheet]')[0].href
         }));
         this.iframe.contentWindow.document.close();
 
@@ -73,10 +73,10 @@ var FormUpload = Form.extend({
      * Returns iframe element.
      */
     _createFrame: function () {
-        var input = this.$("input[type=file]");
+        var input = this.jQuery("input[type=file]");
 
         this.name = input.attr("name");
-        this.iframe = $("<iframe>", {
+        this.iframe = jQuery("<iframe>", {
             id: "field-image",
             scrolling: "no",
             frameBorder: 0,
@@ -107,7 +107,7 @@ var FormUpload = Form.extend({
      */
     _onSuccess: function () {
         var view = this,
-            form = $("form", this.iframe.contentWindow.document.body);
+            form = jQuery("form", this.iframe.contentWindow.document.body);
 
         // Bail early if no file is present.
         if (!form.find('input').val()) {
@@ -124,7 +124,7 @@ var FormUpload = Form.extend({
                 data;
 
             try {
-                data = $.parseJSON(response);
+                data = jQuery.parseJSON(response);
                 view.model.set(data);
                 view.updateFrame().toggleLoading();
                 view.trigger("success", view.model, view);

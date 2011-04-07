@@ -79,7 +79,7 @@ Tasketter.prototype = {
 		this.nodeIJs.length = 0;
 		
 		// add a project node - fixed by default (index will be 0)
-		this.nodes.push(new ProjectNode(this, $.extend({x:0, y:0, dx:0, dy:0, width:PROJECT_WIDTH, height:PROJECT_HEIGHT},params)));
+		this.nodes.push(new ProjectNode(this, jQuery.extend({x:0, y:0, dx:0, dy:0, width:PROJECT_WIDTH, height:PROJECT_HEIGHT},params)));
 		this.nodeIJs.push({});
 		this.nodes[0].fixed = true;
 		return this.nodes[0];
@@ -87,7 +87,7 @@ Tasketter.prototype = {
 
 
 	addTask: function(params){
-		task = new TaskNode(this, $.extend({x:0, y:0, dx:0, dy:0, width:TASK_WIDTH, height:TASK_HEIGHT}, params));
+		task = new TaskNode(this, jQuery.extend({x:0, y:0, dx:0, dy:0, width:TASK_WIDTH, height:TASK_HEIGHT}, params));
 		this.nodes.push(task);
 		this.nodeIJs.push({});
 		return task;
@@ -119,7 +119,7 @@ Tasketter.prototype = {
 
 		// add task nodes - indexed from 1 to t+1
 		for(var i=0; i<data.tasks.length; i++){
-			this.nodes.push(new TaskNode(this, $.extend({x:0, y:(i+1)*50, dx:0, dy:0}, data.tasks[i])));
+			this.nodes.push(new TaskNode(this, jQuery.extend({x:0, y:(i+1)*50, dx:0, dy:0}, data.tasks[i])));
 			this.nodeIJs.push({});
 		}
 
