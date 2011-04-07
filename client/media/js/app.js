@@ -17,6 +17,7 @@ var cache = new Cache(Tasket.namespace),
                 csrftoken: null,
                 currentUser: null,
                 cache: cache,
+                toolbar:        new Toolbar({el: jQuery('.header-container')[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
                 dashboard:      new Dashboard()

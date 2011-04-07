@@ -27,9 +27,6 @@ app.bind("setup", function onSetup() {
 
 // Called when the app has all dependancies loaded.
 app.bind("ready", function onReady () {
-    // Run setup methods.
-    app.setupToolbar(); // TODO: move setupToolbar to app object from the start and create toolbar view
-
     app.notification.hide();
     app.tankController.addHubs(Tasket.hubs.models);
 

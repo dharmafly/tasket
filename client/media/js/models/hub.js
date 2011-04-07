@@ -32,7 +32,7 @@ var Hub = Model.extend({
     getTasks: function () {
         var keys = ["new", "claimed", "done", "verified"];
         return _(keys).chain().map(function (key) {
-            return this.get("tasks." + key + ".ids");
+            return this.get("tasks." + key);
         }, this).flatten().value();
     }
 });

@@ -37,7 +37,7 @@ getScript(
         "models/hub.js",
         "models/task.js",
         "models/user.js",
-
+        "views/toolbar.js",
         "views/hub-view.js",
         "views/task-view.js",
         "views/user-view.js",
@@ -62,7 +62,6 @@ getScript(
     "core/tasket.js",
     "app.js",
     "lang/en.js",
-    "views/toolbar.js",
     "init.js",
     //"viz/test.js",
     
