@@ -194,5 +194,17 @@ var cache = new Cache(Tasket.namespace),
                 }
             });
             return app;
-        }
+        },
+
+        // Returns true if the browser supports Taskets API's.
+        supported: (function () {
+            var canvas = document.createElement('canvas'),
+                supported;
+
+            supported = !!(canvas.getContext && canvas.getContext('2d') && cache.localStorage);
+
+            return function () {
+                return supported;
+            };
+        }())
     }, Backbone.Events);
