@@ -355,7 +355,6 @@ var tim = (function createTim(initSettings){
             for (; i < len; i++){
                 elem = elements[i];
                 key = attr === "class" ? elem.className : elem.getAttribute(attr);
-                window.console && console.log(key, elements[elem.type], type);
                 if (key && hasQuery || elem.type === type){
                     templatesInDom[key] = elem.innerHTML;
                 }
