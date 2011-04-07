@@ -177,4 +177,27 @@ class WorkflowTests(TestCase):
         self.assertTrue(json_data['estimate'][0].startswith("Estimate is too high"))
     
 
+    def test_task_save_verified_string(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.put('/tasks/5', 
+            json.dumps(
+                    {"description":"This has been claimed, but not done.",
+                    "image":"images/ACH_4307_3.jpg",
+                    "estimate":600,
+                    "state":"claimed",
+                    "id":"5",
+                    "createdTime":1298625303,
+                    "hub":"3",
+                    "doneTime":"",
+                    "owner":"2",
+                    "verifiedTime":"",
+                    "claimedTime":1298625903,
+                    "verifiedBy":"",
+                    "claimedBy":"2",
+                    }
+                ),
+                content_type='application/json',
+                )
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['claimedTime'], 1298625903)
 
