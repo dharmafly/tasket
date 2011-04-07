@@ -42,5 +42,5 @@ var HubList = CollectionModel.extend({
     model: Hub,
     constructor: function HubList(){
         CollectionModel.prototype.constructor.apply(this, arguments);
-    },
+    }
 });

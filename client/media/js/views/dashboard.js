@@ -192,7 +192,7 @@ var Dashboard = View.extend({
     // key      - the Model attribute containing the ids to fetch
     // callback - a function to call when the collection or models change
     _getCollection: function (method, key, callback) {
-        collection = Tasket[method](this.model.get(key));
+        var collection = Tasket[method](this.model.get(key));
         collection.bind("refresh", callback);
 
         // Currentlt only display the title so only re-render if this changes.

@@ -224,9 +224,7 @@ var HubView = View.extend({
     },
     
     xrenderTasks: function(){
-        
-        
-
+        var taskView, left, top;
         taskView.offset({
             left: left,
             top:  top

@@ -156,10 +156,10 @@ var cache = new Cache(Tasket.namespace),
         sendCsrfToken: function(xhr){
             var csrftoken = app.csrftoken;
             if (!csrftoken){
-                csrftoken = app.csrftoken = getCookie("csrftoken");
+                csrftoken = app.csrftoken = this.getCookie("csrftoken");
             }
             if (csrftoken){
-                xhr.setRequestHeader("X-CSRFToken", getCookie("csrftoken"));
+                xhr.setRequestHeader("X-CSRFToken", this.getCookie("csrftoken"));
             }
             return xhr;
         },

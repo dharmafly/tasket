@@ -9,7 +9,7 @@
    *
    * Returns true if object is an Array.
    */
-  isArray = Array.isArray ? Array.isArray : function () {
+  isArray = Array.isArray ? Array.isArray : function (object) {
     return Object.prototype.toString.call(object) === '[object Array]';
   };
 
@@ -59,7 +59,7 @@
     var prefixed = {};
 
     forEach(object, function (value, key) {
-      var key = [prefix, key].join(delimiter || '');
+      key = [prefix, key].join(delimiter || '');
       prefixed[key] = value;
     });
 
@@ -138,7 +138,7 @@
   flatten.noConflict = function () {
     exports.flatten = _flatten;
     return flatten;
-  }
+  };
 
   /* Public: Rebuilds a flattened object into a deeply nested
    * object. An optional delimiter can be provided.
@@ -199,5 +199,4 @@
   exports.flatten = flatten;
   exports.expand  = expand;
 
-})(this.jQuery || this);
-
+}(this.jQuery || this));

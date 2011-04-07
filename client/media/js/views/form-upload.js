@@ -140,5 +140,5 @@ var FormUpload = Form.extend({
 
         // Submit the form.
         form.submit();
-    },
+    }
 });

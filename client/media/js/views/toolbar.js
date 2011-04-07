@@ -1,6 +1,6 @@
 // Setup the toolbar.
 app.setupToolbar = function () {
-    var toolbar  = $('.header-container'),
+    var toolbar  = jQuery('.header-container'),
         login    = toolbar.find('.login'),
         userbar  = toolbar.find('h2'),
         tasks    = toolbar.find('.tasks'),
@@ -10,7 +10,7 @@ app.setupToolbar = function () {
     actions = {
         // Toggle the display of the login/logout buttons.
         toggleLogin: function (user) {
-            var loginState  = user ? 'hide' : 'show';
+            var loginState  = user ? 'hide' : 'show',
                 logoutState = user ? 'show' : 'hide';
 
             // Toggle the forms.
@@ -36,6 +36,7 @@ app.setupToolbar = function () {
         // Update the tasks status bar in the toolbar or hide it if there
         // is no current user.
         updateTasks: function (user) {
+            var taskLists;
             if (user) {
                 taskLists = user.get('tasks');
                 tasks.show();

@@ -14,8 +14,8 @@ var Form = View.extend({
 
         this.reset();
 
-        this.$(':input[name]:not([type=file])').each(function () {
-            data[this.name] = $(this).val();
+        this.jQuery(':input[name]:not([type=file])').each(function () {
+            data[this.name] = jQuery(this).val();
         });
 
         this.model.save(data, {
@@ -26,16 +26,16 @@ var Form = View.extend({
         return this.trigger('submit', this.model, this);
     },
     errors: function (errors) {
-        var list = this.$(':input');
+        var list = this.jQuery(':input');
 
         list.each(function () {
-            var input    = $(this),
+            var input    = jQuery(this),
                 messages = errors[this.name];
 
             if (messages) {
                 input.parent().addClass('error');
                 input.prev('label').html(function () {
-                    return $(this).text() + ': <strong>' + messages.join('. ') + '</strong>';
+                    return jQuery(this).text() + ': <strong>' + messages.join('. ') + '</strong>';
                 });
             }
         });
@@ -43,7 +43,7 @@ var Form = View.extend({
         return this;
     },
     reset: function () {
-        this.$('.error strong').remove();
+        this.jQuery('.error strong').remove();
         return this;
     },
     _onSuccess: function () {
