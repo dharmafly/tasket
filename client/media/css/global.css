@@ -1346,6 +1346,10 @@ article .meta img {
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
+.ie .lightbox .lightbox-inner {
+	position: absolute;
+}
+
 .lightbox .close {
 	position: absolute;
 	top: 10px;
