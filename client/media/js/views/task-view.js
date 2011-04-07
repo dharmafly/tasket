@@ -69,7 +69,7 @@ var TaskView = View.extend({
             };
         }
 
-        if (data) {
+        if (data && app.currentUser) {
             controls.html(tim("task-control", data));
         } else {
             controls.empty();
