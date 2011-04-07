@@ -37,7 +37,15 @@ var Form = View.extend({
             if (messages) {
                 input.parent().addClass('error');
                 input.prev('label').html(function () {
-                    return jQuery(this).text() + ': <strong>' + messages.join('. ') + '</strong>';
+                    var label  = jQuery(this),
+                        text   = label.data('original');
+
+                    if (!text) {
+                        text = label.text();
+                        label.data('original', text);
+                    }
+
+                    return text + ': <strong>' + messages.join(', ') + '</strong>';
                 });
             }
         });
