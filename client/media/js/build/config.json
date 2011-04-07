@@ -1,0 +1,59 @@
+{
+    "JSHINT_OPTS": {
+        "onevar":  true,
+        "newcap":  true,
+        "undef":   true,
+        "browser": true,
+        "devel":   true,
+        "maxerr":  1000,
+        "indent":  4,
+        "predef": [
+            "jQuery", "Backbone", "_", "tim", "Tasket", "Cache", "app",
+            "Account", "CollectionModel", "Dashboard", "DashboardController",
+            "DashboardDetail", "DashboardDetailHub", "Form", "FormUpload",
+            "Hub", "HubForm", "HubList", "HubView", "Lightbox", "Login",
+            "Model", "Notification", "PageController", "SignUp",
+            "TankController", "Task", "TaskEstimates", "TaskForm", "TaskList",
+            "TaskStates", "TaskView", "Tasket", "User", "UserList", "View",
+            "cache", "now", "randomInt", "truncate", "Tasketter"
+        ]
+    },
+    "JAVASCRIPT": {
+      "DIST_DIR": "pkg",
+      "tasket": [
+            "./header.js",
+            "../dependencies/vec2.js",
+            "../dependencies/forcedirected.js",
+            "../dependencies/flatten.js",
+            "../backbone-stack.js",
+            "../core/core.js",
+            "../models/models.js",
+            "../models/hub.js",
+            "../models/task.js",
+            "../models/user.js",
+            "../views/views.js",
+            "../views/hub-view.js",
+            "../views/task-view.js",
+            "../views/user-view.js",
+            "../views/notification.js",
+            "../views/lightbox.js",
+            "../views/dashboard.js",
+            "../views/form.js",
+            "../views/form-upload.js",
+            "../views/login.js",
+            "../views/signup.js",
+            "../views/task-form.js",
+            "../views/hub-form.js",
+            "../views/dashboard-detail.js",
+            "../views/dashboard-detail-hub.js",
+            "../views/account.js",
+            "../views/toolbar.js",
+            "../controllers/controllers.js",
+            "../core/tasket.js",
+            "../app.js",
+            "../lang/en.js",
+            "../init.js",
+            "./footer.js"
+        ]
+    }
+}
