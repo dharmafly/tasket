@@ -11,9 +11,6 @@ app.init(jQuery.ajax({
 
 // Run after app properties have been setup.
 app.bind("setup", function onSetup() {
-    app.restoreCache()
-       .setupAuthentication();
-
     // Setup the app.
     jQuery('body')
       .append(app.dashboard.render().el)
@@ -23,6 +20,9 @@ app.bind("setup", function onSetup() {
     app.lightbox.bind('hide', app.back);
     app.bind('change:currentUser', _.bind(app.dashboard.setUser, app.dashboard));
     app.dashboard.detail.bind('hide', app.back);
+
+    app.restoreCache()
+       .setupAuthentication();
 });
 
 // Called when the app has all dependancies loaded.
