@@ -354,8 +354,8 @@ var tim = (function createTim(initSettings){
                 
             for (; i < len; i++){
                 elem = elements[i];
-                key = elem.getAttribute(attr);
-                if (key && hasQuery || elements[elem.type] === type){
+                key = attr === "class" ? elem.className : elem.getAttribute(attr);
+                if (key && hasQuery || elem.type === type){
                     templatesInDom[key] = elem.innerHTML;
                 }
             }

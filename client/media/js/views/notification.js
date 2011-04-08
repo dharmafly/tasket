@@ -10,7 +10,7 @@ var Notification = Backbone.View.extend({
         this.elem = jQuery(this.el);
         this.render();
         this.contentElem = this.elem.find(".notification-content");
-        bodyElem.prepend(this.elem);
+        app.bodyElem.prepend(this.elem);
         _.bindAll(this, "_onKeyPress");
     },
 
@@ -48,13 +48,13 @@ var Notification = Backbone.View.extend({
         }
         
         jQuery(window).bind('keyup', this._onKeyPress);
-        bodyElem.addClass('show-notification');
+        app.bodyElem.addClass('show-notification');
         return this;
     },
 
     hide: function () {
         jQuery(window).unbind('keyup', this._onKeyPress);
-        bodyElem.removeClass('show-notification');
+        app.bodyElem.removeClass('show-notification');
         return this;
     },
     

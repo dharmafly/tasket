@@ -1,6 +1,11 @@
 var TaskForm = Form.extend({
     constructor: function TaskForm() {
         Form.prototype.constructor.apply(this, arguments);
+        this.bind("beforeSave", function(data){
+            if (data.estimate){
+                data.estimate = parseInt(data.estimate, 10);
+            }
+        });
     },
     render: function () {
         var template = tim('new-task', {

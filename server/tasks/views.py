@@ -9,9 +9,11 @@ from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.validators import email_re
+from django.conf import settings
+from django.contrib.auth import forms as userforms
 
 from utils.decorators import json_login_required as login_required
-from django.conf import settings
+
 
 from sorl.thumbnail import get_thumbnail
 from utils.helpers import AllowJSONPCallback, PutView
@@ -46,11 +48,12 @@ class HubView(PutView):
     
     @method_decorator(AllowJSONPCallback)
     def get(self, request, hub_id=None, tasks=None, image=None):
-        if hub_id:
+
+        if hub_id and not tasks:
             return self.get_single(request, hub_id)
         if hub_id and tasks:
             return self.get_hub_tasks(request, hub_id, tasks)
-        
+
         hubs = Hub.objects.all()
         
         if 'ids' in request.GET:
@@ -81,7 +84,7 @@ class HubView(PutView):
             H.save()
         
             response_json =  {
-                "id": H.pk, 
+                "id": str(H.pk), 
                 "createdTime": H.created_timestamp()
                 }
             self.res.write(json.dumps(response_json))
@@ -97,7 +100,10 @@ class HubView(PutView):
         # Handle image upload
         hub = get_object_or_404(Hub, pk=hub_id)
         
-        request.POST['title'] = hub.title
+        for k,v in hub.as_dict().items():
+            if k not in request.POST:
+                request.POST[k] = v
+
         form = forms.HubForm(request.POST, request.FILES, instance=hub)
         if form.is_valid():
             H = form.save()
@@ -116,7 +122,7 @@ class HubView(PutView):
         if form.is_valid():
             H = form.save()
             response_json =  {
-                "id": H.pk,
+                "id": str(H.pk),
                 "updated" : True,
                 "hub" : H.as_dict()
                 }
@@ -135,7 +141,7 @@ class HubView(PutView):
         self.res.write(json.dumps(
             {
                 "deleted" : True,
-                "hub_id" : hub_id,
+                "hub_id" : str(hub_id),
             }
             ))
         return self.res
@@ -195,8 +201,8 @@ class TasksView(PutView):
         # Handle image upload
         task = get_object_or_404(Task, pk=task_id)
         
-        request.POST['hub'] = task.hub.pk
         request.POST['state'] = task.state
+        request.POST['hub'] = task.hub_id
         
         form = forms.TaskForm(request.POST, request.FILES, instance=task, request=request)
         if form.is_valid():
@@ -232,7 +238,7 @@ class TasksView(PutView):
         self.res.write(json.dumps(
             {
                 "deleted" : True,
-                "task_id" : task_id,
+                "task_id" : str(task_id),
             }
             ))
         return self.res
@@ -287,33 +293,31 @@ class ProfileView(PutView):
             return self.res
 
     @method_decorator(AllowJSONPCallback)
-    def post(self, request, image=None):
+    def post(self, request, user_id=None, image=None):
         if image:
-            return self.image_upload(request)
+            return self.image_upload(request, user_id)
         
         request.POST = request.JSON
         username = request.JSON.get('username')
         password = request.JSON.get('password')
         email = request.JSON.get('email')
         
-        
-
-        def is_valid_email(email):
-            if email_re.match(email):
-                return True
-            return False
-        
-        if not is_valid_email(email):
-            self.res.write(json.dumps({
-                'error': 'invalid email'
-            }))
+        form = userforms.UserCreationForm(
+                {
+                    'username': username,
+                    'email' : email,
+                    'password1' : password,
+                    'password2' : password
+                }
+                )
+        if not form.is_valid():
+            error_dict = dict(form.errors.items())
+            self.res.write(json.dumps(error_dict))
             self.res.status_code = 500
             return self.res
-        
-        user = User.objects.create_user(username=username,
-                email=email,
-                password=password)
-        user.save()
+
+            
+        form.save()
 
         user = authenticate(username=username, password=password)
 
@@ -335,12 +339,25 @@ class ProfileView(PutView):
             )
         return self.res
 
-    def image_upload(self, request):
+    def image_upload(self, request, user_id):
         res = HttpResponse()
-
+        if int(user_id) != request.user.pk:
+            res.write(json.dumps(
+                {
+                'error' : "Unauthorized",
+                'status' : 401
+                }
+            ))
+            res.status_code = 401
+            return res
+        
         # Handle image upload
         profile = request.user.profile
-
+        
+        for k,v in profile.as_dict().items():
+            if k not in request.POST:
+                request.POST[k] = v
+        
         form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
             P = form.save()
@@ -353,8 +370,10 @@ class ProfileView(PutView):
 
 
 def thumbs(request, size, path):
-        
-    im_obj = open("%s/%s" % (settings.MEDIA_ROOT, path))
+    try:
+        im_obj = open("%s%s" % (settings.MEDIA_ROOT, path))
+    except Exception, e:
+        raise Http404(json.dumps({'error' : 'image not found'}))
 
     crop = None
     if 'crop' in request.GET:

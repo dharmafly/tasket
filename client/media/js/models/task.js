@@ -23,25 +23,29 @@ var Task = Model.extend({
 
     type: "task",
 
-    required: ["owner", "hub"],
+    required: ["owner", "hub", "estimate"],
 
     defaults: { // TODO: sending empty values to and from server is a waste of bandwidth
         description: "",
         image: "",
-        estimate: TaskEstimates['Half an Hour'],
+        estimate: TaskEstimates["Half an Hour"],
         state: TaskStates.NEW
+    },
+
+    constructor: function Task() {
+        Model.prototype.constructor.apply(this, arguments);
     },
 
     state: function(newState, userid){
         var task = this,
             currentState = this.get("state"),
-            now, error;
+            timestamp = Math.round(now() / 1000),
+            error;
 
         if (!newState){
             return currentState;
         }
 
-        now = Tasket.now();
         error = function(){
             throw task.report(
                 "Can't change state from '" + currentState + "' to '" + newState + "'" +
@@ -69,7 +73,7 @@ var Task = Model.extend({
                 if (userid && currentState === TaskStates.NEW){
                     this.set({
                         claimedBy: userid,
-                        claimedTime: now
+                        claimedTime: timestamp
                     });
                 }
                 else if (!this.get("claimedBy")){
@@ -89,7 +93,7 @@ var Task = Model.extend({
                 if (userid && currentState === TaskStates.CLAIMED){
                     this.set({
                         doneBy: userid,
-                        doneTime: now
+                        doneTime: timestamp
                     });
                 }
                 else if (!this.get("doneBy")){
@@ -108,7 +112,7 @@ var Task = Model.extend({
                 if (userid && currentState === TaskStates.DONE){
                     this.set({
                         verifiedBy: userid,
-                        verifiedTime: now
+                        verifiedTime: timestamp
                     });
                 }
                 else if (!this.get("verifiedBy")){

@@ -4,8 +4,10 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 from django.contrib.auth.models import User
+from django.conf import settings
 
 from tasks.models import Hub, Task, Profile
 import tasks
@@ -50,6 +52,27 @@ class WorkflowTests(TestCase):
         self.assertTrue('error' in json_data)
     
     
+    def test_claim_new(self):
+        for u in [self.U1, self.U2, self.U3,]:
+            self.client.login(username=u.user.username, password='12345')
+            response = self.client.put(
+                    '/tasks/6',
+                    data=json.dumps({"state" : Task.STATE_CLAIMED}),
+                    content_type='application/json',
+                )
+            json_data = json.loads(response.content)
+            self.assertEqual(json_data['state'], Task.STATE_CLAIMED)
+            self.assertEqual(json_data['claimedBy'], str(u.pk))
+
+            response = self.client.put(
+                    '/tasks/6',
+                    data=json.dumps({"state" : Task.STATE_NEW}),
+                    content_type='application/json',
+                )
+            json_data = json.loads(response.content)
+            self.assertEqual(json_data['state'], Task.STATE_NEW)
+            self.assertEqual(json_data['claimedBy'], '')
+
     def test_claim_already(self):
         self.client.login(username=self.U3.user.username, password='12345')
         response = self.client.put(
@@ -120,7 +143,108 @@ class WorkflowTests(TestCase):
         self.assertTrue('error' in json.loads(response.content))
         self.assertFalse('doneTime' in json.loads(response.content))
 
+    def test_too_many_tasks(self):
+        self.client.login(username='TestUser', password='12345')
+        hub = Hub.objects.get(pk=2)
+        for i in range(getattr(settings, 'TASK_LIMIT', 11)):
+            response = self.client.post(
+                '/tasks/',
+                json.dumps({
+                    "description" : "Lorem ipsum dolor sit amet, consectetur",
+                    "estimate" : 60*10,
+                    "hub" : hub.pk,
+                }),
+                content_type='application/json',
+                )
+        json_data = json.loads(response.content)
+        self.assertTrue('error' in json_data)
+        self.assertEqual(json_data['error'], ['Too many Tasks already'])
+    
+    def test_claim_too_many(self):
+        """
+        Gready user that claims too much!
+        """
+        self.client.login(username='TestUser', password='12345')
+        
+        # Make some dummy tasks
+        hub = Hub.objects.get(pk=2)
+        for i in range(5):
+            response = self.client.post(
+                '/tasks/',
+                json.dumps({
+                    "description" : "Lorem ipsum dolor sit amet, consectetur",
+                    "estimate" : 60*10,
+                    "hub" : hub.pk,
+                }),
+                content_type='application/json',
+                )
+        
+        for t in Task.objects.filter(claimedBy=None):
+            response = self.client.put(
+                    '/tasks/%s' % t.pk,
+                    data=json.dumps({"state" : Task.STATE_CLAIMED}),
+                    content_type='application/json',
+                )
+
+        json_data = json.loads(response.content)
+        self.assertTrue('error' in json_data)
+        self.assertEquals(json_data['error'], ["You can only claim 5 tasks at once"])
+
+    def test_maximum_times(self):
+        self.client.login(username='TestUser', password='12345')
+        hub = Hub.objects.get(pk=2)
+        
+        maximum_time = settings.TASK_ESTIMATE_MAX
+        
+        response = self.client.post(
+            '/tasks/',
+            json.dumps({
+                "description" : "Lorem ipsum dolor sit amet, consectetur",
+                "estimate" : maximum_time-10,
+                "hub" : hub.pk,
+            }),
+            content_type='application/json',
+            )
+
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['estimate'], maximum_time-10)
 
 
+        response = self.client.post(
+            '/tasks/',
+            json.dumps({
+                "description" : "Lorem ipsum dolor sit amet, consectetur",
+                "estimate" : maximum_time+10,
+                "hub" : hub.pk,
+            }),
+            content_type='application/json',
+            )
 
+        json_data = json.loads(response.content)
+        self.assertTrue(json_data['estimate'][0].startswith("Estimate is too high"))
+    
+
+    def test_task_save_verified_string(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.put('/tasks/5', 
+            json.dumps(
+                    {"description":"This has been claimed, but not done.",
+                    "image":"images/ACH_4307_3.jpg",
+                    "estimate":600,
+                    "state":"claimed",
+                    "id":"5",
+                    "createdTime":1298625303,
+                    "hub":"3",
+                    "doneTime":"",
+                    "owner":"2",
+                    "verifiedTime":"",
+                    "claimedTime":1298625903,
+                    "verifiedBy":"",
+                    "claimedBy":"2",
+                    }
+                ),
+                content_type='application/json',
+                )
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['claimedTime'], 1298625903)
 

@@ -4,7 +4,8 @@ var Login = Form.extend({
     },
 
     submit: function (event) {
-        var credentials;
+        var form = this,
+            credentials;
 
         if (event) {
             event.preventDefault();
@@ -17,22 +18,24 @@ var Login = Form.extend({
         // Login and add callbacks to the returned obejct.
         Tasket.login(credentials[0], credentials[1])
             .success(_.bind(this._onSuccess, this))
-            .error(_.bind(function (xhr) {
-                this._onError({}, xhr);
-            }, this));
+            .error(function (xhr) {
+                form.errors({
+                    username: ["Invalid username and password"]
+                });
+                form.trigger("error", xhr, form);
+            });
 
-        return this.trigger('submit', this);
+        return this.trigger("submit", this);
     },
 
     render: function () {
-        var html = tim('login');
+        var html = tim("login");
         this.elem.html(html);
         return this;
     },
 
     _onSuccess: function (data) {
         var user = new User(data.user);
-        this.trigger('success', user, this);
+        this.trigger("success", user, this);
     }
 });
-

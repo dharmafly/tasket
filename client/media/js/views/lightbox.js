@@ -23,6 +23,8 @@ var Lightbox = View.extend({
             this.elem.addClass(this.classes.animate);
         }, this), 0);
 
+        this._updateMargin();
+
         return this.trigger(options, 'show', this);
     },
     hide: function (options) {
@@ -53,6 +55,14 @@ var Lightbox = View.extend({
         this.elem.html(template);
         return this;
     },
+    _updateMargin: function () {
+        var inner = this.$('.lightbox-inner');
+        inner.css({
+            top: '50%',
+            'margin-top': inner.outerHeight() / 2 * -1
+        });
+        return this;
+    },
     _trigger: function () {
       var options = arguments[0] || {},
           args = Array.prototype.slice.call(arguments, 1);
@@ -64,7 +74,7 @@ var Lightbox = View.extend({
       return this;
     },
     _onHide: function (event) {
-        if (event.target === this.el || $(event.target).hasClass('close')) {
+        if (event.target === this.el || jQuery(event.target).hasClass('close')) {
             event.preventDefault();
             this.hide();
         }

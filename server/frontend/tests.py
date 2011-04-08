@@ -9,6 +9,16 @@ from django.contrib.auth.models import User
 class ViewTests(TestCase):
     fixtures = ['test_data.json',]
 
+    def test_charset_header(self):
+        response = self.client.post("/login/", 
+            json.dumps({
+                'username' : 'TestUser',
+                'password' : '12345',
+            }), 
+            content_type = "application/json; charset: UTF-8"
+            )
+        self.assertEqual(response.status_code, 200)
+
     def test_logged_in(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.get('/login/')
@@ -19,7 +29,7 @@ class ViewTests(TestCase):
         self.assertTrue(response.context['form'])
     
     def test_logout(self):
-        response = self.client.get('/logout/')
+        response = self.client.post('/logout/')
         self.assertEqual(response.status_code, 302)
         
     

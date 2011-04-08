@@ -14,9 +14,11 @@ var Form = View.extend({
 
         this.reset();
 
-        this.$(':input').each(function () {
-            data[this.name] = $(this).val();
+        this.$(':input[name]:not([type=file])').each(function () {
+            data[this.name] = jQuery(this).val();
         });
+
+        this.trigger("beforeSave", data, this.model, this);
 
         this.model.save(data, {
             success: _.bind(this._onSuccess, this),
@@ -29,13 +31,21 @@ var Form = View.extend({
         var list = this.$(':input');
 
         list.each(function () {
-            var input    = $(this),
+            var input    = jQuery(this),
                 messages = errors[this.name];
 
             if (messages) {
                 input.parent().addClass('error');
                 input.prev('label').html(function () {
-                    return $(this).text() + ': <strong>' + messages.join('. ') + '</strong>';
+                    var label  = jQuery(this),
+                        text   = label.data('original');
+
+                    if (!text) {
+                        text = label.text();
+                        label.data('original', text);
+                    }
+
+                    return text + ': <strong>' + messages.join(', ') + '</strong>';
                 });
             }
         });

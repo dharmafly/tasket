@@ -18,9 +18,13 @@ getScript(
     // Each successive argument contains a script or scripts that are dependent on the previous argument.
     [
         "dependencies/jquery.js",
+        "dependencies/cache.js",
         "dependencies/underscore.js",
         "dependencies/tim.js"
     ],
+    
+    "dependencies/vec2.js",
+    "dependencies/forcedirected.js",
 
     "dependencies/backbone.js",
     "dependencies/flatten.js",
@@ -33,17 +37,16 @@ getScript(
         "models/hub.js",
         "models/task.js",
         "models/user.js",
-
+        "views/toolbar.js",
         "views/hub-view.js",
         "views/task-view.js",
-        "views/user-view.js",
         "views/notification.js",
         "views/lightbox.js",
         "views/dashboard.js",
         "views/form.js",
         "controllers/controllers.js"
     ],
-
+    "views/form-upload.js",
     [
         "views/login.js",
         "views/signup.js",
@@ -51,20 +54,15 @@ getScript(
         "views/hub-form.js",
         "views/dashboard-detail.js"
     ],
-
     [
-        "views/dashboard-detail-hub.js"
+        "views/dashboard-detail-hub.js",
+        "views/account.js"
     ],
-
-    [
-        "core/tasket.js",
-        "app.js"
-    ],
-    
+    "core/tasket.js",
+    "app.js",
     "lang/en.js",
-    "views/toolbar.js",
     "init.js",
-    "temp.js",
+    //"viz/test.js",
     
     // Callback function once all are loaded
     function(loaded){

@@ -55,9 +55,9 @@
      */
     Backbone.History.prototype.saveLocation = function(fragment) {
         fragment = (fragment || '').replace(/^#*/, '');
-        if (this.fragment == fragment) {
-            return
-        };
+        if (this.fragment === fragment) {
+            return;
+        }
         this.stack().push(fragment);
         _saveLocation.call(this, fragment);
     };
@@ -78,5 +78,4 @@
         return loaded;
     };
 
-})(Backbone);
-
+}(Backbone));

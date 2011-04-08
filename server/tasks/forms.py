@@ -4,6 +4,7 @@ import django.forms
 from django import forms
 from django.contrib.auth.models import User
 from django.utils.html import escape
+from django.conf import settings
 
 from models import Task, Hub, Profile
 
@@ -93,16 +94,43 @@ class TaskForm(forms.ModelForm):
                 cleaned_data['verifiedTime'] = datetime.datetime.now()
 
         return cleaned_data
-
+    
+    def clean_estimate(self):
+        estimate = self.cleaned_data['estimate']
+        if estimate > settings.TASK_ESTIMATE_MAX:
+            self._errors['estimate'] = self.error_class(['Estimate is too high, enter a value less than %s' % settings.TASK_ESTIMATE_MAX])
+        return estimate
+    
     def clean(self):
         super(TaskForm, self).clean()
 
         cleaned_data = dict(self.cleaned_data)
         
-        if cleaned_data['estimate'] == None:
+        if not cleaned_data.get('estimate'):
             cleaned_data['estimate'] = self.instance.estimate
             if self.instance.estimate == None:
-                self._errors['error'] = self.error_class(['Estimate is required'])
+                self._errors['estimate'] = self.error_class(['Estimate is required'])
+        
+        # Constraints:
+        # Limit total Tasks
+        task_limit = getattr(settings, 'TASK_LIMIT', 10)
+        if task_limit >= 0:
+            try:
+                if cleaned_data['hub'].task_set.all().count() >= task_limit:
+                    self._errors['error'] = self.error_class(['Too many Tasks already'])
+            except Hub.DoesNotExist:
+                pass
+
+        # Limit number of user's claimed Tasks
+        claimed_limit = getattr(settings, 'CLAIMED_LIMIT', 5)
+        if claimed_limit >= 0:
+            try:
+                if self.request.user.profile.tasks_claimed.count() >= claimed_limit:
+                    self._errors['error'] = self.error_class(['You can only claim %s tasks at once' % claimed_limit])
+            except Hub.DoesNotExist:
+                pass
+
+
         
         for k,v in cleaned_data.items():
             if isinstance(v, unicode):

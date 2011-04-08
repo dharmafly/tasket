@@ -14,7 +14,7 @@ import tasks
 
 class ViewTests(TestCase):
     fixtures = ['test_data.json',]
-
+    
     def test_hubs_get(self):
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
@@ -108,7 +108,7 @@ class ViewTests(TestCase):
     def test_hub_task_list(self):
         response = self.client.get('/hubs/2/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 7)
+        self.assertEqual(len(json_data), 3)
     
     def test_task_get(self):
         response = self.client.get('/tasks/')
@@ -159,7 +159,7 @@ class ViewTests(TestCase):
             )
 
         json_data = json.loads(response.content)
-        self.assertTrue('error' in json_data)
+        self.assertTrue(json_data['estimate'][0].startswith("Estimate is required"))
 
     def test_task_create_with_html(self):
         self.client.login(username='TestUser', password='12345')
@@ -236,6 +236,32 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['id'], 6)
 
+    def test_user_post_dupe(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertTrue(json_data['username'][0].startswith("A user with that username already exists."))
+
 
     def test_user_post_not_admin(self):
         response = self.client.post(
@@ -261,20 +287,32 @@ class ViewTests(TestCase):
         self.client.login(username='TestUser', password='12345')
         f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
         response = self.client.post(
-            '/users/image/',
+            '/users/2/image/',
             {'image' : f,},
             )
         self.assertTrue('image' in json.loads(response.content))
 
-
-    def test_user_post_image(self):
+    def test_user_post_image_model_fields(self):
         self.client.login(username='TestUser', password='12345')
         f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
         response = self.client.post(
-            '/users/image/',
+            '/users/2/image/',
             {'image' : f,},
             )
         self.assertTrue('image' in json.loads(response.content))
+        response = self.client.get('/users/2')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['name'], "Test User 1")
+
+
+    def test_user_post_image_wrong_user(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/5/image/',
+            {'image' : f,},
+            )
+        self.assertTrue('error' in json.loads(response.content))
 
 
     def test_user_put(self):
@@ -301,6 +339,28 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['tasks']['claimed'], "2")
         self.assertEqual(json_data['tasks']['done'], "1")
         self.assertEqual(json_data['tasks']['verified'], "1")
+
+    def test_thumb(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/2/image/',
+            {'image' : f,},
+            )
+
+        response = self.client.get('/thumb/30x30/images/users/Puppy.jpg?crop')
+        self.assertEqual(response.status_code, 200)
+
+    def test_thumb_404(self):
+        self.client.login(username='TestUser', password='12345')
+        f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')
+        response = self.client.post(
+            '/users/2/image/',
+            {'image' : f,},
+            )
+
+        response = self.client.get('/thumb/30x30/images/users/foo.jpg?crop')
+        self.assertEqual(response.status_code, 404)
 
 
 

@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+  <head>
+    <script type="text/javascript" src="/static/app/requireplugins-jquery-1.4.2.js"> </script> 
+		<script type="text/javascript">
+				  Object.extend = jQuery.extend;
+		</script>
+    <script type="text/javascript" src="/static/js/jquery-ui-1.8.4.custom.min.js"> </script> 
+    <script type="text/javascript" src="/static/js/vector_battle_regular.typeface.js"> </script> 
+		<script type="text/javascript" src="data/tasket_data.js"> </script> 
+		<script type='text/javascript'>
+		var tasket_app;	
+		require(['tasket/SA_tasket'], function(tasket){
+			$(function(){
+				tasket_app = new tasket.app();
+				var w = new tasket.world();
+
+				tasket_app.init(w);
+			});
+		});
+	</script> 
+
+
+		<link rel="stylesheet" href="/static/css/ui-lightness/jquery-ui-1.8.4.custom.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="/static/app/css/jquery.jtweetsanywhere-1.1.0.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="/static/app/css/simpleApp.css" type="text/css" media="all" />
+		<link rel="stylesheet" href="tasket.css" type="text/css" media="all" />
+		<style>
+		</style>
+  </head>
+	<body>
+		<div id='main'>
+			<img class='stretched' src='/static/app/css/img/metalOverlay.png'></img>
+			<div id='app_holder'>
+				<div id='left-col'>
+					<!--<div class="logo"><a href="/"><img id='lanyardLogo' alt="Lanyrd. The social conference directory" src="LanyrdLogo.png"></a></img></div>-->
+				<div class='vspace0'></div>
+          <div id='intro'>
+            <h2></h2>
+            <div id='blurb'></div>
+          </div>
+					<div id='control_panel'></div>
+				  <div class='vspace0'></div>
+          <!--<div id='faq'>-->
+            <!--<h3>Wikipedia Faqlet</h3>-->
+            <!--<p>An intuitive approach to network layout is to model the graph as a physical system: nodes are charged particles that repel each other, and links are dampened springs that pull related nodes together.</p> <p>A physical simulation of these forces then determines node positions; approximation techniques that avoid computing all pairwise forces enable the layout of large numbers of nodes.</p><p>In addition, interactivity allows the user to direct the layout and jiggle nodes to disambiguate links. Such a force-directed layout is a good starting point for understanding the structure of a general undirected graph.</p>-->
+          <!--</div>-->
+				</div>
+				<div id='world_canvas'>
+          <!--<select id='available-conf'></select>-->
+					<canvas height="600" width="600" id="mycanvas">
+						<p>Your browser doesn’t support the Canvas element! Update to the latest Firefox, Chrome or Safari!</p>
+					</canvas>
+					<div id='button_panel'></div>
+				</div>
+				<!--<div id='twitterBox'>-->
+          <!--<select id='twitter-set'></select>-->
+					<!--<div id='twitterProfile'>-->
+						<!--<div class="profile-image-container">-->
+							<!--<img alt="" src=""></img>-->
+							<!--</div>-->
+
+							<!--<div class="profile-details">-->
+								<!--<div class="full-name">-->
+									<!--<h2></h2>-->
+								<!--</div>-->
+								<!--[><div class="screen-name-and-location"><span class="screen-name screen-name-peterc pill">@peterc</span> United States of Internet</div><]-->
+								<!--<div class="bio"></div>-->
+								<!--<div class="url"><a href="" rel="me nofollow" target="_blank"></a></div>-->
+							<!--</div>-->
+						
+						<!--[><div class='vspace10'></div><]-->
+					<!--</div>-->
+					<!--<div id='tweetsFeed'></div>-->
+				<!--</div>-->
+				<!--<div class='vspace10'></div>-->
+			<!--</div>-->
+		</div>
+  </body>
+</html>

@@ -19,3 +19,12 @@ DATABASES = {
         'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
     }
 }
+
+
+# How many tasks a hub can have
+TASK_LIMIT = 10
+
+# How many tasks a user can claim
+CLAIMED_LIMIT = 5
+
+TASK_ESTIMATE_MAX = 14400
