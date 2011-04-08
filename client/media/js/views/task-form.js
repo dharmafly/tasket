@@ -24,12 +24,12 @@ var TaskForm = Form.extend({
     
     _estimates: function () {
         var current = this.model.get("estimate");
-        return _.map(Task.ESTIMATES, function (value, text) {
-            return {
-                text: text,
-                value: value,
-                selected: current === value
-            };
+        
+        return _.map(Task.ESTIMATES, function (estimate) {
+            return _.extend(
+                estimate,
+                {selected: current === estimate.value}
+            );
         });
     }
 });

@@ -215,7 +215,8 @@ var TankController = Backbone.Controller.extend({
 
         this._createTaskForm(hub, new Task({
             hub: hubId, // NOTE: Verify this when refactoring hubs.
-            owner: app.currentUser.id
+            owner: app.currentUser.id,
+            estimate: Task.ESTIMATES[0].value
         }));
     },
 
