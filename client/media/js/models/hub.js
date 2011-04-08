@@ -37,7 +37,8 @@ var Hub = Model.extend({
     },
     
     weight: function(){
-        var maxMinutes = app.TASK_ESTIMATE_MAX * app.HUB_MAX_TASKS,
+        var settings = Tasket.settings,
+            maxMinutes = settings.TASK_ESTIMATE_MAX * settings.TASK_LIMIT,
             unclaimedMinutes = this.get("estimates.claimed"),
             weight = unclaimedMinutes / maxMinutes;
             

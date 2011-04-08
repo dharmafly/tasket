@@ -14,10 +14,12 @@ var TankController = Backbone.Controller.extend({
     // Get the dimensions of the tank
     calculateWalls: function(){
         var wallBuffer = app.wallBuffer;
-        
+                
         this.wallBuffer = wallBuffer;
         this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
         this.wallLeft = wallBuffer;
+        
+         // NOTE: this is zero-bottom y
         this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallBottom = wallBuffer;
         
@@ -26,7 +28,7 @@ var TankController = Backbone.Controller.extend({
 
     initialize: function(options){
         this.hubViews = {};
-        this.hubForceDirector = app.createForceDirector();
+        this.forceDirector = app.createForceDirector();
         this.calculateWalls(); // TODO: recalculate on window.resize
         
         if (options && options.hubs){
@@ -45,7 +47,8 @@ var TankController = Backbone.Controller.extend({
     },
 
     getHubView: function(id){
-        id = String(id); // allow argument to be a Number
+        id = String(id); // allow argument to be a String or a Number
+        
         return _(this.hubViews).detect(function(hubView){
             return id === hubView.model.id;
         });
@@ -105,10 +108,10 @@ var TankController = Backbone.Controller.extend({
         hubView.render();
         
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
-        hubView.forcedNode = this.hubForceDirector.engine.addTask({
-            key: hubView.model.id,
+        hubView.forcedNode = this.forceDirector.engine.addTask({
+            key: "hub-" + hubView.model.id,
             x: offset.left,
-            y: offset.top,
+            y: app.invertY(offset.top),
             width: hubView.width + hubView.nucleusWidth, // NOTE: hubView.nucleusWidth is used as a margin between hubs
             height: hubView.height
         });
@@ -260,52 +263,50 @@ var TankController = Backbone.Controller.extend({
         var hubViews = this.hubViews,
             overallCallback;
     
-        function updateHubViewsOffset(){
+        function repositionHubs(){
             _.each(hubViews, function(hubView){
                 var pos = hubView.forcedNode.getPos();
                 
                 hubView.offset({
                     left: ~~(pos.x - hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
-                    top: ~~(pos.y + hubView.nucleusWidth / 2)
+                    top: app.invertY(~~(pos.y + hubView.nucleusWidth / 2))
                 });
             });
         }
     
         if (callback){
             overallCallback = function(){
-                updateHubViewsOffset();
+                repositionHubs();
                 callback.call(this);
             };
         }
         else {
-            overallCallback = updateHubViewsOffset;
+            overallCallback = repositionHubs;
         }
         
-        _.extend(this.hubForceDirector.options, {
+        _.extend(this.forceDirector.options, {
             wallTop: this.wallTop,
             wallBottom: this.wallBottom,
             wallLeft: this.wallLeft,
             wallRight: this.wallRight,
-            animate: animate ? updateHubViewsOffset : null,
+            animate: animate ? repositionHubs : null,
             callback: overallCallback
         });
-        this.hubForceDirector.initialized = true;
+        
+        // Show the walls
+        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (this.wallRight-this.wallLeft) + "px; top:" + (window.innerHeight - this.wallTop) + "px; height: " + (this.wallTop - this.wallBottom) + "px; left:" + this.wallLeft + "px; pointer-events:none;'></div>").prependTo("body");
+        
+        this.forceDirector.initialized = true;
         
         return this;
     },
       
     forcedirectHubs: function(animate, callback){
-        var tankController = this,
-            hubForceDirector = this.hubForceDirector;
-        
-        if (!hubForceDirector.initialized){
+        if (!this.forceDirector.initialized){
             this.initializeForceDirector(animate, callback);
         }
         
-        // Show the walls
-        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (this.wallRight-this.wallLeft) + "px; top:" + (window.innerHeight - this.wallTop) + "px; height: " + (this.wallTop - this.wallBottom) + "px; left:" + this.wallLeft + "px;'></div>").appendTo("body");
-        
-        hubForceDirector.go();
+        this.forceDirector.go();
         return this;
     }
 });

@@ -49,6 +49,9 @@ var ForceDirector = (function(){
             this.title = params.title;
             this.width = params.width;
             this.height = params.height;
+            if (params.fixed){
+                this.fixed = params.fixed;
+            }
             this.offw = this.width / 2;
             this.offh = this.height / 2;
             this.links_to = [];

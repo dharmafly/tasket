@@ -7,9 +7,8 @@ var cache = new Cache(Tasket.namespace),
             this.bodyElem = jQuery("body");
 
             return _.extend(this, {
-                TASK_ESTIMATE_MAX: 14400,
-                HUB_MAX_TASKS: 8,
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
+                taskBuffer: 50,
                 hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
                 hubPlaceholderImage: "/media/images/placeholder.png",
                 userPlaceholderImage: "/media/images/placeholder.png",
@@ -78,11 +77,16 @@ var cache = new Cache(Tasket.namespace),
                 return app;
             };
         }()),
+        
+        // Convert between bottom-zeroed and top-zeroed coordinate systems
+        invertY: function(y){
+            return window.innerHeight - y;
+        },
     
         createForceDirector: function(options){
             var f = new ForceDirector(),
                 defaultSettings = {
-                    fps: 20,
+                    fps: 60,
                     numCycles: 200,
                     inCoulombK: 50,
                     inWallRepulsion: 600,
@@ -97,7 +101,7 @@ var cache = new Cache(Tasket.namespace),
                 easing;
             
             // Combine options with default settings
-            options = _.extend(options || {}, defaultSettings);
+            options = _.extend(defaultSettings, options || {});
             
             function loop(){
                 f.updateCycle(options.updateStepMin + easing);

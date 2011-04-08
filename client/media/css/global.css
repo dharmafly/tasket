@@ -743,7 +743,7 @@ article.select .nucleus-wrapper {
 }
 
 article > hgroup {
-    margin-top: -2em; /* Set this dynamically to .outerHeight() / 2  */
+    margin-top: -2em; /* This is later changed, via JavaScript to be .outerHeight() / 2  */
     position: absolute;
 	margin-left: 0;
 	min-width: 10em;
@@ -778,7 +778,6 @@ article > div.tasks > ul > li {
 	border: 0.23075em /* 3px */ solid #aaa;
 	background-color: #fff;
 	height:6.4em; /* TODO: verify */
-	opacity:0.6;
 }
 
 article > hgroup h1 {

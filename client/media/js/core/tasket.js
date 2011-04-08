@@ -4,6 +4,12 @@ _.extend(Tasket, Backbone.Events, {
     version: "0.1.0",
     //endpoint: "http://tasket.ep.io/",
     endpoint: "http://localhost:8000/",
+    
+    settings: {
+        TASK_ESTIMATE_MAX: 14400,
+        TASK_LIMIT: 10, // max number of un-verified tasks on a hub
+        CLAIMED_LIMIT: 5 // max number of tasks that a user can claim at one time
+    },
 
     lang: {},
 
