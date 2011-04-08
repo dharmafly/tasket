@@ -13,12 +13,12 @@ var TankController = Backbone.Controller.extend({
     
     // Get the dimensions of the tank
     calculateWalls: function(){
-        var wallBuffer = 50;
+        var wallBuffer = app.wallBuffer;
         
         this.wallBuffer = wallBuffer;
-        this.wallRight = jQuery("section.dashboard").offset().left - wallBuffer;
+        this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
         this.wallLeft = wallBuffer;
-        this.wallTop = window.innerHeight - wallBuffer - jQuery("div.header-container").outerHeight(true);
+        this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallBottom = wallBuffer;
         
         return this;

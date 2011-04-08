@@ -5,6 +5,8 @@ var Toolbar = View.extend({
     },
 
     initialize: function () {
+        View.prototype.initialize.apply(this, arguments);
+        
         var view = this,
             methods = ["toggleLogin", "updateUser", "updateTasks", "updateSignup"];
 

@@ -9,6 +9,7 @@ var cache = new Cache(Tasket.namespace),
             return _.extend(this, {
                 TASK_ESTIMATE_MAX: 14400,
                 HUB_MAX_TASKS: 8,
+                wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
                 hubPlaceholderImage: "/media/images/placeholder.png",
                 userPlaceholderImage: "/media/images/placeholder.png",
