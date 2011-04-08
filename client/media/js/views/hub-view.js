@@ -67,6 +67,7 @@ var HubView = View.extend({
 
         event.preventDefault();
 
+        this.sendToFront();
         if (isSelected){
             this.toggleTasks();
         }
@@ -241,6 +242,8 @@ var HubView = View.extend({
 
         this.loading(false);
 
+        this.sendToFront();
+
         // TEMP: show distance boundary
         tempDistance = Math.round(distance);
         tempWidth = tempDistance * 2;
@@ -298,6 +301,13 @@ var HubView = View.extend({
         return this;
     },
 
+    sendToFront: function () {
+        // Increase the z-index to always ensure the latest one is on top.
+        HubView.zIndex += 1;
+        this.elem.css('z-index', HubView.zIndex);
+        return this;
+    },
+
     render: function(){
         var data = this.model.toJSON(),
             desc = data.description;
@@ -327,4 +337,7 @@ var HubView = View.extend({
         }
         return this.offsetApply();
     }
+}, {
+    /* Global keeping check of the current z-index */
+    zIndex: 0
 });
