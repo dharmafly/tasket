@@ -40,7 +40,7 @@ var TankController = Backbone.Controller.extend({
         }, this);
         
         if (!options || !options.dontDraw){
-            this.forcedirectHubs(false, true);
+            this.forcedirectHubs();
         }
         return this;
     },
