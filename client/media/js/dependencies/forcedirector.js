@@ -24,8 +24,8 @@ var ForceDirector = (function(){
     "use strict";
 
     var BIG_NUMBER = 999999;
-	    
-	function extend(dest, source){
+        
+    function extend(dest, source){
         var prop;
         for (prop in source){
             if (source.hasOwnProperty(prop)){
@@ -36,174 +36,174 @@ var ForceDirector = (function(){
     }
 
     function TaskNode(world, params) {
-	    //Thing.call(this, world, params);
-	    this.world = world;
-	    this.context = world.context;
-	    this.p = vec2.create([params.x, params.y]);
-	    this.dp = vec2.create([params.dx, params.dy]);
-	    this.f = vec2.create([0, 0]);
-	    this.key = params.key;
-	    this.title = params.title;
-	    this.width = params.width;
-	    this.height = params.height;
-	    this.offw = this.width / 2;
-	    this.offh = this.height / 2;
-	    this.links_to = [];
-	    this.links_from = [];
-	    // add node key to world's dictionary
-	    world.nodesByKey[this.key] = this;
+        //Thing.call(this, world, params);
+        this.world = world;
+        this.context = world.context;
+        this.p = vec2.create([params.x, params.y]);
+        this.dp = vec2.create([params.dx, params.dy]);
+        this.f = vec2.create([0, 0]);
+        this.key = params.key;
+        this.title = params.title;
+        this.width = params.width;
+        this.height = params.height;
+        this.offw = this.width / 2;
+        this.offh = this.height / 2;
+        this.links_to = [];
+        this.links_from = [];
+        // add node key to world's dictionary
+        world.nodesByKey[this.key] = this;
     }
 
     TaskNode.prototype = {        
-	    MIN_DRAW_SIZE: 14,
-	    m: 1,
-	    tether: null,
-	    active: true,
-	    fixed: false,	    
-	    
-	    getPos: function () {
-		    return {'x' : this.p[0], 'y' : this.p[1]};
-	    },
+        MIN_DRAW_SIZE: 14,
+        m: 1,
+        tether: null,
+        active: true,
+        fixed: false,        
+        
+        getPos: function () {
+            return {'x' : this.p[0], 'y' : this.p[1]};
+        },
 
-	    setHeight: function (h) {
-		    this.height = h;
-		    this.offh = h / 2;
-	    },
+        setHeight: function (h) {
+            this.height = h;
+            this.offh = h / 2;
+        },
 
-	    setWidth: function (w) {
-		    this.width = w;
-		    this.offw = w/2;
-	    },
+        setWidth: function (w) {
+            this.width = w;
+            this.offw = w/2;
+        },
 
-	    addTether: function(x, y){
-		    this.tether = vec2.create([x, y]);
-	    },
+        addTether: function(x, y){
+            this.tether = vec2.create([x, y]);
+        },
 
-	    removeTether: function(){
-		    this.tether = null;
-	    },
+        removeTether: function(){
+            this.tether = null;
+        },
 
-	    placeRandomly: function(){
-		    this.dp[0] = 0;
-		    this.dp[1] = 0;
-		    this.p[0] = 2.0*(Math.random()-0.5)*this.world.dim[0];
-		    this.p[1] = 2.0*(Math.random()-0.5)*this.world.dim[1];
-	    }, 
+        placeRandomly: function(){
+            this.dp[0] = 0;
+            this.dp[1] = 0;
+            this.p[0] = 2.0*(Math.random()-0.5)*this.world.dim[0];
+            this.p[1] = 2.0*(Math.random()-0.5)*this.world.dim[1];
+        }, 
 
-	    fix: function(){
-		    this.fixed = true;
-	    },
+        fix: function(){
+            this.fixed = true;
+        },
 
-	    unFix: function(){
-		    this.fixed = false;
-	    },
+        unFix: function(){
+            this.fixed = false;
+        },
 
-	    makeCentralNode: function(){
-		    this.world.selectedObject = this;
-		    this.world.randomizeNodes();
-		    this.world.deactivateNodes();
-		    this.activateConnectedNodes();
-		    this.active = true;
-		    this.fixed = true;
-		    this.p[0] = 0;
-		    this.p[1] = 0;
-	    },
+        makeCentralNode: function(){
+            this.world.selectedObject = this;
+            this.world.randomizeNodes();
+            this.world.deactivateNodes();
+            this.activateConnectedNodes();
+            this.active = true;
+            this.fixed = true;
+            this.p[0] = 0;
+            this.p[1] = 0;
+        },
 
-	    activateConnectedNodes: function(){
-		    var l, i;
-		    for(i=0; i<this.links_from.length; i++){
-			    l = this.links_from[i];
-			    l.node.active = true;
-		    }
+        activateConnectedNodes: function(){
+            var l, i;
+            for(i=0; i<this.links_from.length; i++){
+                l = this.links_from[i];
+                l.node.active = true;
+            }
 
-		    for(i=0; i<this.links_to.length; i++){
-			    l = this.links_to[i];
-			    l.node.active = true;
-		    }
-	    },
+            for(i=0; i<this.links_to.length; i++){
+                l = this.links_to[i];
+                l.node.active = true;
+            }
+        },
 
-	    // Drawing methods redundant in headless tasket ---
+        // Drawing methods redundant in headless tasket ---
 
-	    draw: function(){
-		    if(!this.active){return;}
-		    var ctx = this.context;
-		    ctx.strokeStyle = '#f00';
-		    ctx.strokeRect(this.p[0] - this.offw, this.p[1] - this.offh, this.width, this.height);
-		    ctx.font         = 'bold 12px sans-serif';
-		    ctx.fillStyle    = '#fff';
-		    ctx.fillText(this.title, this.p[0], this.p[1]);
-		    if(this.tether){
-			    ctx.moveTo(this.p[0], this.p[1]);
-			    ctx.lineTo(this.tether[0], this.tether[1]);
-			    ctx.stroke();
-		    }
-	    },
+        draw: function(){
+            if(!this.active){return;}
+            var ctx = this.context;
+            ctx.strokeStyle = '#f00';
+            ctx.strokeRect(this.p[0] - this.offw, this.p[1] - this.offh, this.width, this.height);
+            ctx.font         = 'bold 12px sans-serif';
+            ctx.fillStyle    = '#fff';
+            ctx.fillText(this.title, this.p[0], this.p[1]);
+            if(this.tether){
+                ctx.moveTo(this.p[0], this.p[1]);
+                ctx.lineTo(this.tether[0], this.tether[1]);
+                ctx.stroke();
+            }
+        },
 
-	    drawLinks: function(){
-		    if(!this.active){return;}
-		    var i, n, l, ctx = this.context;
-		    ctx.beginPath();
-		    for(i=0; i<this.links_to.length; i++){
-			    l = this.links_to[i];
+        drawLinks: function(){
+            if(!this.active){return;}
+            var i, n, l, ctx = this.context;
+            ctx.beginPath();
+            for(i=0; i<this.links_to.length; i++){
+                l = this.links_to[i];
 
-			    n = l.node;
-			    if(n.active){
-			        ctx.moveTo(n.p[0], n.p[1]);
-			        ctx.lineTo(this.p[0], this.p[1]);
-			    }
-		    }
-		    ctx.stroke();
-	    }
+                n = l.node;
+                if(n.active){
+                    ctx.moveTo(n.p[0], n.p[1]);
+                    ctx.lineTo(this.p[0], this.p[1]);
+                }
+            }
+            ctx.stroke();
+        }
 
     };
 
     //core.extend(TaskNode, Thing);
 
     function ProjectNode(world, params){
-	    TaskNode.call(this, world, params);
+        TaskNode.call(this, world, params);
     }
 
     ProjectNode.prototype = {
-	    draw: function(){
-		    if(!this.active){return;}
-		    var ctx = this.context;
-		    ctx.strokeStyle = '#00f';
-		    ctx.strokeRect(this.p[0] - this.offw, this.p[1] - this.offh, this.width, this.height);
-		    ctx.font         = 'bold 12px sans-serif';
-		    ctx.fillStyle    = '#fff';
-		    ctx.fillText(this.title, this.p[0], this.p[1]);
-	    }
+        draw: function(){
+            if(!this.active){return;}
+            var ctx = this.context;
+            ctx.strokeStyle = '#00f';
+            ctx.strokeRect(this.p[0] - this.offw, this.p[1] - this.offh, this.width, this.height);
+            ctx.font         = 'bold 12px sans-serif';
+            ctx.fillStyle    = '#fff';
+            ctx.fillText(this.title, this.p[0], this.p[1]);
+        }
     };
 /*
     function mozextend(child, supertype){
-	    child.prototype.__proto__ = supertype.prototype;
-	    child.prototype._super = supertype;
+        child.prototype.__proto__ = supertype.prototype;
+        child.prototype._super = supertype;
     }
 
     mozextend(ProjectNode, TaskNode);
 */
     function Link(node, value){
-	    this.node = node;
-	    this.value = value;
+        this.node = node;
+        this.value = value;
     }
 
     function ForceDirector(){
-	    //World.call(this);
-	    // dim gives bounds for random node placement
-	    this.dim = vec2.create([100,100]);
-	    this.v2null = vec2.create([0,0]);
-	    this.nodes = [];
-	    this.objects = this.nodes;
-	    this.nodeIJs = [];
-	    this.nodesByKey = {};
+        //World.call(this);
+        // dim gives bounds for random node placement
+        this.dim = vec2.create([100,100]);
+        this.v2null = vec2.create([0,0]);
+        this.nodes = [];
+        this.objects = this.nodes;
+        this.nodeIJs = [];
+        this.nodesByKey = {};
     }
 
     ForceDirector.prototype = {
         // Default box sizes
-	    PROJECT_WIDTH: 150,
-	    PROJECT_HEIGHT: 75,
-	    TASK_WIDTH: 100,
-	    TASK_HEIGHT: 50,
+        PROJECT_WIDTH: 150,
+        PROJECT_HEIGHT: 75,
+        TASK_WIDTH: 100,
+        TASK_HEIGHT: 50,
     
         physics_dt: 0.5,
         MASS_DRAW_COEFF: 4,
@@ -222,242 +222,242 @@ var ForceDirector = (function(){
         right: BIG_NUMBER,
         wallsFlag: true,
     
-	    init: function(){
-		    //this.context.lineWidth = 1;
+        init: function(){
+            //this.context.lineWidth = 1;
 
-		    this.parseData(this.projData);
-		    this.randomizeNodes();
-		    // ProjectNode 0 is fixed and central
-		    this.nodes[0].makeCentralNode();
-	    },
+            this.parseData(this.projData);
+            this.randomizeNodes();
+            // ProjectNode 0 is fixed and central
+            this.nodes[0].makeCentralNode();
+        },
 
-	    //mergeParams: function(base, add){
-		    //var params = {};
-		    //for(p in base){params[p] = base[p];}
-		    //for(p in add){params[p] = add[p];}
-		    //return params;
-	    //},
-	    reset: function(){
-		    this.nodes.length = 0;
-		    this.nodeIJs.length = 0;
-	    },
+        //mergeParams: function(base, add){
+            //var params = {};
+            //for(p in base){params[p] = base[p];}
+            //for(p in add){params[p] = add[p];}
+            //return params;
+        //},
+        reset: function(){
+            this.nodes.length = 0;
+            this.nodeIJs.length = 0;
+        },
 
-	    addProject: function(params){
-		    this.nodes.length = 0;
-		    this.nodeIJs.length = 0;
-		
-		    // add a project node - fixed by default (index will be 0)
-		    this.nodes.push(new ProjectNode(this, extend({x:0, y:0, dx:0, dy:0, width:ForceDirector.PROJECT_WIDTH, height:ForceDirector.PROJECT_HEIGHT},params)));
-		    this.nodeIJs.push({});
-		    this.nodes[0].fixed = true;
-		    return this.nodes[0];
-	    },
+        addProject: function(params){
+            this.nodes.length = 0;
+            this.nodeIJs.length = 0;
+        
+            // add a project node - fixed by default (index will be 0)
+            this.nodes.push(new ProjectNode(this, extend({x:0, y:0, dx:0, dy:0, width:ForceDirector.PROJECT_WIDTH, height:ForceDirector.PROJECT_HEIGHT},params)));
+            this.nodeIJs.push({});
+            this.nodes[0].fixed = true;
+            return this.nodes[0];
+        },
 
 
-	    addTask: function(params){
-		    var task = new TaskNode(this, extend({x:0, y:0, dx:0, dy:0, width:ForceDirector.TASK_WIDTH, height:ForceDirector.TASK_HEIGHT}, params));
-		    this.nodes.push(task);
-		    this.nodeIJs.push({});
-		    return task;
-	    },
+        addTask: function(params){
+            var task = new TaskNode(this, extend({x:0, y:0, dx:0, dy:0, width:ForceDirector.TASK_WIDTH, height:ForceDirector.TASK_HEIGHT}, params));
+            this.nodes.push(task);
+            this.nodeIJs.push({});
+            return task;
+        },
 
-	    addTaskToProject: function(params, pKey){
-		    var pNode, node;
-		    if(typeof pKey === 'undefined'){
-			    pNode = this.nodes[0];
-		    }
-		    else{
-			    pNode = this.nodesByKey[pKey];
-		    }
+        addTaskToProject: function(params, pKey){
+            var pNode, node;
+            if(typeof pKey === 'undefined'){
+                pNode = this.nodes[0];
+            }
+            else{
+                pNode = this.nodesByKey[pKey];
+            }
 
-		    node = this.addTask(params);
-		    this.addLink({target:node.key, source:pNode.key, value:1});
-		    return node;
-	    },
+            node = this.addTask(params);
+            this.addLink({target:node.key, source:pNode.key, value:1});
+            return node;
+        },
 
-	    getTask: function(key){
-		    return this.nodesByKey[key];
-	    },
+        getTask: function(key){
+            return this.nodesByKey[key];
+        },
 
-	    hideTask: function(key){
-		    this.nodesByKey[key].active = false;
-	    },
+        hideTask: function(key){
+            this.nodesByKey[key].active = false;
+        },
 
-	    parseData: function(data){
-		    var i, l;
-		    this.addProject(data);
+        parseData: function(data){
+            var i, l;
+            this.addProject(data);
 
-		    // add task nodes - indexed from 1 to t+1
-		    for(i=0; i<data.tasks.length; i++){
-			    this.nodes.push(new TaskNode(this, extend({x:0, y:(i+1)*50, dx:0, dy:0}, data.tasks[i])));
-			    this.nodeIJs.push({});
-		    }
+            // add task nodes - indexed from 1 to t+1
+            for(i=0; i<data.tasks.length; i++){
+                this.nodes.push(new TaskNode(this, extend({x:0, y:(i+1)*50, dx:0, dy:0}, data.tasks[i])));
+                this.nodeIJs.push({});
+            }
 
-		    // by default link all tasks to project - can be overridden in data-file
-		    if(typeof data.links === 'undefined'){
-			    data.links = [];
-			    for(i=0; i<data.tasks.length; i++){
-				    data.links.push({'source':data.key, 'target':data.tasks[i].key, 'value':1});
-			    }
-		    }
+            // by default link all tasks to project - can be overridden in data-file
+            if(typeof data.links === 'undefined'){
+                data.links = [];
+                for(i=0; i<data.tasks.length; i++){
+                    data.links.push({'source':data.key, 'target':data.tasks[i].key, 'value':1});
+                }
+            }
 
-		    for(i=0; i<data.links.length; i++){
-			    l = data.links[i];
-			    this.addLink(l);
-		    }
-	    },
+            for(i=0; i<data.links.length; i++){
+                l = data.links[i];
+                this.addLink(l);
+            }
+        },
 
-	    // links specified by key
-	    addLink:  function(l){	
-		    var target_i, source_i, h, nij;
-		    target_i = this.nodes.indexOf(this.nodesByKey[l.target]);
-		    source_i = this.nodes.indexOf(this.nodesByKey[l.source]);
-		    this.nodes[target_i].links_to.push(new Link(this.nodes[source_i], l.value));
-		    this.nodes[source_i].links_from.push(new Link(this.nodes[target_i], l.value));
-		    if(target_i > source_i){
-			    h = target_i;
-			    l = source_i;
-		    }
-		    else{
-			    h = source_i;
-			    l = target_i;
-		    }
-		    nij = this.nodeIJs[l][h];
-		    if(nij){
-			    this.nodeIJs[l][h] +=1;
-		    }
-		    else{
-			    this.nodeIJs[l][h] = 1;
-		    }
+        // links specified by key
+        addLink:  function(l){    
+            var target_i, source_i, h, nij;
+            target_i = this.nodes.indexOf(this.nodesByKey[l.target]);
+            source_i = this.nodes.indexOf(this.nodesByKey[l.source]);
+            this.nodes[target_i].links_to.push(new Link(this.nodes[source_i], l.value));
+            this.nodes[source_i].links_from.push(new Link(this.nodes[target_i], l.value));
+            if(target_i > source_i){
+                h = target_i;
+                l = source_i;
+            }
+            else{
+                h = source_i;
+                l = target_i;
+            }
+            nij = this.nodeIJs[l][h];
+            if(nij){
+                this.nodeIJs[l][h] +=1;
+            }
+            else{
+                this.nodeIJs[l][h] = 1;
+            }
 
-	    },
+        },
 
-	    randomizeNodes: function(){
-		    var i, n;
-		    for(i=0; i<this.nodes.length; i++){
-			    n = this.nodes[i];
-			    n.placeRandomly();
-		    }
-	    },
+        randomizeNodes: function(){
+            var i, n;
+            for(i=0; i<this.nodes.length; i++){
+                n = this.nodes[i];
+                n.placeRandomly();
+            }
+        },
 
-	    deactivateNodes: function(){
-		    var i, n;
-		    for(i=0; i<this.nodes.length; i++){
-			    n = this.nodes[i];
-			    n.active = false;
-			    n.fixed = false;
-		    }
-	    },
-			
-	    getProjBBox: function(){
-		    var bot_left = vec2.create([9999999,9999999]),
-			    top_right = vec2.create([-9999999, -9999999]),
-			    i, n_i;
+        deactivateNodes: function(){
+            var i, n;
+            for(i=0; i<this.nodes.length; i++){
+                n = this.nodes[i];
+                n.active = false;
+                n.fixed = false;
+            }
+        },
+            
+        getProjBBox: function(){
+            var bot_left = vec2.create([9999999,9999999]),
+                top_right = vec2.create([-9999999, -9999999]),
+                i, n_i;
 
-		    for(i=0; i<this.objects.length; i++){
-			    n_i = this.nodes[i];
-			    bot_left[0] = Math.min(bot_left[0], n_i.p[0] - n_i.offw);
-			    bot_left[1] = Math.min(bot_left[1], n_i.p[1] - n_i.offh);
-			    top_right[0] = Math.max(top_right[0], n_i.p[0] + n_i.offw);
-			    top_right[1] = Math.max(top_right[1], n_i.p[1] + n_i.offh);
-		    }
+            for(i=0; i<this.objects.length; i++){
+                n_i = this.nodes[i];
+                bot_left[0] = Math.min(bot_left[0], n_i.p[0] - n_i.offw);
+                bot_left[1] = Math.min(bot_left[1], n_i.p[1] - n_i.offh);
+                top_right[0] = Math.max(top_right[0], n_i.p[0] + n_i.offw);
+                top_right[1] = Math.max(top_right[1], n_i.p[1] + n_i.offh);
+            }
 
-		    return [bot_left, top_right];
-	    },
+            return [bot_left, top_right];
+        },
 
-	    benchmark: function(t, dt){
-		    var i, t0 = new Date().getTime();
-		    for(i=0; i<t; i+=dt){
-			    this.updateCycle(dt);
-		    }
+        benchmark: function(t, dt){
+            var i, t0 = new Date().getTime();
+            for(i=0; i<t; i+=dt){
+                this.updateCycle(dt);
+            }
 
-		    console.debug(new Date().getTime() - t0 + 'ms');
+            console.debug(new Date().getTime() - t0 + 'ms');
 
-		    return;
-	    },
+            return;
+        },
 
-	    updateCycle: function(dt){
-		    var i, j, p_i, p_j, nij, hf, cf, f, r, d,
-			    tr, td, thf, tf,
-			    px, py, w, h, dpdt, fdt;
-		    this.runningTime += dt;
-		    for(i=0; i<this.nodes.length; i++){
-			    //this.nodes[i].f.setElements([0,0]);
-			    vec2.set(this.v2null, this.nodes[i].f);
-		    }
+        updateCycle: function(dt){
+            var i, j, p_i, p_j, nij, hf, cf, f, r, d,
+                tr, td, thf, tf,
+                px, py, w, h, dpdt, fdt;
+            this.runningTime += dt;
+            for(i=0; i<this.nodes.length; i++){
+                //this.nodes[i].f.setElements([0,0]);
+                vec2.set(this.v2null, this.nodes[i].f);
+            }
 
-		    for(i=0; i<this.nodes.length; i++){
-			    p_i = this.nodes[i];
-			    if(p_i.active){
-				    for(j=i+1; j<this.nodes.length; j++){
-					    p_j = this.nodes[j];
-					    if(p_j.active){
-						    r = vec2.subtract2(p_j.p, p_i.p, vec2.create([0,0]));
-						    // we add a small ammount to d to prevent division by 0
-						    d = vec2.length(r) + 0.01;
-						    // First calculate Coulomb repulsion
-						    // var cf = p_j.m*p_i.m / Math.pow(d, 2);
-						    cf = -this.inCoulombK/d;
-						    // repulsion based on nodes' bounding boxes
-						    if(this.nodeBBIntersect(p_i, p_j)){
-							    cf -= this.inBBRepulsion;
-						    }
-						    // calculate Hooke using nodeIJ links
-						    nij = this.nodeIJs[i][j];
-						    hf = 0;
-						    if(nij){
-							    hf = nij * (d - this.inHookeEquilib)*this.inHookeK;
-						    }
-						    f = vec2.normalize(r);
-						    vec2.scale(f, cf+hf);
+            for(i=0; i<this.nodes.length; i++){
+                p_i = this.nodes[i];
+                if(p_i.active){
+                    for(j=i+1; j<this.nodes.length; j++){
+                        p_j = this.nodes[j];
+                        if(p_j.active){
+                            r = vec2.subtract2(p_j.p, p_i.p, vec2.create([0,0]));
+                            // we add a small ammount to d to prevent division by 0
+                            d = vec2.length(r) + 0.01;
+                            // First calculate Coulomb repulsion
+                            // var cf = p_j.m*p_i.m / Math.pow(d, 2);
+                            cf = -this.inCoulombK/d;
+                            // repulsion based on nodes' bounding boxes
+                            if(this.nodeBBIntersect(p_i, p_j)){
+                                cf -= this.inBBRepulsion;
+                            }
+                            // calculate Hooke using nodeIJ links
+                            nij = this.nodeIJs[i][j];
+                            hf = 0;
+                            if(nij){
+                                hf = nij * (d - this.inHookeEquilib)*this.inHookeK;
+                            }
+                            f = vec2.normalize(r);
+                            vec2.scale(f, cf+hf);
 
-						    vec2.add(p_i.f, f);
-						    vec2.subtract(p_j.f, f);
-					    }
-				    }
-				    // some nodes are tethered to a point in the environment
-				    if(p_i.tether){
-					    // apply elastic attraction from tether point
-					    tr = vec2.subtract2(p_i.tether, p_i.p, vec2.create([0,0]));
-					    // we add a small ammount to d to prevent division by 0
-					    td = vec2.length(tr) + 0.01;
-					    thf = td * this.inHookeK;
-					    tf = vec2.normalize(tr);
-					    vec2.scale(tf, thf);
-					    vec2.add(p_i.f, tf);
-				    }
+                            vec2.add(p_i.f, f);
+                            vec2.subtract(p_j.f, f);
+                        }
+                    }
+                    // some nodes are tethered to a point in the environment
+                    if(p_i.tether){
+                        // apply elastic attraction from tether point
+                        tr = vec2.subtract2(p_i.tether, p_i.p, vec2.create([0,0]));
+                        // we add a small ammount to d to prevent division by 0
+                        td = vec2.length(tr) + 0.01;
+                        thf = td * this.inHookeK;
+                        tf = vec2.normalize(tr);
+                        vec2.scale(tf, thf);
+                        vec2.add(p_i.f, tf);
+                    }
 
-				    // bounding walls' repulsion
-				    if(this.wallsFlag){
-					    px = p_i.p[0];
-					    py = p_i.p[1];
-					    w = p_i.offw;
-					    h = p_i.offh;
-					    // t, b, l, r
-					    if(py + h > this.top){p_i.f[1] -= this.inWallRepulsion;}
-					    else if(py - h < this.bottom){p_i.f[1] += this.inWallRepulsion;}
-					    if(px + w > this.right){p_i.f[0] -= this.inWallRepulsion;}
-					    else if(px - w < this.left){p_i.f[0] += this.inWallRepulsion;}
-				    }
+                    // bounding walls' repulsion
+                    if(this.wallsFlag){
+                        px = p_i.p[0];
+                        py = p_i.p[1];
+                        w = p_i.offw;
+                        h = p_i.offh;
+                        // t, b, l, r
+                        if(py + h > this.top){p_i.f[1] -= this.inWallRepulsion;}
+                        else if(py - h < this.bottom){p_i.f[1] += this.inWallRepulsion;}
+                        if(px + w > this.right){p_i.f[0] -= this.inWallRepulsion;}
+                        else if(px - w < this.left){p_i.f[0] += this.inWallRepulsion;}
+                    }
 
-				    if(!p_i.fixed){
-					    dpdt = vec2.scale(p_i.dp, dt, vec2.create([0, 0]));
-					    vec2.add(p_i.p, dpdt);
-					    fdt = vec2.scale(p_i.f, dt/p_i.m, vec2.create([0, 0]));
-					    vec2.add(p_i.dp, fdt);
-					    // Damp velocities
-					    vec2.scale(p_i.dp, this.inVelDampK);
-				    }
+                    if(!p_i.fixed){
+                        dpdt = vec2.scale(p_i.dp, dt, vec2.create([0, 0]));
+                        vec2.add(p_i.p, dpdt);
+                        fdt = vec2.scale(p_i.f, dt/p_i.m, vec2.create([0, 0]));
+                        vec2.add(p_i.dp, fdt);
+                        // Damp velocities
+                        vec2.scale(p_i.dp, this.inVelDampK);
+                    }
 
-			    }
-		    }
-	    },
+                }
+            }
+        },
 
-	    nodeBBIntersect: function(n1, n2){
-		    //bool DoBoxesIntersect(Box a, Box b) {
-		    return (Math.abs(n1.p[0] - n2.p[0]) < (n1.offw + n2.offw)) &&
-				    (Math.abs(n1.p[1] - n2.p[1]) < (n1.offh + n2.offh));
-		}
+        nodeBBIntersect: function(n1, n2){
+            //bool DoBoxesIntersect(Box a, Box b) {
+            return (Math.abs(n1.p[0] - n2.p[0]) < (n1.offw + n2.offw)) &&
+                    (Math.abs(n1.p[1] - n2.p[1]) < (n1.offh + n2.offh));
+        }
     };
     
     return ForceDirector;
