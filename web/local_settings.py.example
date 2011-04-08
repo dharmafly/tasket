@@ -27,4 +27,5 @@ TASK_LIMIT = 10
 # How many tasks a user can claim
 CLAIMED_LIMIT = 5
 
+# Maximum task estimate
 TASK_ESTIMATE_MAX = 14400
