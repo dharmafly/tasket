@@ -157,13 +157,18 @@ var ForceDirector = (function(){
 
     };
 
-    //core.extend(TaskNode, Thing);
-
-    function ProjectNode(world, params){
-        TaskNode.call(this, world, params);
+    function ProjectNode(){
+        TaskNode.apply(this, arguments);
     }
 
-    ProjectNode.prototype = {
+    // Extend TaskNode by setting new instance to ProjectNode prototype.
+    ProjectNode.prototype = new TaskNode();
+
+    // Extend Project Node with new methods and redefine our constructor.
+    extend(ProjectNode.prototype, {
+
+        constructor: ProjectNode,
+
         draw: function(){
             if(!this.active){return;}
             var ctx = this.context;
@@ -173,15 +178,8 @@ var ForceDirector = (function(){
             ctx.fillStyle    = '#fff';
             ctx.fillText(this.title, this.p[0], this.p[1]);
         }
-    };
-/*
-    function mozextend(child, supertype){
-        child.prototype.__proto__ = supertype.prototype;
-        child.prototype._super = supertype;
-    }
+    });
 
-    mozextend(ProjectNode, TaskNode);
-*/
     function Link(node, value){
         this.node = node;
         this.value = value;
