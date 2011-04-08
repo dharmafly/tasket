@@ -23,7 +23,7 @@ var cache = new Cache(Tasket.namespace),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
                 dashboard:      new Dashboard(),                
-                forcedirector:  new Forcedirector()
+                forcedirector:  new ForceDirector()
             });
         },
 
