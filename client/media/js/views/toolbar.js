@@ -13,6 +13,8 @@ var Toolbar = View.extend({
         this.userbar  = this.toolbar.find('h2');
         this.tasks    = this.toolbar.find('.tasks');
 
+        this.addCSRFToken();
+
         // Watch for changes to the current user and update the toolbar accordinly.
         app.bind('change:currentUser', function (user) {
             _.each(methods, function (method) {
@@ -38,6 +40,20 @@ var Toolbar = View.extend({
                 });
             }
         });
+    },
+
+    addCSRFToken: function () {
+        var token = app.getCookie("csrftoken");
+
+        if (token) {
+            this.$("form").append($('<input />', {
+                type:  "hidden",
+                name:  "csrftoken",
+                token: token
+            }));
+        }
+
+        return this;
     },
 
     // Toggle the display of the login/logout buttons.
