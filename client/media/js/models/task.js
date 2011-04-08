@@ -7,14 +7,14 @@ var TaskStates = {
     VERIFIED: "verified"
 };
 
+// NOTE: we are currently manually setting these, but they should be derived from Tasket.TASK_ESTIMATE_MAX (in core/tasket.js), which itself should be derived from the API call: GET /settings/
 var TaskEstimates = {
-    'Ten Minutes':           60*10,
-    'Half an Hour':          60*30,
-    'One Hour':              60*60,
+    'Fifteen minutes':       60*10,
+    'Half an hour':          60*30,
+    'One hour':              60*60,
     'Two hours':             60*60*2,
-    'Four hours':            60*60*4,
-    'Eight hours':           60*60*8,
-    'More than Eight hours': 60*60*12
+    'Three hours':           60*60*3,
+    'Four hours':            60*60*4
 };
 
 // TASK
