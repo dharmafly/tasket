@@ -73,7 +73,6 @@ class Task(models.Model):
             if isinstance(t, int):
                 return t
             return int(time.mktime(t.timetuple()))
-    
 
     def as_dict(self):
         """

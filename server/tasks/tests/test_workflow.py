@@ -4,6 +4,7 @@ import json
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 from django.core.files.base import ContentFile
+from django.conf import settings
 
 from django.contrib.auth.models import User
 from django.conf import settings
@@ -142,6 +143,52 @@ class WorkflowTests(TestCase):
         self.assertTrue('error' in json.loads(response.content))
         self.assertFalse('doneTime' in json.loads(response.content))
 
+    def test_too_many_tasks(self):
+        self.client.login(username='TestUser', password='12345')
+        hub = Hub.objects.get(pk=2)
+        for i in range(getattr(settings, 'TASK_LIMIT', 11)):
+            response = self.client.post(
+                '/tasks/',
+                json.dumps({
+                    "description" : "Lorem ipsum dolor sit amet, consectetur",
+                    "estimate" : 60*10,
+                    "hub" : hub.pk,
+                }),
+                content_type='application/json',
+                )
+        json_data = json.loads(response.content)
+        self.assertTrue('error' in json_data)
+        self.assertEqual(json_data['error'], ['Too many Tasks already'])
+    
+    def test_claim_too_many(self):
+        """
+        Gready user that claims too much!
+        """
+        self.client.login(username='TestUser', password='12345')
+        
+        # Make some dummy tasks
+        hub = Hub.objects.get(pk=2)
+        for i in range(5):
+            response = self.client.post(
+                '/tasks/',
+                json.dumps({
+                    "description" : "Lorem ipsum dolor sit amet, consectetur",
+                    "estimate" : 60*10,
+                    "hub" : hub.pk,
+                }),
+                content_type='application/json',
+                )
+        
+        for t in Task.objects.filter(claimedBy=None):
+            response = self.client.put(
+                    '/tasks/%s' % t.pk,
+                    data=json.dumps({"state" : Task.STATE_CLAIMED}),
+                    content_type='application/json',
+                )
+
+        json_data = json.loads(response.content)
+        self.assertTrue('error' in json_data)
+        self.assertEquals(json_data['error'], ["You can only claim 5 tasks at once"])
 
     def test_maximum_times(self):
         self.client.login(username='TestUser', password='12345')
