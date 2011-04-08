@@ -24,7 +24,7 @@ getScript(
     ],
     
     "dependencies/vec2.js",
-    "dependencies/forcedirected.js",
+    "dependencies/forcedirector.js",
 
     "dependencies/backbone.js",
     "dependencies/flatten.js",

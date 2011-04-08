@@ -15,7 +15,7 @@
             "Model", "Notification", "PageController", "SignUp",
             "TankController", "Task", "TaskEstimates", "TaskForm", "TaskList",
             "TaskStates", "TaskView", "Tasket", "User", "UserList", "View",
-            "cache", "now", "randomInt", "truncate", "Tasketter", "Toolbar"
+            "cache", "now", "randomInt", "truncate", "ForceDirector", "Toolbar"
         ]
     },
     "JAVASCRIPT": {
@@ -23,7 +23,7 @@
       "tasket": [
             "./header.js",
             "../dependencies/vec2.js",
-            "../dependencies/forcedirected.js",
+            "../dependencies/forcedirector.js",
             "../dependencies/flatten.js",
             "../backbone-stack.js",
             "../core/core.js",

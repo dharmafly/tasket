@@ -1,5 +1,5 @@
 // examples of use:
-// tk = Forcedirector();
+// tk = ForceDirector();
 // tk.addProject({key:'pA', title:'some project', width:200, height:150});
 // task = tk.addTaskToProject({key:'tA', title='some task', width:100, height:50});
 // /* to tether task by elastic to point in environment */
@@ -20,7 +20,7 @@
 /*global vec2*/
 
 
-var Forcedirector = (function(){
+var ForceDirector = (function(){
     "use strict";
 
     var BIG_NUMBER = 999999;
@@ -187,7 +187,7 @@ var Forcedirector = (function(){
 	    this.value = value;
     }
 
-    function Forcedirector(){
+    function ForceDirector(){
 	    //World.call(this);
 	    // dim gives bounds for random node placement
 	    this.dim = vec2.create([100,100]);
@@ -198,7 +198,7 @@ var Forcedirector = (function(){
 	    this.nodesByKey = {};
     }
 
-    Forcedirector.prototype = {
+    ForceDirector.prototype = {
         // Default box sizes
 	    PROJECT_WIDTH: 150,
 	    PROJECT_HEIGHT: 75,
@@ -247,7 +247,7 @@ var Forcedirector = (function(){
 		    this.nodeIJs.length = 0;
 		
 		    // add a project node - fixed by default (index will be 0)
-		    this.nodes.push(new ProjectNode(this, extend({x:0, y:0, dx:0, dy:0, width:Forcedirector.PROJECT_WIDTH, height:Forcedirector.PROJECT_HEIGHT},params)));
+		    this.nodes.push(new ProjectNode(this, extend({x:0, y:0, dx:0, dy:0, width:ForceDirector.PROJECT_WIDTH, height:ForceDirector.PROJECT_HEIGHT},params)));
 		    this.nodeIJs.push({});
 		    this.nodes[0].fixed = true;
 		    return this.nodes[0];
@@ -255,7 +255,7 @@ var Forcedirector = (function(){
 
 
 	    addTask: function(params){
-		    var task = new TaskNode(this, extend({x:0, y:0, dx:0, dy:0, width:Forcedirector.TASK_WIDTH, height:Forcedirector.TASK_HEIGHT}, params));
+		    var task = new TaskNode(this, extend({x:0, y:0, dx:0, dy:0, width:ForceDirector.TASK_WIDTH, height:ForceDirector.TASK_HEIGHT}, params));
 		    this.nodes.push(task);
 		    this.nodeIJs.push({});
 		    return task;
@@ -460,7 +460,7 @@ var Forcedirector = (function(){
 		}
     };
     
-    return Forcedirector;
+    return ForceDirector;
 }());
     
-//core.extenWrapd(Forcedirector, World);
+//core.extenWrapd(ForceDirector, World);

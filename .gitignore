@@ -4,7 +4,7 @@ screenshot.png
 web/local_settings.py
 .Python
 bin/
-build/
+/build/
 include/
 lib/
 man/
