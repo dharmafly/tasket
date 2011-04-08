@@ -22,8 +22,7 @@ var cache = new Cache(Tasket.namespace),
                 toolbar:        new Toolbar({el: jQuery('.header-container')[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
-                dashboard:      new Dashboard(),                
-                forcedirector:  new ForceDirector()
+                dashboard:      new Dashboard()
             });
         },
 
@@ -78,6 +77,76 @@ var cache = new Cache(Tasket.namespace),
                 return app;
             };
         }()),
+    
+        createForceDirector: function(options){
+            var f = new ForceDirector(),
+                defaultSettings = {
+                    fps: 20,
+                    numCycles: 200,
+                    inCoulombK: 50,
+                    inWallRepulsion: 600,
+                    inVelDampK: 0.01,
+                    updateStepMin: 0.1,
+                    updateStepMax: 5,
+                    updateStepDamping: 0.005,
+                    animate: null,
+                    callback: null,
+                    wallsFlag: true
+                },
+                easing;
+            
+            // Combine options with default settings
+            options = _.extend(options || {}, defaultSettings);
+            
+            function loop(){
+                f.updateCycle(options.updateStepMin + easing);
+                easing = easing - (easing * options.updateStepDamping);
+                
+                if (options.animate){
+                    options.animate();
+                }
+                
+                if (i <= options.numCycles){
+                    if (options.animate){
+                        window.setTimeout(function(){
+                            loop(++i);
+                        }, 1000 / options.fps);
+                    }
+                    else {
+                        loop(++i);
+                    }
+                }
+                else if (options.callback){
+                    options.callback();
+                }
+            }
+            
+            function startLoop(newOptions){
+                if (newOptions){
+                    options = _.extend(options, newOptions);
+                }
+                
+                i = 0;
+                easing = options.updateStepMax - options.updateStepMin;
+                
+                f.inVelDampK = options.inVelDampK;
+                f.inCoulombK = options.inCoulombK;
+                f.inWallRepulsion = options.inWallRepulsion;
+                f.wallsFlag = options.wallsFlag;
+                f.top = options.wallTop;
+                f.bottom = options.wallBottom;
+                f.left = options.wallLeft;
+                f.right = options.wallRight;
+                
+                loop();
+            }
+            
+            return {
+                engine: f,
+                options: options,
+                go: startLoop
+            }
+        },
 
         isCurrentUser: function (id) {
             return !!(app.currentUser && id === app.currentUser.id);

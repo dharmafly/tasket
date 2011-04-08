@@ -10,9 +10,25 @@ var TankController = Backbone.Controller.extend({
     constructor: function TankController() {
         Backbone.Controller.prototype.constructor.apply(this, arguments);
     },
+    
+    // Get the dimensions of the tank
+    calculateWalls: function(){
+        var wallBuffer = 50;
+        
+        this.wallBuffer = wallBuffer;
+        this.wallRight = jQuery("section.dashboard").offset().left - wallBuffer;
+        this.wallLeft = wallBuffer;
+        this.wallTop = window.innerHeight - wallBuffer - jQuery("div.header-container").outerHeight(true);
+        this.wallBottom = wallBuffer;
+        
+        return this;
+    },
 
     initialize: function(options){
         this.hubViews = {};
+        this.hubForceDirector = app.createForceDirector();
+        this.calculateWalls(); // TODO: recalculate on window.resize
+        
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
@@ -29,20 +45,10 @@ var TankController = Backbone.Controller.extend({
     },
 
     getHubView: function(id){
+        id = String(id); // allow argument to be a Number
         return _(this.hubViews).detect(function(hubView){
             return id === hubView.model.id;
         });
-    },
-
-    addHubs: function(hubs, options){
-        _(hubs).each(function(hub){
-            this.addHub(hub, {dontDraw:true});
-        }, this);
-        
-        if (!options || !options.dontDraw){
-            this.forcedirectHubs();
-        }
-        return this;
     },
 
     _onSelectHubs: function(hubToExclude){
@@ -56,6 +62,17 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
 
+    addHubs: function(hubs, options){
+        _(hubs).each(function(hub){
+            this.addHub(hub, {dontDraw:true});
+        }, this);
+        
+        if (!options || !options.dontDraw){
+            this.forcedirectHubs();
+        }
+        return this;
+    },
+
     addHub: function(hub, options){
         var hubView, offset;
 
@@ -64,6 +81,13 @@ var TankController = Backbone.Controller.extend({
         }
 
         options = options || {};
+        
+        hubView = this.hubViews[hub.cid] = new HubView({
+            model: hub
+        });
+
+        hubView.bind("select", this._onSelectHubs);
+        
         if (options.left && options.top){
             offset = {
                 left: options.left,
@@ -72,20 +96,22 @@ var TankController = Backbone.Controller.extend({
         }
         else {
             offset = { // TODO IMPROVE
-                left: window.innerWidth / 2 + (100 * Math.random() - 50),
-                top: window.innerHeight / 2 + (100 * Math.random() - 50)
+                left: window.innerWidth / 2 + (10 * Math.random() - 5),
+                top: this.calculateHubViewOffsetTop(hubView)
             };
         }
 
-        hubView = this.hubViews[hub.cid] = new HubView({
-            model: hub,
-            offset: offset
-        });
-
-        hubView.bind("select", this._onSelectHubs);
-
         app.bodyElem.append(hubView.elem);
         hubView.render();
+        
+        // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
+        hubView.forcedNode = this.hubForceDirector.engine.addTask({
+            key: hubView.model.id,
+            x: offset.left,
+            y: offset.top,
+            width: hubView.width + hubView.nucleusWidth, // NOTE: hubView.nucleusWidth is used as a margin between hubs
+            height: hubView.height
+        });
 
         if (!options.dontDraw){
             this.forcedirectHubs();
@@ -214,104 +240,72 @@ var TankController = Backbone.Controller.extend({
         var form = new TaskForm({model: task});
 
         app.lightbox.content(form.render().el).show();
-        form.bind('success', _.bind(function (event) {
+        form.bind("success", _.bind(function (event) {
             app.lightbox.hide();
         }, this));
     },
 
     error: function (message) {
         app.notification.error(
-            message || 'You do not have permission to access this'
+            message || "You do not have permission to access this"
         );
         app.back();
     },
-      
-    forcedirectHubs: function(callback, animate){        
-        var f = app.forcedirector,
-            hubViews = this.hubViews,
-            nucleusWidth, width, descriptionWidth, hubHubBuffer, wallBuffer, wallRight, wallLeft, wallTop, wallBottom, halfNucleusWidth,
-            numCycles = 200,
-            inCoulombK = 750,
-            updateStep = 1,
-            fps = 60,
-            i = 0,            
-            deltaTMin = 0.2,
-            deltaTEase = 1.5,
-            deltaTFactor = 0.01;
-            
-        f.reset();
-        f.inCoulombK = inCoulombK;
-        
-        _.each(this.hubViews, function(hubView){
-            var offset = hubView.offset(),
-                id = hubView.model.id,
-                height = hubView.nucleusWidth + hubView.labelElem.outerHeight(true); // NOTE height can vary for different hub descriptions
-                
-            if (!width){
-                descriptionWidth = hubView.labelElem.outerWidth(true); // TODO ensure we only use dimensions of collapsed label
-                nucleusWidth = hubView.nucleusWidth;
-                halfNucleusWidth = nucleusWidth / 2;
-                hubHubBuffer = nucleusWidth;
-                width = hubView.nucleusWidth + descriptionWidth + hubHubBuffer;
-                wallBuffer = halfNucleusWidth;
-                wallRight = jQuery("section.dashboard").offset().left - wallBuffer;
-                wallLeft = wallBuffer;
-                wallTop = window.innerHeight - wallBuffer - jQuery("div.header-container").outerHeight(true);
-                wallBottom = wallBuffer;
-                
-                f.wallsFlag = true;
-                f.top = wallTop;
-                f.bottom = wallBottom;
-                f.left = wallLeft;
-                f.right = wallRight;
-            }
-            
-            hubView.offsetValues({
-                left: offset.left,
-                top: (wallTop - wallBottom) - (hubView.model.weight() * (wallTop - wallBottom)) // TODO: move into hubView method; spread across all y
-            });
-            
-            // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
-            hubView.forcedNode = f.addTask({key:id, x:offset.left, y:offset.top, width: width, height: height});
-        });
-        
-        // Show walls
-        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (wallRight-wallLeft) + "px; top:" + (window.innerHeight - wallTop) + "px; height: " + (wallTop - wallBottom) + "px; left:" + wallLeft + "px;'></div>").appendTo("body");
-        
+    
+    calculateHubViewOffsetTop: function(hubView){
+        return (this.wallTop - this.wallBottom) - (hubView.model.weight() * (this.wallTop - this.wallBottom));
+    },
+    
+    initializeForceDirector: function(animate, callback){
+        var hubViews = this.hubViews,
+            overallCallback;
+    
         function updateHubViewsOffset(){
             _.each(hubViews, function(hubView){
                 var pos = hubView.forcedNode.getPos();
                 
                 hubView.offset({
-                    left: pos.x - descriptionWidth / 2,
-                    top: pos.y + halfNucleusWidth
+                    left: ~~(pos.x - hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
+                    top: ~~(pos.y + hubView.nucleusWidth / 2)
                 });
             });
         }
-        
-        function loop(){
-            f.updateCycle(deltaTMin + deltaTEase);
-            deltaTEase = deltaTEase - (deltaTEase * deltaTFactor);
-            
-            if (i <= numCycles){
-                if (animate){
-                    updateHubViewsOffset();
-                    
-                    window.setTimeout(function(){
-                        loop(++i);
-                    }, 1000 / fps);
-                }
-                else {
-                    loop(++i);
-                }
-            }
-            else if (callback){
-                callback();
-            }
+    
+        if (callback){
+            overallCallback = function(){
+                updateHubViewsOffset();
+                callback.call(this);
+            };
         }
-        loop();
-        updateHubViewsOffset();
+        else {
+            overallCallback = updateHubViewsOffset;
+        }
         
+        _.extend(this.hubForceDirector.options, {
+            wallTop: this.wallTop,
+            wallBottom: this.wallBottom,
+            wallLeft: this.wallLeft,
+            wallRight: this.wallRight,
+            animate: animate ? updateHubViewsOffset : null,
+            callback: overallCallback
+        });
+        this.hubForceDirector.initialized = true;
+        
+        return this;
+    },
+      
+    forcedirectHubs: function(animate, callback){
+        var tankController = this,
+            hubForceDirector = this.hubForceDirector;
+        
+        if (!hubForceDirector.initialized){
+            this.initializeForceDirector(animate, callback);
+        }
+        
+        // Show the walls
+        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (this.wallRight-this.wallLeft) + "px; top:" + (window.innerHeight - this.wallTop) + "px; height: " + (this.wallTop - this.wallBottom) + "px; left:" + this.wallLeft + "px;'></div>").appendTo("body");
+        
+        hubForceDirector.go();
         return this;
     }
 });

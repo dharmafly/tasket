@@ -309,12 +309,17 @@ var HubView = View.extend({
 
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("a.nucleus-wrapper");
-        // NOTE: this calculation requires this.elem to be present in the document's DOM, for CSS styling
-        this.nucleusWidth = this.nucleusElem.outerWidth(); // TODO: or use .set("nucleusWidth"); ?
         this.tasksElem = this.$("div.tasks");
         this.taskListElem = this.tasksElem.children("ul");
         this.labelElem = this.$("hgroup");
         this.canvasElem = this.$("canvas");
+        
+        // NOTE: these calculations require this.elem to be present in the document's DOM, for CSS styling
+        this.nucleusWidth = this.nucleusElem.outerWidth(); // TODO: cache on app, as this is the same for all hubs
+        this.descriptionWidth = this.labelElem.outerWidth(true); // dimensions of collapsed label
+        this.width = this.nucleusWidth + this.descriptionWidth;
+        this.height = this.nucleusWidth + this.labelElem.outerHeight(true); // NOTE height can vary for different hub descriptions
+        
         this._canvasSetup();
         this._updateMargin();
         if (data.isSelected){

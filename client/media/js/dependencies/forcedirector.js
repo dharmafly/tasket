@@ -63,10 +63,18 @@ var ForceDirector = (function(){
         m: 1,
         tether: null,
         active: true,
-        fixed: false,        
+        fixed: false,
+        
+        setPos: function (x, y) {
+            this.p[0] = x;
+            this.p[1] = y;
+        },
         
         getPos: function () {
-            return {'x' : this.p[0], 'y' : this.p[1]};
+            return {
+                x: this.p[0],
+                y: this.p[1]
+            };
         },
 
         setHeight: function (h) {
@@ -90,8 +98,8 @@ var ForceDirector = (function(){
         placeRandomly: function(){
             this.dp[0] = 0;
             this.dp[1] = 0;
-            this.p[0] = 2.0*(Math.random()-0.5)*this.world.dim[0];
-            this.p[1] = 2.0*(Math.random()-0.5)*this.world.dim[1];
+            this.p[0] = 2*(Math.random()-0.5)*this.world.dim[0];
+            this.p[1] = 2*(Math.random()-0.5)*this.world.dim[1];
         }, 
 
         fix: function(){
@@ -210,9 +218,9 @@ var ForceDirector = (function(){
         physics_dt: 0.5,
         MASS_DRAW_COEFF: 4,
         inScaleFac: 0.75,
-        inCoulombK: 100.0,
-        inBBRepulsion: 60.0,
-        inWallRepulsion: 120.0,
+        inCoulombK: 100,
+        inBBRepulsion: 60,
+        inWallRepulsion: 120,
         inHookeK: 0.25,
         inHookeEquilib: 60,
         inVelDampK: 0.1,
