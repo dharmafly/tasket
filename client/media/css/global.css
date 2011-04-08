@@ -68,6 +68,10 @@ a:hover, a:active, a:focus,
 	border-bottom: 1px solid;
 }
 
+img {
+	border: none;
+}
+
 .form-button {
 	display: inline-block;
 }
@@ -343,6 +347,45 @@ a.action.locate {
 	background-position: 2px -178px;
 }
 
+/* Tank task & hub controls */
+
+.admin-actions {
+	float: right;
+}
+
+.admin-actions a {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	background: url(../images/sprites.png?a) 0 -480px;
+	text-indent: -900em;
+	opacity: 0;
+	-webkit-transition: opacity 0.15s ease-in;
+	-moz-transition: opacity 0.15s ease-in;
+	-ms-transition: opacity 0.15s ease-in;
+	-o-transition: opacity 0.15s ease-in;
+	transition: opacity 0.15s ease-in;
+}
+
+:hover > .admin-actions a {
+	opacity: 0.7;
+}
+
+.admin-actions a.add {
+	background-position: 0 -420px;
+}
+
+.admin-actions a:hover {
+	border: none;
+	opacity: 1;
+}
+
+.task .admin-actions a.edit {
+	background-position: 0 -390px;
+}
+
+/* List reset */
+
 nav ul,
 form ul,
 .listing {
@@ -559,6 +602,10 @@ form ul,
 	right: 0;
 }
 
+.header-container .login form {
+	display: none;
+}
+
 .header-container nav .login a,
 .header-container nav .login button {
 	font-size: 0.923em /* 12px */;
@@ -592,6 +639,7 @@ form ul,
 .header-container .tasks {
 	margin-top: 0.615em /* 8px */;
 	float: right;
+	display: none;
 }
 
 .header-container .tasks {
@@ -646,50 +694,71 @@ form ul,
 article {
 	z-index: 0;
 	position: absolute;
+	min-width:20.7em; /* allows hgroup to extend to fill width */
 }
 
-article > img {
+article .nucleus-wrapper {
+	display: block;
 	position: absolute;
 	left: 0;
-	width:2em;
-	height:2em;
-	margin-top: -3.5em;
+	width: 30px;
+	height: 30px;
 	padding: 1.6em;
 	border: 0.8em solid #111;
+	margin-left: -3.4em; /* (width / 2) + padding + border-width */
+	margin-top: -3.4em; /* (height / 2) + padding + border-width */
 	background-color: #aaa;
 	-webkit-border-radius: 4em;
 	-moz-border-radius: 4em;
 	-ms-border-radius: 4em;
 	-o-border-radius: 4em;
 	border-radius: 4em;
-	cursor: pointer; /* TODO: remove if link is wrapped aroung img */
 	z-index: 1;
 }
 
-article > img.selected {
-	background-image: url(../images/sprites.png);
+article.loading .nucleus-wrapper::after {
+	position: absolute;
+	display: block;
+	top: 50%;
+	left: 50%;
+	margin-left: -15px;
+	margin-top: -15px;
+	height: 30px;
+	width: 30px;
+	content: "";
+	background: url(../images/hub-spinner.gif) no-repeat center center;
+	opacity: 0.7;
+}
+
+article .nucleus-wrapper img {
+  display: block;
+  width: 30px;
+  height: 30px;
+}
+
+article.select .nucleus-wrapper {
+	background-image: url(../images/hub-selected.png);
 	background-repeat: no-repeat;
-	background-position: 5px -235px;
+	background-position: center center;
 }
 
 article > hgroup {
-    margin-top:-2.7em; /* TODO: needs revising, to accommodate varying sizes of text */
-    position:absolute;
-	margin-left: 6em;
-	min-width:10em;
-	padding: 0.769em /* 10px */ 1.538em /* 20px */;
+    margin-top: -2em; /* Set this dynamically to .outerHeight() / 2  */
+    position: absolute;
+	margin-left: 0;
+	min-width: 10em;
+	padding: 0.8em 0.8em 0.8em 4em;
 	background-color: #111;
 	color: #fff;
 }
 
 article > div.tasks {
     position:absolute;
-	margin-left:3.4em;
 }
 
 article > div.tasks > canvas {
     position:absolute;
-    top:0;
+    top:0;	
 }
 
 article > div.tasks > ul {
@@ -709,7 +778,6 @@ article > div.tasks > ul > li {
 	border: 0.23075em /* 3px */ solid #aaa;
 	background-color: #fff;
 	height:6.4em; /* TODO: verify */
-	
 	opacity:0.6;
 }
 
@@ -817,13 +885,25 @@ article .meta img {
 }
 
 .dashboard .notifications li {
+	position: relative;
 	margin-bottom: 0.769em /* 10px */;
 	padding-left: 1.154em /* 15px */;
-	background: url(../images/sprites.png) no-repeat 0 -58px;
 }
 
+.dashboard .notifications li.last,
 .dashboard .notifications li:last-child {
 	margin-bottom: 0;
+}
+
+.dashboard .notifications li::after {
+	content: "";
+	display: block;
+	width: 10px;
+	height: 10px;
+	position: absolute;
+	left: 0;
+	top: 3px;
+	background: url(../images/sprites.png) no-repeat 0 -60px;
 }
 
 .dashboard .quicklinks {
@@ -855,11 +935,51 @@ article .meta img {
 }
 
 .dashboard .quicklinks li {
-	padding: 0.231em /* 3px */ 0;
+	position: relative;
+	padding: 0.231em /* 3px */ 16px 0.231em 0;
 }
 
 .dashboard .quicklinks .current {
 	background: #fafafa;
+}
+
+.dashboard .quicklinks li button,
+.dashboard .quicklinks li .button {
+	position: absolute;
+	top: 50%;
+	right: 0;
+	color: #333;
+	text-shadow: none;
+	text-indent: -900em;
+	line-height: 1;
+	margin-top: -8px;
+	padding: 0;
+	height: 16px;
+	width: 16px;
+	min-height: 0;
+	background: transparent url(../images/sprites.png?cache) 0 -327px;
+	opacity: 0.15;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	-ms-box-shadow: none;
+	-o-box-shadow: none;
+	box-shadow: none;
+}
+
+.dashboard .quicklinks li .add {
+	background-position: 0 -360px;
+}
+
+.dashboard .quicklinks li button:hover,
+.dashboard .quicklinks li button:focus,
+.dashboard .quicklinks li .button:hover,
+.dashboard .quicklinks li .button:focus {
+  opacity: 0.8;
+}
+
+.dashboard .quicklinks li button:active,
+.dashboard .quicklinks li .button:active {
+  opacity: 1;
 }
 
 .dashboard .quicklinks .info {
@@ -881,6 +1001,7 @@ article .meta img {
 	width: 13.846em /* 180px */;
 	padding: 0.679em /* 10px */;
 	color: #fff;
+	z-index: 2;
 	background-color: #000;
 	background-color: rgba(0, 0, 0, 0.8);
 	-webkit-border-radius: 0.385em /* 5px */;
@@ -1227,6 +1348,10 @@ article .meta img {
 	-moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 	-o-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+.ie .lightbox .lightbox-inner {
+	position: absolute;
 }
 
 .lightbox .close {

@@ -93,10 +93,12 @@ class PutView(View):
         if request.method in ('PUT',):
             request.PUT = json.loads(request.raw_post_data)
         
-        try:
-            request.JSON = json.loads(request.raw_post_data)
-        except:
-            request.JSON = None
+        if 'CONTENT_TYPE' in request.META:
+            if 'application/json' in [h.strip() for h in request.META['CONTENT_TYPE'].split(';')]:
+                try:
+                    request.JSON = json.loads(request.raw_post_data)
+                except:
+                    request.JSON = None
         
         return request
 

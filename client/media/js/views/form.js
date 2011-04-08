@@ -14,41 +14,54 @@ var Form = View.extend({
 
         this.reset();
 
-        this.$(':input').each(function () {
-            data[this.name] = $(this).val();
+        this.$(':input[name]:not([type=file])').each(function () {
+            data[this.name] = jQuery(this).val();
         });
+
+        this.trigger("beforeSave", data, this.model, this);
 
         this.model.save(data, {
             success: _.bind(this._onSuccess, this),
             error:   _.bind(this._onError, this)
         });
 
-        this.trigger('submit');
+        return this.trigger('submit', this.model, this);
     },
     errors: function (errors) {
         var list = this.$(':input');
 
         list.each(function () {
-            var input    = $(this),
+            var input    = jQuery(this),
                 messages = errors[this.name];
 
             if (messages) {
                 input.parent().addClass('error');
                 input.prev('label').html(function () {
-                    return $(this).text() + ': <strong>' + messages.join('. ') + '</strong>';
+                    var label  = jQuery(this),
+                        text   = label.data('original');
+
+                    if (!text) {
+                        text = label.text();
+                        label.data('original', text);
+                    }
+
+                    return text + ': <strong>' + messages.join(', ') + '</strong>';
                 });
             }
         });
+
+        return this;
     },
     reset: function () {
         this.$('.error strong').remove();
+        return this;
     },
     _onSuccess: function () {
-        this.trigger('success');
+        this.trigger('success', this.model, this);
     },
     _onError: function (model, xhr) {
         var errors = jQuery.parseJSON(xhr.responseText);
-        this.errors(errors).trigger('error');
+        this.errors(errors).trigger('error', this.model, this);
     }
 });
 

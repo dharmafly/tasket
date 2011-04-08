@@ -1,7 +1,10 @@
 var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
-        "/hubs/:id/": "displayHub"
+        "/hubs/:id/": "displayHub",
+        "/hubs/:id/edit/": "editHub",
+        "/hubs/:id/tasks/new/": "newTask",
+        "/hubs/:hub_id/tasks/:id/edit/": "editTask"
     },
 
     constructor: function TankController() {
@@ -21,7 +24,7 @@ var TankController = Backbone.Controller.extend({
                 this.addHub(hub);
             }
         }, this));
-        
+
         _.bindAll(this, "_onSelectHubs");
     },
 
@@ -31,11 +34,17 @@ var TankController = Backbone.Controller.extend({
         });
     },
 
-    addHubs: function(hubs){
-        _(hubs).each(this.addHub, this);
+    addHubs: function(hubs, options){
+        _(hubs).each(function(hub){
+            this.addHub(hub, {dontDraw:true});
+        }, this);
+        
+        if (!options || !options.dontDraw){
+            this.forcedirectHubs(false, true);
+        }
         return this;
     },
-    
+
     _onSelectHubs: function(hubToExclude){
         _(this.hubViews)
             .chain()
@@ -43,31 +52,46 @@ var TankController = Backbone.Controller.extend({
                 return view.model.id === hubToExclude.model.id;
             })
             .invoke("deselect");
-            
+
         return this;
     },
 
-    addHub: function(hub){
+    addHub: function(hub, options){
+        var hubView, offset;
+
         if (this.getHubView(hub.id)) {
-            return;
+            return this;
         }
 
-        var hubView = this.hubViews[hub.cid] = new HubView({
-            model: hub,
+        options = options || {};
+        if (options.left && options.top){
+            offset = {
+                left: options.left,
+                top: options.top
+            };
+        }
+        else {
+            offset = { // TODO IMPROVE
+                left: window.innerWidth / 2 + (100 * Math.random() - 50),
+                top: window.innerHeight / 2 + (100 * Math.random() - 50)
+            };
+        }
 
-            offset: { // TODO: Make useful
-                left: randomInt(window.innerWidth - 550) + 50, // window.innerWidth / 3,
-                top: randomInt(window.innerHeight - 200) + 100 // window.innerHeight / 2
-            }
+        hubView = this.hubViews[hub.cid] = new HubView({
+            model: hub,
+            offset: offset
         });
-        
+
         hubView.bind("select", this._onSelectHubs);
 
-        // TODO: move bodyElem to app.bodyElem
-        bodyElem.append(hubView.elem);
+        app.bodyElem.append(hubView.elem);
         hubView.render();
 
-        return this;
+        if (!options.dontDraw){
+            this.forcedirectHubs();
+        }
+
+        return hubView;
     },
 
     displayHub: function(id){
@@ -75,31 +99,220 @@ var TankController = Backbone.Controller.extend({
             hubView = this.getHubView(id);
 
         if (hubView){
-            hubView.select();
-            if (!hubView.tasksVisible()){
-                hubView.renderTasks();
-            }
-        }
-        else {
-            Tasket.fetchAndAdd(id, Tasket.hubs, function(){
-                controller.displayHub(id);
-            });
+            hubView.showTasks();
         }
         return this;
     },
 
     newHub: function(){
+        var form;
+
+        if (!this._isLoggedIn('You must be logged in to create a hub')) {
+            return;
+        }
+
+        form = this._createHubForm(new Hub({
+            owner: app.currentUser.id
+        }));
+
+        form.bind('success', _.bind(function (hub) {
+            var hubs = _.clone(app.currentUser.get('hubs.owned'));
+
+            // Add hubs to global cache.
+            Tasket.hubs.add(hub);
+
+            hubs.push(hub.id);
+            app.currentUser.set({
+                'hubs.owned': hubs
+            });
+
+            this.addHub(hub);
+        }, this));
+    },
+
+    editHub: function (id) {
+        var hub = Tasket.getHubs([id]).at(0);
+        if (!this._isLoggedIn('You must be logged in to edit a hub')) {
+            return;
+        }
+        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+            return;
+        }
+        this._createHubForm(hub);
+    },
+
+    _isLoggedIn: function (message) {
+        if (!app.currentUser) {
+            this.error(message || 'You must be logged in');
+        }
+        return !!app.currentUser;
+    },
+
+    _isOwner: function (id, message) {
+        var isUser = app.isCurrentUser(id);
+        if (!isUser) {
+            this.error(message || 'You do not have permission to do this');
+        }
+        return isUser;
+    },
+
+    _createHubForm: function (hub) {
         var form = new HubForm({
-            model: new Hub({
-                owner: app.currentUser.id
-            })
+            model: hub
         });
 
         app.lightbox.content(form.render().el).show();
-        form.bind('success', _.bind(function (event) {
-            this.addHub(form.model);
+
+        // Append our iFrame element for upload.
+        form.updateFrame();
+        form.bind('success', _.bind(function () {
             app.lightbox.hide();
         }, this));
+
+        return form;
+    },
+
+    newTask: function(hubId){
+        var hub = Tasket.getHubs([hubId]).at(0),
+            form;
+
+        if (!this._isLoggedIn('You must be logged in to create a task')) {
+            return;
+        }
+
+        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+            return;
+        }
+
+        this._createTaskForm(hub, new Task({
+            hub: hubId, // NOTE: Verify this when refactoring hubs.
+            owner: app.currentUser.id
+        }));
+    },
+
+    editTask: function (hubId, taskId) {
+        var hub  = Tasket.getHubs([hubId]).at(0),
+            task = Tasket.getTasks([taskId]).at(0);
+
+        if (_.indexOf(hub.getTasks(), taskId) < 0) {
+            this.error("This task does not exist on this hub");
+            return;
+        }
+
+        if (!this._isLoggedIn('You must be logged in to create a task')) {
+            return;
+        }
+
+        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+            return;
+        }
+
+        this._createTaskForm(hub, task);
+    },
+
+    _createTaskForm: function (hub, task) {
+        var form = new TaskForm({model: task});
+
+        app.lightbox.content(form.render().el).show();
+        form.bind('success', _.bind(function (event) {
+            app.lightbox.hide();
+        }, this));
+    },
+
+    error: function (message) {
+        app.notification.error(
+            message || 'You do not have permission to access this'
+        );
+        app.back();
+    },
+      
+    forcedirectHubs: function(callback, animate){        
+        var f = app.forcedirector,
+            hubViews = this.hubViews,
+            nucleusWidth, width, descriptionWidth, hubHubBuffer, wallBuffer, wallRight, wallLeft, wallTop, wallBottom, halfNucleusWidth,
+            numCycles = 200,
+            inCoulombK = 750,
+            updateStep = 1,
+            fps = 60,
+            i = 0,            
+            deltaTMin = 0.2,
+            deltaTEase = 1.5,
+            deltaTFactor = 0.01;
+            
+        f.reset();
+        f.inCoulombK = inCoulombK;
+        
+        _.each(this.hubViews, function(hubView){
+            var offset = hubView.offset(),
+                id = hubView.model.id,
+                height = hubView.nucleusWidth + hubView.labelElem.outerHeight(true); // NOTE height can vary for different hub descriptions
+                
+            if (!width){
+                descriptionWidth = hubView.labelElem.outerWidth(true); // TODO ensure we only use dimensions of collapsed label
+                nucleusWidth = hubView.nucleusWidth;
+                halfNucleusWidth = nucleusWidth / 2;
+                hubHubBuffer = nucleusWidth;
+                width = hubView.nucleusWidth + descriptionWidth + hubHubBuffer;
+                wallBuffer = halfNucleusWidth;
+                wallRight = jQuery("section.dashboard").offset().left - wallBuffer;
+                wallLeft = wallBuffer;
+                wallTop = window.innerHeight - wallBuffer - jQuery("div.header-container").outerHeight(true);
+                wallBottom = wallBuffer;
+                
+                f.wallsFlag = true;
+                f.top = wallTop;
+                f.bottom = wallBottom;
+                f.left = wallLeft;
+                f.right = wallRight;
+            }
+            
+            hubView.offsetValues({
+                left: offset.left,
+                top: (wallTop - wallBottom) - (hubView.model.weight() * (wallTop - wallBottom)) // TODO: move into hubView method; spread across all y
+            });
+            
+            // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
+            hubView.forcedNode = f.addTask({key:id, x:offset.left, y:offset.top, width: width, height: height});
+        });
+        
+        // Show walls
+        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (wallRight-wallLeft) + "px; top:" + (window.innerHeight - wallTop) + "px; height: " + (wallTop - wallBottom) + "px; left:" + wallLeft + "px;'></div>").appendTo("body");
+        
+        function updateHubViewsOffset(){
+            _.each(hubViews, function(hubView){
+                var pos = hubView.forcedNode.getPos();
+                
+                hubView.offset({
+                    left: pos.x - descriptionWidth / 2,
+                    top: pos.y + halfNucleusWidth
+                });
+            });
+        }
+        
+        function loop(){
+            f.updateCycle(deltaTMin + deltaTEase);
+            deltaTEase = deltaTEase - (deltaTEase * deltaTFactor);
+            
+            if (i <= numCycles){
+                if (animate){
+                    updateHubViewsOffset();
+                    
+                    window.setTimeout(function(){
+                        loop(++i);
+                    }, 1000 / fps);
+                }
+                else {
+                    loop(++i);
+                }
+            }
+            else if (callback){
+                callback();
+            }
+        }
+        loop();
+        updateHubViewsOffset();
+        
+        return this;
     }
 });
 
@@ -108,8 +321,8 @@ var PageController = Backbone.Controller.extend({
     routes: {
         '/about/':   'about',
         '/login/':   'login',
-        '/logout/':  'logout',
-        '/sign-up/': 'signup'
+        '/sign-up/': 'signup',
+        '/account/': 'account'
     },
 
     constructor: function PageController() {
@@ -123,20 +336,48 @@ var PageController = Backbone.Controller.extend({
     login: function () {
         var form = new Login();
         app.lightbox.content(form.render().el).show();
-    },
 
-    logout: function () {
-
+        form.bind('success', function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide();
+        });
     },
 
     signup: function () {
         var form = new SignUp({
-            model: new User({
-                realname: ''
-            })
+            model: new User()
         });
 
         app.lightbox.content(form.render().el).show();
+
+        // Append iframe for avatar upload.
+        form.updateFrame();
+
+        form.bind('success', function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide();
+            app.notification.success('Your account has been created!');
+        });
+    },
+
+    account: function () {
+        var form = new Account({
+            model: app.currentUser
+        });
+
+        if (!app.currentUser) {
+            window.location.hash = '#/login';
+        }
+
+        app.lightbox.content(form.render().el).show();
+
+        // Append iframe for avatar upload.
+        form.updateFrame();
+
+        form.bind('success', function (user) {
+            app.lightbox.hide();
+            app.notification.success('Your account has been updated!');
+        });
     }
 });
 
@@ -160,4 +401,3 @@ var DashboardController = Backbone.Controller.extend({
         app.dashboard.detail.title('My Projects').show();
     }
 });
-

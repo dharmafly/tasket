@@ -119,7 +119,7 @@
     "model": "tasks.hub", 
     "fields": {
         "owner": 2, 
-        "image": "images/Puppy.jpg", 
+        "image": "images/hubs/Puppy.jpg", 
         "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
         "title": "Example Hub"
     }
@@ -129,7 +129,7 @@
     "model": "tasks.hub", 
     "fields": {
         "owner": 2, 
-        "image": "images/Puppy.jpg", 
+        "image": "images/hubs/Puppy.jpg", 
         "description": "This one will have a verified task",
         "title": "Example Hub 2"
     }
@@ -157,6 +157,7 @@
         "hub": 2, 
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03",
+        "doneTime": "2010-02-25 09:15:03",
         "verifiedBy": 2,
         "owner": 2, 
         "state": "done",
@@ -172,7 +173,7 @@
         "image": "images/ACH_4307_3.jpg", 
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 3, 
-        "verifiedBy": 4,
+        "verifiedBy": 3,
         "state": "verified",
         "estimate": 600
     }
@@ -202,6 +203,21 @@
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 2,
         "state": "new",
+        "estimate": 600
+    }
+},
+
+{
+    "pk": 7, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "claimed too long ago", 
+        "hub": 2, 
+        "image": "images/ACH_4307_3.jpg", 
+        "createdTime": "2010-01-25 09:15:03", 
+        "claimedTime": "2011-01-25 09:25:03",
+        "owner": 2,
+        "state": "claimed",
         "estimate": 600
     }
 }

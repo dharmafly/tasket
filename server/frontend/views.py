@@ -9,6 +9,8 @@ from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth.models import User
 from django.core.validators import validate_email
 from django.forms import ValidationError
+from django.core.urlresolvers import reverse
+from django.conf import settings
 
 from utils.helpers import AllowJSONPCallback, PutView
 
@@ -77,24 +79,30 @@ class LoginView(PutView):
                 'status' : 401
                 }
             ))
+            self.res.status_code = 401
             return self.res
                 
                 
                 
 class LogoutView(PutView):
-    http_method_names = ['get',]
+    http_method_names = ['post',]
 
     def __init__(self):
         self.res = HttpResponse(content_type='application/javascript')
     
-    def get(self, request):
+    def post(self, request):
         logout(request)
-        self.res.write(json.dumps(
-            {
-                'logged_out' : True,
-            }
-        ))
         
+        if 'application/json' in request.META['CONTENT_TYPE']:
+            self.res.write(json.dumps(
+                {
+                    'logged_out' : True,
+                }
+            ))
+        else:
+            self.res = HttpResponseRedirect(reverse('home'))
+        
+        self.res.delete_cookie('sessionid')
         return self.res
         
         
@@ -120,3 +128,15 @@ def handle404(request):
     
     
     
+def settings_view(request):
+    exposed_settings = getattr(settings, "EXPOSED_SETTINGS", ())
+    
+    settings_dict = {}
+    
+    for setting in exposed_settings:
+        if hasattr(settings, setting):
+            settings_dict[setting] = getattr(settings, setting)
+    
+    return HttpResponse(json.dumps(settings_dict))
+
+

@@ -22,11 +22,38 @@ var Model = Backbone.Model.extend({
         return Backbone.Model.prototype.set.call(this, attributes, options);
     },
 
+    // Coerce ids to strings to ensure sane comparisons.
+    parse: function (response) {
+        if (response && response.id) {
+            response.id = "" + response.id;
+        }
+        return response;
+    },
+
     // Returns the Model as a plain JavaScript object.
     toJSON: function () {
         // Expand the flattened attributes before returning.
         var attributes = Backbone.Model.prototype.toJSON.apply(this, arguments);
         return jQuery.expand(attributes);
+    },
+
+    /* Checks to see if all required attributes are present in the model.
+     *
+     * Examples
+     *
+     *   model.isComplete();
+     *
+     * Returns true if all required attributes are present.
+     */
+    isComplete: function () {
+        if (this.required) {
+            // If any required attributes are undefined then .any() will return
+            // true and method returns false.
+            return !_.any(this.required, function(property){
+                return _.isUndefined(this.get(property));
+            }, this);
+        }
+        return true;
     },
 
     validate: function(attrs) {
@@ -70,28 +97,15 @@ var CollectionModel = Backbone.Collection.extend({
             return _.indexOf(ids, model.id) > -1;
         }));
     },
-    
-    
-    // TODO: check and improve efficiency if possible
-    parse: function(data){
-        var current = this.toJSON();
-        
-         _(data).each(function(newModel){
-            var found = false;
-            
-            // Using jQuery's .each instead of Underscore's, so that we can break the loop
-            jQuery(current).each(function(index, model){
-                if (model.id === newModel.id){
-                    current[index] = newModel;
-                    found = true;
-                    return false; // break the loop
-                }
-            });
-            
-            if (!found){
-                current.push(newModel);
-            }
+
+    /* Check to see if all models in the collection are complete, ie. have
+     * allrequired properties.
+     *
+     * Returns true if all models are complete.
+     */
+    isComplete: function () {
+        return !this.any(function (model) {
+            return !model.isComplete();
         });
-        return current;
     }
 });

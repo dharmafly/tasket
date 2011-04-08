@@ -1,13 +1,27 @@
 // USER
-var User = Model.extend({    
+var User = Model.extend({
     type: "user",
 
-    required: ["realname"],
+    required: ["name"],
 
     defaults: {
+        name: "",
         image: "",
         description: "",
-        location: ""
+        location: "",
+        tasks: {
+            owned: {
+                "new": [],
+                "claimed": [],
+                "done": [],
+                "verified": []
+            },
+            claimed: {
+                "claimed": [],
+                "done": [],
+                "verified": []
+            }
+        }
     },
 
     constructor: function User() {
@@ -16,13 +30,6 @@ var User = Model.extend({
 
     initialize: function(){
         Model.prototype.initialize.call(this, arguments);
-        this.hubs = {
-            owned: new HubList()
-        };
-        this.tasks = {
-            owned:   new TaskList(),
-            claimed: new TaskList()
-        };
     }
 });
 
@@ -30,3 +37,4 @@ var User = Model.extend({
 var UserList = CollectionModel.extend({
     model: User
 });
+

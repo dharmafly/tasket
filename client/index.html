@@ -11,7 +11,7 @@
 
     <title>Tasket</title>
 
-    <script src="media/js/dependencies/html5.js"></script>
+    <!--[if (lt IE 9)]><script src="media/js/dependencies/html5.js"></script><![endif]-->
     <script>document.documentElement.className += ' js';</script>
 
     <link rel="shortcut icon" href="/favicon.ico" />
@@ -29,13 +29,16 @@
                     <li><a href="#/sign-up/" title="Sign up for an account">Sign up</a></li>
                     <li class="login">
                         <a href="#/login/" title="Login to Tasket">Login</a>
-                        <form action="#/logout" method="POST">
+                        <form action="/logout/" method="post">
                             <button class="link" type="submit">Logout</button>
                         </form>
                     </li>
                 </ul>
             </nav>
-            <h2><img src="media/images/placeholder.png" width="16" height="16" alt="Current User’ avatar" /> <span>Current User</span></h2>
+            <h2>
+                <img src="media/images/placeholder.png" width="16" height="16" />
+                <a href="#/account/" title="Edit your account details"></a>
+            </h2>
             <div class="tasks">
                 <h3>Tasks</h3>
                 <dl>
@@ -46,11 +49,7 @@
         </header>
     </div>
 
-    <!--
-
-        TEMPLATES
-        ---------
-    -->
+    <!-- TEMPLATES -->
 
     <script type="text/tim" class="lightbox">
         <div class="lightbox-inner">
@@ -60,8 +59,16 @@
     </script>
 
     <script type="text/tim" class="hub">
-        <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" alt="{{title}}" />
+        <a href="#/hubs/{{id}}" class="nucleus-wrapper">
+            <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" />
+        </a>
         <hgroup>
+            {{canEdit}}
+            <span class="admin-actions">
+                <a class="add" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
+                <a class="edit" href="#/hubs/{{id}}/edit/">Edit</a>
+            </span>
+            {{/canEdit}}
             <h1>{{title}}</h1>
             <h2>{{description}}</h2>
         </hgroup>
@@ -72,29 +79,28 @@
     </script>
 
     <script type="text/tim" class="task">
+        {{canEdit}}
+        <span class="admin-actions">
+            <a class="edit" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
+        </span>
+        {{/canEdit}}
         <p class="description">{{description}}</p>
         <aside class="meta">
-            {{hasUser}}
-                <p class="claimedBy">
-                    {{isOwner}}
-                        <img src="{{claimedBy.image}}" width="14" height="14" alt="Your avatar" />
-                        <a href="{{claimedBy.url}}" title="See your tasks">You’re</a> doing this
-                    {{/isOwner}}
-                    {{isNotOwner}}
-                        <img src="{{claimedBy.image}}" width="14" height="14" alt="{{claimedBy.name}}’s avatar" />
-                        <a href="{{claimedBy.url}}" title="See {{claimedBy.name}}’s tasks">{{claimedBy.name}}</a><br /> is doing this task
-                    {{/isNotOwner}}
-                </p>
-            {{/hasUser}}
-            {{showTakeThisButton}}
-                <form action="#/tasks/" method="POST"><button type="submit">I’ll do this</button></form>
-            {{/showTakeThisButton}}
-            {{showDoneThisButton}}
-                <form action="#/tasks/" method="POST"><button type="submit">I’ve done it</button></form>
-            {{/showDoneThisButton}}
+            {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
+            <div class="controls"></div>
         </aside>
     </script>
-
+    <script type="text/tim" class="task-control">
+        <button class="{{type}}" data-task-state="{{state}}" data-task-id="{{id}}">{{text}}</button>
+    </script>
+    <script type="text/tim" class="task-claimed-by-you">
+        <img src="{{image}}" width="14" height="14" alt="Your avatar" />
+        <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this
+    </script>
+    <script type="text/tim" class="task-claimed-by-user">
+        <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
+        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task
+    </script>
     <script type="text/tim" class="dashboard-detail">
         <h1>{{title}}</h1>
         <button class="action close">Close</button>
@@ -130,9 +136,6 @@
         <section class="quicklinks">
             <h1>My Projects</h1>
             <ul class="listing">
-                {{projects}}
-                    <li><a {{isCurrent}}class="current" {{/isCurrent}}href="#/project/{{slug}}/" title="View {{title}}">{{title}}</a></li>
-                {{/projects}}
             </ul>
             <p>
                 <a class="button" href="#/projects/" title="View all projects">View All</a>
@@ -233,50 +236,77 @@
 
     <script type="text/tim" class="login">
         <h1>Login</h1>
-        <form action="#/login" method="POST">
-            <ul>
-                <li>
-                    <label for="field-email">Email Address</label>
-                    <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
-                </li>
-                <li>
-                    <label for="field-password">Password <strong class="error">(This field is required)</strong></label>
-                    <input type="password" id="field-password" name="password" placeholder="password" value="" />
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Login</button>
-                <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
-            </div>
-        </form>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-password">Password <strong class="error">(This field is required)</strong></label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Login</button>
+            <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
+        </div>
     </script>
 
     <script type="text/tim" class="signup">
         <h1>Register for a Tasket Account</h1>
         <p>Please provide the following details and we’ll create an account for you.</p>
-        <form action="#/sign-up/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-email">Email Address</label>
-                    <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
-                </li>
-                <li>
-                    <label for="field-real-name">Your Name</label>
-                    <input type="text" id="field-real-name" name="real-name" placeholder="Joe Bloggs" value="" />
-                </li>
-                <li>
-                    <label for="field-password">Password</label>
-                    <input type="password" id="field-password" name="password" placeholder="password" value="" />
-                </li>
-                <li>
-                    <label for="field-password-confirm">Confirm Password</label>
-                    <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Sign Up</button>
-            </div>
-        </form>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="" />
+            </li>
+            <li>
+                <label for="field-name">Your Name</label>
+                <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="" />
+            </li>
+            <li>
+                <label for="field-password">Password</label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password-confirm">Confirm Password</label>
+                <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
+            </li>
+            <li>
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Sign Up</button>
+        </div>
+    </script>
+
+    <script type="text/tim" class="account">
+        <h1>Update your Account Details</h1>
+        <ul>
+            <li>
+                <label for="field-name">Your Name</label>
+                <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="{{name}}" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="example@tasket.com" value="{{email}}" />
+            </li>
+            <li>
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Update</button>
+        </div>
     </script>
 
     <script type="text/tim" class="about">
@@ -295,90 +325,95 @@
         </blockquote>
     </script>
 
-    <script type="text/tim" class="new-hub">
-      <h1>{{isNew}}Create a new hub{{/isNew}}{{isNotNew}}Edit: {{title}}{{/isNotNew}}</h1>
-        <form action="/hubs/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-title">Title</label>
-                    <input id="field-title" name="title" placeholder="My new hub" value="{{title}}" />
-                </li>
-                <li>
-                    <label for="field-description">Description</label>
-                    <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Create Hub</button>
-            </div>
-        </form>
+    <script type="text/tim" class="hub-form">
+        <h1>{{isNew}}Create a new hub{{/isNew}}{{isNotNew}}Edit: {{title}}{{/isNotNew}}</h1>
+        <ul>
+            <li>
+                <label for="field-title">Title</label>
+                <input id="field-title" name="title" placeholder="My new hub" value="{{title}}" />
+            </li>
+            <li>
+                <label for="field-description">Description</label>
+                <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
+            </li>
+            <li>
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Hub</button>
+        </div>
+    </script>
+
+    <script type="text/tim" class="iframe-upload">
+        <!doctype html>
+        <head>
+            <link rel="stylesheet" href="{{stylesheet}}" />
+            <style>
+                html, body, form, form input[type=file] {
+                    background: none; border: none; margin: 0;
+                }
+            </style>
+        </head>
+        <body class="content">
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="{{name}}" />
+            </form>
+        </body>
     </script>
 
     <script type="text/tim" class="new-task">
-        <h1>Create a new task</h1>
-        <form action="#/tasks/" method="POST">
-            <ul>
-                <li>
-                    <label for="field-title">Title</label>
-                    <input id="field-title" name="title" placeholder="My new task" value="" />
-                </li>
-                <li>
-                    <label for="field-timespan">Time required</label>
-                    <select id="field-timespan" name="timespan">
-                        <option value="600">Ten minutes</option>
-                        <option value="600">Half an hour</option>
-                        <option value="600">One day</option>
-                        <option value="600">Three days</option>
-                    </select>
-                </li>
-                <li>
-                    <label for="field-summary">Summary</label>
-                    <textarea id="field-summary" name="summary" cols="30" rows="6" placeholder="Description&hellip;"></textarea>
-                </li>
-            </ul>
-            <div class="actions">
-                <button type="submit">Create Task</button>
-            </div>
-        </form>
+        <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}Edit task{{/isNotNew}}</h1>
+        <ul>
+            <li>
+                <label for="field-description">Summary</label>
+                <textarea id="field-description" name="description" cols="30" rows="6" placeholder="Description&hellip;">{{description}}</textarea>
+            </li>
+            <li>
+                <label for="field-timespan">Time required</label>
+                <select id="field-timespan" name="estimate">
+                {{estimates}}
+                    <option value="{{value}}"{{selected}} selected{{/selected}}>{{text}}</option>
+                {{/estimates}}
+                </select>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Task</button>
+        </div>
     </script>
+
     <script type="text/tim" class="dashboard">
         <ul class="listing notifications">
-            <li><a data-type="claimed" href="#/tasks/" title="View your tasks"><span>5</span> of your tasks have been claimed</a></li>
-            <li><a data-type="done" href="#/tasks/" title="View your tasks"><span>5</span> tasks need your approval</a></li>
-            <li><a data-type="approved" href="#/done/" title="View your completed tasks"><span>3</span> tasks you’ve done have been approved</a></li>
+            <li><a data-type="ownedClaimed" href="#/tasks/" title="View your tasks"><span></span> of your tasks have been claimed</a></li>
+            <li><a data-type="adminedDone" href="#/tasks/" title="View your tasks"><span></span> tasks need your approval</a></li>
+            <li><a data-type="claimedVerified" href="#/done/" title="View your completed tasks"><span></span> tasks you’ve done have been approved</a></li>
         </ul>
         <section class="quicklinks my-projects">
             <h1>My Projects</h1>
             <p class="help">This section provides you a quick list of your recent projects</p>
-            <ul class="listing">
-            </ul>
+            <ul class="listing"></ul>
             <p>
-                <a class="button" href="#/dashboard/hubs/" title="View all your projects">View All</a>
-                <a class="button" href="#/hubs/new/" title="Create a new project">New</a>
+                <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
             </p>
         </section>
         <section class="quicklinks my-tasks">
             <h1>Tasks I’m Doing</h1>
             <p class="help">This section provides you a quick list of your currently active tasks</p>
-            <ul class="listing">
-            </ul>
-            <p>
-                <a class="button" href="#/tasks/" title="View all tasks">View All</a>
-            </p>
+            <ul class="listing"></ul>
         </section>
         <section class="quicklinks managed-tasks">
-            <h1>Tasks I Manage</h1>
+            <h1>Tasks to Verify</h1>
             <p class="help">This section provides you a quick list of tasks you administer</p>
-            <ul class="listing">
-            </ul>
-            <p>
-                <a class="button" href="#/admin/tasks/" title="View all projects">View All</a>
-            </p>
+            <ul class="listing"></ul>
         </section>
         <footer>
             <p class="statistics">
                 <img src="media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
-                <em>2,030</em> tasks done by everyone</p>
+                <em>2,030</em> tasks done by everyone
+            </p>
             <nav>
                 <ul>
                     <li><a href="#/about/" title="Find out more about tasket">Tasket</a></li>
@@ -392,13 +427,25 @@
         </footer>
     </script>
     <script type="text/tim" class="dashboard-link">
-      {{links}}<li><a href="{{href}}" title="View {{title}}">{{title}}</a></li>{{/links}}
+      {{links}}
+      <li>
+        <a href="{{href}}" title="View {{title}}">{{title}}</a>
+        {{isHub}}<a class="button add" href="{{href}}/tasks/new/">Add task</a>{{/isHub}}
+        {{isTask}}
+            {{showDone}}<button class="done" data-task-state="done" data-task-id="{{id}}">Done</button>{{/showDone}}
+            {{showVerify}}<button class="verified" data-task-state="verified" data-task-id="{{id}}">Verify</button>{{/showVerify}}
+        {{/isTask}}
+      </li>
+      {{/links}}
     </script>
-    <!--
-
-        SCRIPTS
-        -------
-    -->
+    <script type="text/tim" class="unsupported">
+      <h1>Unsupported Browser</h1>
+      <p>Sorry Tasket currently only works on newer browsers such as Google
+         Chrome, Safari, Firefox and IE9. We are trying hard to support as many
+         older browsers as possible in future releases. In the meantime please
+         use one of the above.</p>
+    </script>
+    <!-- SCRIPTS -->
     <script src="media/js/dev/getscript.js"></script>
     <script src="media/js/scripts.js"></script>
 </body>
