@@ -1,15 +1,17 @@
 var TaskForm = Form.extend({
     constructor: function TaskForm() {
         Form.prototype.constructor.apply(this, arguments);
+        
         this.bind("beforeSave", function(data){
             if (data.estimate){
                 data.estimate = parseInt(data.estimate, 10);
             }
         });
     },
+    
     render: function () {
-        var template = tim('new-task', {
-            description:  this.model.get('description') || '',
+        var template = tim("new-task", {
+            description:  this.model.get("description") || "",
             estimates:    this._estimates(),
             isNew:        this.model.isNew(),
             isNotNew:    !this.model.isNew()
@@ -19,8 +21,9 @@ var TaskForm = Form.extend({
 
         return this;
     },
+    
     _estimates: function () {
-        var current = this.model.get('estimate');
+        var current = this.model.get("estimate");
         return _.map(Task.ESTIMATES, function (value, text) {
             return {
                 text: text,

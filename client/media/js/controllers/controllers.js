@@ -36,7 +36,7 @@ var TankController = Backbone.Controller.extend({
         }
 
         // Watch for new hubs and add them to the tank.
-        Tasket.hubs.bind('add', _.bind(function(hub){
+        Tasket.hubs.bind("add", _.bind(function(hub){
             // If the hub isn't yet shown in the tank, and it still has open tasks
             if (!this.getHubView(hub.id) && hub.isOpen()){
                 this.addHub(hub);
@@ -136,7 +136,7 @@ var TankController = Backbone.Controller.extend({
     newHub: function(){
         var form;
 
-        if (!this._isLoggedIn('You must be logged in to create a hub')) {
+        if (!this._isLoggedIn("You must be logged in to create a hub")) {
             return;
         }
 
@@ -144,15 +144,15 @@ var TankController = Backbone.Controller.extend({
             owner: app.currentUser.id
         }));
 
-        form.bind('success', _.bind(function (hub) {
-            var hubs = _.clone(app.currentUser.get('hubs.owned'));
+        form.bind("success", _.bind(function (hub) {
+            var hubs = _.clone(app.currentUser.get("hubs.owned"));
 
             // Add hubs to global cache.
             Tasket.hubs.add(hub);
 
             hubs.push(hub.id);
             app.currentUser.set({
-                'hubs.owned': hubs
+                "hubs.owned": hubs
             });
 
             this.addHub(hub);
@@ -161,10 +161,10 @@ var TankController = Backbone.Controller.extend({
 
     editHub: function (id) {
         var hub = Tasket.getHubs([id]).at(0);
-        if (!this._isLoggedIn('You must be logged in to edit a hub')) {
+        if (!this._isLoggedIn("You must be logged in to edit a hub")) {
             return;
         }
-        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+        if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
             return;
         }
         this._createHubForm(hub);
@@ -172,7 +172,7 @@ var TankController = Backbone.Controller.extend({
 
     _isLoggedIn: function (message) {
         if (!app.currentUser) {
-            this.error(message || 'You must be logged in');
+            this.error(message || "You must be logged in");
         }
         return !!app.currentUser;
     },
@@ -180,7 +180,7 @@ var TankController = Backbone.Controller.extend({
     _isOwner: function (id, message) {
         var isUser = app.isCurrentUser(id);
         if (!isUser) {
-            this.error(message || 'You do not have permission to do this');
+            this.error(message || "You do not have permission to do this");
         }
         return isUser;
     },
@@ -194,7 +194,7 @@ var TankController = Backbone.Controller.extend({
 
         // Append our iFrame element for upload.
         form.updateFrame();
-        form.bind('success', _.bind(function () {
+        form.bind("success", _.bind(function () {
             app.lightbox.hide();
         }, this));
 
@@ -205,11 +205,11 @@ var TankController = Backbone.Controller.extend({
         var hub = Tasket.getHubs([hubId]).at(0),
             form;
 
-        if (!this._isLoggedIn('You must be logged in to create a task')) {
+        if (!this._isLoggedIn("You must be logged in to create a task")) {
             return;
         }
 
-        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+        if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
             return;
         }
 
@@ -228,11 +228,11 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
-        if (!this._isLoggedIn('You must be logged in to create a task')) {
+        if (!this._isLoggedIn("You must be logged in to create a task")) {
             return;
         }
 
-        if (!this._isOwner(hub.get('owner'), 'You do not own this hub')) {
+        if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
             return;
         }
 
@@ -314,10 +314,10 @@ var TankController = Backbone.Controller.extend({
 // Handles signup/about/login etc.
 var PageController = Backbone.Controller.extend({
     routes: {
-        '/about/':   'about',
-        '/login/':   'login',
-        '/sign-up/': 'signup',
-        '/account/': 'account'
+        "/about/":   "about",
+        "/login/":   "login",
+        "/sign-up/": "signup",
+        "/account/": "account"
     },
 
     constructor: function PageController() {
@@ -325,14 +325,14 @@ var PageController = Backbone.Controller.extend({
     },
 
     about: function () {
-        app.lightbox.content(tim('about')).show();
+        app.lightbox.content(tim("about")).show();
     },
 
     login: function () {
         var form = new Login();
         app.lightbox.content(form.render().el).show();
 
-        form.bind('success', function (user) {
+        form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
         });
@@ -348,10 +348,10 @@ var PageController = Backbone.Controller.extend({
         // Append iframe for avatar upload.
         form.updateFrame();
 
-        form.bind('success', function (user) {
+        form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification.success('Your account has been created!');
+            app.notification.success("Your account has been created!");
         });
     },
 
@@ -361,7 +361,7 @@ var PageController = Backbone.Controller.extend({
         });
 
         if (!app.currentUser) {
-            window.location.hash = '#/login';
+            window.location.hash = "#/login";
         }
 
         app.lightbox.content(form.render().el).show();
@@ -369,18 +369,18 @@ var PageController = Backbone.Controller.extend({
         // Append iframe for avatar upload.
         form.updateFrame();
 
-        form.bind('success', function (user) {
+        form.bind("success", function (user) {
             app.lightbox.hide();
-            app.notification.success('Your account has been updated!');
+            app.notification.success("Your account has been updated!");
         });
     }
 });
 
 var DashboardController = Backbone.Controller.extend({
     routes: {
-        '/dashboard/user/:id': 'showUser',
-        '/dashboard/tasks/':   'showCurrentUserTasks',
-        '/dashboard/hubs/':    'showCurrentUserHubs'
+        "/dashboard/user/:id": "showUser",
+        "/dashboard/tasks/":   "showCurrentUserTasks",
+        "/dashboard/hubs/":    "showCurrentUserHubs"
     },
 
     constructor: function DashboardController() {
@@ -393,6 +393,6 @@ var DashboardController = Backbone.Controller.extend({
 
     showCurrentUserHubs: function () {
         var user = app.currentUser;
-        app.dashboard.detail.title('My Projects').show();
+        app.dashboard.detail.title("My Projects").show();
     }
 });

@@ -19,7 +19,7 @@ var cache = new Cache(Tasket.namespace),
                 csrftoken: null,
                 currentUser: null,
                 cache: cache,
-                toolbar:        new Toolbar({el: jQuery('.header-container')[0]}),
+                toolbar:        new Toolbar({el: jQuery(".header-container")[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
                 dashboard:      new Dashboard()
@@ -191,7 +191,7 @@ var cache = new Cache(Tasket.namespace),
                 if (cache !== false){
                     app.cache.set("currentUser", app.currentUser.toJSON());
                 }
-                app.trigger('change:currentUser', app.currentUser); // see dashboard.js > Dashboard.setUser()
+                app.trigger("change:currentUser", app.currentUser); // see dashboard.js > Dashboard.setUser()
             }
             return app.currentUser;
         },
@@ -199,14 +199,14 @@ var cache = new Cache(Tasket.namespace),
         setAuthtoken: function(authtoken){
             app.authtoken = authtoken;
             app.cache.set("authtoken", app.authtoken);
-            return app.trigger('change:authtoken', authtoken); // see dashboard.js > Dashboard.setUser()
+            return app.trigger("change:authtoken", authtoken); // see dashboard.js > Dashboard.setUser()
         },
 
         // Update the location bar with the previous hash.
         back: function(){
             var prev = Backbone.history.getPrevious();
             if (!prev) {
-                prev = '/';
+                prev = "/";
             }
             Backbone.history.saveLocation(prev);
             return app;
@@ -222,7 +222,7 @@ var cache = new Cache(Tasket.namespace),
                 for (i = 0; i < cookies.length; i+=1) {
                     cookie = jQuery.trim(cookies[i]);
                     // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    if (cookie.substring(0, name.length + 1) === (name + "=")) {
                         cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
                         break;
                     }
@@ -273,12 +273,12 @@ var cache = new Cache(Tasket.namespace),
             return app;
         },
 
-        // Returns true if the browser supports Taskets API's.
+        // Returns true if the browser supports Taskets API"s.
         supported: (function () {
-            var canvas = document.createElement('canvas'),
+            var canvas = document.createElement("canvas"),
                 supported;
 
-            supported = !!(canvas.getContext && canvas.getContext('2d') && cache.localStorage);
+            supported = !!(canvas.getContext && canvas.getContext("2d") && cache.localStorage);
 
             return function () {
                 return supported;

@@ -1,11 +1,14 @@
 var Form = View.extend({
+    tagName: "form",
+    
     events: {
         "submit": "submit"
     },
-    tagName: 'form',
+    
     constructor: function Form() {
         View.prototype.constructor.apply(this, arguments);
     },
+    
     submit: function (event) {
         var data = {};
         if (event) { 
@@ -14,7 +17,7 @@ var Form = View.extend({
 
         this.reset();
 
-        this.$(':input[name]:not([type=file])').each(function () {
+        this.$(":input[name]:not([type=file])").each(function () {
             data[this.name] = jQuery(this).val();
         });
 
@@ -25,43 +28,47 @@ var Form = View.extend({
             error:   _.bind(this._onError, this)
         });
 
-        return this.trigger('submit', this.model, this);
+        return this.trigger("submit", this.model, this);
     },
+    
     errors: function (errors) {
-        var list = this.$(':input');
+        var list = this.$(":input");
 
         list.each(function () {
             var input    = jQuery(this),
                 messages = errors[this.name];
 
             if (messages) {
-                input.parent().addClass('error');
-                input.prev('label').html(function () {
+                input.parent().addClass("error");
+                input.prev("label").html(function () {
                     var label  = jQuery(this),
-                        text   = label.data('original');
+                        text   = label.data("original");
 
                     if (!text) {
                         text = label.text();
-                        label.data('original', text);
+                        label.data("original", text);
                     }
 
-                    return text + ': <strong>' + messages.join(', ') + '</strong>';
+                    return text + ": <strong>" + messages.join(", ") + "</strong>";
                 });
             }
         });
 
         return this;
     },
+    
     reset: function () {
-        this.$('.error strong').remove();
+        this.$(".error strong").remove();
         return this;
     },
+    
     _onSuccess: function () {
-        this.trigger('success', this.model, this);
+        this.trigger("success", this.model, this);
     },
+    
     _onError: function (model, xhr) {
         var errors = jQuery.parseJSON(xhr.responseText);
-        this.errors(errors).trigger('error', this.model, this);
+        this.errors(errors).trigger("error", this.model, this);
     }
 });
 

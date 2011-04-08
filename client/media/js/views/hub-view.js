@@ -47,7 +47,7 @@ var HubView = View.extend({
     },
 
     updateImage: function () {
-        this.$("img.nucleus").attr('src', this.imageSrc());
+        this.$("img.nucleus").attr("src", this.imageSrc());
         return this;
     },
 
@@ -173,7 +173,7 @@ var HubView = View.extend({
     generateTaskViews: function(){
         this.taskViews = _( // NOTE: this.taskViews is an Underscore collection
             this.tasks.filter(function (task) {
-                return task.get('state') !== Task.states.VERIFIED;
+                return task.get("state") !== Task.states.VERIFIED;
             })
             .map(function(task){
                 return new TaskView({
@@ -245,15 +245,15 @@ var HubView = View.extend({
 
     // Vertically centres the hub title/description.
     _updateMargin: function () {
-        var content = this.$('hgroup');
-        content.css('margin-top', content.outerHeight() / 2 * -1);
+        var content = this.$("hgroup");
+        content.css("margin-top", content.outerHeight() / 2 * -1);
         return this;
     },
 
     sendToFront: function () {
         // Increase the z-index to always ensure the latest one is on top.
         HubView.zIndex += 1;
-        this.elem.css('z-index', HubView.zIndex);
+        this.elem.css("z-index", HubView.zIndex);
         return this;
     },
     

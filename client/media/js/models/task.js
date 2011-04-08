@@ -9,12 +9,12 @@ var TaskStates = {
 
 // NOTE: we are currently manually setting these, but they should be derived from Tasket.TASK_ESTIMATE_MAX (in core/tasket.js), which itself should be derived from the API call: GET /settings/
 var TaskEstimates = {
-    'Fifteen minutes':       60*10,
-    'Half an hour':          60*30,
-    'One hour':              60*60,
-    'Two hours':             60*60*2,
-    'Three hours':           60*60*3,
-    'Four hours':            60*60*4
+    "Fifteen minutes":       60*10,
+    "Half an hour":          60*30,
+    "One hour":              60*60,
+    "Two hours":             60*60*2,
+    "Three hours":           60*60*3,
+    "Four hours":            60*60*4
 };
 
 // TASK
