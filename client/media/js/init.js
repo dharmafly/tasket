@@ -44,6 +44,9 @@ app.bind("ready", function onReady () {
         task = Tasket.getTasks([id]).at(0);
         if (task && state) {
             task.state(state, app.currentUser.id).save();
+
+            // Reload the user incase change affected users tasks.
+            app.currentUser.fetch();
         }
     });
 
