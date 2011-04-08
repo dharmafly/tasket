@@ -36,22 +36,26 @@ var ForceDirector = (function(){
     }
 
     function TaskNode(world, params) {
-        //Thing.call(this, world, params);
-        this.world = world;
-        this.context = world.context;
-        this.p = vec2.create([params.x, params.y]);
-        this.dp = vec2.create([params.dx, params.dy]);
-        this.f = vec2.create([0, 0]);
-        this.key = params.key;
-        this.title = params.title;
-        this.width = params.width;
-        this.height = params.height;
-        this.offw = this.width / 2;
-        this.offh = this.height / 2;
-        this.links_to = [];
-        this.links_from = [];
-        // add node key to world's dictionary
-        world.nodesByKey[this.key] = this;
+        // Check for arguments, if present initialise the instance. Otherwise
+        // do nothing, this allows the constructor to generate a dummy object
+        // to be used in inheritance.
+        if (arguments.length) {
+            this.world = world;
+            this.context = world.context;
+            this.p = vec2.create([params.x, params.y]);
+            this.dp = vec2.create([params.dx, params.dy]);
+            this.f = vec2.create([0, 0]);
+            this.key = params.key;
+            this.title = params.title;
+            this.width = params.width;
+            this.height = params.height;
+            this.offw = this.width / 2;
+            this.offh = this.height / 2;
+            this.links_to = [];
+            this.links_from = [];
+            // add node key to world's dictionary
+            world.nodesByKey[this.key] = this;
+        }
     }
 
     TaskNode.prototype = {        
