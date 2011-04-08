@@ -90,10 +90,11 @@ _.extend(Tasket, Backbone.Events, {
      * Returns a Collection object.
      */
     getModels: function (collection, ids) {
-        var wrapped = _(ids),
-            type    = collection.model.prototype.type,
-            subset  = new collection.constructor(),
-            toLoad  = new collection.constructor();
+        var wrapped    = _(ids),
+            type       = collection.model.prototype.type,
+            subset     = new collection.constructor(),
+            toLoad     = new collection.constructor(),
+            toLoadCopy = new collection.constructor();
 
         // Removed previously failed ids.
         ids = wrapped.without.apply(wrapped, Tasket.failed[type]);
@@ -104,6 +105,7 @@ _.extend(Tasket, Backbone.Events, {
             if (!model) {
                 model = new collection.model({id: id});
                 toLoad.add(model);
+                toLoadCopy.add(model);
                 collection.add(model);
             }
             subset.add(model);
@@ -118,7 +120,7 @@ _.extend(Tasket, Backbone.Events, {
 
                 // Remove all models from subset that appear in toLoadCopy
                 // but not in toLoad. As they do not exist on the server.
-                _.clone(collection).each(function (model) {
+                toLoadCopy.each(function (model) {
                     if (!toLoad.get(model.id)) {
                         subset.remove(model);
                         collection.remove(model);
