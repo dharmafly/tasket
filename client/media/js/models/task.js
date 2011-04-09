@@ -128,7 +128,11 @@ var Task = Model.extend({
 
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-    }
+    },
+
+    humanEstimate: function () {
+        return humanTimespan(this.get("estimate"));
+    },
 }, {
     ESTIMATES: TaskEstimates
 });

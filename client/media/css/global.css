@@ -820,6 +820,10 @@ article.hub .description {
 	margin: 0 0 0.461em /* 6px */;
 }
 
+article.hub .description .estimate {
+	color: #888;
+}
+
 article.hub .meta .claimedBy,
 article.hub .meta form {
 	float: left;
