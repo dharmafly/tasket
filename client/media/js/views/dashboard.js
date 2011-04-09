@@ -18,7 +18,8 @@ var Dashboard = View.extend({
             "updateNotifications",
             "updateUserTasks",
             "updateUserHubs",
-            "updateManagedTasks"
+            "updateManagedTasks",
+            "updateStatistics"
         );
 
         // Setup the user bindings.
@@ -96,6 +97,10 @@ var Dashboard = View.extend({
             adminedDone:     user.get("tasks.owned.done").length,      // TODO: if an admin, this should include all done tasks
             claimedVerified: user.get("tasks.claimed.verified").length // TODO: should be recent verified tasks
         };
+    },
+
+    updateStatistics: function () {
+        this.$('.statistics em').text(app.statistics.tasks.verified);
     },
 
     // Updates the user status box.
