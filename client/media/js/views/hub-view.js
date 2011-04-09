@@ -51,7 +51,7 @@ var HubView = View.extend({
     },
 
     updateEstimate: function () {
-        this.$('hgroup span').text(this.model.humanEstimate());
+        this.$('hgroup h1 span').text(this.model.humanEstimate());
         return this;
     },
 
