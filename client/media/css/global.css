@@ -793,6 +793,10 @@ article.hub > hgroup h1 {
 	font-size: 1.385em /* 18px */;
 }
 
+article.hub > hgroup h1 span {
+	font-size: 0.6em;
+}
+
 article.hub > hgroup h2 {
 	font-size: 1.077em /* 14px */;
 }

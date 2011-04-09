@@ -69,6 +69,30 @@ var Hub = Model.extend({
         return this.set(data);
     },
 
+    estimate: function () {
+        return this.get('estimates.new');
+    },
+
+    humanEstimate: function () {
+        var remainder = this.estimate(),
+            units = {day: 86400, hour: 3600, minute: 60},
+            times = [];
+
+        _.each(units, function (seconds, unit) {
+            var timespan = Math.floor(remainder / seconds);
+            remainder = remainder % seconds;
+
+            if (timespan !== 0) {
+                if (timespan !== 1) {
+                    unit += 's';
+                }
+                times.push(timespan + ' ' + unit);
+            }
+        });
+
+        return times.join(', ');
+    },
+
     // Updates the estimates on a task when changed.
     updateEstimates: function (task) {
         var current  = task.get("estimate"),

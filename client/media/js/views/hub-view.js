@@ -28,9 +28,10 @@ var HubView = View.extend({
             inVelDampK: 0.1
         });
 
-        _.bindAll(this, "updateImage", "updateTitle");
+        _.bindAll(this, "updateImage", "updateTitle", "updateEstimate");
         this.model.bind("change:title", this.updateTitle);
         this.model.bind("change:description", this.updateTitle);
+        this.model.bind("change:estimates.new", this.updateEstimate);
         this.model.bind("change:image", this.updateImage);
         this.model.bind("change:tasks", function () { // TODO: expand this to sub-properties of `tasks`
             this.refreshTasks();
@@ -46,6 +47,11 @@ var HubView = View.extend({
 
     updateImage: function () {
         this.$("img.nucleus").attr("src", this.imageSrc());
+        return this;
+    },
+
+    updateEstimate: function () {
+        this.$('hgroup span').text(this.model.humanEstimate());
         return this;
     },
 
@@ -498,6 +504,7 @@ var HubView = View.extend({
     render: function(){
         var data = this.model.toJSON();
 
+        data.estimate   = this.model.humanEstimate();
         data.isSelected = this.isSelected();
         data.truncatedDescription = truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
