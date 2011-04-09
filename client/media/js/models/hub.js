@@ -26,6 +26,8 @@ var Hub = Model.extend({
 
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
+        _.bindAll(this, "updateTasks");
+        Tasket.bind("task:change:state", this.updateTasks);
     },
 
     // Returns all tasks.
@@ -35,13 +37,43 @@ var Hub = Model.extend({
             return this.get("tasks." + key);
         }, this).flatten().value();
     },
-    
+
+    // Updates the hubs tasks and estimates when the state of a task changes.
+    updateTasks: function (task) {
+        var id = task.id,
+            data = {},
+            current  = task.get("state"),
+            previous = task.previous("state"),
+            estimate = task.get("estimate"),
+            previousKey = "tasks." + previous,
+            previousIds = this.get(previousKey),
+            currentKey  = "tasks." + current,
+            currentIds;
+
+        // If this hub owns this task.
+        if (_.indexOf(previousIds, id) > -1) {
+            // Remove from the previous array of ids.
+            data[previousKey] = _.without(previousIds, id);
+
+            // Add to new array of ids.
+            currentIds = _.clone(this.get(currentKey));
+            currentIds.push(id);
+            data[currentKey] = currentIds;
+
+            // Update the estimates.
+            data["estimates." + previous] -= estimate;
+            data["estimates." + current]  += estimate;
+        }
+
+        return this.set(data);
+    },
+
     weight: function(){
         var settings = Tasket.settings,
             maxMinutes = settings.TASK_ESTIMATE_MAX * settings.TASK_LIMIT,
             unclaimedMinutes = this.get("estimates.claimed"),
             weight = unclaimedMinutes / maxMinutes;
-            
+
         return weight || 0;
     }
 });
