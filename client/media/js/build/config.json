@@ -15,12 +15,27 @@
             "Model", "Notification", "PageController", "SignUp",
             "TankController", "Task", "TaskEstimates", "TaskForm", "TaskList",
             "TaskStates", "TaskView", "Tasket", "User", "UserList", "View",
-            "cache", "now", "randomInt", "truncate", "ForceDirector", "Toolbar"
+            "cache", "now", "randomInt", "truncate", "ForceDirector", "Toolbar",
+            "escapeHTML", "humanTimespan", "throttle"
         ]
     },
     "JAVASCRIPT": {
-      "DIST_DIR": "pkg",
-      "tasket": [
+        "DIST_DIR": "pkg",
+        "html5": [
+            "../dependencies/html5.js"
+        ],
+        "jquery": [
+            "../dependencies/jquery.js"
+        ],
+        "backbone": [
+            "../dependencies/underscore.js",
+            "../dependencies/backbone.js"
+        ],
+        "mishmash": [
+            "../dependencies/tim.js",
+            "../dependencies/cache.js"
+        ],
+        "tasket": [
             "./header.js",
             "../dependencies/vec2.js",
             "../dependencies/forcedirector.js",
