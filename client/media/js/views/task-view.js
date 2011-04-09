@@ -17,6 +17,12 @@ var TaskView = View.extend({
         _.bindAll(this, "render", "updateClaimedBy");
         this.model.bind("change", this.render);
     },
+    
+    cacheDimensions: function(){
+        this.width = this.elem.outerWidth();
+        this.height = this.elem.outerHeight();
+        return this;
+    },
 
     render: function(){
         var data = this.model.toJSON();

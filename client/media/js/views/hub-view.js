@@ -4,7 +4,6 @@ var HubView = View.extend({
 
     defaults: {
         selected: false,
-        taskDistance: 20,
         strokeStyle: "#555",
         lineWidth: 2
     },
@@ -25,9 +24,7 @@ var HubView = View.extend({
             updateStepMin: 0.2,
             updateStepMax: 1.7,
             updateStepDamping: 0.01,
-            inVelDampK: 0.1,
-            //inWallRepulsion: 1500,
-            fps: 5
+            inVelDampK: 0.1
         });
         
         _.bindAll(this, "updateImage", "updateTitle");
@@ -75,9 +72,8 @@ var HubView = View.extend({
         var isSelected = this.isSelected(),
             tasksVisible = this.tasksVisible();
 
-        event.preventDefault();
-
         this.sendToFront();
+        
         if (isSelected){
             this.toggleTasks();
         }
@@ -85,6 +81,7 @@ var HubView = View.extend({
             this.updateLocation();
             // this changes the location hash, which causes the controller to trigger the route "displayHub"
         }
+        event.preventDefault();
     },
 
     showTasks: function () {
@@ -130,6 +127,7 @@ var HubView = View.extend({
         this.set("selected", true);
         this.trigger("select", this);
         this.elem.addClass("select");
+        app.bodyElem.addClass("hubSelected");
         return this;
     },
 
@@ -137,6 +135,7 @@ var HubView = View.extend({
         this.set("selected", false);
         this.trigger("deselect", this);
         this.elem.removeClass("select");
+        app.bodyElem.removeClass("hubSelected");
         return this;
     },
 
@@ -183,42 +182,78 @@ var HubView = View.extend({
         );
         return this;
     },
-
-    _canvasSetup: function(){
-        var canvasElem = this.canvasElem,
-            context = this.canvasContext = canvasElem[0].getContext && canvasElem[0].getContext("2d"),
-            width, radius;
-
+    
+    resizeCanvas: function(){
+        var context = this.canvasContext,
+            bounds = this.canvasBounds,
+            hubViewOffset = this.offset(),
+            width, height;
+            
         if (!context){
-            this.canvasContext = null;
-            return false;
+            return this;
         }
-
-        width = this.canvasWidth = (this.get("taskDistance") * 2) + this.nucleusWidth;
-        radius = Math.round(width / 2);
-
-        canvasElem
+        
+        this.canvasWidth = width = bounds.right - bounds.left;
+        this.canvasHeight = height = bounds.bottom - bounds.top;
+        
+        this.canvasElem
             .attr({
-                width: width,
-                height: width
+                width:  width,
+                height: height
             })
             .css({
-                left: -radius,
-                top: -radius
+                left: bounds.left,
+                top:  bounds.top
             });
+        
+        // Translate coordinates and save canvas state. It will be restored in clearCanvas(), to allow a different translation next time
+        context.save();
+        context.translate(
+            -bounds.left,
+            -bounds.top
+        );
+        return this;
+    },
 
-        context.translate(radius, radius);
+    initializeCanvas: function(){
+        var canvasElem = this.canvasElem = jQuery(this.make("canvas")),
+            context = this.canvasContext = canvasElem[0].getContext && canvasElem[0].getContext("2d") || null;
+
+        if (!context){
+            return this;
+        }
+        
         context.strokeStyle = this.get("strokeStyle");
         context.lineWidth = this.get("lineWidth");
+        
+        return this;
+    },
+    
+    appendCanvas: function(){        
+        if (!this.canvasElem){
+            this.initializeCanvas();
+        }
+        if (this.canvasContext){
+            this.tasksElem.prepend(this.canvasElem);
+        }
         return this;
     },
 
     clearCanvas: function(){
         var context = this.canvasContext,
-            width = this.canvasWidth;
+            width = this.canvasWidth,
+            height = this.canvasHeight;
 
         if (context){
             context.clearRect(-width / 2, -width / 2, width, width);
+            context.restore(); // restore any applied context coordinate translations from resizeCanvas()
+        }
+        return this;
+    },
+    
+    removeCanvas: function(){
+        if (this.canvasElem){
+            this.canvasElem.remove();
         }
         return this;
     },
@@ -238,15 +273,14 @@ var HubView = View.extend({
     
     clearTasks: function(){
         this.taskListElem.empty();
-        this.clearCanvas();
-        this.set("tasksVisible", false);
-        return this;
+        return this.clearCanvas()
+            .removeCanvas()
+            .set("tasksVisible", false);
     },
 
     // Vertically centres the hub title/description.
     _updateMargin: function () {
-        var content = this.$("hgroup");
-        content.css("margin-top", content.outerHeight() / 2 * -1);
+        this.labelElem.css("margin-top", this.labelElem.outerHeight() / 2 * -1);
         return this;
     },
 
@@ -288,14 +322,19 @@ var HubView = View.extend({
             overallCallback;
         
         function repositionTasks(){
-            var hubViewOffset = hubView.offset();
+            var hubViewOffset = hubView.offset(),
+                taskWidth = hubView.taskWidth,
+                taskHeight = hubView.taskHeight;
         
             taskViews.each(function(taskView){
                 var taskPos = taskView.forcedNode.getPos(),
-                    taskElem = taskView.elem,
-                    taskWidth = taskElem.outerWidth(),
-                    taskHeight = taskElem.outerHeight();
-                    
+                    taskElem = taskView.elem;
+                
+                if (!taskWidth || !taskHeight){
+                    taskWidth = hubView.taskWidth = taskElem.outerWidth();
+                    taskHeight = hubView.taskHeight = taskElem.outerHeight();
+                }
+                  
                 // repaint
                 taskView.offset({
                     left: ~~(taskPos.x - taskWidth / 2 - hubViewOffset.left),
@@ -347,9 +386,10 @@ var HubView = View.extend({
     // TODO: addTask needed
     // appendTaskView to the DOM. It will be later removed when the hubView is de-selected
     appendTaskView: function(taskView){
-        var model = taskView.model,
+        var taskBuffer = app.taskBuffer,
+            model = taskView.model,
             taskElem = taskView.elem,
-            hubViewOffset, taskWidth, taskHeight;
+            hubViewOffset;
             
         taskView.render();
         taskElem.appendTo(this.taskListElem);
@@ -357,19 +397,19 @@ var HubView = View.extend({
         // Set up force-direction on this taskView, if not yet done
         if (!taskView.forcedNode){
             hubViewOffset = this.offset();
-            taskWidth = taskElem.outerWidth();
-            taskHeight = taskElem.outerHeight();
+            taskView.cacheDimensions();
             
             // TODO: set f.TASK_WIDTH, etc.
             // TODO: try setting far away from the nucleus, distributed equally around the circle
             taskView.forcedNode = this.forceDirector.engine.addTaskToProject({
                 key: "task-" + model.id,
-                width: taskWidth,
-                height: taskHeight,
-                x: hubViewOffset.left + Math.random() - 0.5,
-                y: app.invertY(hubViewOffset.top + Math.random() - 0.5)
+                width: taskView.width + taskBuffer,
+                height: taskView.height + taskBuffer,
+                x: hubViewOffset.left + taskBuffer / 2 + Math.random() - 0.5, // random seed for dispersing tasks in forceDirector
+                y: app.invertY(hubViewOffset.top + taskBuffer / 2 + Math.random() - 0.5)
             }, "hub-" + this.model.id);
         }
+        return this;
     },
       
     forcedirectTasks: function(animate, callback){
@@ -380,7 +420,8 @@ var HubView = View.extend({
     
     renderTasks: function(){
         var hubView = this,
-            forceDirectionNeeded;        
+            taskViews = this.taskViews,
+            forceDirectionNeeded, lineWidth, canvasBounds;        
         
         this.loading(false);
         
@@ -394,15 +435,48 @@ var HubView = View.extend({
                 return !taskView.forcedNode;
             });
         }
-        
-        this.taskViews.each(function(taskView){
+        taskViews.each(function(taskView){
             hubView.appendTaskView(taskView);
         });
         
         if (forceDirectionNeeded){
             this.forcedirectTasks();
+            lineWidth = this.get("lineWidth");
+            this.canvasBounds = canvasBounds = {
+                top: 0,
+                bottom: 0,
+                left: 0,
+                right: 0
+            };
+            
+            taskViews.each(function(taskView){
+                var centerY = taskView.offset().top + taskView.height / 2,
+                    centerX = taskView.offset().left + taskView.width / 2;
+            
+                if (centerY < canvasBounds.top){
+                    canvasBounds.top = centerY;
+                }
+                if (centerY > canvasBounds.bottom){
+                    canvasBounds.bottom = centerY;
+                }
+                if (centerX < canvasBounds.left){
+                    canvasBounds.left = centerX;
+                }
+                if (centerX > canvasBounds.right){
+                    canvasBounds.right = centerX;
+                }
+            });
         }
         
+        this.appendCanvas()
+            .resizeCanvas();
+        
+        taskViews.each(function(taskView){
+            var offset = taskView.offset();
+            
+            hubView.line(offset.left + taskView.width / 2, offset.top + taskView.height / 2);
+        });
+                
         return this;
     },
     
@@ -429,12 +503,10 @@ var HubView = View.extend({
         this.tasksElem = this.$("div.tasks");
         this.taskListElem = this.tasksElem.children("ul");
         this.labelElem = this.$("hgroup");
-        this.canvasElem = this.$("canvas");
         
-        this._canvasSetup();
-        this._updateMargin();
         this.offsetApply();
         this.updateCachedDimensions();
+        this._updateMargin();
         
         if (data.isSelected){
             this.renderTasks();
