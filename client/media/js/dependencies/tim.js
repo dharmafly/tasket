@@ -134,6 +134,9 @@ var tim = (function createTim(initSettings){
         return obj1;
     }
     
+    function escapeHTML(string) {
+        return string.replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
     
     /////
     
@@ -322,7 +325,8 @@ var tim = (function createTim(initSettings){
             
             // Return the required value
             if (i === len - 1){
-                return dataLookup;
+                // Escape any HTML special characters in strings and return.
+                return typeof dataLookup === "string" ? escapeHTML(dataLookup) : dataLookup;
             }
         }
     });
