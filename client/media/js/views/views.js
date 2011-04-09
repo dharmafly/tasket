@@ -62,5 +62,8 @@ var View = Backbone.View.extend({
     
     initialize: function(options){
         this.elem = jQuery(this.el);
+        if (this.model && this.model.type && this.model.id){
+            this.elem.attr("data-model", this.model.type + "-" + this.model.id);
+        }
     }
 });
