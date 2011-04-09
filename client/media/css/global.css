@@ -1349,7 +1349,11 @@ article.hub .meta img {
 	top: 100px;
 	left: 50%;
 	width: 35.384em /* 460px */;
+	max-height: 90%;
 	margin-left: -19.230em /* -250px */;
+	overflow: auto;
+	overflow-y: scroll;
+	overflow-x: hidden;
 	/* Need to use ems here so the lightbox remains centered */
 	border-width: 0.308em /* 4px */;
 	border-color: #aaa;
@@ -1499,6 +1503,11 @@ article.hub .meta img {
 .notification.warning .notification-content,
 .notification.error .notification-content  {
 	background: url(../images/notification_icons.png) no-repeat 0 -35px;
+}
+
+.notification a {
+	color: #fff;
+	border-bottom: 1px solid;
 }
 
 .notification .close {
