@@ -41,7 +41,7 @@ need [Node][#node] >= 4.0.1 and [npm][#npm] installed. Then simply run:
 To package the JavaScript `cd` into the _client/media/js/build/_ directory and
 run:
 
-    $ smoosh ./config.json
+    $ smoosh -c ./config.json
 
 This will run JSHint against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
