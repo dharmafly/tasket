@@ -30,6 +30,33 @@ var User = Model.extend({
 
     initialize: function(){
         Model.prototype.initialize.call(this, arguments);
+        _.bindAll(this, "updateTasks");
+        Tasket.bind("task:change:state", this.updateTasks);
+    },
+
+    // Updates the users tasks when the state of a task changes.
+    updateTasks: function (task) {
+        var id = task.id,
+            data = {},
+            current  = task.get("state"),
+            previous = task.previous("state");
+
+        _.each(["owned", "claimed"], function (group) {
+            var previousKey = "tasks." + group + "." + previous,
+                previousIds = this.get(previousKey),
+                currentKey  = "tasks." + group + "." + current,
+                currentIds;
+
+            if (_.indexOf(previousIds, id) > -1) {
+                data[previousKey] = _.without(previousIds, id);
+
+                currentIds = _.clone(this.get(currentKey));
+                currentIds.push(id);
+                data[currentKey] = currentIds;
+            }
+        }, this);
+
+        return this.set(data);
     }
 });
 
