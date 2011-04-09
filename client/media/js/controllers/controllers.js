@@ -302,7 +302,8 @@ var TankController = Backbone.Controller.extend({
         }
         
         _.extend(this.forceDirector.options, {
-            animate: animate ? repositionHubs : null,
+            animate: animate,
+            animator: repositionHubs,
             callback: overallCallback
         });
         

@@ -382,7 +382,8 @@ var HubView = View.extend({
             wallBottom: tank.wallBottom,
             wallLeft: tank.wallLeft,
             wallRight: tank.wallRight,
-            animate: animate ? repositionTasks : null,
+            animate: animate,
+            animator: repositionTasks,
             callback: overallCallback
         });
 
@@ -423,7 +424,7 @@ var HubView = View.extend({
         return this;
     },
 
-    forcedirectTasks: function(animate, callback){
+    forcedirectTasks: function(){
         this.updateForceDirectedDimensions();
         this.forceDirector.go();
         return this;

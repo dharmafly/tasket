@@ -109,19 +109,17 @@ var cache = new Cache(Tasket.namespace),
                     callback: null,
                     wallsFlag: true
                 },
-                easing;
+                easing, i;
             
             // Combine options with default settings
             options = _.extend(defaultSettings, options || {});
             
             function loop(){
-                var i;
-
                 f.updateCycle(options.updateStepMin + easing);
                 easing = easing - (easing * options.updateStepDamping);
                 
-                if (options.animate){
-                    options.animate();
+                if (options.animate && options.animator){
+                    options.animator();
                 }
                 
                 if (i <= options.numCycles){
@@ -144,7 +142,7 @@ var cache = new Cache(Tasket.namespace),
                     options = _.extend(options, newOptions);
                 }
                 
-                var i = 0;
+                i = 0;
                 easing = options.updateStepMax - options.updateStepMin;
                 
                 f.inVelDampK = options.inVelDampK;
