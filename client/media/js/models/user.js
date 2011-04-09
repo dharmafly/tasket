@@ -34,6 +34,11 @@ var User = Model.extend({
         Tasket.bind("task:change:state", this.updateTasks);
     },
 
+    // Returns true if user has claimed less tasks than the limit allows.
+    canClaimTasks: function () {
+        return this.get("tasks.claimed.claimed") < Tasket.settings.CLAIMED_LIMIT;
+    },
+
     // Updates the users tasks when the state of a task changes.
     updateTasks: function (task) {
         var id = task.id,

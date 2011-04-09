@@ -64,7 +64,7 @@ var TaskView = View.extend({
             claimedById = this.model.get("claimedBy"),
             data;
 
-        if (state === states.NEW) {
+        if (state === states.NEW && app.currentUser.canClaimTasks()) {
             data = {
                 id: this.model.id,
                 type: "claimed",
