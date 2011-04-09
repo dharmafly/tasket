@@ -51,7 +51,7 @@ var HubView = View.extend({
     },
 
     updateEstimate: function () {
-        this.$('hgroup h1 span').text(this.model.humanEstimate());
+        this.$('hgroup h1 span').text(this.model.humanEstimate() || "No estimate");
         return this;
     },
 
@@ -504,7 +504,7 @@ var HubView = View.extend({
     render: function(){
         var data = this.model.toJSON();
 
-        data.estimate   = this.model.humanEstimate();
+        data.estimate   = this.model.humanEstimate() || "No estimate";
         data.isSelected = this.isSelected();
         data.truncatedDescription = truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
