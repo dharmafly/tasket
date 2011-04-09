@@ -48,7 +48,7 @@ _.extend(Tasket, Backbone.Events, {
      * can then listen to the "refresh" event on the collection to be notified
      * when it changes.
      *
-     * ids - An array of ids to fetch.
+     * ids - An array of ids to fetch. (or single id of a model to fetch)
      *
      * Examples
      *
@@ -66,7 +66,7 @@ _.extend(Tasket, Backbone.Events, {
      * can then listen to the "refresh" event on the collection to be notified
      * when it changes.
      *
-     * ids - An array of ids to fetch.
+     * ids - An array of ids to fetch. (or single id of a model to fetch)
      *
      * Examples
      *
@@ -84,7 +84,7 @@ _.extend(Tasket, Backbone.Events, {
      * can then listen to the "refresh" event on the collection to be notified
      * when it changes.
      *
-     * ids - An array of ids to fetch.
+     * ids - An array of ids to fetch. (or single id of a model to fetch)
      *
      * Examples
      *
@@ -104,14 +104,17 @@ _.extend(Tasket, Backbone.Events, {
      * listen to the "refresh" event to be notified when the fetch completes.
      *
      * collection - One of the Tasket Collection caches.
-     * ids        - An array of ids to fetch.
+     * ids        - An array of ids to fetch. (or single id of a model to fetch)
      *
      * Examples
      *
      *   var hubs = Tasket.getModels(Tasket.hubs, [1, 2, 3, 4]);
      *   hubs.bind("refresh", updateHubDisplay);
+     *   Returns a Collection object.
      *
-     * Returns a Collection object.
+     *   var hub = Tasket.getModels(Tasket.hubs, 5);
+     *   Returns a Model.
+     *
      */
     getModels: function (collection, ids) {
         var wrapped    = _(ids),
@@ -119,6 +122,11 @@ _.extend(Tasket, Backbone.Events, {
             subset     = new collection.constructor(),
             toLoad     = new collection.constructor(),
             toLoadCopy = new collection.constructor();
+            
+        // If a specific model has been requested, rather than a collection
+        if (!_.isArray(ids)){
+            return this.getModels(collection, [ids]).at(0);
+        }
 
         // Removed previously failed ids.
         ids = wrapped.without.apply(wrapped, Tasket.failed[type]);
