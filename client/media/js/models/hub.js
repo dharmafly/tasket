@@ -26,8 +26,9 @@ var Hub = Model.extend({
 
     initialize: function(){
         Model.prototype.initialize.apply(this, arguments);
-        _.bindAll(this, "updateTasks");
+        _.bindAll(this, "updateTasks", "updateEstimates");
         Tasket.bind("task:change:state", this.updateTasks);
+        Tasket.bind("task:change:estimate", this.updateEstimates);
     },
 
     // Returns all tasks.
@@ -65,6 +66,20 @@ var Hub = Model.extend({
             data["estimates." + current]  += estimate;
         }
 
+        return this.set(data);
+    },
+
+    // Updates the estimates on a task when changed.
+    updateEstimates: function (task) {
+        var current  = task.get("estimate"),
+            previous = task.previous("estimate"),
+            state = task.get("state"),
+            key  = "estimates." + state,
+            data = {};
+
+        if (_.indexOf(this.get("tasks." + state), task.id) > -1) {
+            data[key] = this.get(key) - previous + current;
+        }
         return this.set(data);
     },
 
