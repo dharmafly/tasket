@@ -304,8 +304,8 @@ var cache = new Cache(Tasket.namespace),
             var current  = model.get("state"),
                 previous = model.previous("state");
 
-            app.statistics.tasks[current]  += app.statistics.tasks[current];
-            app.statistics.tasks[previous] -= app.statistics.tasks[previous];
+            app.statistics.tasks[current]  += 1;
+            app.statistics.tasks[previous] -= 1;
 
             app.trigger("change:statistics", app.statistics, app);
         }

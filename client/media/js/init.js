@@ -79,6 +79,9 @@ if (app.supported()) {
         url: 'http://localhost:8000/statistics/',
         dataType: "json",
         success: function (json) {
+            _.each(json.tasks, function (value, key) {
+                json.tasks[key] = parseInt(value, 10);
+            });
             app.statistics = json;
             app.trigger("change:statistics", app.statistics);
         }
