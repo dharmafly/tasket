@@ -77,6 +77,16 @@ if (app.supported()) {
         }
     }));
 
+    // Load the statistics url.
+    app.init(jQuery.ajax({
+        url: 'http://localhost:8000/statistics/',
+        dataType: "json",
+        success: function (json) {
+            app.statistics = json;
+            app.dashboard.render();
+        }
+    }));
+
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
         if (!app.loaded){

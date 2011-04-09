@@ -75,8 +75,9 @@ var Dashboard = View.extend({
     },
 
     render: function () {
-        var rendered = tim("dashboard");
-        this.elem.html(rendered);
+        this.elem.html(tim("dashboard", {
+            verified: app.statistics.tasks.verified
+        }));
 
         // Update each of the task lists.
         _.each(["Notifications", "UserTasks", "UserHubs", "ManagedTasks"], function (method) {

@@ -19,6 +19,14 @@ var cache = new Cache(Tasket.namespace),
                 authtoken: null,
                 csrftoken: null,
                 currentUser: null,
+                statistics: {
+                    tasks: {
+                        "new": 0,
+                        "claimed": 0,
+                        "done": 0,
+                        "verified": 0
+                    }
+                },
                 cache: cache,
                 toolbar:        new Toolbar({el: jQuery(".header-container")[0]}),
                 notification:   new Notification(),
@@ -105,6 +113,8 @@ var cache = new Cache(Tasket.namespace),
             options = _.extend(defaultSettings, options || {});
             
             function loop(){
+                var i;
+
                 f.updateCycle(options.updateStepMin + easing);
                 easing = easing - (easing * options.updateStepDamping);
                 
@@ -132,7 +142,7 @@ var cache = new Cache(Tasket.namespace),
                     options = _.extend(options, newOptions);
                 }
                 
-                i = 0;
+                var i = 0;
                 easing = options.updateStepMax - options.updateStepMin;
                 
                 f.inVelDampK = options.inVelDampK;
@@ -151,7 +161,7 @@ var cache = new Cache(Tasket.namespace),
                 engine: f,
                 options: options,
                 go: startLoop
-            }
+            };
         },
 
         isCurrentUser: function (id) {
