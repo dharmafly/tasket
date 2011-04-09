@@ -169,7 +169,7 @@ var Dashboard = View.extend({
                 var title = model.get("title") || model.get("description");
                 return {
                     id:          model.id,
-                    href:        "#/" + model.type + "s/" + model.id,
+                    href:        "#/" + model.type + "s/" + model.id + "/",
                     title:       truncate(title, 15),
                     isHub:       model.type === "hub",
                     isTask:      model.type === "task",
