@@ -168,7 +168,7 @@ class WorkflowTests(TestCase):
         
         # Make some dummy tasks
         hub = Hub.objects.get(pk=2)
-        for i in range(5):
+        for i in range(6):
             response = self.client.post(
                 '/tasks/',
                 json.dumps({
@@ -185,10 +185,24 @@ class WorkflowTests(TestCase):
                     data=json.dumps({"state" : Task.STATE_CLAIMED}),
                     content_type='application/json',
                 )
-
         json_data = json.loads(response.content)
         self.assertTrue('error' in json_data)
         self.assertEquals(json_data['error'], ["You can only claim 5 tasks at once"])
+        
+        # Make sure the user can still create a task, even though they are
+        # up to their claimed limit.
+        response = self.client.post(
+            '/tasks/',
+            json.dumps({
+                "description" : "Lorem ipsum dolor sit amet, consectetur",
+                "estimate" : 60*10,
+                "hub" : hub.pk,
+            }),
+            content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertTrue('state' in json_data)
+        
 
     def test_maximum_times(self):
         self.client.login(username='TestUser', password='12345')
