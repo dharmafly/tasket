@@ -181,8 +181,8 @@ var Dashboard = View.extend({
                     title:       truncate(title, 15),
                     isHub:       model.type === "hub",
                     isTask:      model.type === "task",
-                    showDone:    app.isCurrentUser(model.get("claimedBy")),
-                    showVerify: !app.isCurrentUser(model.get("claimedBy"))
+                    showDone:    app.isCurrentUser(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,
+                    showVerify:  app.isCurrentUser(model.get("owner")) && model.get("state") === Task.states.DONE 
                 };
             });
             this.$(selector).show().find("ul").html(tim("dashboard-link", {
