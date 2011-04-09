@@ -1,3 +1,21 @@
+// Decorates the .add() method of all Tasket cache collections to re-broadcast
+// all events. This allows other objects to register interest in any model
+// within the Tasket application.
+function decorateAddMethod(models) {
+    if (!_.isArray(models)) {
+        models = [models];
+    }
+
+    _.each(models, function (model) {
+        if (!(model instanceof Backbone.Model)) {
+            model = new this.model(model, {collection: this});
+        }
+        model.bind("all", Tasket.republishModelEvent);
+    }, this);
+
+    return this.constructor.prototype.add.apply(this, arguments);
+}
+
 // PUBLIC API
 _.extend(Tasket, Backbone.Events, {
     namespace: "tasket", // used for settings such as localStorage namespacing
@@ -13,9 +31,9 @@ _.extend(Tasket, Backbone.Events, {
 
     lang: {},
 
-    hubs: new HubList(),
-    tasks: new TaskList(),
-    users: new UserList(),
+    hubs:  _.extend(new HubList(),  {add: decorateAddMethod}),
+    tasks: _.extend(new TaskList(), {add: decorateAddMethod}),
+    users: _.extend(new UserList(), {add: decorateAddMethod}),
 
     failed: {
         hub:  [],
@@ -160,5 +178,15 @@ _.extend(Tasket, Backbone.Events, {
     thumbnail: function (image, width, height, crop) {
         var url = '/thumb/' + width + 'x' + height + '/' + image;
         return crop ? url + '?crop' : url;
+    },
+
+    // Republishes all events for models in the Tasket caches namespaced with
+    // the model type. eg.
+    //
+    // Tasket.bind("hub:change:owner", updateHubOwner);
+    republishModelEvent: function () {
+        var args = _.toArray(arguments);
+        args[0] = this.type + ":" + args[0];
+        Tasket.trigger.apply(Tasket, args);
     }
 });
