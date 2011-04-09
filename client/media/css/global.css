@@ -420,6 +420,7 @@ form ul,
 
 .content h3 {
 	font-size: 1.077em /* 14px */;
+	border: none;
 }
 
 .content strong {
