@@ -10,7 +10,7 @@ var Toolbar = View.extend({
         var view = this,
             methods = ["toggleLogin", "updateUser", "updateTasks", "updateSignup"];
 
-        this.toolbar  = $(this.el);
+        this.toolbar  = jQuery(this.el);
         this.login    = this.toolbar.find('.login');
         this.userbar  = this.toolbar.find('h2');
         this.tasks    = this.toolbar.find('.tasks');
@@ -48,7 +48,7 @@ var Toolbar = View.extend({
         var token = app.getCookie("csrftoken");
 
         if (token) {
-            this.$("form").append($('<input />', {
+            this.$("form").append(jQuery('<input />', {
                 type:  "hidden",
                 name:  "csrftoken",
                 token: token

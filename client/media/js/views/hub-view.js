@@ -538,7 +538,7 @@ var HubView = View.extend({
         
         description[0][method]("data-truncated");
         description.html(escapeHTML(text));
-    },
+    }
 }, {
     /* Global keeping check of the current z-index */
     zIndex: 0

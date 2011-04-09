@@ -132,7 +132,7 @@ var Task = Model.extend({
 
     humanEstimate: function () {
         return humanTimespan(this.get("estimate"));
-    },
+    }
 }, {
     ESTIMATES: TaskEstimates
 });
