@@ -70,7 +70,7 @@ var Hub = Model.extend({
     },
 
     estimate: function () {
-        return this.get('estimates.new');
+        return this.get("estimates.new");
     },
 
     humanEstimate: function () {

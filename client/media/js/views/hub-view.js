@@ -33,7 +33,7 @@ var HubView = View.extend({
         this.model.bind("change:description", this.updateTitle);
         this.model.bind("change:estimates.new", this.updateEstimate);
         this.model.bind("change:image", this.updateImage);
-        this.model.bind("change:tasks", function () { // TODO: expand this to sub-properties of `tasks`
+        this.model.bind("change:tasks", function () {
             this.refreshTasks();
         });
     },
@@ -51,7 +51,7 @@ var HubView = View.extend({
     },
 
     updateEstimate: function () {
-        this.$('hgroup h1 span').text(this.model.humanEstimate() || "No estimate");
+        this.$("hgroup h1 span").text(this.model.humanEstimate() || "No estimate");
         return this;
     },
 
@@ -333,13 +333,6 @@ var HubView = View.extend({
             key: "hub-" + this.model.id
         });
 
-/*
-        // Add description element
-        this.forcedNodeDesc = this.forceDirector.engine.addTaskToProject({
-            key: "hubDesc-" + this.model.id,
-            fixed: true
-        });
-*/
         if (callback){
             overallCallback = function(){
                 repositionTasks();
@@ -381,19 +374,11 @@ var HubView = View.extend({
             app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
         );
 
-        /*
-        this.forcedNodeDesc.setWidth(this.descriptionWidth + taskBuffer);
-        this.forcedNodeDesc.setHeight(this.descriptionHeight + taskBuffer);
-        this.forcedNodeDesc.setPos(
-            this.descriptionOffset.left - (taskBuffer / 2),
-            app.invertY(this.descriptionOffset.top - (taskBuffer / 2))
-        );
-        */
-
         return this;
     },
     
     // For dev purposes - visualise a node from the force director
+    /*
     devShowNode: function(forcedNode){
         forcedNode = forcedNode || this.forcedNode;
         
@@ -406,6 +391,7 @@ var HubView = View.extend({
                 top:app.invertY(forcedNode.getPos().y) + "px"
             });
     },
+    */
 
     forcedirectTasks: function(){
         this.updateForceDirectedDimensions();
@@ -433,7 +419,6 @@ var HubView = View.extend({
             hubViewOffset = this.offset();
             taskView.cacheDimensions();
 
-            // TODO: set f.TASK_WIDTH, etc.
             // TODO: try setting far away from the nucleus, distributed equally around the circle
             taskView.forcedNode = this.forceDirector.engine.addTaskToProject({
                 key: "task-" + model.id,

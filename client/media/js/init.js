@@ -1,14 +1,14 @@
 // Run after app properties have been setup.
 app.bind("setup", function onSetup() {
     // Setup the app.
-    jQuery('body')
+    jQuery("body")
       .append(app.dashboard.render().el)
       .append(app.lightbox.render().hide().el);
 
     // Return to the previous route when the lightbox closes.
-    app.lightbox.bind('hide', app.back);
-    app.bind('change:currentUser', _.bind(app.dashboard.setUser, app.dashboard));
-    app.dashboard.detail.bind('hide', app.back);
+    app.lightbox.bind("hide", app.back);
+    app.bind("change:currentUser", _.bind(app.dashboard.setUser, app.dashboard));
+    app.dashboard.detail.bind("hide", app.back);
 
     app.restoreCache()
        .setupAuthentication();
@@ -19,10 +19,11 @@ app.bind("ready", function onReady () {
     app.notification.hide();
     app.tankController.addHubs(Tasket.hubs.models);
 
-    // Destory the cached user details when the logout button is clicked.
+    // Destroy the cached user details when the logout button is clicked.
     // This block can be removed once Ticket #84 has been resolved and the
-    // server deletes the "sessionid" cookie on logout.
-    jQuery('form[action="/logout/"]').submit(function (event) {
+    // server deletes the "sessionid" cookie on logout:
+    // https://github.com/premasagar/tasket/issues/84
+    jQuery("form[action='/logout/']").submit(function (event) {
         app.destroyCache();
     });
 
@@ -37,8 +38,8 @@ app.bind("ready", function onReady () {
     // <button data-task-state="verify" data-task-id="2">Verify Task</button>
     jQuery("[data-task-state][data-task-id]").live("click", function () {
         var button = jQuery(this),
-            state = button.data('task-state'),
-            id = button.data('task-id'),
+            state = button.data("task-state"),
+            id = button.data("task-id"),
             task;
 
         task = Tasket.getTasks([id]).at(0);
@@ -76,7 +77,7 @@ if (app.supported()) {
 
     // Load the statistics url.
     app.init(jQuery.ajax({
-        url: 'http://localhost:8000/statistics/',
+        url: "http://localhost:8000/statistics/",
         dataType: "json",
         success: function (json) {
             _.each(json.tasks, function (value, key) {
@@ -103,7 +104,7 @@ if (app.supported()) {
         // Display friendly unsupported message to the user.
         var lightbox = new Lightbox();
         jQuery("body")
-            .find(':not(script)')
+            .find(":not(script)")
             .remove()
             .end()
             .append(lightbox.render().el);

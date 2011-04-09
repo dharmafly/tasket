@@ -53,7 +53,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var users = Tasket.getUsers([1, 2, 3, 4]);
-     *   users.bind('refresh', updateUserDisplay);
+     *   users.bind("refresh", updateUserDisplay);
      *
      * Returns a UserList object.
      */
@@ -71,7 +71,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var tasks = Tasket.getTasks([1, 2, 3, 4]);
-     *   tasks.bind('refresh', updateTaskDisplay);
+     *   tasks.bind("refresh", updateTaskDisplay);
      *
      * Returns a TaskList object.
      */
@@ -89,7 +89,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var hubs = Tasket.getHubs([1, 2, 3, 4]);
-     *   hubs.bind('refresh', updateHubDisplay);
+     *   hubs.bind("refresh", updateHubDisplay);
      *
      * Returns a HubList object.
      */
@@ -100,7 +100,7 @@ _.extend(Tasket, Backbone.Events, {
     /* Fetch models from the global cache provided. If the model is not cached
      * an empty promise is created with just an id. Once the collection has
      * refreshed any ids that do not exist on the server will be removed from
-     * the collection. So in order to display the correct data it's best to
+     * the collection. So in order to display the correct data it"s best to
      * listen to the "refresh" event to be notified when the fetch completes.
      *
      * collection - One of the Tasket Collection caches.
@@ -109,7 +109,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var hubs = Tasket.getModels(Tasket.hubs, [1, 2, 3, 4]);
-     *   hubs.bind('refresh', updateHubDisplay);
+     *   hubs.bind("refresh", updateHubDisplay);
      *
      * Returns a Collection object.
      */
@@ -136,7 +136,7 @@ _.extend(Tasket, Backbone.Events, {
         }, this);
 
         if (toLoad.length) {
-            toLoad.fetch().bind('refresh', function () {
+            toLoad.fetch().bind("refresh", function () {
                 toLoad.each(function (model) {
                     // Update the model in the subset with the new data.
                     subset.get(model.id).set(model.toJSON());
@@ -165,7 +165,7 @@ _.extend(Tasket, Backbone.Events, {
         return jQuery.ajax({
             url: Tasket.endpoint + "login/",
             type: "POST",
-            contentType: 'application/json',
+            contentType: "application/json",
             data: JSON.stringify({
                 username: username,
                 password: password
@@ -176,8 +176,8 @@ _.extend(Tasket, Backbone.Events, {
     },
 
     thumbnail: function (image, width, height, crop) {
-        var url = '/thumb/' + width + 'x' + height + '/' + image;
-        return crop ? url + '?crop' : url;
+        var url = "/thumb/" + width + "x" + height + "/" + image;
+        return crop ? url + "?crop" : url;
     },
 
     // Republishes all events for models in the Tasket caches namespaced with
