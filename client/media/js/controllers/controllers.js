@@ -260,7 +260,8 @@ var TankController = Backbone.Controller.extend({
 
         app.lightbox.content(form.render().el).show();
         form.bind("success", _.bind(function (event) {
-            app.lightbox.hide();
+            app.lightbox.hide({silent: true});
+            window.location.hash = "/hubs/" + hub.id + "/";
         }, this));
     },
 
