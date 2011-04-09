@@ -23,10 +23,18 @@ var TankController = Backbone.Controller.extend({
         this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallBottom = wallBuffer;
         
+        _.extend(this.forceDirector.options, {
+            wallTop: this.wallTop,
+            wallBottom: this.wallBottom,
+            wallLeft: this.wallLeft,
+            wallRight: this.wallRight
+        });
+        
         return this;
     },
 
     initialize: function(options){
+        var tank = this;
         this.hubViews = {};
         this.forceDirector = app.createForceDirector();
         this.calculateWalls(); // TODO: recalculate on window.resize
@@ -42,6 +50,13 @@ var TankController = Backbone.Controller.extend({
                 this.addHub(hub);
             }
         }, this));
+        
+        jQuery(window).bind("resize", throttle(function(){
+            if (tank.forceDirector.initialized){
+                tank.calculateWalls();
+                tank.forcedirectHubs();
+            }
+        }, app.tankResizeThrottle, true));
 
         _.bindAll(this, "_onSelectHubs");
     },
@@ -286,10 +301,6 @@ var TankController = Backbone.Controller.extend({
         }
         
         _.extend(this.forceDirector.options, {
-            wallTop: this.wallTop,
-            wallBottom: this.wallBottom,
-            wallLeft: this.wallLeft,
-            wallRight: this.wallRight,
             animate: animate ? repositionHubs : null,
             callback: overallCallback
         });
