@@ -60,7 +60,8 @@ getScript(
     ],
     "core/tasket.js",
     "app.js",
-    "lang/en.js",
+    "lang/default.js",
+    "lang/custom.js",
     "init.js",
     //"viz/test.js",
     

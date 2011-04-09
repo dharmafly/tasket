@@ -61,7 +61,7 @@ app.bind("ready", function onReady () {
 
 // Called when the bootstrap methods fail.
 app.bind("error", function (data) {
-    app.notification.error(Tasket.lang.INIT_ERROR);
+    app.notification.error(app.lang.INIT_ERROR);
 });
 
 if (app.supported()) {
@@ -73,14 +73,14 @@ if (app.supported()) {
             Tasket.hubs.refresh(json);
         },
         error: function () {
-            app.notification.error(Tasket.lang.en.DOWNLOAD_ERROR);
+            app.notification.error(app.lang.DOWNLOAD_ERROR);
         }
     }));
 
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
         if (!app.loaded){
-            app.notification.warning(Tasket.lang.en.LOADING);
+            app.notification.warning(app.lang.LOADING);
         }
     }, 0);
 
