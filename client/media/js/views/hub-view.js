@@ -9,7 +9,7 @@ var HubView = View.extend({
     },
 
     events: {
-        "click .nucleus-wrapper": "onclick"
+        "click a.nucleus-wrapper": "onclick"
     },
 
     constructor: function HubView() {
@@ -31,7 +31,7 @@ var HubView = View.extend({
         this.model.bind("change:title", this.updateTitle);
         this.model.bind("change:description", this.updateTitle);
         this.model.bind("change:image", this.updateImage);
-        this.model.bind("change:tasks", function () {
+        this.model.bind("change:tasks", function () { // TODO: expand this to sub-properties of `tasks`
             this.refreshTasks();
         });
     },
@@ -151,7 +151,11 @@ var HubView = View.extend({
                 // If the tasks are displayed re-render them.
                 hubView.renderTasks();
             }
-        });
+        })/*.bind("stateChange", function(model, newState){
+            if (!model.isOpen()){
+                hubView.refreshTasks();
+            }
+        })*/;
 
         if (this.tasks.isComplete()) {
             this.generateTaskViews();
@@ -171,8 +175,8 @@ var HubView = View.extend({
 
     generateTaskViews: function(){
         this.taskViews = _( // NOTE: this.taskViews is an Underscore collection
-            this.tasks.filter(function (task) {
-                return task.get("state") !== Task.states.VERIFIED;
+            this.tasks.select(function (task) {
+                return task.isOpen();
             })
             .map(function(task){
                 return new TaskView({

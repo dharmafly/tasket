@@ -25,10 +25,10 @@ var Task = Model.extend({
 
     required: ["owner", "hub", "estimate"],
 
-    defaults: { // TODO: sending empty values to and from server is a waste of bandwidth
+    defaults: {
         description: "",
         image: "",
-        estimate: TaskEstimates["Half an Hour"],
+        estimate: TaskEstimates[0].value,
         state: TaskStates.NEW
     },
 
@@ -63,10 +63,7 @@ var Task = Model.extend({
                     .unset("doneBy")
                     .unset("doneTime")
                     .unset("verifiedBy")
-                    .unset("verifiedTime")
-                    .set({
-                        state: newState
-                    });
+                    .unset("verifiedTime");
             break;
 
             case TaskStates.CLAIMED:
@@ -83,10 +80,7 @@ var Task = Model.extend({
                 this.unset("doneBy")
                     .unset("doneTime")
                     .unset("verifiedBy")
-                    .unset("verifiedTime")
-                    .set({
-                        state: newState
-                    });
+                    .unset("verifiedTime");
             break;
 
             case TaskStates.DONE:
@@ -101,10 +95,7 @@ var Task = Model.extend({
                 }
 
                 this.unset("verifiedBy")
-                    .unset("verifiedTime")
-                    .set({
-                        state: newState
-                    });
+                    .unset("verifiedTime");
             break;
 
 
@@ -118,21 +109,21 @@ var Task = Model.extend({
                 else if (!this.get("verifiedBy")){
                     error();
                 }
-
-                this.set({
-                    state: newState
-                });
             break;
 
             default:
             error();
         }
 
+        this.set({
+            state: newState
+        });
+
         return this;
     },
 
     isOpen: function(){
-        return this.state() === TaskStates.VERIFIED;
+        return this.state() !== TaskStates.VERIFIED;
     },
 
     initialize: function(){

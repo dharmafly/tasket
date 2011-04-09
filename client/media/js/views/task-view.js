@@ -14,13 +14,21 @@ var TaskView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
-        _.bindAll(this, "render", "updateClaimedBy");
-        this.model.bind("change", this.render);
+        _.bindAll(this, "redraw", "render", "updateClaimedBy");
+        this.model.bind("change", this.redraw);
     },
     
-    cacheDimensions: function(){
+    cacheDimensions: function(){ // TODO: utilise
         this.width = this.elem.outerWidth();
         this.height = this.elem.outerHeight();
+        return this;
+    },
+    
+    redraw: function(){
+        if (this.model.isOpen()){
+            this.render();
+        }
+        // HubView will remove TaskView if its state === "verified"
         return this;
     },
 
@@ -50,7 +58,7 @@ var TaskView = View.extend({
             claimedById = this.model.get("claimedBy"),
             data;
 
-        if (!claimedById) {
+        if (state === states.NEW) {
             data = {
                 id: this.model.id,
                 type: "claimed",
