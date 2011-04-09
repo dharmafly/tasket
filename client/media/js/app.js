@@ -99,14 +99,17 @@ var cache = new Cache(Tasket.namespace),
                 defaultSettings = {
                     fps: 60,
                     numCycles: 200,
-                    inCoulombK: 50,
-                    inWallRepulsion: 600,
-                    inVelDampK: 0.01,
                     updateStepMin: 0.1,
                     updateStepMax: 5,
                     updateStepDamping: 0.005,
-                    animate: null,
+                    animate: false,
+                    animator: null,
                     callback: null,
+                    
+                    // engine settings
+                    inCoulombK: 50,
+                    inWallRepulsion: 600,
+                    inVelDampK: 0.01,
                     wallsFlag: true
                 },
                 easing, i;
@@ -145,6 +148,7 @@ var cache = new Cache(Tasket.namespace),
                 i = 0;
                 easing = options.updateStepMax - options.updateStepMin;
                 
+                //f.inHookeK = 0.1;
                 f.inVelDampK = options.inVelDampK;
                 f.inCoulombK = options.inCoulombK;
                 f.inWallRepulsion = options.inWallRepulsion;

@@ -18,7 +18,7 @@ var TaskView = View.extend({
         this.model.bind("change", this.redraw);
     },
 
-    cacheDimensions: function(){ // TODO: utilise
+    cacheDimensions: function(){
         this.width = this.elem.outerWidth();
         this.height = this.elem.outerHeight();
         return this;

@@ -196,7 +196,7 @@ var HubView = View.extend({
 
     resizeCanvas: function(){
         var context = this.canvasContext,
-            bounds = this.canvasBounds,
+            bounds = this.taskViewCenterBounds,
             hubViewOffset = this.offset(),
             width, height;
 
@@ -302,29 +302,6 @@ var HubView = View.extend({
         return this;
     },
 
-    updateForceDirectedDimensions: function(){
-        var taskBuffer = app.taskBuffer,
-            hubViewOffset = this.offset();
-
-        this.updateCachedDimensions();
-
-        this.forcedNode.setWidth(this.nucleusWidth + taskBuffer);
-        this.forcedNode.setHeight(this.nucleusWidth + taskBuffer);
-        this.forcedNode.setPos(
-            hubViewOffset.left - (taskBuffer / 2),
-            app.invertY(hubViewOffset.top)
-        );
-
-        this.forcedNodeDesc.setWidth(this.descriptionWidth + taskBuffer);
-        this.forcedNodeDesc.setHeight(this.descriptionHeight + taskBuffer);
-        this.forcedNodeDesc.setPos(
-            this.descriptionOffset.left + (this.descriptionWidth / 2) - (taskBuffer / 2),
-            app.invertY(this.descriptionOffset.top)
-        );
-
-        return this;
-    },
-
     initializeForceDirector: function(animate, callback){
         var hubView = this,
             forceDirector = this.forceDirector,
@@ -333,24 +310,19 @@ var HubView = View.extend({
             overallCallback;
 
         function repositionTasks(){
-            var hubViewOffset = hubView.offset(),
-                taskWidth = hubView.taskWidth,
-                taskHeight = hubView.taskHeight;
+            var hubViewOffset = hubView.offset();
 
             taskViews.each(function(taskView){
                 var taskPos = taskView.forcedNode.getPos(),
                     taskElem = taskView.elem;
 
-                if (!taskWidth || !taskHeight){
-                    taskWidth = hubView.taskWidth = taskElem.outerWidth();
-                    taskHeight = hubView.taskHeight = taskElem.outerHeight();
-                }
-
                 // repaint
-                taskView.offset({
-                    left: ~~(taskPos.x - taskWidth / 2 - hubViewOffset.left),
-                    top:  ~~(app.invertY(taskPos.y + hubViewOffset.top + taskHeight / 2))
-                });
+                taskView
+                    .cacheDimensions()
+                    .offset({
+                        left: ~~(taskPos.x - taskView.width / 2 - hubViewOffset.left + (hubView.width / 2)),
+                        top:  ~~(app.invertY(taskPos.y + hubViewOffset.top - (hubView.height / 2) + taskView.height / 2))
+                    });
             });
         }
 
@@ -361,12 +333,13 @@ var HubView = View.extend({
             key: "hub-" + this.model.id
         });
 
+/*
         // Add description element
         this.forcedNodeDesc = this.forceDirector.engine.addTaskToProject({
             key: "hubDesc-" + this.model.id,
             fixed: true
         });
-
+*/
         if (callback){
             overallCallback = function(){
                 repositionTasks();
@@ -395,6 +368,55 @@ var HubView = View.extend({
         return this;
     },
 
+    updateForceDirectedDimensions: function(){
+        var taskBuffer = app.taskBuffer,
+            hubViewOffset = this.offset();
+
+        this.cacheDimensions();
+
+        this.forcedNode.setWidth(this.width + taskBuffer);
+        this.forcedNode.setHeight(this.height + taskBuffer);
+        this.forcedNode.setPos(
+            hubViewOffset.left - (this.nucleusWidth / 2) - (taskBuffer / 2),
+            app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
+        );
+
+        /*
+        this.forcedNodeDesc.setWidth(this.descriptionWidth + taskBuffer);
+        this.forcedNodeDesc.setHeight(this.descriptionHeight + taskBuffer);
+        this.forcedNodeDesc.setPos(
+            this.descriptionOffset.left - (taskBuffer / 2),
+            app.invertY(this.descriptionOffset.top - (taskBuffer / 2))
+        );
+        */
+
+        return this;
+    },
+    
+    // For dev purposes - visualise a node from the force director
+    devShowNode: function(forcedNode){
+        forcedNode = forcedNode || this.forcedNode;
+        
+        jQuery("<div style='background:rgba(255,0,0,0.5); position:absolute;'></div>")
+            .appendTo("body")
+            .width(forcedNode.width)
+            .height(forcedNode.height)
+            .css({
+                left:forcedNode.getPos().x + "px",
+                top:app.invertY(forcedNode.getPos().y) + "px"
+            });
+    },
+
+    forcedirectTasks: function(){
+        this.updateForceDirectedDimensions();
+        this.forceDirector.go();
+        
+        // DEV: Show node
+        //this.devShowNode();
+        
+        return this;
+    },
+
     // TODO: addTask needed
     // appendTaskView to the DOM. It will be later removed when the hubView is de-selected
     appendTaskView: function(taskView){
@@ -420,20 +442,55 @@ var HubView = View.extend({
                 x: hubViewOffset.left + taskBuffer / 2 + Math.random() - 0.5, // random seed for dispersing tasks in forceDirector
                 y: app.invertY(hubViewOffset.top + taskBuffer / 2 + Math.random() - 0.5)
             }, "hub-" + this.model.id);
+            //taskView.forcedNode.addTether(this.forcedNode.getPos().x, this.forcedNode.getPos().y);
         }
         return this;
     },
 
-    forcedirectTasks: function(){
-        this.updateForceDirectedDimensions();
-        this.forceDirector.go();
+    cacheDimensions: function(){
+        // NOTE: these calculations require this.elem to be present in the document's DOM, for CSS styling
+        this.nucleusWidth = this.nucleusElem.outerWidth(); // TODO: cache on app, as this is the same for all hubs - deliberately not outerWidth(true), due to negative margin oddities
+        this.descriptionWidth = this.labelElem.outerWidth(); // dimensions of collapsed label
+        this.descriptionHeight = this.labelElem.outerHeight(); // dimensions of collapsed label
+        this.descriptionOffset = this.labelElem.offset(); // dimensions of collapsed label
+        this.width = (this.nucleusWidth / 2) + this.descriptionWidth;
+        this.height = this.nucleusWidth; // NOTE height currently does not take description into account
+    },
+    
+    // Get the bounding box of the centre points of each of the taskViews
+    cacheTaskViewCenterBounds: function(){
+        var taskViewCenterBounds = this.taskViewCenterBounds = {
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0
+        };
+
+        this.taskViews.each(function(taskView){
+            var centerX = taskView.offset().left + taskView.width / 2,
+                centerY = taskView.offset().top + taskView.height / 2;
+                
+            if (centerY < taskViewCenterBounds.top){
+                taskViewCenterBounds.top = centerY;
+            }
+            if (centerY > taskViewCenterBounds.bottom){
+                taskViewCenterBounds.bottom = centerY;
+            }
+            if (centerX < taskViewCenterBounds.left){
+                taskViewCenterBounds.left = centerX;
+            }
+            if (centerX > taskViewCenterBounds.right){
+                taskViewCenterBounds.right = centerX;
+            }
+        });
+        
         return this;
     },
 
     renderTasks: function(){
         var hubView = this,
             taskViews = this.taskViews,
-            forceDirectionNeeded, lineWidth, canvasBounds;
+            forceDirectionNeeded, lineWidth, taskViewCenterBounds;
 
         this.loading(false);
 
@@ -453,31 +510,7 @@ var HubView = View.extend({
 
         if (forceDirectionNeeded){
             this.forcedirectTasks();
-            lineWidth = this.get("lineWidth");
-            this.canvasBounds = canvasBounds = {
-                top: 0,
-                bottom: 0,
-                left: 0,
-                right: 0
-            };
-
-            taskViews.each(function(taskView){
-                var centerY = taskView.offset().top + taskView.height / 2,
-                    centerX = taskView.offset().left + taskView.width / 2;
-
-                if (centerY < canvasBounds.top){
-                    canvasBounds.top = centerY;
-                }
-                if (centerY > canvasBounds.bottom){
-                    canvasBounds.bottom = centerY;
-                }
-                if (centerX < canvasBounds.left){
-                    canvasBounds.left = centerX;
-                }
-                if (centerX > canvasBounds.right){
-                    canvasBounds.right = centerX;
-                }
-            });
+            this.cacheTaskViewCenterBounds();
         }
 
         this.appendCanvas()
@@ -485,27 +518,16 @@ var HubView = View.extend({
 
         taskViews.each(function(taskView){
             var offset = taskView.offset();
-
             hubView.line(offset.left + taskView.width / 2, offset.top + taskView.height / 2);
         });
 
         return this;
     },
 
-    updateCachedDimensions: function(){
-        // NOTE: these calculations require this.elem to be present in the document's DOM, for CSS styling
-        this.nucleusWidth = this.nucleusElem.outerWidth(); // TODO: cache on app, as this is the same for all hubs - deliberately not outerWidth(true), due to negative margin oddities
-        this.descriptionWidth = this.labelElem.outerWidth(true); // dimensions of collapsed label
-        this.descriptionHeight = this.labelElem.outerHeight(true); // dimensions of collapsed label
-        this.descriptionOffset = this.labelElem.offset(); // dimensions of collapsed label
-        this.width = this.nucleusWidth + this.descriptionWidth;
-        this.height = this.nucleusWidth + this.labelElem.outerHeight(true); // NOTE height can vary for different hub descriptions
-    },
-
     render: function(){
         var data = this.model.toJSON();
 
-        data.estimate   = this.model.humanEstimate() || "No estimate";
+        data.estimate   = this.model.humanEstimate() || "No tasks";
         data.isSelected = this.isSelected();
         data.truncatedDescription = truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
@@ -518,7 +540,7 @@ var HubView = View.extend({
         this.labelElem = this.$("hgroup");
 
         this.offsetApply();
-        this.updateCachedDimensions();
+        this.cacheDimensions();
         this._updateMargin();
 
         if (data.isSelected){
