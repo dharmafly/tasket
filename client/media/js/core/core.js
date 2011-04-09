@@ -44,6 +44,11 @@ function throttle(handler, interval, defer){
     };
 }
 
+// Helper function to escape a string for HTML rendering.
+function escapeHTML(string) {
+  return string.replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+
 function randomInt(length){
     return Math.ceil((length || 2) * Math.random()) - 1;
 }
