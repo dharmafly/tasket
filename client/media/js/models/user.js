@@ -35,6 +35,9 @@ var User = Model.extend({
 
 // USERS COLLECTION
 var UserList = CollectionModel.extend({
-    model: User
+    model: User,
+    constructor: function UserList(){
+        CollectionModel.prototype.constructor.apply(this, arguments);
+    }
 });
 

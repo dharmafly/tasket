@@ -145,5 +145,8 @@ Task.states = TaskStates;
 
 // TASKS COLLECTION
 var TaskList = CollectionModel.extend({
-    model: Task
+    model: Task,
+    constructor: function TaskList(){
+        CollectionModel.prototype.constructor.apply(this, arguments);
+    }
 });
