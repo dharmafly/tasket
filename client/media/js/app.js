@@ -6,6 +6,8 @@ var cache = new Cache(Tasket.namespace),
         setup: function () {
             this.bodyElem = jQuery("body");
 
+            Tasket.bind("task:change:state", app.updateTaskStatistics);
+
             return _.extend(this, {
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 taskBuffer: 20,
@@ -294,5 +296,17 @@ var cache = new Cache(Tasket.namespace),
             return function () {
                 return supported;
             };
-        }())
+        }()),
+
+        // Update the global statistics object when a task state changes. This
+        // is a callback fruntion for the Tasket "task:change:state" event.
+        updateTaskStatistics: function (model) {
+            var current  = model.get("state"),
+                previous = model.previous("state");
+
+            app.statistics.tasks[current]  += app.statistics.tasks[current];
+            app.statistics.tasks[previous] -= app.statistics.tasks[previous];
+
+            app.trigger("change:statistics", app.statistics, app);
+        }
     }, Backbone.Events);

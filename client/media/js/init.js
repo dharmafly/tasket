@@ -83,7 +83,7 @@ if (app.supported()) {
         dataType: "json",
         success: function (json) {
             app.statistics = json;
-            app.dashboard.updateStatistics();
+            app.trigger("change:statistics", app.statistics);
         }
     }));
 

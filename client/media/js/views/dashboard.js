@@ -35,6 +35,8 @@ var Dashboard = View.extend({
                 this.elem.removeClass(this.classes.detailShown);
             }
         }, this));
+
+        app.bind("change:statistics", this.updateStatistics);
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
