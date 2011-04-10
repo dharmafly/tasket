@@ -20,7 +20,7 @@ var TaskView = View.extend({
     
     // Redirect to hub view URL - may go to a Task specific URL in future
     updateLocation: function(){
-        window.location.hash = "/hubs/" + this.model.get("hub") + "/";
+        app.tankController.getHubView(this.model.get("hub")).updateLocation();
         return this;
     },
 

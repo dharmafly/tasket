@@ -134,13 +134,15 @@ _.extend(Tasket, Backbone.Events, {
         _.each(ids, function (id) {
             var model = collection.get(id);
 
-            if (!model) {
-                model = new collection.model({id: id});
-                toLoad.add(model);
-                toLoadCopy.add(model);
-                collection.add(model);
+            if (id){
+                if (!model) {
+                    model = new collection.model({id: id});
+                    toLoad.add(model);
+                    toLoadCopy.add(model);
+                    collection.add(model);
+                }
+                subset.add(model);
             }
-            subset.add(model);
         }, this);
 
         if (toLoad.length) {

@@ -100,13 +100,17 @@ var HubView = View.extend({
             this.set("tasksVisible", true);
         }
 
-        if (!this.tasks) {
+        if (!this.tasks || !this.taskViews) {
             this.refreshTasks();
         }
-
+        
         if (this.tasks.isComplete()) {
-            return this.renderTasks();
+            if (this.tasks.length){
+                this.renderTasks();
+            }
+            return this;
         }
+        
         return this.loading();
     },
 
@@ -343,7 +347,7 @@ var HubView = View.extend({
         if (callback){
             overallCallback = function(){
                 repositionTasks();
-                callback.call(this);
+                callback.call(hubView);
             };
         }
         else {
@@ -401,12 +405,14 @@ var HubView = View.extend({
     */
 
     forcedirectTasks: function(){
-        this.updateForceDirectedDimensions();
-        this.forceDirector.go();
-        
-        // DEV: Show node
-        //this.devShowNode();
-        
+        if (this.taskViews){
+            this.updateForceDirectedDimensions();
+            this.forceDirector.go();
+            this.cacheTaskViewCenterBounds();
+            
+            // DEV: Show node
+            //this.devShowNode();
+        }
         return this;
     },
 
@@ -502,7 +508,6 @@ var HubView = View.extend({
 
         if (forceDirectionNeeded){
             this.forcedirectTasks();
-            this.cacheTaskViewCenterBounds();
         }
 
         this.appendCanvas()

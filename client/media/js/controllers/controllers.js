@@ -37,7 +37,7 @@ var TankController = Backbone.Controller.extend({
         var tank = this;
         this.hubViews = {};
         this.forceDirector = app.createForceDirector();
-        this.calculateWalls(); // TODO: recalculate on window.resize
+        this.calculateWalls();
         
         if (options && options.hubs){
             this.addHubs(options.hubs);
@@ -123,7 +123,7 @@ var TankController = Backbone.Controller.extend({
         hubView.render();
         
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
-        hubView.forcedNode = this.forceDirector.engine.addTask({
+        hubView.forcedNodeHubToHub = this.forceDirector.engine.addTask({
             key: "hub-" + hubView.model.id,
             x: offset.left,
             y: app.invertY(offset.top),
@@ -175,7 +175,7 @@ var TankController = Backbone.Controller.extend({
     },
 
     editHub: function (id) {
-        var hub = Tasket.getHubs([id]).at(0);
+        var hub = Tasket.getHubs(id);
         if (!this._isLoggedIn("You must be logged in to edit a hub")) {
             return;
         }
@@ -211,13 +211,14 @@ var TankController = Backbone.Controller.extend({
         form.updateFrame();
         form.bind("success", _.bind(function () {
             app.lightbox.hide();
+            HubView.prototype.updateLocation.call({model:hub});
         }, this));
 
         return form;
     },
 
     newTask: function(hubId){
-        var hub = Tasket.getHubs([hubId]).at(0),
+        var hub = Tasket.getHubs(hubId),
             form;
 
         if (!this._isLoggedIn("You must be logged in to create a task")) {
@@ -236,8 +237,8 @@ var TankController = Backbone.Controller.extend({
     },
 
     editTask: function (hubId, taskId) {
-        var hub  = Tasket.getHubs([hubId]).at(0),
-            task = Tasket.getTasks([taskId]).at(0);
+        var hub  = Tasket.getHubs(hubId),
+            task = Tasket.getTasks(taskId);
 
         if (_.indexOf(hub.getTasks(), taskId) < 0) {
             this.error("This task does not exist on this hub");
@@ -256,21 +257,25 @@ var TankController = Backbone.Controller.extend({
     },
 
     _createTaskForm: function (hub, task) {
-        var form = new TaskForm({model: task});
+        var form = new TaskForm({model: task}),
+            tank = this;
 
         app.lightbox.content(form.render().el).show();
         form.bind("success", _.bind(function (event) {
+            var hubView = tank.getHubView(hub.id);
+        
             app.lightbox.hide({silent: true});
-            window.location.hash = "/hubs/" + hub.id + "/";
             
             // Add task to Tasket.tasks collection
             Tasket.tasks.add(task);
             
             // Add it to the hub
             hub.set({"tasks.new": hub.get("tasks.new").concat(task.id)});
-            
-            // Refresh the tasks on the hub's view
-            app.tankController.getHubView(hub.id).refreshTasks();
+
+            // Go to the hub's URL and re-render the tasks
+            hubView
+                .updateLocation()
+                .refreshTasks();
         }, this));
     },
 
@@ -286,12 +291,13 @@ var TankController = Backbone.Controller.extend({
     },
     
     initializeForceDirector: function(animate, callback){
-        var hubViews = this.hubViews,
+        var tank = this,
+            hubViews = this.hubViews,
             overallCallback;
     
         function repositionHubs(){
             _.each(hubViews, function(hubView){
-                var pos = hubView.forcedNode.getPos();
+                var pos = hubView.forcedNodeHubToHub.getPos();
                 
                 hubView.offset({
                     left: ~~(pos.x - hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
@@ -303,7 +309,8 @@ var TankController = Backbone.Controller.extend({
         if (callback){
             overallCallback = function(){
                 repositionHubs();
-                callback.call(this);
+                tank.forcedirectTasks();
+                callback.call(tank);
             };
         }
         else {
@@ -331,6 +338,23 @@ var TankController = Backbone.Controller.extend({
         
         this.forceDirector.go();
         return this;
+    },
+    
+    forcedirectTasks: function(){
+        _.each(this.hubViews, function(hubView){
+            if (hubView.taskViews){
+                hubView
+                    .forcedirectTasks()
+                    .renderTasks();
+            }
+        });
+        return this;
+    },
+    
+    forcedirectAll: function(){
+        return this
+            .forcedirectHubs()
+            .forcedirectTasks();
     }
 });
 
