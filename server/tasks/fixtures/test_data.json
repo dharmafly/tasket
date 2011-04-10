@@ -146,7 +146,7 @@
         "createdTime": "2011-02-25 09:15:03",
         "owner": 3,
         "state": "verified",
-        "estimate": 600
+        "estimate": 900
     }
 },
 {
@@ -161,7 +161,7 @@
         "verifiedBy": 2,
         "owner": 2, 
         "state": "done",
-        "estimate": 600
+        "estimate": 900
     }
 },
 {
@@ -175,7 +175,7 @@
         "owner": 3, 
         "verifiedBy": 3,
         "state": "verified",
-        "estimate": 600
+        "estimate": 900
     }
 },
 {
@@ -190,7 +190,7 @@
         "owner": 2,
         "claimedBy": 2,
         "state": "claimed",
-        "estimate": 600
+        "estimate": 900
     }
 },
 {
@@ -203,7 +203,7 @@
         "createdTime": "2011-02-25 09:15:03", 
         "owner": 2,
         "state": "new",
-        "estimate": 600
+        "estimate": 900
     }
 },
 
@@ -219,7 +219,7 @@
         "claimedTime": "2011-01-25 09:25:03",
         "owner": 2,
         "state": "claimed",
-        "estimate": 600
+        "estimate": 900
     }
 }
 
