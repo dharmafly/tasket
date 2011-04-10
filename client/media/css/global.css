@@ -479,7 +479,7 @@ form ul,
 .content form textarea,
 .content form select {
 	border: 1px solid #ccc;
-	padding: 0.667em /* 6px */ 0.461em /* 4px */;
+	padding: 0.461em /* 4px */;
 	font-size: 1em /* 13px */;
 	width: 22.307em /* 290px */;
 	max-width: 100%;
