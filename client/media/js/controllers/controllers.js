@@ -262,6 +262,15 @@ var TankController = Backbone.Controller.extend({
         form.bind("success", _.bind(function (event) {
             app.lightbox.hide({silent: true});
             window.location.hash = "/hubs/" + hub.id + "/";
+            
+            // Add task to Tasket.tasks collection
+            Tasket.tasks.add(task);
+            
+            // Add it to the hub
+            hub.set({"tasks.new": hub.get("tasks.new").concat(task.id)});
+            
+            // Refresh the tasks on the hub's view
+            app.tankController.getHubView(hub.id).refreshTasks();
         }, this));
     },
 
