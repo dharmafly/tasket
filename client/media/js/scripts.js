@@ -25,14 +25,13 @@ getScript(
     
     "dependencies/vec2.js",
     "dependencies/forcedirector.js",
-
     "dependencies/backbone.js",
     "dependencies/flatten.js",
     "backbone-stack.js",
     "core/core.js",
     "models/models.js",
     "views/views.js",
-    
+    "controllers/controllers.js",
     [
         "models/hub.js",
         "models/task.js",
@@ -43,8 +42,7 @@ getScript(
         "views/notification.js",
         "views/lightbox.js",
         "views/dashboard.js",
-        "views/form.js",
-        "controllers/controllers.js"
+        "views/form.js"
     ],
     "views/form-upload.js",
     [
