@@ -53,8 +53,9 @@ var TankController = Backbone.Controller.extend({
         
         jQuery(window).bind("resize", throttle(function(){
             if (tank.forceDirector.initialized){
-                tank.calculateWalls();
-                tank.forcedirectHubs();
+                tank.calculateWalls()
+                    .forcedirectHubs();
+                    //.forcedirectTasks(); // TODO: not currently working (canvas lines move out of sync)
             }
         }, app.tankResizeThrottle, true));
 
@@ -343,9 +344,7 @@ var TankController = Backbone.Controller.extend({
     forcedirectTasks: function(){
         _.each(this.hubViews, function(hubView){
             if (hubView.taskViews){
-                hubView
-                    .forcedirectTasks()
-                    .renderTasks();
+                hubView.refreshTasks();
             }
         });
         return this;
