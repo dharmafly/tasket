@@ -5,7 +5,7 @@ var TaskView = View.extend({
     defaults: {},
 
     events: {
-        //"click button": "completeTask"
+        "click": "updateLocation"
     },
 
     constructor: function TaskView() {
@@ -16,6 +16,12 @@ var TaskView = View.extend({
         View.prototype.initialize.apply(this, arguments);
         _.bindAll(this, "render", "updateClaimedBy", "updateEstimate");
         this.model.bind("change", this.render);
+    },
+    
+    // Redirect to hub view URL - may go to a Task specific URL in future
+    updateLocation: function(){
+        window.location.hash = "/hubs/" + this.model.get("hub") + "/";
+        return this;
     },
 
     cacheDimensions: function(){
