@@ -28,14 +28,12 @@ var HubView = View.extend({
             inVelDampK: 0.1
         });
 
-        _.bindAll(this, "updateImage", "updateTitle", "updateEstimate");
+        _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateEstimate");
         this.model.bind("change:title", this.updateTitle);
         this.model.bind("change:description", this.updateTitle);
         this.model.bind("change:estimates.new", this.updateEstimate);
         this.model.bind("change:image", this.updateImage);
-        this.model.bind("change:tasks", function () {
-            this.refreshTasks();
-        });
+        this.model.bind("change:tasks.verified", this.refreshTasks);
     },
 
     updateTitle: function () {
@@ -51,7 +49,7 @@ var HubView = View.extend({
     },
 
     updateEstimate: function () {
-        this.$("hgroup h1 span").text(this.model.humanEstimate() || "No estimate");
+        this.$("hgroup h1 span").text("(" + (this.model.humanEstimate() || app.lang.HUB_NO_TASKS) + ")");
         return this;
     },
 
@@ -91,14 +89,16 @@ var HubView = View.extend({
         event.preventDefault();
     },
 
-    showTasks: function () {
+    showTasks: function (options) {
         this.select();
 
         if (this.tasksVisible()) {
             return this;
         }
-
-        this.set("tasksVisible", true);
+            
+        if (!options || !options.silent){
+            this.set("tasksVisible", true);
+        }
 
         if (!this.tasks) {
             this.refreshTasks();
@@ -148,25 +148,28 @@ var HubView = View.extend({
 
     refreshTasks: function () {
         var hubView = this;
+        
+        function redisplay(){
+            if (hubView.tasksVisible()) {
+                // Let the force director be re-initialised
+                if (hubView.forceDirector){
+                    hubView.forceDirector.initialized = false;
+                }
+            
+                hubView
+                    .generateTaskViews()
+                    .clearTasks({silent:true})
+                    .renderTasks();
+            }
+        }
 
         this.tasks = Tasket.getTasks(this.getDisplayTasks());
-        this.tasks.bind("refresh", function () {
-            // Regenerate the task views.
-            hubView.generateTaskViews();
-
-            if (hubView.tasksVisible()) {
-                // If the tasks are displayed re-render them.
-                hubView.renderTasks();
-            }
-        })/*.bind("stateChange", function(model, newState){
-            if (!model.isOpen()){
-                hubView.refreshTasks();
-            }
-        })*/;
-
-        if (this.tasks.isComplete()) {
-            this.generateTaskViews();
+        
+        if (this.tasks.isComplete()){
+            redisplay();
         }
+        
+        this.tasks.bind("refresh", redisplay);
         return this;
     },
 
@@ -282,11 +285,15 @@ var HubView = View.extend({
         return this;
     },
 
-    clearTasks: function(){
+    clearTasks: function(options){
         this.taskListElem.empty();
-        return this.clearCanvas()
-            .removeCanvas()
-            .set("tasksVisible", false);
+        this.clearCanvas()
+            .removeCanvas();
+            
+        if (!options || !options.silent){
+            this.set("tasksVisible", false);
+        }
+        return this;
     },
 
     // Vertically centres the hub title/description.
@@ -512,7 +519,7 @@ var HubView = View.extend({
     render: function(){
         var data = this.model.toJSON();
 
-        data.estimate   = this.model.humanEstimate() || "No tasks";
+        data.estimate   = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
         data.isSelected = this.isSelected();
         data.truncatedDescription = truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();

@@ -115,6 +115,7 @@ var Task = Model.extend({
             error();
         }
 
+        this.previousState = currentState;
         this.set({
             state: newState
         });
