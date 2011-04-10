@@ -54,36 +54,40 @@ var TaskView = View.extend({
             state       = this.model.get("state"),
             owner       = this.model.get("owner"),
             claimedById = this.model.get("claimedBy"),
+            isLoggedIn = !!app.currentUser,
             data;
 
-        if (state === states.NEW && app.currentUser.canClaimTasks()) {
-            data = {
-                id: this.model.id,
-                type: "claimed",
-                text: "I'll do it",
-                state: Task.states.CLAIMED
-            };
-        }
-        else if (app.isCurrentUser(claimedById) && state === states.CLAIMED) {
-            data = {
-                id: this.model.id,
-                type: "done",
-                text: "I've done it",
-                state: Task.states.DONE
-            };
-        }
-        else if (app.isCurrentUser(owner) && state === states.DONE) {
-            data = {
-                id: this.model.id,
-                type: "verify",
-                text: "Verify",
-                state: Task.states.VERIFIED
-            };
+        if (isLoggedIn){
+            if (state === states.NEW && app.currentUser.canClaimTasks()) {
+                data = {
+                    id: this.model.id,
+                    type: "claimed",
+                    text: "I'll do it",
+                    state: Task.states.CLAIMED
+                };
+            }
+            else if (state === states.CLAIMED && app.isCurrentUser(claimedById)) {
+                data = {
+                    id: this.model.id,
+                    type: "done",
+                    text: "I've done it",
+                    state: Task.states.DONE
+                };
+            }
+            else if (state === states.DONE && app.isCurrentUser(owner)) {
+                data = {
+                    id: this.model.id,
+                    type: "verify",
+                    text: "Verify",
+                    state: Task.states.VERIFIED
+                };
+            }
         }
 
-        if (data && app.currentUser) {
+        if (data) {
             controls.html(tim("task-control", data));
-        } else {
+        }
+        else {
             controls.empty();
         }
 
@@ -107,7 +111,7 @@ var TaskView = View.extend({
 
             status = isDone ? "have done" : "are doing";
         } else {
-            model = Tasket.getUsers(claimedById).at(0);
+            model = Tasket.getUsers(claimedById);
             model.bind("change", this.updateClaimedBy);
             status = isDone ? "has done" : "is doing";
         }
