@@ -16,6 +16,7 @@ var TaskView = View.extend({
         View.prototype.initialize.apply(this, arguments);
         _.bindAll(this, "render", "updateClaimedBy", "updateEstimate");
         this.model.bind("change", this.render);
+        app.bind("change:currentUser", this.render);
     },
     
     // Redirect to hub view URL - may go to a Task specific URL in future

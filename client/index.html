@@ -63,18 +63,19 @@
             <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" />
         </a>
         <hgroup>
-            {{canEdit}}
-            <span class="admin-actions">
-                <a class="add" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
-                <a class="edit" href="#/hubs/{{id}}/edit/">Edit</a>
-            </span>
-            {{/canEdit}}
             <h1>{{title}}<br /><span>({{estimate}})</span></h1>
             <h2 title="{{description}}" data-truncated>{{truncatedDescription}}</h2>
         </hgroup>
         <div class="tasks">
             <ul></ul>
         </div>
+    </script>
+
+    <script type="text/tim" class="hub-admin-actions">
+        <span class="admin-actions">
+            <a class="add" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
+            <a class="edit" href="#/hubs/{{id}}/edit/">Edit</a>
+        </span>
     </script>
 
     <script type="text/tim" class="task">

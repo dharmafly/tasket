@@ -28,12 +28,13 @@ var HubView = View.extend({
             inVelDampK: 0.1
         });
 
-        _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateEstimate");
+        _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateEstimate", "updateAdminActions");
         this.model.bind("change:title", this.updateTitle);
         this.model.bind("change:description", this.updateTitle);
         this.model.bind("change:estimates.new", this.updateEstimate);
         this.model.bind("change:image", this.updateImage);
         this.model.bind("change:tasks.verified", this.refreshTasks);
+        app.bind("change:currentUser", this.updateAdminActions);
     },
 
     updateTitle: function () {
@@ -50,6 +51,22 @@ var HubView = View.extend({
 
     updateEstimate: function () {
         this.$("hgroup h1 span").text("(" + (this.model.humanEstimate() || app.lang.HUB_NO_TASKS) + ")");
+        return this;
+    },
+
+    updateAdminActions: function () {
+        var controls = this.$("hgroup"),
+            actions  = controls.find(".admin-actions"),
+            canEdit  = app.isCurrentUser(this.model.get("owner"));
+
+        if (canEdit && !actions.length) {
+            controls.prepend(tim("hub-admin-actions", {id: this.model.id}));
+        }
+        else if (canEdit && actions.length) {
+            actions.remove();
+        }
+
+        this._updateMargin();
         return this;
     },
 
@@ -95,7 +112,7 @@ var HubView = View.extend({
         if (this.tasksVisible()) {
             return this;
         }
-            
+
         if (!options || !options.silent){
             this.set("tasksVisible", true);
         }
@@ -103,14 +120,14 @@ var HubView = View.extend({
         if (!this.tasks || !this.taskViews) {
             this.refreshTasks();
         }
-        
+
         if (this.tasks.isComplete()) {
             if (this.tasks.length){
                 this.renderTasks();
             }
             return this;
         }
-        
+
         return this.loading();
     },
 
@@ -152,14 +169,14 @@ var HubView = View.extend({
 
     refreshTasks: function () {
         var hubView = this;
-        
+
         function redisplay(){
             if (hubView.tasksVisible()) {
                 // Let the force director be re-initialised
                 if (hubView.forceDirector){
                     hubView.forceDirector.initialized = false;
                 }
-            
+
                 hubView
                     .generateTaskViews()
                     .clearTasks({silent:true})
@@ -168,11 +185,11 @@ var HubView = View.extend({
         }
 
         this.tasks = Tasket.getTasks(this.getDisplayTasks());
-        
+
         if (this.tasks.isComplete()){
             redisplay();
         }
-        
+
         this.tasks.bind("refresh", redisplay);
         return this;
     },
@@ -293,7 +310,7 @@ var HubView = View.extend({
         this.taskListElem.empty();
         this.clearCanvas()
             .removeCanvas();
-            
+
         if (!options || !options.silent){
             this.set("tasksVisible", false);
         }
@@ -387,12 +404,12 @@ var HubView = View.extend({
 
         return this;
     },
-    
+
     // For dev purposes - visualise a node from the force director
     /*
     devShowNode: function(forcedNode){
         forcedNode = forcedNode || this.forcedNode;
-        
+
         jQuery("<div style='background:rgba(255,0,0,0.5); position:absolute;'></div>")
             .appendTo("body")
             .width(forcedNode.width)
@@ -409,7 +426,7 @@ var HubView = View.extend({
             this.updateForceDirectedDimensions();
             this.forceDirector.go();
             this.cacheTaskViewCenterBounds();
-            
+
             // DEV: Show node
             //this.devShowNode();
         }
@@ -454,7 +471,7 @@ var HubView = View.extend({
         this.width = (this.nucleusWidth / 2) + this.descriptionWidth;
         this.height = this.nucleusWidth; // NOTE height currently does not take description into account
     },
-    
+
     // Get the bounding box of the centre points of each of the taskViews
     cacheTaskViewCenterBounds: function(){
         var taskViewCenterBounds = this.taskViewCenterBounds = {
@@ -467,7 +484,7 @@ var HubView = View.extend({
         this.taskViews.each(function(taskView){
             var centerX = taskView.offset().left + taskView.width / 2,
                 centerY = taskView.offset().top + taskView.height / 2;
-                
+
             if (centerY < taskViewCenterBounds.top){
                 taskViewCenterBounds.top = centerY;
             }
@@ -481,7 +498,7 @@ var HubView = View.extend({
                 taskViewCenterBounds.right = centerX;
             }
         });
-        
+
         return this;
     },
 
@@ -528,7 +545,6 @@ var HubView = View.extend({
         data.isSelected = this.isSelected();
         data.truncatedDescription = truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
-        data.canEdit = app.isCurrentUser(data.owner);
 
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("a.nucleus-wrapper");
@@ -538,6 +554,7 @@ var HubView = View.extend({
 
         this.offsetApply();
         this.cacheDimensions();
+        this.updateAdminActions();
         this._updateMargin();
 
         if (data.isSelected){
@@ -555,7 +572,7 @@ var HubView = View.extend({
             text = truncate(text, app.hubDescriptionTruncate);
             method = "setAttribute";
         }
-        
+
         description[0][method]("data-truncated");
         description.html(escapeHTML(text));
         this._updateMargin();
