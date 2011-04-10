@@ -62,8 +62,8 @@ var Hub = Model.extend({
             data[currentKey] = currentIds;
 
             // Update the estimates.
-            data["estimates." + previous] -= estimate;
-            data["estimates." + current]  += estimate;
+            data["estimates." + previous] = this.get("estimates." + previous) - estimate;
+            data["estimates." + current]  = this.get("estimates." + previous) + estimate;
         }
 
         return this.set(data);
