@@ -32,11 +32,11 @@ var Toolbar = View.extend({
                         changedAttr = user.changedAttributes(),
                         changedKeys = _.keys(changedAttr);
 
-                    if (_.intersect(changedAttr, taskKeys).length) {
+                    if (_.intersect(changedKeys, taskKeys).length) {
                         view.updateTasks(user);
                     }
 
-                    if (_.intersect(changedAttr, userKeys)) {
+                    if (_.intersect(changedKeys, userKeys).length) {
                         view.updateUser(user);
                     }
                 });
