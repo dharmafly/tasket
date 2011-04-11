@@ -77,7 +77,7 @@ if (app.supported()) {
 
     // Load the statistics url.
     app.init(jQuery.ajax({
-        url: "http://localhost:8000/statistics/",
+        url: Tasket.endpoint + "statistics/",
         dataType: "json",
         success: function (json) {
             _.each(json.tasks, function (value, key) {
