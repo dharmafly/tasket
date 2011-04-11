@@ -15,7 +15,8 @@ class TaskForm(forms.ModelForm):
             del kwargs['request']
         else:
             raise Exception('Request MUST be passed to this form')
-
+        
+        self.status_code = 500
         super(TaskForm, self).__init__(*args, **kwargs)
     
     class Meta:
@@ -53,7 +54,8 @@ class TaskForm(forms.ModelForm):
                 task_limit = getattr(settings, 'TASK_LIMIT', 10)
                 if task_limit >= 0:
                     try:
-                        if cleaned_data['hub'].task_set.all().count() >= task_limit:
+                        if cleaned_data['hub'].task_set.exclude(state=Task.STATE_VERIFIED).count() >= task_limit:
+                            self.status_code = 401
                             self._errors['error'] = self.error_class(['Too many Tasks already'])
                     except Hub.DoesNotExist:
                         pass

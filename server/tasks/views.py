@@ -192,7 +192,7 @@ class TasksView(PutView):
             self.res.write(T.as_json())
         else:
             self.res.write(json.dumps(form.errors))
-            self.res.status_code = 500
+            self.res.status_code = form.status_code
         return self.res
     
     def image_upload(self, request, task_id):
@@ -226,7 +226,7 @@ class TasksView(PutView):
             self.res.write(T.as_json())
         else:
             self.res.write(json.dumps(form.errors))
-            self.res.status_code = 500
+            self.res.status_code = form.status_code
         return self.res
         
     @method_decorator(login_required)

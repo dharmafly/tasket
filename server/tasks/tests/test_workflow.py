@@ -171,6 +171,7 @@ class WorkflowTests(TestCase):
         json_data = json.loads(response.content)
         self.assertTrue('error' in json_data)
         self.assertEqual(json_data['error'], ['Too many Tasks already'])
+
     
     def test_claim_too_many(self):
         """
