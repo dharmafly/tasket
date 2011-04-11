@@ -35,7 +35,7 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 We use [smoosh][#smoosh] to package the JavaScript for production. To get it you
 need [Node][#node] >= 4.0.1 and [npm][#npm] installed. (For hints on installation, see
-[joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)
+[joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)).
 
 Then install Smoosh:
 
