@@ -34,14 +34,20 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 # Packaging JavaScript
 
 We use [smoosh][#smoosh] to package the JavaScript for production. To get it you
-need [Node][#node] >= 4.0.1 and [npm][#npm] installed. Then simply run:
+need [Node][#node] >= 4.0.1 and [npm][#npm] installed. (For hints on installation, see
+[joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)
+
+Then install Smoosh:
 
     $ npm install smoosh
-
-To package the JavaScript `cd` into the _client/media/js/build/_ directory and
-run:
+    
+To package the JavaScript, `cd` into the _client/media/js/build/_ directory and either run:
 
     $ smoosh -c ./config.json
+    
+or:
+
+    $ node make.js
 
 This will run JSHint against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
