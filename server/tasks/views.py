@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.core.validators import email_re
 from django.conf import settings
 from django.contrib.auth import forms as userforms
+from django.middleware.csrf import get_token
 
 from utils.decorators import json_login_required as login_required
 
@@ -22,7 +23,8 @@ from models import Hub, Task, Profile
 import forms
 
 
-def home(reqeust):
+def home(request):
+    get_token(request)
     f = open("%s/client/index.html" % settings.ROOT_PATH, "r")
     return HttpResponse(f.read())
 
