@@ -263,7 +263,7 @@ class Profile(models.Model):
                     "verified": format_id_list(owned_verified_qs),
                 },
                 "claimed": {
-                    "claimed": format_id_list(claimed_new_qs),
+                    "claimed": format_id_list(claimed_claimed_qs),
                     "done": format_id_list(claimed_done_qs),
                     "verified": format_id_list(claimed_done_qs),
                 },
@@ -276,7 +276,7 @@ class Profile(models.Model):
                     "verified": format_estimate_list(owned_verified_qs),
                 },
                 "claimed": {
-                    "claimed": format_estimate_list(claimed_new_qs),
+                    "claimed": format_estimate_list(claimed_claimed_qs),
                     "done": format_estimate_list(claimed_done_qs),
                     "verified": format_estimate_list(claimed_done_qs),
                 },

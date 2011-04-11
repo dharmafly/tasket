@@ -300,6 +300,17 @@ class WorkflowTests(TestCase):
         json_data = json.loads(response.content)
         self.assertTrue(json_data['description'].startswith('Updated'))
         
+    def test_claimed_in_profile(self):
+        """
+        See https://github.com/premasagar/tasket/issues/150
+        """
+        self.client.login(username='TestUser', password='12345')
+        response =  self.client.put('/tasks/6', json.dumps({'state' : Task.STATE_CLAIMED}), content_type='application/json',)
+        response =  self.client.get('/users/2')
+        json_data = json.loads(response.content)
+        self.assertTrue('6' in json_data['tasks']['claimed']['claimed'])
+        self.assertEqual(json_data['estimates']['claimed']['claimed'], 1800)
+        
         
         
         
