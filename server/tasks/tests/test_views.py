@@ -161,21 +161,6 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertTrue(json_data['estimate'][0].startswith("Estimate is required"))
 
-    def test_task_create_with_html(self):
-        self.client.login(username='TestUser', password='12345')
-        hub = Hub.objects.get(pk=2)
-        response = self.client.post(
-            '/tasks/',
-            json.dumps({
-                "description" : "<b>Lorem</b> ipsum dolor sit amet, consectetur",
-                "estimate" : 60*10,
-                "hub" : hub.pk,
-            }),
-            content_type='application/json',
-            )
-        json_data = json.loads(response.content)
-        self.assertEqual(json_data['description'].startswith("&lt;b&gt;Lorem&lt;/b&gt;"), True)
-
     def test_task_post_image(self):
         self.client.login(username='TestUser', password='12345')
         f = open("%s/server/tasks/fixtures/Puppy.jpg" % settings.ROOT_PATH, 'rb')

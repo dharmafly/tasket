@@ -134,9 +134,6 @@ class TaskForm(forms.ModelForm):
             if self.instance.estimate == None:
                 self._errors['estimate'] = self.error_class(['Estimate is required'])
         
-        for k,v in cleaned_data.items():
-            if isinstance(v, unicode):
-                cleaned_data[k] = escape(v)
         self.cleaned_data = cleaned_data
         cleaned_data = self.state_logic()
         return cleaned_data
