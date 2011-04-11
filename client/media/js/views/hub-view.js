@@ -10,6 +10,7 @@ var HubView = View.extend({
 
     events: {
         "click a.nucleus-wrapper": "onclick",
+        "click hgroup": "updateLocation",
         "click h2": "toggleDescription"
     },
 
@@ -91,13 +92,8 @@ var HubView = View.extend({
     },
 
     onclick: function (event) {
-        var isSelected = this.isSelected(),
-            tasksVisible = this.tasksVisible();
-
-        this.sendToFront();
-
-        if (isSelected){
-            this.toggleTasks();
+        if (this.isSelected()){
+            this.sendToFront().toggleTasks();
         }
         else {
             this.updateLocation();
