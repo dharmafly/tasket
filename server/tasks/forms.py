@@ -30,6 +30,7 @@ class TaskForm(forms.ModelForm):
         
         if self.request.user.profile.admin:
             return new_state
+        updating =  bool(self.instance.pk) #Is this a new or updated model?
         new_state = self.cleaned_data.get('state', Task.STATE_NEW)
         old_state = self.instance.state
         claimedBy = self.request.user
@@ -74,27 +75,30 @@ class TaskForm(forms.ModelForm):
             if new_state == Task.STATE_DONE:
                 # Reset all times
                 self.instance.verifiedTime = None
-        reset(new_state)
 
+        if new_state != old_state or not updating:
+            reset(new_state)
+        
         # This is a 'new' task being updated somehow
         if new_state == Task.STATE_CLAIMED:
             
-            # Limit number of user's claimed Tasks
-            claimed_limit = getattr(settings, 'CLAIMED_LIMIT', 5)
-            if claimed_limit >= 0:
-                try:
-                    if self.request.user.profile.tasks_claimed.filter(state=Task.STATE_CLAIMED).count() >= claimed_limit:
-                        self._errors['error'] = self.error_class(['You can only claim %s tasks at once' % claimed_limit])
-                except Hub.DoesNotExist:
-                    pass
-            
+            if new_state != old_state:
+                # Limit number of user's claimed Tasks
+                claimed_limit = getattr(settings, 'CLAIMED_LIMIT', 5)
+                if claimed_limit >= 0:
+                    try:
+                        if self.request.user.profile.tasks_claimed.filter(state=Task.STATE_CLAIMED).count() >= claimed_limit:
+                            self._errors['error'] = self.error_class(['You can only claim %s tasks at once' % claimed_limit])
+                    except Hub.DoesNotExist:
+                        pass
+        
             if old_state == Task.STATE_NEW:
                 cleaned_data['claimedBy'] = self.request.user.profile
                 cleaned_data['claimedTime'] = datetime.datetime.now()
             if old_state == Task.STATE_CLAIMED:
                 if self.instance.claimedBy != self.request.user.profile:
                     state_error("This Task has already been claimed")
-                
+            
 
         if new_state == Task.STATE_DONE:
             if old_state == Task.STATE_NEW:

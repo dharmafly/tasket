@@ -82,6 +82,18 @@ class WorkflowTests(TestCase):
             )
         json_data = json.loads(response.content)
         self.assertEqual(response.status_code, 500)
+
+    def test_edit_claimed(self):
+        self.client.login(username=self.U3.user.username, password='12345')
+        response = self.client.put(
+            '/tasks/5',
+            json.dumps({
+                'description' : 'Updated',
+            }),
+            content_type='application/json'
+        )
+        json_data = json.loads(response.content)
+        self.assertTrue(json_data['description'].startswith('Updated'))
         
     def test_verify_new(self):
         self.client.login(username=self.U3.user.username, password='12345')
@@ -262,3 +274,33 @@ class WorkflowTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['claimedTime'], 1298625903)
 
+    def make_tasks(self, n):
+        """
+        Makes some tasks
+        """
+        hub = Hub.objects.get(pk=2)
+        for i in range(n):
+            response = self.client.post(
+                '/tasks/',
+                json.dumps({
+                    "description" : "Lorem ipsum dolor sit amet, consectetur",
+                    "estimate" : 60*10,
+                    "hub" : hub.pk,
+                }),
+                content_type='application/json',
+                )
+
+    def test_edit_at_task_limit(self):
+        """
+        See https://github.com/premasagar/tasket/issues/162
+        """
+        self.client.login(username='TestUser', password='12345')
+        self.make_tasks(settings.TASK_LIMIT + 2)
+        response =  self.client.put('/tasks/12', json.dumps({'description' : 'Updated'}),content_type='application/json',)
+        json_data = json.loads(response.content)
+        self.assertTrue(json_data['description'].startswith('Updated'))
+        
+        
+        
+        
+        
