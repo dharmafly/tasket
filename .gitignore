@@ -12,3 +12,5 @@ tasket.db
 web/pip-log.txt
 client/media/cache
 client/media/images
+rebuild_db.sh
+/web/node_modules
