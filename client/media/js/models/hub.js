@@ -39,6 +39,20 @@ var Hub = Model.extend({
         }, this).flatten().value();
     },
 
+    addTask: function (task) {
+        var currentTasks = this.get("tasks.new"),
+            currentEstimates = this.get("estimates.new");
+
+        if (_.indexOf(currentTasks, task.id) === -1) {
+            this.set({
+                "tasks.new": currentTasks.concat(task.id),
+                "estimates.new": currentEstimates + task.get("estimate")
+            });
+        }
+
+        return this;
+    },
+
     // Updates the hubs tasks and estimates when the state of a task changes.
     updateTasks: function (task) {
         var id = task.id,

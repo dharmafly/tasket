@@ -269,10 +269,8 @@ var TankController = Backbone.Controller.extend({
 
             // Add task to Tasket.tasks collection if not already in there.
             if (!Tasket.tasks.get(task.id)) {
-              Tasket.tasks.add(task);
-
-              // Add it to the hub
-              hub.set({"tasks.new": hub.get("tasks.new").concat(task.id)});
+                Tasket.tasks.add(task);
+                hub.addTask(task);
             }
 
             // Go to the hub's URL and re-render the tasks
