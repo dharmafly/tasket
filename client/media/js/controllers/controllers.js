@@ -10,26 +10,26 @@ var TankController = Backbone.Controller.extend({
     constructor: function TankController() {
         Backbone.Controller.prototype.constructor.apply(this, arguments);
     },
-    
+
     // Get the dimensions of the tank
     calculateWalls: function(){
         var wallBuffer = app.wallBuffer;
-                
+
         this.wallBuffer = wallBuffer;
         this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
         this.wallLeft = wallBuffer;
-        
+
          // NOTE: this is zero-bottom y
         this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallBottom = wallBuffer;
-        
+
         _.extend(this.forceDirector.options, {
             wallTop: this.wallTop,
             wallBottom: this.wallBottom,
             wallLeft: this.wallLeft,
             wallRight: this.wallRight
         });
-        
+
         return this;
     },
 
@@ -38,7 +38,7 @@ var TankController = Backbone.Controller.extend({
         this.hubViews = {};
         this.forceDirector = app.createForceDirector();
         this.calculateWalls();
-        
+
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
@@ -50,7 +50,7 @@ var TankController = Backbone.Controller.extend({
                 this.addHub(hub);
             }
         }, this));
-        
+
         jQuery(window).bind("resize", throttle(function(){
             if (tank.forceDirector.initialized){
                 tank.calculateWalls()
@@ -64,7 +64,7 @@ var TankController = Backbone.Controller.extend({
 
     getHubView: function(id){
         id = String(id); // allow argument to be a String or a Number
-        
+
         return _(this.hubViews).detect(function(hubView){
             return id === hubView.model.id;
         });
@@ -85,7 +85,7 @@ var TankController = Backbone.Controller.extend({
         _(hubs).each(function(hub){
             this.addHub(hub, {dontDraw:true});
         }, this);
-        
+
         if (!options || !options.dontDraw){
             this.forcedirectHubs();
         }
@@ -100,13 +100,13 @@ var TankController = Backbone.Controller.extend({
         }
 
         options = options || {};
-        
+
         hubView = this.hubViews[hub.cid] = new HubView({
             model: hub
         });
 
         hubView.bind("select", this._onSelectHubs);
-        
+
         if (options.left && options.top){
             offset = {
                 left: options.left,
@@ -122,7 +122,7 @@ var TankController = Backbone.Controller.extend({
 
         app.bodyElem.append(hubView.elem);
         hubView.render();
-        
+
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
         hubView.forcedNodeHubToHub = this.forceDirector.engine.addTask({
             key: "hub-" + hubView.model.id,
@@ -264,14 +264,16 @@ var TankController = Backbone.Controller.extend({
         app.lightbox.content(form.render().el).show();
         form.bind("success", _.bind(function (event) {
             var hubView = tank.getHubView(hub.id);
-        
+
             app.lightbox.hide({silent: true});
-            
-            // Add task to Tasket.tasks collection
-            Tasket.tasks.add(task);
-            
-            // Add it to the hub
-            hub.set({"tasks.new": hub.get("tasks.new").concat(task.id)});
+
+            // Add task to Tasket.tasks collection if not already in there.
+            if (!Tasket.tasks.get(task.id)) {
+              Tasket.tasks.add(task);
+
+              // Add it to the hub
+              hub.set({"tasks.new": hub.get("tasks.new").concat(task.id)});
+            }
 
             // Go to the hub's URL and re-render the tasks
             hubView
@@ -286,27 +288,27 @@ var TankController = Backbone.Controller.extend({
         );
         app.back();
     },
-    
+
     calculateHubViewOffsetTop: function(hubView){
         return (this.wallTop - this.wallBottom) - (hubView.model.weight() * (this.wallTop - this.wallBottom));
     },
-    
+
     initializeForceDirector: function(animate, callback){
         var tank = this,
             hubViews = this.hubViews,
             overallCallback;
-    
+
         function repositionHubs(){
             _.each(hubViews, function(hubView){
                 var pos = hubView.forcedNodeHubToHub.getPos();
-                
+
                 hubView.offset({
                     left: ~~(pos.x - hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
                     top: app.invertY(~~(pos.y + hubView.nucleusWidth / 2))
                 });
             });
         }
-    
+
         if (callback){
             overallCallback = function(){
                 repositionHubs();
@@ -317,30 +319,30 @@ var TankController = Backbone.Controller.extend({
         else {
             overallCallback = repositionHubs;
         }
-        
+
         _.extend(this.forceDirector.options, {
             animate: animate,
             animator: repositionHubs,
             callback: overallCallback
         });
-        
+
         // Show the walls
         //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (this.wallRight-this.wallLeft) + "px; top:" + (window.innerHeight - this.wallTop) + "px; height: " + (this.wallTop - this.wallBottom) + "px; left:" + this.wallLeft + "px; pointer-events:none;'></div>").prependTo("body");
-        
+
         this.forceDirector.initialized = true;
-        
+
         return this;
     },
-      
+
     forcedirectHubs: function(animate, callback){
         if (!this.forceDirector.initialized){
             this.initializeForceDirector(animate, callback);
         }
-        
+
         this.forceDirector.go();
         return this;
     },
-    
+
     forcedirectTasks: function(){
         _.each(this.hubViews, function(hubView){
             if (hubView.taskViews){
@@ -349,7 +351,7 @@ var TankController = Backbone.Controller.extend({
         });
         return this;
     },
-    
+
     forcedirectAll: function(){
         return this
             .forcedirectHubs()
