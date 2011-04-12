@@ -7,7 +7,13 @@ var Hub = Model.extend({
     defaults: {
         title: "",
         description: "",
-        image: ""
+        image: "",
+        estimates: {
+            "new": 0,
+            "claimed": 0,
+            "verified": 0,
+            "done": 0
+        }
     },
 
     // TODO: cache a flag for this value, and update each time a task is opened or closed
