@@ -8,6 +8,12 @@ var Hub = Model.extend({
         title: "",
         description: "",
         image: "",
+        tasks: {
+            "new": [],
+            "claimed": [],
+            "verified": [],
+            "done": []
+        },
         estimates: {
             "new": 0,
             "claimed": 0,
