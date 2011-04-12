@@ -29,12 +29,12 @@ class TaskForm(forms.ModelForm):
         """
         cleaned_data = dict(self.cleaned_data)
         
-        if self.request.user.profile.admin:
-            return new_state
         updating =  bool(self.instance.pk) #Is this a new or updated model?
         new_state = self.cleaned_data.get('state', Task.STATE_NEW)
         old_state = self.instance.state
         claimedBy = self.request.user
+        if self.request.user.profile.admin:
+            return cleaned_data
 
         
         def state_error(message):
