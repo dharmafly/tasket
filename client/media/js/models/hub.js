@@ -89,7 +89,7 @@ var Hub = Model.extend({
 
             // Update the estimates.
             data["estimates." + previous] = this.get("estimates." + previous) - estimate;
-            data["estimates." + current]  = this.get("estimates." + previous) + estimate;
+            data["estimates." + current]  = this.get("estimates." + current)  + estimate;
         }
 
         return this.set(data);
@@ -115,7 +115,11 @@ var Hub = Model.extend({
             key  = "estimates." + state,
             data = {};
 
-        if (_.indexOf(this.get("tasks." + state), task.id) > -1) {
+        // Check the task belongs to this hub and that it' estimate is not 0. If
+        // estimate is 0 then this is a new Task being loaded and the hub
+        // should already have accounted for it either getting the value from
+        // the server or in #addHub().
+        if (_.indexOf(this.get("tasks." + state), task.id) > -1 && previous !== 0) {
             data[key] = this.get(key) - previous + current;
         }
         return this.set(data);

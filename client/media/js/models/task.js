@@ -28,7 +28,8 @@ var Task = Model.extend({
     defaults: {
         description: "",
         image: "",
-        estimate: TaskEstimates[0].value,
+        /* Set estimate to 0 so that we know it is a new task */
+        estimate: 0,
         state: TaskStates.NEW
     },
 
