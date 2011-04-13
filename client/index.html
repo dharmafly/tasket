@@ -94,11 +94,11 @@
         <button class="{{type}}" data-task-state="{{state}}" data-task-id="{{id}}">{{text}}</button>
     </script>
     <script type="text/tim" class="task-claimed-by-you">
-        <img src="{{image}}" width="14" height="14" alt="Your avatar" />
+        <img src="/media/{{image}}" width="14" height="14" alt="Your avatar" />
         <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this
     </script>
     <script type="text/tim" class="task-claimed-by-user">
-        <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
+        <img src="/media/{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
         <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task
     </script>
     <script type="text/tim" class="dashboard-detail">
