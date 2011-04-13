@@ -100,11 +100,19 @@ var TaskView = View.extend({
 
         return this;
     },
+    
+    userImageSrc: function(user){
+        var src = user.get("image");
+        return src ?
+            Tasket.thumbnail(src, app.userInTaskImageWidth, app.userInTaskImageHeight, true) :
+            Tasket.media(app.userPlaceholderImage);
+    },
 
     updateClaimedBy: function () {
         var templateName = "task-claimed-by-user",
             claimedById = this.model.get("claimedBy"),
             isDone = !!this.model.get("doneTime"),
+            image,
             status,
             model;
 
@@ -122,11 +130,11 @@ var TaskView = View.extend({
             model.bind("change", this.updateClaimedBy);
             status = isDone ? "has done" : "is doing";
         }
-
+        
         this.$(".claimedBy").html(tim(templateName, {
             id: model.id,
             name: model.get("name"),
-            image: model.get("image"),
+            image: this.userImageSrc(model),
             status: status,
             url: model.url()
         }));

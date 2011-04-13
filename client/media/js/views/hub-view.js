@@ -80,7 +80,9 @@ var HubView = View.extend({
         src = this.model.get("image");
 
         // Return cropped thumbnail or placeholder if no image.
-        return src ? Tasket.thumbnail(src, 30, 30, true) : app.hubPlaceholderImage;
+        return src ?
+            Tasket.thumbnail(src, app.hubImageWidth, app.hubImageHeight, true) :
+            Tasket.media(app.hubPlaceholderImage);
     },
 
     isSelected: function(){

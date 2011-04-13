@@ -184,6 +184,10 @@ _.extend(Tasket, Backbone.Events, {
         });
     },
 
+    media: function (image) {
+        return image ? "/media/" + image : "";
+    },
+
     thumbnail: function (image, width, height, crop) {
         var url = "/thumb/" + width + "x" + height + "/" + image;
         return crop ? url + "?crop" : url;
