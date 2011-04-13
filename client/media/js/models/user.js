@@ -9,6 +9,9 @@ var User = Model.extend({
         image: "",
         description: "",
         location: "",
+        hubs: {
+            owned: []
+        },
         tasks: {
             owned: {
                 "new": [],
