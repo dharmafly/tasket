@@ -704,7 +704,7 @@ body.hubSelected article.hub {
 	opacity:0.5;
 }
 
-article.hub .nucleus-wrapper {
+article.hub a.nucleus-wrapper {
 	display: block;
 	position: absolute;
 	left: 0;
@@ -720,11 +720,11 @@ article.hub .nucleus-wrapper {
 	-ms-border-radius: 4em;
 	-o-border-radius: 4em;
 	border-radius: 4em;
-	z-index: 1;
+	z-index: 2; /* start above the hub description */
 	outline:none;
 }
 
-article.hub.loading .nucleus-wrapper::after {
+article.hub.loading a.nucleus-wrapper::after {
 	position: absolute;
 	display: block;
 	top: 50%;
@@ -758,6 +758,7 @@ article.hub > hgroup {
 	padding: 0.8em 0.8em 0.8em 4em;
 	background-color: #111;
 	color: #fff;
+	z-index: 1; /* Place this above the canvas element */
 }
 
 article.hub > div.tasks {
