@@ -1095,13 +1095,18 @@ article.hub .meta img {
 
 .dashboard footer .statistics {
 	position: relative;
-	padding-left: 60px;
+	
+	/* TODO: TEMPORARY chart image padding */
+	/* padding-left: 60px; */
 }
 
 .dashboard footer .statistics img {
 	position: absolute;
 	left: 0;
 	top: 0;
+	
+	/* TODO: TEMPORARY chart image */
+	display:none;
 }
 
 .dashboard footer .statistics em {
