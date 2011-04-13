@@ -42,8 +42,10 @@ class ViewTests(TestCase):
             }), 
             content_type = "application/json"
             )
-        self.assertEqual(json.loads(response.content)['user']['id'], '2')
-        self.assertEqual(json.loads(response.content).keys(), ['sessionid', 'user'])
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['user']['id'], '2')
+        self.assertEqual(json_data.keys(), ['sessionid', 'user',])
+        self.assertTrue('email' in json_data['user'])
 
     def test_log_in_fail(self):
         response = self.client.post(

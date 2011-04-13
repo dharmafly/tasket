@@ -15,9 +15,9 @@ class JsonQuerySet(models.query.QuerySet):
     attribute.
     """
     
-    def as_json(self):
+    def as_json(self, *args, **kwargs):
         
-        return json.dumps([m.as_dict() for m in self])
+        return json.dumps([m.as_dict(**kwargs) for m in self])
 
 
 class JsonManager(models.Manager):

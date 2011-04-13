@@ -199,6 +199,14 @@ class ViewTests(TestCase):
         response = self.client.get('/users/2')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
+        self.assertFalse("email" in json_data)
+
+    def test_user_get_single_has_email(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.get('/users/2')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['description'].startswith("This is"), True)
+        self.assertTrue("email" in json_data)
 
     def test_user_get_by_id(self):
         response = self.client.get('/users/?ids=2,3')

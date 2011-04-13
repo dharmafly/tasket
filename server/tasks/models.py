@@ -226,7 +226,7 @@ class Profile(models.Model):
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
 
-    def as_dict(self):
+    def as_dict(self, request_user=None):
         
         def format_estimate_list(qs):
             return qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
@@ -248,7 +248,6 @@ class Profile(models.Model):
             "id": str(self.user.pk),
             "name": self.name.strip(),
             "username": self.user.username,
-            "email": self.user.email,
             "admin": self.admin,
             "description": self.description.strip(),
             "location": self.location.strip(),
@@ -284,6 +283,9 @@ class Profile(models.Model):
             "createdTime": self.created_timestamp(),
         }
         
+        if self.user == request_user:
+            obj_dict["email"] = self.user.email,
+        
         if self.image:
             obj_dict["image"] = self.image.name
 
@@ -292,6 +294,6 @@ class Profile(models.Model):
                 obj_dict[k] = ""
         return obj_dict
         
-    def as_json(self):
-        return json.dumps(self.as_dict())
+    def as_json(self, **kwargs):
+        return json.dumps(self.as_dict(**kwargs))
         

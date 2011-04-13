@@ -254,7 +254,7 @@ class ProfileView(PutView):
     
     def get_single(self, request, user_id):
         profile = get_object_or_404(Profile, user=user_id)
-        self.res.write(profile.as_json())
+        self.res.write(profile.as_json(request_user=request.user))
         return self.res
         
     @method_decorator(AllowJSONPCallback)
@@ -269,7 +269,7 @@ class ProfileView(PutView):
             ids = [i.strip() for i in ids.split(',') if i]
             users = users.filter(user__in=ids)
             
-        self.res.write(users.as_json())
+        self.res.write(users.as_json(request_user=request.user))
         return self.res
 
     @method_decorator(login_required)

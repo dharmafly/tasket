@@ -67,7 +67,7 @@ class LoginView(PutView):
                     
                     self.res.write(json.dumps(
                         {
-                        'user' : user.profile.as_dict(),
+                        'user' : user.profile.as_dict(request_user=user),
                         'sessionid' : request.session.session_key
                         }
                     ))
