@@ -513,7 +513,7 @@ form ul,
 -----------------------------------------------------------------------------*/
 
 .header-container {
-	z-index: 2;
+	z-index: 999999;
 	position: absolute;
 	position: fixed;
 	top: 0;
@@ -864,7 +864,7 @@ article.hub .meta img {
 
 .dashboard {
 	position: fixed;
-	z-index: 1;
+	z-index: 999998;
 	top: 3.077em /* 40px */;
 	right: 20px;
 	bottom: 20px;
@@ -1316,7 +1316,7 @@ article.hub .meta img {
 .lightbox {
 	display: none;
 	opacity: 0;
-	z-index: 100;
+	z-index: 1000000;
 	position: fixed;
 	top: 0;
 	left: 0;
