@@ -39,12 +39,23 @@ var cache = new Cache(Tasket.namespace),
 
         // Sets up the app. Called by init() on app "ready".
         ready: function () {
-            return _.extend(this, {
+            _.extend(this, {
                 // The controllers will make Ajax calls on their init, so are created after app init
                 tankController: new TankController(),
                 pageController: new PageController(),
                 dashController: new DashboardController()
             });
+            
+            this.tankController.bind("hub:select", function(hubView){
+                app.selectedHub = hubView.model.id;
+                app.dashboard.hubAnchorSelect();
+            });
+            this.tankController.bind("hub:deselect", function(hubView){
+                app.selectedHub = hubView.model.id;
+                app.dashboard.hubAnchorSelect();
+            });
+            
+            return this;
         },
 
         // init() accepts jQuery deferred objects as returned by jQuery.ajax() or

@@ -998,6 +998,10 @@ article.hub .meta img {
   opacity: 1;
 }
 
+.dashboard .quicklinks.my-projects ul.listing li.select a {
+	border-bottom: 1px solid;
+}
+
 .dashboard .quicklinks .info {
 	display: block;
 	position: absolute;

@@ -575,5 +575,6 @@ var HubView = View.extend({
     }
 }, {
     /* Global keeping check of the current z-index */
-    zIndex: 0
+    zIndex: 0,
+    hubIdInUrlRegex: /\/(\d+)\/$/
 });

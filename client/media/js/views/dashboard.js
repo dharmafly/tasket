@@ -91,6 +91,37 @@ var Dashboard = View.extend({
 
         return this;
     },
+    
+    getHubAnchorById: function(hubId){
+        var hubAnchor;
+    
+        this.$("section.quicklinks.my-projects ul.listing li a").each(function(){
+            var match = this.href.match(HubView.hubIdInUrlRegex),
+                anchorHubId = match && match[1];
+                
+            if (hubId === anchorHubId){
+                hubAnchor = this;
+                return true;
+            }
+        });
+    
+        return hubAnchor;
+    },
+    
+    hubAnchorsDeselect: function(){
+        this.$("section.quicklinks.my-projects ul.listing li").removeClass("select");
+        return this;
+    },
+    
+    hubAnchorSelect: function(){
+        var hubAnchor = this.getHubAnchorById(app.selectedHub);
+        
+        if (hubAnchor){
+            this.hubAnchorsDeselect();
+            jQuery(hubAnchor).parent().addClass("select");
+        }
+        return this;
+    },
 
     userStatistics: function(){
         var user = this.model;
@@ -165,7 +196,7 @@ var Dashboard = View.extend({
         if (this.model) {
             hubs = this._getCollection("getHubs", "hubs.owned", this.updateUserHubs);
         }
-        return this.updateList(".my-projects", hubs);
+        return this.updateList(".my-projects", hubs).hubAnchorSelect();
     },
 
     // Updates a list of tasks/hubs based on the selector & collection.

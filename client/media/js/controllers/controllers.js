@@ -70,15 +70,15 @@ var TankController = Backbone.Controller.extend({
         });
     },
 
-    _onSelectHubs: function(hubToExclude){
+    _onSelectHubs: function(selectedHubView){
         _(this.hubViews)
             .chain()
             .reject(function(view){
-                return view.model.id === hubToExclude.model.id;
+                return view.model.id === selectedHubView.model.id;
             })
             .invoke("deselect");
-
-        return this;
+            
+        return this.trigger("hub:select", selectedHubView, this);
     },
 
     addHubs: function(hubs, options){
@@ -439,6 +439,6 @@ var DashboardController = Backbone.Controller.extend({
 
     showCurrentUserHubs: function () {
         var user = app.currentUser;
-        app.dashboard.detail.title("My Projects").show();
+        app.dashboard.detail.title("My Projects").show(); // TODO change text
     }
 });
