@@ -66,6 +66,13 @@ var User = Model.extend({
         }, this);
 
         return this.set(data);
+    },
+
+    // Removes the hub from the current users hubs.
+    removeHub: function (hub) {
+        return this.set({
+            'hubs.owned': _.without(this.get('hubs.owned'), hub.id)
+        });
     }
 });
 

@@ -1,5 +1,9 @@
 var HubForm = FormUpload.extend({
 
+    events: _.extend(FormUpload.prototype.events, {
+        'click .delete': '_onDelete'
+    }),
+
     /* Pretty output in Webkit Inspector */
     constructor: function HubForm() {
         FormUpload.prototype.constructor.apply(this, arguments);
@@ -27,5 +31,20 @@ var HubForm = FormUpload.extend({
 
         this.elem.html(template).find(".loading").hide();
         return this;
+    },
+
+    /* DOM Event callback. Deletes the current hub on the server and broadcasts
+     * the "delete" event passing in the model and view to all listeners. 
+     *
+     * event - A click browser Event object.
+     *
+     * Returns nothing.
+     */
+    _onDelete: function (event) {
+        if (window.confirm(app.lang.DELETE_HUB_CONFIRM)) {
+            this.model.destroy();
+            this.trigger("delete", this.model, this);
+        }
+        event.preventDefault();
     }
 });

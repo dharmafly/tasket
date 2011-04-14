@@ -507,6 +507,11 @@ form ul,
 	line-height: 2.153em /* 28px */;
 }
 
+.content form .actions .note a.delete {
+	font-weight: bold;
+	color: #C92D2D;
+}
+
 /* @end */
 
 /* @group Header

@@ -139,6 +139,16 @@ var TankController = Backbone.Controller.extend({
         return hubView;
     },
 
+    // Remove a hub from the tank.
+    removeHub: function (id) {
+        var hubView = this.getHubView(id);
+        if (hubView) {
+            this.hubViews = _.without(this.hubViews, hubView);
+            hubView.remove();
+        }
+        return this;
+    },
+
     displayHub: function(id){
         var controller = this,
             hubView = this.getHubView(id);
@@ -213,6 +223,14 @@ var TankController = Backbone.Controller.extend({
         form.bind("success", _.bind(function () {
             app.lightbox.hide();
             HubView.prototype.updateLocation.call({model:hub});
+        }, this));
+
+        form.bind("delete", _.bind(function (model) {
+            app.currentUser.removeHub(model);
+            this.removeHub(model.id);
+            Tasket.hubs.remove(model);
+            app.lightbox.hide();
+            window.location.hash = "/";
         }, this));
 
         return form;
