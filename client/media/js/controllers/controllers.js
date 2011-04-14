@@ -296,6 +296,16 @@ var TankController = Backbone.Controller.extend({
                 .updateLocation()
                 .refreshTasks();
         }, this));
+        
+        form.bind("delete", _.bind(function (model) {
+            var view = this.getHubView(hub.id);
+            if (view) {
+                view.model.removeTask(task);
+            }
+            app.currentUser.removeTask(model);
+            Tasket.tasks.remove(model);
+            app.lightbox.hide();
+        }, this));
     },
 
     error: function (message) {

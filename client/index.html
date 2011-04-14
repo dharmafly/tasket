@@ -383,6 +383,7 @@
         </ul>
         <div class="actions">
             <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Task</button>
+            {{isNotNew}}<p class="note"><a class="delete" href="#">Remove this task</a></p>{{/isNotNew}}
         </div>
     </script>
 

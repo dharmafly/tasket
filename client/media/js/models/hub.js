@@ -95,6 +95,18 @@ var Hub = Model.extend({
         return this.set(data);
     },
 
+    removeTask: function (task) {
+        var data        = {},
+            state       = task.get('state'),
+            tasksKey    = 'tasks.' + state,
+            estimateKey = 'estimates.' + state;
+
+        data[tasksKey]    = _.without(this.get(tasksKey), task.id);
+        data[estimateKey] = this.get(estimateKey) - task.get('estimate');
+
+        return this.set(data);
+    },
+
     estimate: function () {
         var estimate = 0;
         _.each(["new", "claimed", "done"], function (key) {

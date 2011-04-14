@@ -34,7 +34,15 @@ var HubView = View.extend({
         this.model.bind("change:description", this.updateTitle);
         this.model.bind("change:estimates.new", this.updateEstimate);
         this.model.bind("change:image", this.updateImage);
-        this.model.bind("change:tasks.verified", this.refreshTasks);
+        this.model.bind("change", _.bind(function (model) {
+            var watch = ["tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"];
+            do {
+                if (model.hasChanged(watch.pop())) {
+                    this.refreshTasks();
+                    break;
+                }
+            } while (watch.length);
+        }, this));
         app.bind("change:currentUser", this.updateAdminActions);
     },
 

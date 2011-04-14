@@ -68,6 +68,22 @@ var User = Model.extend({
         return this.set(data);
     },
 
+    // Removes the task from the current users tasks.
+    removeTask: function (task) {
+        var data = {};
+
+        _.each(["owned", "claimed"], function (group) {
+            var key = "tasks." + group + "." + task.get("state"),
+                ids = this.get(key);
+
+            if (_.indexOf(ids, task.id) > -1) {
+                data[key] = _.without(ids, task.id);
+            }
+        }, this);
+
+        return this.set(data);
+    },
+
     // Removes the hub from the current users hubs.
     removeHub: function (hub) {
         return this.set({
