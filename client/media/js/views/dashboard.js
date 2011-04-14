@@ -202,7 +202,6 @@ var Dashboard = View.extend({
     // Updates a list of tasks/hubs based on the selector & collection.
     updateList: function(selector, models){
         var mapped;
-
         if (models && (models.length || models.type === "hub")) {
             mapped = models.map(function (model) {
                 var title = model.get("title") || model.get("description");
@@ -234,8 +233,17 @@ var Dashboard = View.extend({
         var collection = Tasket[method](this.model.get(key));
         collection.bind("refresh", callback);
 
-        // Currentlt only display the title so only re-render if this changes.
-        collection.invoke("bind", "change:title", callback);
+        // Currently only display the title/description so only re-render
+        // if this changes.
+        collection.invoke("bind", "change", function (model) {
+            var watch = ["owner", "title", "description"];
+            do {
+                if (model.hasChanged(watch.pop())) {
+                    callback();
+                    break;
+                }
+            } while (watch.length);
+        });
         return collection;
     }
 });
