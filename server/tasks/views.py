@@ -315,7 +315,7 @@ class ProfileView(PutView):
         if not form.is_valid():
             error_dict = dict(form.errors.items())
             self.res.write(json.dumps(error_dict))
-            self.res.status_code = 500
+            self.res.status_code = 400
             return self.res
 
             
