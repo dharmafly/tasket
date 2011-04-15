@@ -228,6 +228,12 @@ class ViewTests(TestCase):
             )
         json_data = json.loads(response.content)
         self.assertEqual(json_data['id'], 6)
+        
+        response = self.client.get('/users/6')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['email'], 'foo@example.com')
+        
+        
 
     def test_user_post_dupe(self):
         response = self.client.post(

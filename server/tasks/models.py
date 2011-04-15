@@ -284,7 +284,7 @@ class Profile(models.Model):
         }
         
         if self.user == request_user:
-            obj_dict["email"] = self.user.email,
+            obj_dict["email"] = self.user.email
         
         if self.image:
             obj_dict["image"] = self.image.name

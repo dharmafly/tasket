@@ -319,7 +319,10 @@ class ProfileView(PutView):
             return self.res
 
             
-        form.save()
+        user = form.save()
+        if email:
+            user.email = email
+            user.save()
 
         user = authenticate(username=username, password=password)
 
