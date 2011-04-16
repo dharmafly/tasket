@@ -158,18 +158,22 @@ var HubView = View.extend({
     },
 
     select: function(){
-        this.set("selected", true);
-        this.trigger("select", this);
-        this.elem.addClass("select");
-        app.bodyElem.addClass("hubSelected");
+        if (!this.isSelected()){
+            this.set("selected", true);
+            this.trigger("select", this);
+            this.elem.addClass("select");
+            app.bodyElem.addClass("hubSelected");
+        }
         return this;
     },
 
     deselect: function(){
-        this.set("selected", false);
-        this.trigger("deselect", this);
-        this.elem.removeClass("select");
-        app.bodyElem.removeClass("hubSelected");
+        if (this.isSelected()){
+            this.set("selected", false);
+            this.trigger("deselect", this);
+            this.elem.removeClass("select");
+            app.bodyElem.removeClass("hubSelected");
+        }
         return this;
     },
 
@@ -549,7 +553,7 @@ var HubView = View.extend({
 
         data.estimate   = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
         data.isSelected = this.isSelected();
-        data.truncatedDescription = truncate(data.description, app.hubDescriptionTruncate);
+        data.truncatedDescription = app.truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
 
         this.elem.html(tim("hub", data));
@@ -575,7 +579,7 @@ var HubView = View.extend({
             text = this.model.get("description");
 
         if (!description[0].hasAttribute("data-truncated")) {
-            text = truncate(text, app.hubDescriptionTruncate);
+            text = app.truncate(text, app.hubDescriptionTruncate);
             method = "setAttribute";
         }
 

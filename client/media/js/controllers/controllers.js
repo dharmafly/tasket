@@ -4,7 +4,8 @@ var TankController = Backbone.Controller.extend({
         "/hubs/:id/": "displayHub",
         "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask",
-        "/hubs/:hub_id/tasks/:id/edit/": "editTask"
+        "/hubs/:hub_id/tasks/:id/edit/": "editTask",
+        "/hubs/:hub_id/tasks/:id": "displayTask"
     },
 
     constructor: function TankController() {
@@ -69,6 +70,20 @@ var TankController = Backbone.Controller.extend({
             return id === hubView.model.id;
         });
     },
+
+    /*
+    getTaskView: function(id){
+        id = String(id); // allow argument to be a String or a Number
+        
+        var task = Tasket.getTasks(id),
+            hubId = task && task.get("hub"),
+            hubView = hubId && this.getHubView(hubId);
+
+        return hubView && hubView.taskViews && hubView.taskViews.detect(function(taskView){
+            return taskView.model.id === id;
+        });
+    },
+    */
 
     _onSelectHubs: function(selectedHubView){
         _(this.hubViews)
@@ -236,6 +251,30 @@ var TankController = Backbone.Controller.extend({
         }, this));
 
         return form;
+    },
+    
+    // TODO: this should work even when the task view isn't yet available - i.e. via an async request to API
+    // TODO: lightbox should close if a link from within the task description is clicked
+    displayTask: function(hubId, taskId){
+        taskId = String(taskId); // allow argument to be a String or a Number
+        
+        var task = Tasket.getTasks(taskId),
+            hubId = task && task.get("hub"),
+            hubView = hubId && this.getHubView(hubId),
+            taskView = hubView && hubView.taskViews && hubView.taskViews.detect(function(taskView){
+                return taskView.model.id === taskId;
+            }),
+            hub;
+            
+        if (taskView){
+            this.displayHub(hubId);
+            app.lightbox.content(taskView.taskDetailsHTML()).show();
+        }
+        else if (hubView){
+            hubView.updateLocation();
+        }
+        
+        return this;
     },
 
     newTask: function(hubId){

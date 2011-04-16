@@ -13,6 +13,7 @@ var cache = new Cache(Tasket.namespace),
                 taskBuffer: 20,
                 tankResizeThrottle: 1000,
                 hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
+                taskDescriptionTruncate: 140, // No. of chars to truncate task description to
                 hubImageWidth: 30,
                 hubImageHeight: 30,
                 hubPlaceholderImage: "images/placeholder.png",
@@ -103,6 +104,17 @@ var cache = new Cache(Tasket.namespace),
                 return app;
             };
         }()),
+        
+        truncate: function(str, charLimit, continuationStr){
+            if (str && str.length > charLimit){
+                continuationStr = continuationStr || "…";
+                return str
+                    .slice(0, charLimit + continuationStr.length)
+                    .replace(/\W?\s\S*$/m, "") +
+                    continuationStr;
+            }
+            return str;
+        },
         
         // Convert between bottom-zeroed and top-zeroed coordinate systems
         invertY: function(y){

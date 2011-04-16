@@ -30,8 +30,8 @@ var TaskView = View.extend({
         this.height = this.elem.outerHeight();
         return this;
     },
-
-    render: function(){
+    
+    taskDetailsHTML: function(){
         var data = this.model.toJSON();
 
         data.isNew = this.model.isNew();
@@ -40,6 +40,27 @@ var TaskView = View.extend({
         data.hubId = data.hub;
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
+
+        data.estimate = this.model.humanEstimate();
+
+        return tim("task-detail", data);
+    },
+
+    render: function(){
+        var data = this.model.toJSON(),
+            desc;
+
+        data.isNew = this.model.isNew();
+        data.isNotNew = !this.model.isNew();
+
+        data.hubId = data.hub;
+        data.canEdit = app.isCurrentUser(data.owner);
+        data.isClaimed = !!data.claimedBy;
+        
+        // Truncate description
+        desc = app.truncate(data.description, app.taskDescriptionTruncate);
+        data.readmore = desc.length !== data.description.length;
+        data.description = desc;
 
         data.estimate = this.model.humanEstimate();
 

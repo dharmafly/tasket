@@ -208,7 +208,7 @@ var Dashboard = View.extend({
                 return {
                     id:          model.id,
                     href:        "#/" + model.type + "s/" + model.id + "/",
-                    title:       truncate(title, 15),
+                    title:       app.truncate(title, 15),
                     isHub:       model.type === "hub",
                     isTask:      model.type === "task",
                     showDone:    app.isCurrentUser(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,

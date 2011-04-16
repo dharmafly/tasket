@@ -5,17 +5,6 @@ function now(){
     return (new Date()).getTime();
 }
 
-function truncate(str, charLimit, continuationStr){
-    if (str && str.length > charLimit){
-        continuationStr = continuationStr || "…";
-        return str
-            .slice(0, charLimit + continuationStr.length)
-            .replace(/\W?\s\S*$/m, "") +
-            continuationStr;
-    }
-    return str;
-}
-
 // Throttle: http://github.com/premasagar/mishmash/tree/master/throttle/
 function throttle(handler, interval, defer){
     var context = this,
