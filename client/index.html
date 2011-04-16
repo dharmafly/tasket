@@ -84,12 +84,20 @@
             <a class="edit" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
         </span>
         {{/canEdit}}
-        <p class="description">{{description}} <span class="estimate">({{estimate}})</span></p>
+        <p class="description">{{description}} <span class="estimate">({{estimate}})</span> {{readmore}}<a class="readmore" href=#/hubs/{{hubId}}/tasks/{{id}}>» Read more</a>{{/readmore}}</p>
         <aside class="meta">
             {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
             <div class="controls"></div>
         </aside>
     </script>
+    
+    <script type="text/tim" class="task-detail">
+        <p class="description">{{description}} <span class="estimate">({{estimate}})</span></p>
+        <aside class="meta">
+            {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
+        </aside>
+    </script>
+    
     <script type="text/tim" class="task-control">
         <button class="{{type}}" data-task-state="{{state}}" data-task-id="{{id}}">{{text}}</button>
     </script>

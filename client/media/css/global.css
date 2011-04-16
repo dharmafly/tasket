@@ -61,6 +61,7 @@ p {
 a, a:visited{
 	color: #555;
 	text-decoration: none;
+	cursor:pointer;
 }
 
 a:hover, a:active, a:focus,
@@ -383,6 +384,12 @@ a.action.locate {
 .task .admin-actions a.edit {
 	background-position: 0 -390px;
 }
+
+.task a.readmore {
+    white-space:nowrap;
+}
+
+
 
 /* List reset */
 
@@ -792,7 +799,7 @@ article.hub > div.tasks > ul > li {
 	width: 19.321em /* 250px */;
 	border: 0.23075em /* 3px */ solid #aaa;
 	background-color: #fff;
-	height:6.4em; /* TODO: verify */
+	/* height:6.4em; */
 }
 
 article.hub > hgroup h1 {
@@ -823,7 +830,6 @@ article.hub .meta {
 }
 
 article.hub .description {
-	overflow: hidden;
 	margin: 0 0 0.461em /* 6px */;
 }
 
