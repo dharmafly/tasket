@@ -187,13 +187,15 @@ var TankController = Backbone.Controller.extend({
 
     editHub: function (id) {
         var hub = Tasket.getHubs(id);
+            
         if (!this._isLoggedIn("You must be logged in to edit a hub")) {
             return;
         }
         if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
             return;
         }
-        this._createHubForm(hub);
+        this.displayHub(id)
+            ._createHubForm(hub);
     },
 
     _isLoggedIn: function (message) {
@@ -248,11 +250,12 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
-        this._createTaskForm(hub, new Task({
-            hub: hubId, // NOTE: Verify this when refactoring hubs.
-            owner: app.currentUser.id,
-            estimate: Task.ESTIMATES[0].value
-        }));
+        this.displayHub(hubId)
+            ._createTaskForm(hub, new Task({
+                hub: hubId, // NOTE: Verify this when refactoring hubs.
+                owner: app.currentUser.id,
+                estimate: Task.ESTIMATES[0].value
+            }));
     },
 
     editTask: function (hubId, taskId) {
