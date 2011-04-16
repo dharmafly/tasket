@@ -229,10 +229,11 @@ var cache = new Cache(Tasket.namespace),
         // Requires User model.
         updateCurrentUser: function (user, cache) {
             if (user){
-                app.currentUser = user;
-                if (cache !== false){
-                    app.cache.set("currentUser", app.currentUser.toJSON());
+                if (!Tasket.users.get(user.id)){
+                    Tasket.users.add(user);
                 }
+                app.currentUser = user;
+                app.cache.set("currentUser", app.currentUser.toJSON());
                 app.trigger("change:currentUser", app.currentUser); // see dashboard.js > Dashboard.setUser()
             }
             return app.currentUser;
