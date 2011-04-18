@@ -200,12 +200,21 @@ var cache = new Cache(Tasket.namespace),
         },
 
         restoreCache: function(){
-            var currentUserData, currentUser;
+            var currentUserData, currentUser, username;
 
             // If we don't have a session cookie, destroy the cache. Django will
             // continually set this cookie so this will only really work if the
             // cookie itself expires.
             if (!this.getCookie("sessionid")) {
+                // Redirect to login and pre-populate the username field.
+                window.location.hash = "/login/";
+
+                username = (app.cache.get("currentUser") || {}).username;
+                setTimeout(function () {
+                    jQuery('#field-username').val(username);
+                }, 200);
+
+                // Destroy the cache.
                 this.destroyCache();
             }
 
