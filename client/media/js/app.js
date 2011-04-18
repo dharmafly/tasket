@@ -207,12 +207,15 @@ var cache = new Cache(Tasket.namespace),
             // cookie itself expires.
             if (!this.getCookie("sessionid")) {
                 // Redirect to login and pre-populate the username field.
-                window.location.hash = "/login/";
-
-                username = (app.cache.get("currentUser") || {}).username;
-                setTimeout(function () {
-                    jQuery('#field-username').val(username);
-                }, 200);
+                currentUser = app.cache.get("currentUser");
+                if (currentUser) {
+                    window.location.hash = "/login/";
+                    console.log(currentUser);
+                    username = currentUser.username;
+                    setTimeout(function () {
+                        jQuery('#field-username').val(username);
+                    }, 200);
+                }
 
                 // Destroy the cache.
                 this.destroyCache();
