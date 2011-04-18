@@ -48,7 +48,7 @@ app.bind("ready", function onReady () {
             }
             else if (!app.currentUser.canClaimTasks()) {
                 app.notification.error(
-                    "You cannot claim more than 5 tasks at a time"
+                    "You cannot claim more than " + Tasket.settings.CLAIMED_LIMIT + " tasks at a time"
                 );
                 return;
             }
