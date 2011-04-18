@@ -289,6 +289,11 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
+        if (!hub.canAddTask()) {
+            this.error("A hub can only have a maximum of 10 unverified tasks");
+            return;
+        }
+
         this.displayHub(hubId)
             ._createTaskForm(hub, new Task({
                 hub: hubId, // NOTE: Verify this when refactoring hubs.

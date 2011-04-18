@@ -43,6 +43,15 @@ var Hub = Model.extend({
         Tasket.bind("task:change:estimate", this.updateEstimates);
     },
 
+    // Checks to see if this hub has room for any more non-verified tasks.
+    canAddTask: function () {
+        var tasks = 0;
+        _.each(["new", "claimed", "done"], function (state) {
+            tasks += this.get("tasks." + state).length;
+        }, this);
+        return tasks < Tasket.settings.TASK_LIMIT;
+    },
+
     // Returns all tasks.
     getTasks: function () {
         var keys = ["new", "claimed", "done", "verified"];
