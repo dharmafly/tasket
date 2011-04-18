@@ -20,7 +20,9 @@ var TaskView = View.extend({
         // Bind change events to a user model so that the task controls will
         // update disabled state when the users claimed tasks change.
         function applyUserBindings(user) {
-            user.bind("change:tasks.claimed.claimed", this.updateControls);
+            if (user) {
+                user.bind("change:tasks.claimed.claimed", this.updateControls);
+            }
         }
 
         this.model.bind("change", this.render);
