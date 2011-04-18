@@ -48,7 +48,7 @@ var HubView = View.extend({
 
     updateTitle: function () {
         this.$("h1").html(this.model.escape("title"));
-        this.$("h2").html(this.model.escape("description"));
+        this.$("h2").html(nl2br(this.model.escape("description")));
         this._updateMargin();
         return this;
     },
@@ -567,6 +567,12 @@ var HubView = View.extend({
         this.cacheDimensions();
         this.updateAdminActions();
         this._updateMargin();
+
+        // Update the title to ensure that linebreaks are converted into <br>
+        // tags. We do this manually rather than in tim() because of issues
+        // with form elements and a lack of granularity when using filters in
+        // tim().
+        this.updateTitle();
 
         if (data.isSelected){
             this.renderTasks();

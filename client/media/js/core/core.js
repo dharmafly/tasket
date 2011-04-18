@@ -86,6 +86,10 @@ function randomInt(length){
     return Math.ceil((length || 2) * Math.random()) - 1;
 }
 
+// Converts newlines into HTML <br> tags.
+function nl2br(value) {
+    return value.replace(/\n/g, '<br />');
+}
 
 /////
 

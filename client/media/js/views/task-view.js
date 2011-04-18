@@ -66,9 +66,20 @@ var TaskView = View.extend({
 
         this.elem.html(tim("task", data));
 
+        // Update the description to ensure that linebreaks are converted into
+        // <br> tags. We do this manually rather than in tim() because of issues
+        // with form elements and a lack of granularity when using filters in
+        // tim().
+        this.updateDescription();
+
         this.updateClaimedBy();
         this.updateControls();
         return this.offsetApply();
+    },
+
+    updateDescription: function () {
+        this.$('.description').html(nl2br(this.model.escape('description')));
+        return this;
     },
 
     updateEstimate: function () {
