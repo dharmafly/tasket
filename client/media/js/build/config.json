@@ -16,7 +16,7 @@
             "TankController", "Task", "TaskEstimates", "TaskForm", "TaskList",
             "TaskStates", "TaskView", "Tasket", "User", "UserList", "View",
             "cache", "now", "randomInt", "truncate", "ForceDirector", "Toolbar",
-            "escapeHTML", "humanTimespan", "throttle"
+            "escapeHTML", "humanTimespan", "throttle", "hasChanged", "nl2br"
         ]
     },
     "JAVASCRIPT": {

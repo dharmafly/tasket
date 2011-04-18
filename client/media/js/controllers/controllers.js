@@ -255,7 +255,7 @@ var TankController = Backbone.Controller.extend({
     
     // TODO: this should work even when the task view isn't yet available - i.e. via an async request to API
     // TODO: lightbox should close if a link from within the task description is clicked
-    displayTask: function(hubId, taskId){
+    displayTask: function(hub, taskId){
         taskId = String(taskId); // allow argument to be a String or a Number
         
         var task = Tasket.getTasks(taskId),
@@ -263,8 +263,7 @@ var TankController = Backbone.Controller.extend({
             hubView = hubId && this.getHubView(hubId),
             taskView = hubView && hubView.taskViews && hubView.taskViews.detect(function(taskView){
                 return taskView.model.id === taskId;
-            }),
-            hub;
+            });
             
         if (taskView){
             this.displayHub(hubId);
