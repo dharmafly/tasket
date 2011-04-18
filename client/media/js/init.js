@@ -39,6 +39,11 @@ app.bind("ready", function onReady () {
             id = button.data("task-id"),
             task;
 
+        if (state === Task.states.CLAIMED && !app.currentUser.canClaimTasks()) {
+            app.notification.error("You cannot claim more than 5 tasks at a time");
+            return;
+        }
+
         task = Tasket.getTasks([id]).at(0);
         if (task && state) {
             task.state(state, app.currentUser.id).save();
