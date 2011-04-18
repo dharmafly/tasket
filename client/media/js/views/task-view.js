@@ -140,12 +140,10 @@ var TaskView = View.extend({
         }
         else if (state === states.DONE && app.isCurrentUser(owner)) {
             data = {
-                id: this.model.id,
-                type: "verify",
-                text: "Verify",
-                state: Task.states.VERIFIED,
-                title: ""
+                id: this.model.id
             };
+            controls.html(tim("task-control-verified", data));
+            return this;
         }
 
         if (data) {

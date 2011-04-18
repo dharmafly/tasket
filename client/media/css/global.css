@@ -393,7 +393,7 @@ a.action.locate {
 	transition: opacity 0.15s ease-in;
 }
 
-.select .admin-actions a,
+.select hgroup .admin-actions a,
 :hover > .admin-actions a {
 	opacity: 0.7;
 }
@@ -822,7 +822,7 @@ article.hub > div.tasks > ul {
 article.hub > div.tasks > ul > li {
 	position: absolute;
 	padding: 0.923em /* 12px */ 1.154em /* 15px */;
-	width: 19.321em /* 250px */;
+	width: 21.154em /* 275px */;
 	border: 0.23075em /* 3px */ solid #aaa;
 	background-color: #fff;
 	/* height:6.4em; */
@@ -883,6 +883,10 @@ article.hub .meta img {
 	position: absolute;
 	top: 7px;
 	left: 0;
+}
+
+article.hub .controls {
+	float: right;
 }
 
 /* @end */

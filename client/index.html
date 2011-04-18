@@ -101,6 +101,10 @@
     <script type="text/tim" class="task-control">
         <button class="{{type}} {{isDisabled}}disabled{{/isDisabled}}" title="{{title}}" data-task-state="{{state}}" data-task-id="{{id}}">{{text}}</button>
     </script>
+    <script type="text/tim" class="task-control-verified">
+        <button class="verified" data-task-state="verified" data-task-id="{{id}}">Verify</button>
+        <button class="reject" data-task-state="new" data-task-id="{{id}}">Reject</button>
+    </script>
     <script type="text/tim" class="task-claimed-by-you">
         <img src="{{image}}" width="14" height="14" alt="Your avatar" />
         <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this
