@@ -1019,7 +1019,7 @@ article.hub .controls {
 	height: 16px;
 	width: 16px;
 	min-height: 0;
-	background: transparent url(../images/sprites.png?cache) 0 -327px;
+	background: transparent url(../images/sprites.png) 0 -327px;
 	opacity: 0.15;
 	-webkit-box-shadow: none;
 	-moz-box-shadow: none;
@@ -1030,6 +1030,11 @@ article.hub .controls {
 
 .dashboard .quicklinks li .add {
 	background-position: 0 -360px;
+}
+
+.dashboard .quicklinks li .reject {
+	right: 20px;
+	background-position: 0 -510px;
 }
 
 .dashboard .quicklinks li button:hover,
