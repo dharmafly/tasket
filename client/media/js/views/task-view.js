@@ -14,9 +14,21 @@ var TaskView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
-        _.bindAll(this, "render", "updateClaimedBy", "updateEstimate");
+
+        _.bindAll(this, "render", "updateClaimedBy", "updateEstimate", "updateControls");
+
+        // Bind change events to a user model so that the task controls will
+        // update disabled state when the users claimed tasks change.
+        function applyUserBindings(user) {
+            user.bind("change:tasks.claimed.claimed", this.updateControls);
+        }
+
         this.model.bind("change", this.render);
-        app.bind("change:currentUser", this.render);
+        app.bind("change:currentUser", _.bind(function (user) {
+            applyUserBindings.call(this, user);
+            this.render();
+        }, this));
+        applyUserBindings.call(this, app.currentUser);
     },
 
     // Redirect to hub view URL - may go to a Task specific URL in future
