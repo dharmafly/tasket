@@ -591,7 +591,7 @@ var HubView = View.extend({
         }
 
         description[0][method]("data-truncated");
-        description.html(escapeHTML(text));
+        description.html(nl2br(escapeHTML(text)));
         this._updateMargin();
     }
 }, {
