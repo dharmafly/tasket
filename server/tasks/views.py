@@ -282,7 +282,8 @@ class ProfileView(PutView):
             T = form.save(commit=False)
             T.user = profile.user
             T.save()
-            self.res.write(T.as_json())
+            T.user.email = request.PUT.get('email', T.user.email)
+            self.res.write(T.as_json(request_user=request.user))
         else:
             self.res.write(json.dumps(form.errors))
             self.res.status_code = 500
