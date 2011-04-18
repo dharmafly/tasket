@@ -960,6 +960,10 @@ article.hub .meta img {
 	background: url(../images/sprites.png) no-repeat 0 -60px;
 }
 
+.dashboard .notifications li > span {
+	color: #555;
+}
+
 .dashboard .quicklinks {
 	position: relative;
 	border-bottom: 1px solid #ccc;
