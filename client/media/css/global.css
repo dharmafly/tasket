@@ -393,6 +393,7 @@ a.action.locate {
 	transition: opacity 0.15s ease-in;
 }
 
+.select .admin-actions a,
 :hover > .admin-actions a {
 	opacity: 0.7;
 }
