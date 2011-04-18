@@ -7,6 +7,10 @@ var Dashboard = View.extend({
         detailShown: "detail-active"
     },
 
+    events: {
+        "click .notifications": "_onNotificationClick"
+    },
+
     constructor: function Dashboard() {
         View.prototype.constructor.apply(this, arguments);
     },
@@ -91,31 +95,31 @@ var Dashboard = View.extend({
 
         return this;
     },
-    
+
     getHubAnchorById: function(hubId){
         var hubAnchor;
-    
+
         this.$("section.quicklinks.my-projects ul.listing li a").each(function(){
             var match = this.href.match(HubView.hubIdInUrlRegex),
                 anchorHubId = match && match[1];
-                
+
             if (hubId === anchorHubId){
                 hubAnchor = this;
                 return true;
             }
         });
-    
+
         return hubAnchor;
     },
-    
+
     hubAnchorsDeselect: function(){
         this.$("section.quicklinks.my-projects ul.listing li").removeClass("select");
         return this;
     },
-    
+
     hubAnchorSelect: function(){
         var hubAnchor = this.getHubAnchorById(app.selectedHub);
-        
+
         if (hubAnchor){
             this.hubAnchorsDeselect();
             jQuery(hubAnchor).parent().addClass("select");
@@ -213,7 +217,7 @@ var Dashboard = View.extend({
                     isHub:       model.type === "hub",
                     isTask:      model.type === "task",
                     showDone:    app.isCurrentUser(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,
-                    showVerify:  app.isCurrentUser(model.get("owner")) && model.get("state") === Task.states.DONE 
+                    showVerify:  app.isCurrentUser(model.get("owner")) && model.get("state") === Task.states.DONE
                 };
             });
             this.$(selector).show().find("ul").html(tim("dashboard-link", {
@@ -246,5 +250,21 @@ var Dashboard = View.extend({
             } while (watch.length);
         });
         return collection;
+    },
+
+    // Scroll down to the appropriate listing and highlight the activity links.
+    _onNotificationClick: function (event) {
+        var className = event.target.hash.replace('#', '.'),
+            element = this.$(className).addClass('highlight'),
+            view = this;
+
+        event.preventDefault();
+        this.elem.animate({'scrollTop': element.position().top}, function () {
+            element.addClass('animate').removeClass('highlight');
+
+            setTimeout(function () {
+                element.removeClass('animate');
+            }, 3000);
+        });
     }
 });

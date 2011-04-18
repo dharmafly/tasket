@@ -1040,6 +1040,17 @@ article.hub .meta img {
   opacity: 1;
 }
 
+.dashboard .quicklinks.animate ul li button {
+	-webkit-transition:
+		opacity 3s ease-out,
+		background-color 3s ease-out;
+}
+
+.dashboard .quicklinks.highlight ul li button {
+	opacity: 1;
+	background-color: #ffd64d;
+}
+
 .dashboard .quicklinks.my-projects ul.listing li.select a {
 	border-bottom: 1px solid;
 }
