@@ -18,7 +18,7 @@ var TaskView = View.extend({
         this.model.bind("change", this.render);
         app.bind("change:currentUser", this.render);
     },
-    
+
     // Redirect to hub view URL - may go to a Task specific URL in future
     updateLocation: function(){
         app.tankController.getHubView(this.model.get("hub")).updateLocation();
@@ -30,7 +30,7 @@ var TaskView = View.extend({
         this.height = this.elem.outerHeight();
         return this;
     },
-    
+
     taskDetailsHTML: function(){
         var data = this.model.toJSON();
 
@@ -56,7 +56,7 @@ var TaskView = View.extend({
         data.hubId = data.hub;
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
-        
+
         // Truncate description
         desc = app.truncate(data.description, app.taskDescriptionTruncate);
         data.readmore = desc.length !== data.description.length;
@@ -93,16 +93,22 @@ var TaskView = View.extend({
             state       = this.model.get("state"),
             owner       = this.model.get("owner"),
             claimedById = this.model.get("claimedBy"),
-            isLoggedIn = !!app.currentUser,
+            isLoggedIn  = !!app.currentUser,
+            isDisabled  = false,
             data;
 
         if (isLoggedIn){
-            if (state === states.NEW && app.currentUser.canClaimTasks()) {
+            if (state === states.NEW) {
+                isDisabled = !app.currentUser.canClaimTasks();
                 data = {
                     id: this.model.id,
                     type: "claimed",
                     text: "I'll do it",
-                    state: Task.states.CLAIMED
+                    state: Task.states.CLAIMED,
+                    title:
+                        isDisabled
+                        ? "You cannot claim this task just now. Please complete one of the 5 tasks you've claimed first"
+                        : ""
                 };
             }
             else if (state === states.CLAIMED && app.isCurrentUser(claimedById)) {
@@ -110,7 +116,8 @@ var TaskView = View.extend({
                     id: this.model.id,
                     type: "done",
                     text: "I've done it",
-                    state: Task.states.DONE
+                    state: Task.states.DONE,
+                    title: ""
                 };
             }
             else if (state === states.DONE && app.isCurrentUser(owner)) {
@@ -118,21 +125,22 @@ var TaskView = View.extend({
                     id: this.model.id,
                     type: "verify",
                     text: "Verify",
-                    state: Task.states.VERIFIED
+                    state: Task.states.VERIFIED,
+                    title: ""
                 };
             }
         }
 
         if (data) {
+            data.isDisabled = isDisabled;
             controls.html(tim("task-control", data));
-        }
-        else {
+        } else {
             controls.empty();
         }
 
         return this;
     },
-    
+
     userImageSrc: function(user){
         var src = user.get("image");
         return src ?
@@ -162,7 +170,7 @@ var TaskView = View.extend({
             model.bind("change", this.updateClaimedBy);
             status = isDone ? "has done" : "is doing";
         }
-        
+
         this.$(".claimedBy").html(tim(templateName, {
             id: model.id,
             name: model.get("name"),
