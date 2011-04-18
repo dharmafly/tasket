@@ -9,9 +9,6 @@ app.bind("setup", function onSetup() {
     app.lightbox.bind("hide", app.back);
     app.bind("change:currentUser", _.bind(app.dashboard.setUser, app.dashboard));
     app.dashboard.detail.bind("hide", app.back);
-
-    app.restoreCache()
-       .setupAuthentication();
 });
 
 // Called when the app has all dependancies loaded.
@@ -53,6 +50,12 @@ app.bind("ready", function onReady () {
     if (!window.location.hash) {
         window.location.hash = "/";
     }
+
+    // Need to restore the user from the cache once all the hubs are loaded.
+    // This ensures that the users hubs are not requested before Tasket.hubs
+    // is reset.
+    app.restoreCache()
+       .setupAuthentication();
 
     Backbone.history.start();
 });

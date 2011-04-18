@@ -30,19 +30,19 @@ var HubView = View.extend({
         });
 
         _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateEstimate", "updateAdminActions");
+
         this.model.bind("change:title", this.updateTitle);
         this.model.bind("change:description", this.updateTitle);
-        this.model.bind("change:estimates.new", this.updateEstimate);
         this.model.bind("change:image", this.updateImage);
-        this.model.bind("change", _.bind(function (model) {
-            var watch = ["tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"];
-            do {
-                if (model.hasChanged(watch.pop())) {
-                    this.refreshTasks();
-                    break;
-                }
-            } while (watch.length);
-        }, this));
+        
+        /* hasChanged() function is in core/core.js */
+        this.model.bind("change", hasChanged([
+          "estimates.new", "estimates.claimed", "estimates.done", "estimates.verified"
+        ], this.updateEstimate));
+        this.model.bind("change", hasChanged([
+          "tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"
+        ], this.refreshTasks));
+
         app.bind("change:currentUser", this.updateAdminActions);
     },
 

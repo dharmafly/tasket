@@ -33,6 +33,29 @@ function throttle(handler, interval, defer){
     };
 }
 
+// Checks to see if any attributes in an array have changed when a Model fires
+// a change event. If they have it calls the callback.
+//
+// Example
+//
+//  this.model.bind("change", hasChanged([
+//    "tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"
+//  ], this.refreshTasks));
+//
+// Returns a Function to be passed into the Model#bind() method.
+function hasChanged(attributes, callback) {
+  attributes = _.isArray(attributes) ? attributes : [attributes];
+  return function onChange(model) {
+    var watch = _.clone(attributes);
+    do {
+        if (model.hasChanged(watch.pop())) {
+            callback();
+            break;
+        }
+    } while (watch.length);
+  };
+}
+
 // Helper function to escape a string for HTML rendering.
 function escapeHTML(string) {
   return string.replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
