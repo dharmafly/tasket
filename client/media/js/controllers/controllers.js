@@ -290,7 +290,7 @@ var TankController = Backbone.Controller.extend({
         }
 
         if (!hub.canAddTask()) {
-            this.error("A hub can only have a maximum of 10 unverified tasks");
+            this.error("A hub can only have a maximum of " + Tasket.settings.TASK_LIMIT + " unverified tasks");
             return;
         }
 
