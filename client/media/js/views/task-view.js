@@ -111,38 +111,41 @@ var TaskView = View.extend({
             isDisabled  = false,
             data;
 
-        if (isLoggedIn){
-            if (state === states.NEW) {
-                isDisabled = !app.currentUser.canClaimTasks();
-                data = {
-                    id: this.model.id,
-                    type: "claimed",
-                    text: "I'll do it",
-                    state: Task.states.CLAIMED,
-                    title:
-                        isDisabled
-                        ? "You cannot claim this task just now. Please complete one of the 5 tasks you've claimed first"
-                        : ""
-                };
-            }
-            else if (state === states.CLAIMED && app.isCurrentUser(claimedById)) {
-                data = {
-                    id: this.model.id,
-                    type: "done",
-                    text: "I've done it",
-                    state: Task.states.DONE,
-                    title: ""
-                };
-            }
-            else if (state === states.DONE && app.isCurrentUser(owner)) {
-                data = {
-                    id: this.model.id,
-                    type: "verify",
-                    text: "Verify",
-                    state: Task.states.VERIFIED,
-                    title: ""
-                };
-            }
+        if (state === states.NEW || !isLoggedIn) {
+            isDisabled = !(app.currentUser && app.currentUser.canClaimTasks());
+            data = {
+                id: this.model.id,
+                type: "claimed",
+                text: "I'll do it",
+                state: Task.states.CLAIMED,
+                title: (function () {
+                    if (!app.currentUser) {
+                        return "Please log in to start claiming tasks";
+                    }
+                    else if (!app.currentUser.canClaimTasks()) {
+                        return "You cannot claim this task just now. Please complete one of the 5 tasks you've claimed first";
+                    }
+                    return "";
+                })()
+            };
+        }
+        else if (state === states.CLAIMED && app.isCurrentUser(claimedById)) {
+            data = {
+                id: this.model.id,
+                type: "done",
+                text: "I've done it",
+                state: Task.states.DONE,
+                title: ""
+            };
+        }
+        else if (state === states.DONE && app.isCurrentUser(owner)) {
+            data = {
+                id: this.model.id,
+                type: "verify",
+                text: "Verify",
+                state: Task.states.VERIFIED,
+                title: ""
+            };
         }
 
         if (data) {
