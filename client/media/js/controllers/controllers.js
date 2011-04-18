@@ -281,7 +281,8 @@ var TankController = Backbone.Controller.extend({
 
         app.lightbox.content(form.render().el).show();
         form.bind("success", _.bind(function (event) {
-            var hubView = tank.getHubView(hub.id);
+            var hubView = tank.getHubView(hub.id),
+                userTasks;
 
             app.lightbox.hide({silent: true});
 
@@ -289,6 +290,18 @@ var TankController = Backbone.Controller.extend({
             if (!Tasket.tasks.get(task.id)) {
                 Tasket.tasks.add(task);
                 hub.addTask(task);
+            }
+
+            // Add to current users tasks if not already in there.
+            if (
+              task.get('state') === Task.states.NEW &&
+              task.get('owner') === app.currentUser.id
+            ) {
+                userTasks = _.clone(app.currentUser.get('tasks.owned.new'));
+                userTasks.push(task.id);
+                app.currentUser.set({
+                  'tasks.owned.new': userTasks
+                });
             }
 
             // Go to the hub's URL and re-render the tasks
