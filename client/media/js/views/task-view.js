@@ -111,7 +111,7 @@ var TaskView = View.extend({
             isDisabled  = false,
             data;
 
-        if (state === states.NEW || !isLoggedIn) {
+        if (state === states.NEW) {
             isDisabled = !(app.currentUser && app.currentUser.canClaimTasks());
             data = {
                 id: this.model.id,
