@@ -10,13 +10,13 @@ html {
 		radial, center center, 0, center center, 480, from(#fff), to(#dedede)
 	);
 	background-image: -moz-radial-gradient(
-	    center center, #fff, #dedede
+		center center, #fff, #dedede
 	);
 	background-image: -webkit-radial-gradient(
-	    center center, #fff, #dedede
+		center center, #fff, #dedede
 	);
 	background-image: radial-gradient(
-	    center center, #fff, #dedede
+		center center, #fff, #dedede
 	);
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -25,16 +25,16 @@ html {
 
 html.linear {
 	background-image: -webkit-gradient(
-  		linear, left top, left bottom, from(#fff), to(#dedede)
+		linear, left top, left bottom, from(#fff), to(#dedede)
 	);
 	background-image: -moz-linear-gradient(
-	    -90deg, #fff, #dedede
+		-90deg, #fff, #dedede
 	);
 	background-image: -webkit-linear-gradient(
-	    -90deg, #fff, #dedede
+		-90deg, #fff, #dedede
 	);
 	background-image: linear-gradient(
-	    -90deg, #fff, #dedede
+		-90deg, #fff, #dedede
 	);
 }
 
@@ -88,16 +88,16 @@ button, .button, .button:visited {
 	border: none;
 	background-color: #232323;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#101010), to(#232323)
+		linear, left bottom, left top, from(#101010), to(#232323)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #101010, #232323
+		90deg, #101010, #232323
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #101010, #232323
+		90deg, #101010, #232323
 	);
 	background-image: linear-gradient(
-	    90deg, #101010, #232323
+		90deg, #101010, #232323
 	);
 	-webkit-border-radius: 0.231em /* 3px */;
 	-moz-border-radius: 0.231em /* 3px */;
@@ -125,16 +125,16 @@ button:hover, button:focus,
 .button:hover, .button:focus {
 	background-color: #444;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#232323), to(#444)
+		linear, left bottom, left top, from(#232323), to(#444)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #232323, #444
+		90deg, #232323, #444
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #232323, #444
+		90deg, #232323, #444
 	);
 	background-image: linear-gradient(
-	    90deg, #232323, #444
+		90deg, #232323, #444
 	);
 	border: none;
 }
@@ -144,16 +144,16 @@ button:active, .button:active {
 	text-shadow: 0 -1px 0 #000;
 	background-color: #111;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#000), to(#111)
+		linear, left bottom, left top, from(#000), to(#111)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #232323, #444
+		90deg, #232323, #444
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #232323, #444
+		90deg, #232323, #444
 	);
 	background-image: linear-gradient(
-	    90deg, #232323, #444
+		90deg, #232323, #444
 	);
 	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
 	-moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
@@ -171,16 +171,16 @@ button.disabled:hover, button.disabled:focus,
 	cursor: default;
 	background-color: #ccc;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#b9b9b9), to(#ccc)
+		linear, left bottom, left top, from(#b9b9b9), to(#ccc)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #b9b9b9, #ccc
+		90deg, #b9b9b9, #ccc
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #b9b9b9, #ccc
+		90deg, #b9b9b9, #ccc
 	);
 	background-image: linear-gradient(
-	    90deg, #b9b9b9, #ccc
+		90deg, #b9b9b9, #ccc
 	);
 	color: #898989;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
@@ -219,22 +219,22 @@ button.link {
 	background-image:
 	url(../images/sprites.png),
 	-webkit-gradient(
-  		linear, left bottom, left top, from(#e2e5e5), to(#fefefe)
+		linear, left bottom, left top, from(#e2e5e5), to(#fefefe)
 	);
 	background-image:
 	url(../images/sprites.png),
 	-moz-linear-gradient(
-	    90deg, #e2e5e5, #fefefe
+		90deg, #e2e5e5, #fefefe
 	);
 	background-image:
 	url(../images/sprites.png),
 	-webkit-linear-gradient(
-	    90deg, #e2e5e5, #fefefe
+		90deg, #e2e5e5, #fefefe
 	);
 	background-image:
 	url(../images/sprites.png),
 	linear-gradient(
-	    90deg, #e2e5e5, #fefefe
+		90deg, #e2e5e5, #fefefe
 	);
 	border: 1px solid #8f9397;
 	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
@@ -261,22 +261,22 @@ button.link {
 	background-image:
 	url(../images/sprites.png),
 	-webkit-gradient(
-  		linear, left bottom, left top, from(#ececec), to(#fff)
+		linear, left bottom, left top, from(#ececec), to(#fff)
 	);
 	background-image:
 	url(../images/sprites.png),
 	-moz-linear-gradient(
-	    90deg, #fefefe, #fff
+		90deg, #fefefe, #fff
 	);
 	background-image:
 	url(../images/sprites.png),
 	-webkit-linear-gradient(
-	    90deg, #fefefe, #fff
+		90deg, #fefefe, #fff
 	);
 	background-image:
 	url(../images/sprites.png),
 	linear-gradient(
-	    90deg, #fafafa, #fff
+		90deg, #fafafa, #fff
 	);
 	border: 1px solid #a3a3a3;
 	-webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
@@ -298,22 +298,22 @@ button.link {
 	background-image:
 	url(../images/sprites.png),
 	-webkit-gradient(
-  		linear, left bottom, left top, from(#bbb), to(#ccc)
+		linear, left bottom, left top, from(#bbb), to(#ccc)
 	);
 	background-image:
 	url(../images/sprites.png),
 	 -moz-linear-gradient(
-	    90deg, #fefefe, #fff
+		90deg, #fefefe, #fff
 	);
 	background-image:
 	url(../images/sprites.png),
 	-webkit-linear-gradient(
-	    90deg, #fefefe, #fff
+		90deg, #fefefe, #fff
 	);
 	background-image:
 	url(../images/sprites.png),
 	linear-gradient(
-	    90deg, #fafafa, #fff
+		90deg, #fafafa, #fff
 	);
 	border: 1px solid #a3a3a3;
 	-webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
@@ -412,7 +412,7 @@ a.action.locate {
 }
 
 .task a.readmore {
-    white-space:nowrap;
+	white-space:nowrap;
 }
 
 
@@ -491,7 +491,7 @@ form ul,
 .content form .error input,
 .content form .error textarea,
 .content form input:invalid,
-.content form textarea:invalid  {
+.content form textarea:invalid	{
 	background-color: rgb(255, 234, 239);
 	border-color: rgb(255, 188, 192);
 	color: rgb(184, 26, 26);
@@ -560,16 +560,16 @@ form ul,
 	padding: 0 20px;
 	background-color: #333;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#101010), to(#323232)
+		linear, left bottom, left top, from(#101010), to(#323232)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #101010, #323232
+		90deg, #101010, #323232
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #101010, #323232
+		90deg, #101010, #323232
 	);
 	background-image: linear-gradient(
-	    90deg, #101010, #323232
+		90deg, #101010, #323232
 	);
 	-webkit-box-shadow: 0 0 3px #000;
 	-moz-box-shadow: 0 0 3px #000;
@@ -687,16 +687,16 @@ form ul,
 	line-height: 1.923em /* 25px */;
 	background-color: #000;
 	background-image: -webkit-gradient(
-  		linear, left bottom, left top, from(#111), to(#000)
+		linear, left bottom, left top, from(#111), to(#000)
 	);
 	background-image: -moz-linear-gradient(
-	    90deg, #111, #000
+		90deg, #111, #000
 	);
 	background-image: -webkit-linear-gradient(
-	    90deg, #111, #000
+		90deg, #111, #000
 	);
 	background-image: linear-gradient(
-	    90deg, #111, #000
+		90deg, #111, #000
 	);
 	-webkit-border-radius: 0.962em /* 12.5px */;
 	-moz-border-radius: 0.962em /* 12.5px */;
@@ -736,7 +736,7 @@ article.hub {
 	min-width:20.7em; /* allows hgroup to extend to fill width */
 }
 body.hubSelected article.hub.select {
-    opacity:1;
+	opacity:1;
 }
 body.hubSelected article.hub {
 	opacity:0.5;
@@ -789,8 +789,8 @@ article.select a.nucleus-wrapper {
 }
 
 article.hub > hgroup {
-    margin-top: -2em; /* This is later changed, via JavaScript to be .outerHeight() / 2  */
-    position: absolute;
+	margin-top: -2em; /* This is later changed, via JavaScript to be .outerHeight() / 2	 */
+	position: absolute;
 	margin-left: 0;
 	min-width: 10em;
 	padding: 0.8em 0.8em 0.8em 4em;
@@ -800,23 +800,24 @@ article.hub > hgroup {
 }
 
 article.hub > div.tasks {
-    position:absolute;
+	position:absolute;
 }
 
 article.hub > div.tasks > canvas {
-    position:absolute;
-    top:0;
-    pointer-events:none; /* TODO: in browsers that don't support pointer-events, the canvas element may obstruct user clicks on hubs underneath */
+	position:absolute;
+	top:0;
+	pointer-events:none; /* TODO: in browsers that don't support pointer-events, the canvas element may obstruct user clicks on hubs underneath */
 }
 
 article.hub > div.tasks > ul {
 	margin: 0;
 	padding:0;
 	list-style-type: none;
-    width:100%;
-    height:100%;
-    position:absolute;
-    top:0;
+	width:100%;
+	height:100%;
+	position:absolute;
+	top:0;
+	z-index: 2;
 }
 
 article.hub > div.tasks > ul > li {
@@ -1191,22 +1192,22 @@ article.hub .controls {
 
 /* Dharmafly */
 .dashboard footer a.df {
-    text-decoration:none;
-    border:none;
-    padding-top:0.16em;
-    display:block;
+	text-decoration:none;
+	border:none;
+	padding-top:0.16em;
+	display:block;
 }
 .dashboard footer a.df span.df-name {
-    font-family:Calibri,Helvetica,Arial,sans-serif;
-    text-transform:uppercase;
-    font-weight:bold;
+	font-family:Calibri,Helvetica,Arial,sans-serif;
+	text-transform:uppercase;
+	font-weight:bold;
 }
 .dashboard footer a.df:hover {
-    color:#70873f;
+	color:#70873f;
 }
 .dashboard footer a.df:hover span.df-name {
-    border-bottom-width:1px;
-    border-bottom-style:solid;
+	border-bottom-width:1px;
+	border-bottom-style:solid;
 }
 
 /* @group Dashboard Detail Styles
@@ -1471,25 +1472,25 @@ article.hub .controls {
 	background-image: url(../images/notification_stripes.png),
 	-webkit-gradient(
 		linear, left top, left bottom, 
-		color-stop(0,   rgb(72, 164, 12)),
+		color-stop(0,	rgb(72, 164, 12)),
 		color-stop(0.5, rgb(57, 156, 19)),
 		color-stop(0.5, rgb(44, 150, 6)),
-		color-stop(1,   rgb(25, 141, 6))
+		color-stop(1,	rgb(25, 141, 6))
 	);
 	background-image: url(../images/notification_stripes.png),
 	-moz-linear-gradient(
-	    -90deg,
-	    rgb(72, 164, 12),
+		-90deg,
+		rgb(72, 164, 12),
 		rgb(57, 156, 19) 50%,
-		rgb(44, 150, 6)  50%,
+		rgb(44, 150, 6)	 50%,
 		rgb(25, 141, 6)
 	);
 	background-image: url(../images/notification_stripes.png),
 	linear-gradient(
-	    -90deg,
-	    rgb(72, 164, 12),
+		-90deg,
+		rgb(72, 164, 12),
 		rgb(57, 156, 19) 50%,
-		rgb(44, 150, 6)  50%,
+		rgb(44, 150, 6)	 50%,
 		rgb(25, 141, 6)
 	);
 	border-top: 1px solid rgb(90, 189, 26);
@@ -1502,23 +1503,23 @@ article.hub .controls {
 	background-image: url(../images/notification_stripes.png),
 	-webkit-gradient(
 		linear, left top, left bottom, 
-		color-stop(0,   rgb(242, 173, 13)),
+		color-stop(0,	rgb(242, 173, 13)),
 		color-stop(0.5, rgb(231, 167, 26)),
 		color-stop(0.5, rgb(227, 156, 0)),
-		color-stop(1,   rgb(216, 145, 0))
+		color-stop(1,	rgb(216, 145, 0))
 	);
 	background-image: url(../images/notification_stripes.png),
 	-moz-linear-gradient(
-	    -90deg,
-	    rgb(242, 173, 13),
+		-90deg,
+		rgb(242, 173, 13),
 		rgb(231, 167, 26) 50%,
 		rgb(227, 156, 0)  50%,
 		rgb(216, 145, 0)
 	);
 	background-image: url(../images/notification_stripes.png),
 	linear-gradient(
-	    -90deg,
-	    rgb(242, 173, 13),
+		-90deg,
+		rgb(242, 173, 13),
 		rgb(231, 167, 26) 50%,
 		rgb(227, 156, 0)  50%,
 		rgb(216, 145, 0)
@@ -1531,14 +1532,14 @@ article.hub .controls {
 	background-image: url(../images/notification_stripes.png),
 	-webkit-gradient(
 		linear, left top, left bottom, 
-		color-stop(0,   rgb(211, 66, 66)),
+		color-stop(0,	rgb(211, 66, 66)),
 		color-stop(0.5, rgb(202, 62, 62)),
 		color-stop(0.5, rgb(195, 39, 39)),
-		color-stop(1,   rgb(184, 26, 26))
+		color-stop(1,	rgb(184, 26, 26))
 	);
 	background-image: url(../images/notification_stripes.png),
 	-moz-linear-gradient(
-	    -90deg,
+		-90deg,
 		rgb(211, 66, 66),
 		rgb(202, 62, 62) 50%,
 		rgb(195, 39, 39) 50%,
@@ -1546,7 +1547,7 @@ article.hub .controls {
 	);
 	background-image: url(../images/notification_stripes.png),
 	linear-gradient(
-	    -90deg,
+		-90deg,
 		rgb(211, 66, 66),
 		rgb(202, 62, 62) 50%,
 		rgb(195, 39, 39) 50%,
