@@ -2212,9 +2212,9 @@ require.def('SA_tasket', ['kgd/core', 'kgd/consts', 'kgd/world/World','kgd/world
 			this.addSlider(this.world.tk, 'inWallRepulsion', 'Wall Repulsion K.', 0.0, 500.1);
 			this.addSlider(this.world.tk, 'inHookeEquilib', 'Hooke Equilibrium', -0.1, 100.1);
 			this.addSlider(this.world.tk, 'inVelDampK', 'Vel. Damping', 0.0, 1.1);
-			this.addSlider(this.world.tk, 'right', 'Right wall', -100.0, 500);
+			this.addSlider(this.world.tk, 'right', 'Right wall', -300.0, 500);
 			this.addSlider(this.world.tk, 'top', 'Top wall', -100.0, 500);
-			this.addSlider(this.world.tk, 'left', 'Left wall', -100.0, 500);
+			this.addSlider(this.world.tk, 'left', 'Left wall', -300.0, 500);
 			this.addSlider(this.world.tk, 'bottom', 'Bottom wall', -100.0, 500);
 
 			var that = this;
