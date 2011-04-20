@@ -29,10 +29,13 @@ var HubView = View.extend({
             inVelDampK: 0.1
         });
 
-        _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateEstimate", "updateAdminActions");
+        _.bindAll(this,
+          "refreshTasks", "updateImage", "updateTitle",
+          "updateDescription", "updateEstimate", "updateAdminActions"
+        );
 
         this.model.bind("change:title", this.updateTitle);
-        this.model.bind("change:description", this.updateTitle);
+        this.model.bind("change:description", this.updateDescription);
         this.model.bind("change:image", this.updateImage);
         
         /* hasChanged() function is in core/core.js */
@@ -48,9 +51,20 @@ var HubView = View.extend({
 
     updateTitle: function () {
         this.$("h1").html(this.model.escape("title"));
-        this.$("h2").html(nl2br(this.model.escape("description")));
         this._updateMargin();
         return this;
+    },
+
+    updateDescription: function () {
+      var description = this.$("hgroup h2"),
+          text = this.model.get("description");
+
+      if (!description[0].hasAttribute("data-truncated")) {
+          text = app.truncate(text, app.hubDescriptionTruncate);
+      }
+
+      description.html(nl2br(escapeHTML(text)));
+      this._updateMargin();
     },
 
     updateImage: function () {
@@ -582,18 +596,16 @@ var HubView = View.extend({
 
     toggleDescription: function () {
         var description = this.$("hgroup h2"),
-            method = "removeAttribute",
-            text = this.model.get("description");
+            method = "removeAttribute";
 
         if (!description[0].hasAttribute("data-truncated")) {
-            text = app.truncate(text, app.hubDescriptionTruncate);
             method = "setAttribute";
         }
 
         description[0][method]("data-truncated");
-        description.html(nl2br(escapeHTML(text)));
-        this._updateMargin();
+        this.updateDescription();
     }
+
 }, {
     /* Global keeping check of the current z-index */
     zIndex: 0,
