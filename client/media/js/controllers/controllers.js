@@ -38,6 +38,11 @@ var TankController = Backbone.Controller.extend({
         var tank = this;
         this.hubViews = {};
         this.forceDirector = app.createForceDirector();
+        
+        // TODO TEMP visualising forcedirector
+        //window.tasket_app.world.tk.reset();
+        //this.forceDirector.engine = window.tasket_app.world.tk;
+        
         this.calculateWalls();
 
         if (options && options.hubs){

@@ -63,12 +63,21 @@ getScript(
     "lang/default.js",
     "lang/custom.js",
     "init.js",
-    //"viz/test.js",
+    
+    //"viz/forcedirector-gui/js/jquery-ui-1.8.4.custom.min.js",
+    //"viz/forcedirector-gui/js/vector_battle_regular.typeface.js",
+    //"viz/forcedirector-gui/data/tasket_data.js",
     
     // Callback function once all are loaded
     function(loaded){
         if (!loaded){
             throw "Scripts not fully loaded";
+        }
+        else {
+            //var s = document.createElement("script");
+            //s.setAttribute("data-main", "/media/js/viz/forcedirector-gui/scripts/main");
+            //s.src = "/media/js/viz/forcedirector-gui/scripts/require.js";
+            //document.head.appendChild(s);
         }
     },
     
