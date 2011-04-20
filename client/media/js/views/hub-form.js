@@ -1,6 +1,6 @@
 var HubForm = FormUpload.extend({
 
-    events: _.extend(FormUpload.prototype.events, {
+    events: _.extend({}, FormUpload.prototype.events, {
         'click .delete': '_onDelete'
     }),
 

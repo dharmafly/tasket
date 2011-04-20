@@ -1,5 +1,5 @@
 var TaskForm = Form.extend({
-    events: _.extend(Form.prototype.events, {
+    events: _.extend({}, Form.prototype.events, {
         'click .delete': '_onDelete'
     }),
 
