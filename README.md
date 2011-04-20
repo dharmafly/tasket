@@ -77,3 +77,19 @@ JavaScript files used to wrap the Tasket application in a closure.
 [#smoosh]: http://github.com/fat/smoosh/
 [#node]: http://nodejs.org/
 [#npm]: http://npmjs.org/
+
+# Cron
+
+It's recommended to run the `task_states` management command every so often.
+
+This does 2 things:
+
+1. If a task has been claimed but not done within `settings.CLAIMED_TIME_LIMIT` 
+    (default 24 hours) then the task state is reverted to 'new'
+2. If a task has been done but not verified then it is automatically verified after `settings.DONE_TIME_LIMIT` (default 24 hours)
+
+To run this command at 10 minutes pass every hour, add the following to your crontab:
+
+> 10 * * * * python [path/to/]web/manage.py task_states
+
+NOTE: If you are using virtualenv, make sure you activate it before running the command.
