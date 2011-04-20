@@ -110,7 +110,7 @@ var cache = new Cache(Tasket.namespace),
                 continuationStr = continuationStr || "…";
                 return str
                     .slice(0, charLimit + continuationStr.length)
-                    .replace(/\W?\s\S*$/m, "") +
+                    .replace(/\W*(\w*|\W*)$/m, "") +
                     continuationStr;
             }
             return str;

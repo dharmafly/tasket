@@ -71,7 +71,11 @@ var TaskView = View.extend({
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
         data.estimate = this.model.humanEstimate();
-        data.readmore = true;
+        
+        data.readmore = data.description.length > app.taskDescriptionTruncate;
+        data.description = app.truncate(data.description, app.taskDescriptionTruncate);
+        O(data.description.length);
+        
 
         this.elem.html(tim("task", data));
 
@@ -81,15 +85,7 @@ var TaskView = View.extend({
     },
 
     updateDescription: function () {
-        var description = this.model.escape('description'),
-            truncate    = description.length > app.taskDescriptionTruncate,
-            readmore    = this.$('.readmore').hide();
-
-        if (truncate) {
-            description = app.truncate(description, app.taskDescriptionTruncate);
-            readmore.show();
-        }
-
+        var description = this.model.escape('description');
         this.$('.description .body').html(nl2br(description));
         return this;
     },
