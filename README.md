@@ -86,10 +86,41 @@ This does 2 things:
 
 1. If a task has been claimed but not done within `settings.CLAIMED_TIME_LIMIT` 
     (default 24 hours) then the task state is reverted to 'new'
-2. If a task has been done but not verified then it is automatically verified after `settings.DONE_TIME_LIMIT` (default 24 hours)
+2. If a task has been done but not verified then it is automatically verified 
+    after `settings.DONE_TIME_LIMIT` (default 24 hours)
 
 To run this command at 10 minutes pass every hour, add the following to your crontab:
 
 > 10 * * * * python [path/to/]web/manage.py task_states
 
 NOTE: If you are using virtualenv, make sure you activate it before running the command.
+
+
+# Admin users
+
+There are two types of admins:
+
+1. 'task admins' – users that can perform various admin operations using the 
+    front end (such as editing any task and hub).
+2. 'super users' – users that can log in to the django backend and edit other 
+    users (to make them a 'task admin', for example).
+
+Only 'super users' can login to the django admin.  A super user should have been 
+created  when the site was installed.  If no super user exists, running the 
+following will create a one: 
+
+> python manage.py createsuperuser
+
+To login to django as a superuser, go to `/admin/` in a browser.
+
+## Making a normal user in to a task admin
+
+After logging in to django, go to `/admin/tasks/profile/` and click on the user
+you want to edit.
+
+Click the `Admin` checkbox and save the user.
+
+## Making a normal user a super user
+
+Log in to django and go to `/admin/auth/user/`.  Click on the user you want to 
+edit and check both the 'super user' and 'staff' check boxes.  Save the user.
