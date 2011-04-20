@@ -59,7 +59,7 @@ var HubView = View.extend({
       var description = this.$("hgroup h2"),
           text = this.model.get("description");
 
-      if (!description[0].hasAttribute("data-truncated")) {
+      if (description[0].hasAttribute("data-truncated")) {
           text = app.truncate(text, app.hubDescriptionTruncate);
       }
 
