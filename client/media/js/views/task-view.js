@@ -54,15 +54,15 @@ var TaskView = View.extend({
         data.hubId = data.hub;
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
-
+        data.description = '{description}';
         data.estimate = this.model.humanEstimate();
 
-        return tim("task-detail", data);
+        return tim("task-detail", data)
+          .replace('{description}', nl2br(this.model.escape('description')));
     },
 
     render: function(){
-        var data = this.model.toJSON(),
-            desc;
+        var data = this.model.toJSON();
 
         data.isNew = this.model.isNew();
         data.isNotNew = !this.model.isNew();
@@ -70,13 +70,8 @@ var TaskView = View.extend({
         data.hubId = data.hub;
         data.canEdit = app.isCurrentUser(data.owner);
         data.isClaimed = !!data.claimedBy;
-
-        // Truncate description
-        desc = app.truncate(data.description, app.taskDescriptionTruncate);
-        data.readmore = desc.length !== data.description.length;
-        data.description = desc;
-
         data.estimate = this.model.humanEstimate();
+        data.readmore = true;
 
         this.elem.html(tim("task", data));
 
@@ -92,7 +87,16 @@ var TaskView = View.extend({
     },
 
     updateDescription: function () {
-        this.$('.description').html(nl2br(this.model.escape('description')));
+        var description = this.model.escape('description'),
+            truncate    = description.length > app.taskDescriptionTruncate,
+            readmore    = this.$('.readmore').hide();
+
+        if (truncate) {
+            description = app.truncate(description, app.taskDescriptionTruncate);
+            readmore.show();
+        }
+
+        this.$('.description .body').html(nl2br(description));
         return this;
     },
 
