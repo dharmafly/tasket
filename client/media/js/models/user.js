@@ -49,7 +49,7 @@ var User = Model.extend({
             data = {},
             current  = task.get("state"),
             previous = task.previous("state"),
-            wasNew = previous === Task.states.NEW;
+            newlyClaimed = (previous === Task.states.NEW) && (task.get("owner") === this.id);
 
         _.each(["owned", "claimed"], function (group) {
             var previousKey = "tasks." + group + "." + previous,
@@ -60,7 +60,7 @@ var User = Model.extend({
             // If the task is in the array of previous ids or we're iterating
             // through the claimed tasks and this is a new one (in which case
             // it won't be in an array) then update the data.
-            if (_.indexOf(previousIds, id) > -1 || (group === 'claimed' && wasNew)) {
+            if (_.indexOf(previousIds, id) > -1 || (group === 'claimed' && newlyClaimed)) {
                 data[previousKey] = _.without(previousIds, id);
 
                 currentIds = _.clone(this.get(currentKey));
