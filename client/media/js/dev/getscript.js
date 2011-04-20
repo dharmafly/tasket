@@ -55,6 +55,8 @@
 
 var getScript = (function(window){
     "use strict";
+    
+    var now = (new Date()).getTime();
         
     function getScript(srcs, callback, options){
         /**
@@ -102,7 +104,7 @@ var getScript = (function(window){
             script.async = true;
             
             // Apply the src
-            script.src = path + src;
+            script.src = path + src + (options.bustCache ? "?v=" + now : "");
             
             // Go...
             head.appendChild(script);

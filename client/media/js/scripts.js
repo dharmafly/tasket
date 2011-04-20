@@ -73,6 +73,6 @@ getScript(
     },
     
     // Options (path is relative to the calling HTML file)
-    {path:"media/js/"}
+    {path:"media/js/", bustCache:true}
 );
 
