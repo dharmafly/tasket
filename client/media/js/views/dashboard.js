@@ -212,12 +212,17 @@ var Dashboard = View.extend({
                 var title = model.get("title") || model.get("description");
                 return {
                     id:          model.id,
-                    href:        "#/" + model.type + "s/" + model.id + "/",
                     title:       app.truncate(title, 15),
                     isHub:       model.type === "hub",
                     isTask:      model.type === "task",
                     showDone:    app.isCurrentUser(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,
-                    showVerify:  app.isCurrentUser(model.get("owner")) && model.get("state") === Task.states.DONE
+                    showVerify:  app.isCurrentUser(model.get("owner")) && model.get("state") === Task.states.DONE,
+                    href:        (function () {
+                        if (model.type === "task") {
+                            return "#/hubs/" + model.get("hub") + "/tasks/" + model.id + "/";
+                        }
+                        return "#/hubs/" + model.id + "/";
+                    })()
                 };
             });
             this.$(selector).show().find("ul").html(tim("dashboard-link", {

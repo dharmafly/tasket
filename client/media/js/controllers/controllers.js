@@ -5,7 +5,7 @@ var TankController = Backbone.Controller.extend({
         "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask",
         "/hubs/:hub_id/tasks/:id/edit/": "editTask",
-        "/hubs/:hub_id/tasks/:id": "displayTask"
+        "/hubs/:hub_id/tasks/:id/": "displayTask"
     },
 
     constructor: function TankController() {
