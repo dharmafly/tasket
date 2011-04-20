@@ -74,8 +74,6 @@ var TaskView = View.extend({
         
         data.readmore = data.description.length > app.taskDescriptionTruncate;
         data.description = app.truncate(data.description, app.taskDescriptionTruncate);
-        O(data.description.length);
-        
 
         this.elem.html(tim("task", data));
 
