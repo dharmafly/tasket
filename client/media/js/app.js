@@ -124,7 +124,7 @@ var cache = new Cache(Tasket.namespace),
         createForceDirector: function(options){
             var f = new ForceDirector(),
                 defaultSettings = {
-                    fps: 60,
+                    fps: 10,
                     numCycles: 200,
                     updateStepMin: 0.1,
                     updateStepMax: 5,
@@ -140,18 +140,18 @@ var cache = new Cache(Tasket.namespace),
                     wallsFlag: true
                 },
                 easing, i;
-            
+
             // Combine options with default settings
-            options = _.extend(defaultSettings, options || {});
-            
+            options = _.defaults(options || {}, defaultSettings);
+
             function loop(){
                 f.updateCycle(options.updateStepMin + easing);
                 easing = easing - (easing * options.updateStepDamping);
-                
+
                 if (options.animate && options.animator){
                     options.animator();
                 }
-                
+
                 if (i <= options.numCycles){
                     if (options.animate){
                         window.setTimeout(function(){
