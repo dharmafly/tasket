@@ -8,7 +8,8 @@ var Dashboard = View.extend({
     },
 
     events: {
-        "click .notifications": "_onNotificationClick"
+        "click .notifications": "_onNotificationClick",
+        "click section.quicklinks.my-projects ul.listing li": "toggleHub",
     },
 
     constructor: function Dashboard() {
@@ -95,15 +96,25 @@ var Dashboard = View.extend({
 
         return this;
     },
+    
+    toggleHub: function(event){
+        var hubId = app.dashboard.getHubIdFromAnchor(event.target);
+        if (hubId === app.selectedHub){
+            app.tankController.getHubView(hubId).toggleTasks();
+        }
+    },
+    
+    getHubIdFromAnchor: function(hubAnchor){
+        var match = hubAnchor.href.match(HubView.hubIdInUrlRegex);
+        return match && match[1];
+    },
 
     getHubAnchorById: function(hubId){
-        var hubAnchor;
+        var dashboard = this,
+            hubAnchor;
 
         this.$("section.quicklinks.my-projects ul.listing li a").each(function(){
-            var match = this.href.match(HubView.hubIdInUrlRegex),
-                anchorHubId = match && match[1];
-
-            if (hubId === anchorHubId){
+            if (hubId === dashboard.getHubIdFromAnchor(this)){
                 hubAnchor = this;
                 return true;
             }

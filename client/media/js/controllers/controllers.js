@@ -169,9 +169,9 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
 
-    displayHub: function(id){
+    displayHub: function(hubId){
         var controller = this,
-            hubView = this.getHubView(id);
+            hubView = this.getHubView(hubId);
 
         if (hubView){
             hubView.sendToFront().showTasks();
