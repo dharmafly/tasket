@@ -1064,6 +1064,9 @@ article.hub .controls {
 .dashboard .quicklinks.my-projects ul.listing li.select a {
 	border-bottom: 1px solid;
 }
+.dashboard .quicklinks.my-projects ul.listing li.select a.button {
+    border:none;
+}
 
 .dashboard .quicklinks .info {
 	display: block;
