@@ -834,8 +834,9 @@ article.hub > hgroup h1 {
 	font-size: 1.385em /* 18px */;
 }
 
-article.hub > hgroup h1 span {
-	font-size: 0.6em;
+article.hub > hgroup .estimate {
+	font-size: 0.8em;
+	font-style:italic;
 }
 
 article.hub > hgroup h2 {

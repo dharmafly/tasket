@@ -65,7 +65,7 @@ function escapeHTML(string) {
 function humanTimespan (remainder, units) {
     var times = [];
 
-    units = units || {day: 86400, hour: 3600, minute: 60};
+    units = units || {day: 86400, hour: 3600, min: 60};
 
     _.each(units, function (seconds, unit) {
         var timespan = Math.floor(remainder / seconds);
