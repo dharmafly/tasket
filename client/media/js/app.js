@@ -126,9 +126,9 @@ var cache = new Cache(Tasket.namespace),
                 defaultSettings = {
                     fps: 10,
                     numCycles: 200,
-                    updateStepMin: 0.1,
-                    updateStepMax: 5,
-                    updateStepDamping: 0.005,
+                    updateStepMin: 0.3,
+                    updateStepMax: 1,
+                    updateStepDamping: 0.00001,
                     animate: false,
                     animator: null,
                     callback: null,
@@ -179,6 +179,9 @@ var cache = new Cache(Tasket.namespace),
                 f.inVelDampK = options.inVelDampK;
                 f.inCoulombK = options.inCoulombK;
                 f.inWallRepulsion = options.inWallRepulsion;
+                //f.inBBRepulsion = 200;
+                //f.inVelDampK = 0.000025;
+                
                 f.wallsFlag = options.wallsFlag;
                 f.top = options.wallTop;
                 f.bottom = options.wallBottom;

@@ -415,17 +415,19 @@ var HubView = View.extend({
     },
 
     updateForceDirectedDimensions: function(){
-        var taskBuffer = app.taskBuffer,
-            hubViewOffset = this.offset();
+        if (this.forcedNode){
+            var taskBuffer = app.taskBuffer,
+                hubViewOffset = this.offset();
 
-        this.cacheDimensions();
+            this.cacheDimensions();
 
-        this.forcedNode.setWidth(this.width + taskBuffer);
-        this.forcedNode.setHeight(this.height + taskBuffer);
-        this.forcedNode.setPos(
-            hubViewOffset.left - (this.nucleusWidth / 2) - (taskBuffer / 2),
-            app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
-        );
+            this.forcedNode.setWidth(this.width + taskBuffer);
+            this.forcedNode.setHeight(this.height + taskBuffer);
+            this.forcedNode.setPos(
+                hubViewOffset.left - (this.nucleusWidth / 2) - (taskBuffer / 2),
+                app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
+            );
+        }
 
         return this;
     },

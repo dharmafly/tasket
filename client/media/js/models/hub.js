@@ -148,12 +148,27 @@ var Hub = Model.extend({
 
     weight: function(){
         var settings = Tasket.settings,
-            maxMinutes = settings.TASK_ESTIMATE_MAX * settings.TASK_LIMIT,
-            unclaimedMinutes = this.get("estimates.new"),
-            weight = unclaimedMinutes / maxMinutes;
-
-        return weight || 0;
-    }
+            // (max minutes per task * max new, claimed or done tasks on a hub) / 3 = max minutes per hub's new, claimed or done tasks
+            maxMinutesPerUnverifiedTaskType = (settings.TASK_ESTIMATE_MAX * settings.TASK_LIMIT) / 3,
+            
+            unverifiedTaskWeight = this.get("estimates.new") +
+                (this.get("estimates.claimed") / 2) +
+                (this.get("estimates.done") / 4),
+                
+            maxUnverifiedTaskWeight = maxMinutesPerUnverifiedTaskType +
+                (maxMinutesPerUnverifiedTaskType / 2) +
+                (maxMinutesPerUnverifiedTaskType / 4),
+            
+            numVerifiedTasks = this.get("estimates.verified"),
+            verifiedTaskAdjustment = numVerifiedTasks ? (0.5 / numVerifiedTasks) : 1,
+            maxVerifiedTaskAdjustment = 1,
+            
+            minutesThisHub = unverifiedTaskWeight + verifiedTaskAdjustment,
+            maxMinutes = maxUnverifiedTaskWeight + maxVerifiedTaskAdjustment;
+            
+        return minutesThisHub ?
+            minutesThisHub / maxMinutes : 0;
+    },
 });
 
 // HUBS COLLECTION
