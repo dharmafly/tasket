@@ -9,7 +9,7 @@ var Dashboard = View.extend({
 
     events: {
         "click .notifications": "_onNotificationClick",
-        "click section.quicklinks.my-projects ul.listing li": "toggleHub",
+        "click section.quicklinks.my-projects ul.listing li": "toggleHub"
     },
 
     constructor: function Dashboard() {

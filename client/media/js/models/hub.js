@@ -168,7 +168,7 @@ var Hub = Model.extend({
             
         return minutesThisHub ?
             minutesThisHub / maxMinutes : 0;
-    },
+    }
 });
 
 // HUBS COLLECTION

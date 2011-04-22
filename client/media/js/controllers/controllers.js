@@ -194,6 +194,8 @@ var TankController = Backbone.Controller.extend({
     },
     
     drawHubView: function(hubView, options){
+        var offset;
+    
         options = options || {};
     
         if (options.left && options.top){
