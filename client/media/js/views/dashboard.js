@@ -149,7 +149,7 @@ var Dashboard = View.extend({
     },
 
     updateStatistics: function () {
-        this.$('.statistics em').text(app.statistics.tasks.verified);
+        this.$(".statistics em").text(app.statistics.tasks.verified);
     },
 
     // Updates the user status box.
@@ -270,16 +270,16 @@ var Dashboard = View.extend({
 
     // Scroll down to the appropriate listing and highlight the activity links.
     _onNotificationClick: function (event) {
-        var className = event.target.hash.replace('#', '.'),
-            element = this.$(className).addClass('highlight'),
+        var className = event.target.hash.replace("#", "."),
+            element = this.$(className).addClass("highlight"),
             view = this;
 
         event.preventDefault();
-        this.elem.animate({'scrollTop': element.position().top}, function () {
-            element.addClass('animate').removeClass('highlight');
+        this.elem.animate({"scrollTop": element.position().top}, function () {
+            element.addClass("animate").removeClass("highlight");
 
             setTimeout(function () {
-                element.removeClass('animate');
+                element.removeClass("animate");
             }, 3000);
         });
     }
