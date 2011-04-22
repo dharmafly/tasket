@@ -106,11 +106,11 @@
     </script>
     <script type="text/tim" class="task-claimed-by-you">
         <img src="{{image}}" width="14" height="14" alt="Your avatar" />
-        <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this
+        <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this. {{additional}}
     </script>
     <script type="text/tim" class="task-claimed-by-user">
         <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
-        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task
+        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task. {{additional}}
     </script>
     <script type="text/tim" class="dashboard-detail">
         <h1>{{title}}</h1>
@@ -403,7 +403,7 @@
             <li><a data-type="ownedClaimed" href="#my-tasks" title="View your tasks"><span></span> of your tasks have been claimed</a></li>
             <li><a data-type="adminedDone" href="#managed-tasks" title="View your tasks"><span></span> tasks need your approval</a></li>
             <li><a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"><span></span> tasks you’ve done have been approved</a></li>
-            <li><span data-type="atClaimedLimit">You&quot;ve reached the limit of <span></span> claimed tasks</span></li>
+            <li><span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span></li>
         </ul>
         <section class="quicklinks my-projects">
             <h1>My Projects</h1>
@@ -426,7 +426,7 @@
         <footer>
             <p class="statistics">
                 <img src="/media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
-                <em>{{verified}}</em> tasks done by everyone
+                <em>{{verified}}</em> completed tasks
             </p>
             <nav>
                 <ul>

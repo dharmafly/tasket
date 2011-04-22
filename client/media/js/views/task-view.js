@@ -161,6 +161,7 @@ var TaskView = View.extend({
             isDone = !!this.model.get("doneTime"),
             image,
             status,
+            additional = "",
             model;
 
         if (!claimedById) {
@@ -171,7 +172,13 @@ var TaskView = View.extend({
             model = app.currentUser;
             templateName = "task-claimed-by-you";
 
-            status = isDone ? "have done" : "are doing";
+            if (isDone){
+                status = "have done";
+                additional = "It needs verifying by an admin.";
+            }
+            else {
+                status = "are doing";
+            }
         } else {
             model = Tasket.getUsers(claimedById);
             model.bind("change", this.updateClaimedBy);
@@ -183,6 +190,7 @@ var TaskView = View.extend({
             name: model.get("name"),
             image: this.userImageSrc(model),
             status: status,
+            additional: additional,
             url: model.url()
         }));
 
