@@ -69,7 +69,7 @@ var User = Model.extend({
 
                 currentIds = _.clone(this.get(currentKey));
                 if (_.indexOf(currentIds, id) < 0) {
-                  currentIds.push(id);
+                    currentIds.push(id);
                 }
                 data[currentKey] = currentIds;
             }

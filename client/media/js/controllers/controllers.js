@@ -5,7 +5,8 @@ var TankController = Backbone.Controller.extend({
         "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask",
         "/hubs/:hub_id/tasks/:id/edit/": "editTask",
-        "/hubs/:hub_id/tasks/:id/": "displayTask"
+        "/hubs/:hub_id/tasks/:id/": "displayTaskDetails",
+        "/hubs/:hub_id/detail/" : "displayHubDetails"
     },
 
     constructor: function TankController() {
@@ -345,19 +346,29 @@ var TankController = Backbone.Controller.extend({
     
     // TODO: this should work even when the task view isn't yet available - i.e. via an async request to API
     // TODO: lightbox should close if a link from within the task description is clicked
-    displayTask: function(hub, taskId){
+    displayHubDetails: function(hubId){
+        var hubView = this.getHubView(hubId);
+            
+        if (hubView){
+            hubView.displayDetails();
+        }
+        
+        return this;
+    },
+    
+    // TODO: this should work even when the task view isn't yet available - i.e. via an async request to API
+    // TODO: lightbox should close if a link from within the task description is clicked
+    displayTaskDetails: function(hubId, taskId){
         taskId = String(taskId); // allow argument to be a String or a Number
         
-        var task = Tasket.getTasks(taskId),
-            hubId = task && task.get("hub"),
-            hubView = hubId && this.getHubView(hubId),
+        var hubView = this.getHubView(hubId),
             taskView = hubView && hubView.taskViews && hubView.taskViews.detect(function(taskView){
                 return taskView.model.id === taskId;
             });
             
         if (taskView){
             this.displayHub(hubId);
-            app.lightbox.content(taskView.taskDetailsHTML()).show();
+            taskView.displayDetails();
         }
         else if (hubView){
             hubView.updateLocation();

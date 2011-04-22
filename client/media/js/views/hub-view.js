@@ -10,8 +10,7 @@ var HubView = View.extend({
 
     events: {
         "click a.nucleus-wrapper": "onclick",
-        "click hgroup": "updateLocation",
-        "click h2": "toggleDescription"
+        "click hgroup": "updateLocation"
     },
 
     constructor: function HubView() {
@@ -30,8 +29,7 @@ var HubView = View.extend({
         });
 
         _.bindAll(this,
-          "refreshTasks", "updateImage", "updateTitle",
-          "updateDescription", "updateEstimate", "updateAdminActions"
+          "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions"
         );
 
         this.model.bind("change:title", this.updateTitle);
@@ -51,20 +49,15 @@ var HubView = View.extend({
 
     updateTitle: function () {
         this.$("h1").html(this.model.escape("title"));
-        this._updateMargin();
-        return this;
+        return this._updateMargin();
     },
 
     updateDescription: function () {
       var description = this.$("hgroup h2"),
-          text = this.model.get("description");
+          text = app.truncate(this.model.get("description"), app.hubDescriptionTruncate);
 
-      if (description[0].hasAttribute("data-truncated")) {
-          text = app.truncate(text, app.hubDescriptionTruncate);
-      }
-
-      description.html(nl2br(escapeHTML(text)));
-      this._updateMargin();
+      description.html(escapeHTML(text));
+      return this._updateMargin();
     },
 
     updateImage: function () {
@@ -90,8 +83,7 @@ var HubView = View.extend({
             actions.remove();
         }
 
-        this._updateMargin();
-        return this;
+        return this._updateMargin();
     },
 
     imageSrc: function(src){
@@ -571,8 +563,10 @@ var HubView = View.extend({
 
         data.estimate   = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
         data.isSelected = this.isSelected();
-        data.truncatedDescription = app.truncate(data.description, app.hubDescriptionTruncate);
+        data.readmore = data.description.length > app.hubDescriptionTruncate;
+        data.description = app.truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
+        data.hubId = this.model.id;
 
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("a.nucleus-wrapper");
@@ -585,28 +579,29 @@ var HubView = View.extend({
         this.updateAdminActions();
         this._updateMargin();
 
-        // Update the title to ensure that linebreaks are converted into <br>
-        // tags. We do this manually rather than in tim() because of issues
-        // with form elements and a lack of granularity when using filters in
-        // tim().
-        this.updateTitle();
-
         if (data.isSelected){
             this.renderTasks();
         }
         return this;
     },
 
-    toggleDescription: function () {
-        var description = this.$("hgroup h2"),
-            method = "removeAttribute";
+    hubDetailsHTML: function(){
+        var data = this.model.toJSON();
 
-        if (!description[0].hasAttribute("data-truncated")) {
-            method = "setAttribute";
-        }
+        data.description = "{description}";
+        data.estimate = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
+        data.hubId = this.model.id;
 
-        description[0][method]("data-truncated");
-        this.updateDescription();
+        return tim("hub-detail", data)
+          .replace("{description}", nl2br(this.model.escape("description")));
+    },
+    
+    displayDetails: function(){
+        app.lightbox
+            .content(this.hubDetailsHTML())
+            .show();
+            
+        return this;
     }
 
 }, {

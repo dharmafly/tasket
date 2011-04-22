@@ -1,15 +1,15 @@
 var Lightbox = View.extend({
     events: {
-        'click': '_onHide'
+        "click": "_onHide"
     },
 
-    tagName: 'section',
+    tagName: "section",
 
-    className: 'lightbox',
+    className: "lightbox",
 
     classes: {
-        display: 'show',
-        animate: 'fade-in'
+        display: "show",
+        animate: "fade-in"
     },
 
     constructor: function Lightbox() {
@@ -25,25 +25,30 @@ var Lightbox = View.extend({
 
         this._updateMargin();
 
-        return this.trigger(options, 'show', this);
+        return this.trigger(options, "show", this);
     },
     hide: function (options) {
-        var duration = this.elem.css('-webkit-transition-duration') || null;
-
+        var duration = this.elem.css("transition-duration") ||
+            this.elem.css("-moz-transition-duration") ||
+            this.elem.css("-webkit-transition-duration") ||
+            this.elem.css("-o-transition-duration") ||
+            this.elem.css("-ms-transition-duration") ||
+            0;
+            
         this.elem.removeClass(this.classes.animate);
         if (duration) {
             setTimeout(_.bind(function () {
                 this.elem.removeClass(this.classes.display);
-            }, this), duration * 1000);
+            }, this), parseFloat(duration) * 1000);
         } else {
             this.elem.removeClass(this.classes.display);
         }
 
-        return this._trigger(options, 'hide', this);
+        return this._trigger(options, "hide", this);
     },
     content: function (content) {
-        var element = this.$('.content');
-        if (typeof content === 'string') {
+        var element = this.$(".content");
+        if (typeof content === "string") {
             element.html(content);
         } else {
             element.empty().append(content);
@@ -51,15 +56,15 @@ var Lightbox = View.extend({
         return this;
     },
     render: function () {
-        var template = tim('lightbox');
+        var template = tim("lightbox");
         this.elem.html(template);
         return this;
     },
     _updateMargin: function () {
-        var inner = this.$('.lightbox-inner');
+        var inner = this.$(".lightbox-inner");
         inner.css({
-            top: '50%',
-            'margin-top': inner.outerHeight() / 2 * -1
+            top: "50%",
+            "margin-top": inner.outerHeight() / 2 * -1
         });
         return this;
     },
@@ -74,7 +79,11 @@ var Lightbox = View.extend({
       return this;
     },
     _onHide: function (event) {
-        if (event.target === this.el || jQuery(event.target).hasClass('close')) {
+        if (event.target.nodeName === "A"){
+            this.hide({silent:true});
+        }
+    
+        else if (event.target === this.el || jQuery(event.target).hasClass("close")) {
             event.preventDefault();
             this.hide();
         }

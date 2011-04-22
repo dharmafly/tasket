@@ -414,7 +414,7 @@ a.action.locate {
 	background-position: 0 -390px;
 }
 
-.task a.readmore {
+a.readmore {
 	white-space:nowrap;
 }
 
@@ -842,8 +842,13 @@ article.hub > hgroup .estimate {
 	font-style:italic;
 }
 
-article.hub > hgroup h2 {
+article.hub > hgroup p.description {
 	font-size: 1.077em /* 14px */;
+}
+
+article.hub > hgroup a.readmore {
+    font-size:0.9em;
+	color:#ccc;
 }
 
 article.hub > hgroup,

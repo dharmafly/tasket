@@ -12,7 +12,7 @@ var cache = new Cache(Tasket.namespace),
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 taskBuffer: 20,
                 tankResizeThrottle: 1000,
-                hubDescriptionTruncate: 30, // No. of chars to truncate hub description to
+                hubDescriptionTruncate: 45, // No. of chars to truncate hub description to
                 taskDescriptionTruncate: 140, // No. of chars to truncate task description to
                 hubImageWidth: 30,
                 hubImageHeight: 30,

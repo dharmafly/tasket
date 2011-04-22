@@ -45,22 +45,6 @@ var TaskView = View.extend({
         return this;
     },
 
-    taskDetailsHTML: function(){
-        var data = this.model.toJSON();
-
-        data.isNew = this.model.isNew();
-        data.isNotNew = !this.model.isNew();
-
-        data.hubId = data.hub;
-        data.canEdit = app.isCurrentUserOrAdmin(data.owner);
-        data.isClaimed = !!data.claimedBy;
-        data.description = '{description}';
-        data.estimate = this.model.humanEstimate();
-
-        return tim("task-detail", data)
-          .replace('{description}', nl2br(this.model.escape('description')));
-    },
-
     render: function(){
         var data = this.model.toJSON();
 
@@ -71,7 +55,6 @@ var TaskView = View.extend({
         data.canEdit = app.isCurrentUserOrAdmin(data.owner);
         data.isClaimed = !!data.claimedBy;
         data.estimate = this.model.humanEstimate();
-        
         data.readmore = data.description.length > app.taskDescriptionTruncate;
         data.description = app.truncate(data.description, app.taskDescriptionTruncate);
 
@@ -82,9 +65,27 @@ var TaskView = View.extend({
         return this.offsetApply();
     },
 
-    updateDescription: function () {
-        var description = this.model.escape('description');
-        this.$('.description .body').html(nl2br(description));
+    taskDetailsHTML: function(){
+        var data = this.model.toJSON();
+
+        data.isNew = this.model.isNew();
+        data.isNotNew = !this.model.isNew();
+
+        data.hubId = data.hub;
+        data.canEdit = app.isCurrentUserOrAdmin(data.owner);
+        data.isClaimed = !!data.claimedBy;
+        data.description = "{description}";
+        data.estimate = this.model.humanEstimate();
+
+        return tim("task-detail", data)
+          .replace("{description}", nl2br(this.model.escape("description")));
+    },
+    
+    displayDetails: function(){
+        app.lightbox
+            .content(this.taskDetailsHTML())
+            .show();
+            
         return this;
     },
 

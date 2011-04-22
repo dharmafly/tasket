@@ -51,23 +51,40 @@
     <!-- TEMPLATES -->
 
     <script type="text/tim" class="lightbox">
-        <div class="lightbox-inner">
+        <section class="lightbox-inner">
             <div class="content"></div>
-            <button class="action close">Close Lightbox</button>
-        </div>
+            <button class="action close">Close</button>
+        </section>
     </script>
 
     <script type="text/tim" class="hub">
         <a href="#/hubs/{{id}}" class="nucleus-wrapper">
-            <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30" />
+            <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30">
         </a>
+        
         <hgroup>
-            <h1>{{title}}</h1><span class="estimate">{{estimate}}</span>
-            <h2 title="{{description}}" data-truncated>{{truncatedDescription}}</h2>
+            <h1>{{title}}</h1>
+            <span class="estimate">{{estimate}}</span>
+            
+            <p class="description">
+                {{description}}
+                {{readmore}}
+                <a class="readmore" href="#/hubs/{{hubId}}/detail/">» Read more</a>
+                {{/readmore}}
+            </p>
         </hgroup>
+        
         <div class="tasks">
             <ul></ul>
         </div>
+    </script>
+    
+    <script type="text/tim" class="hub-detail">
+        <article>
+            <h1><a href="#/hubs/{{hubId}}/">{{title}}</a></h1>
+            <div class="description">{{description}}</div>
+            <p class="estimate">({{estimate}} total)</p>
+        </article>
     </script>
 
     <script type="text/tim" class="hub-admin-actions">
@@ -83,7 +100,13 @@
             <a class="edit" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
         </span>
         {{/canEdit}}
-        <p class="description"><span class="body">{{description}}</span> <span class="estimate">({{estimate}})</span> {{readmore}}<a class="readmore" href="#/hubs/{{hubId}}/tasks/{{id}}/">» Read more</a>{{/readmore}}</p>
+        
+        <p class="description">
+            <span class="body">{{description}}</span> 
+            <span class="estimate">({{estimate}})</span> 
+            {{readmore}}<a class="readmore" href="#/hubs/{{hubId}}/tasks/{{id}}/">» Read more</a>{{/readmore}}
+        </p>
+        
         <aside class="meta">
             {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
             <div class="controls"></div>
@@ -91,10 +114,13 @@
     </script>
     
     <script type="text/tim" class="task-detail">
-        <p class="description">{{description}} <span class="estimate">({{estimate}})</span></p>
-        <aside class="meta">
-            {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
-        </aside>
+        <article>
+            <div class="description">{{description}}</div>
+            <aside class="meta">
+                <span class="estimate">({{estimate}})</span>
+                {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
+            </aside>
+        </article>
     </script>
     
     <script type="text/tim" class="task-control">
