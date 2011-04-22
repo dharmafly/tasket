@@ -142,8 +142,9 @@ var Dashboard = View.extend({
         var user = this.model;
         return {
             ownedClaimed:    user.get("tasks.owned.claimed").length,
-            adminedDone:     user.get("tasks.owned.done").length,      // TODO: if an admin, this should include all done tasks
-            claimedVerified: user.get("tasks.claimed.verified").length,// TODO: should be recent verified tasks
+            adminedDone:     user.isAdmin() ? // if an admin, this includes all done tasks
+                app.statistics.tasks.done : user.get("tasks.owned.done").length,
+            claimedVerified: user.get("tasks.claimed.verified").length, // TODO: should be recent verified tasks
             atClaimedLimit:  user.canClaimTasks() ? 0 : Tasket.settings.CLAIMED_LIMIT
         };
     },

@@ -127,8 +127,8 @@
                     {{tasks}}
                         <li>
                             <p>New task item that needs to be done</p>
-                            <a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-                            <form class="form-button" action="#/tasks/new-task/" method="POST">
+                            <a class="button action edit" href="#/tasks/task/edit/" title="Edit this task">Edit</a>
+                            <form class="form-button" action="#/tasks/task/" method="POST">
                                 <button class="action delete" type="submit">Delete</button>
                             </form>
                         </li>
@@ -234,8 +234,8 @@
                     {{tasks}}
                         <li>
                             <p>New task item that needs to be done</p>
-                            <a class="button action edit" href="#/tasks/new-task/edit/" title="Edit this task">Edit</a>
-                            <form class="form-button" action="#/tasks/new-task/" method="POST">
+                            <a class="button action edit" href="#/tasks/task/edit/" title="Edit this task">Edit</a>
+                            <form class="form-button" action="#/tasks/task/" method="POST">
                                 <button class="action delete" type="submit">Delete</button>
                             </form>
                         </li>
@@ -376,7 +376,7 @@
         </body>
     </script>
 
-    <script type="text/tim" class="new-task">
+    <script type="text/tim" class="edit-task">
         <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}Edit task{{/isNotNew}}</h1>
         <ul>
             <li>

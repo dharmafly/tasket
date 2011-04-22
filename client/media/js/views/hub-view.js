@@ -78,9 +78,10 @@ var HubView = View.extend({
     },
 
     updateAdminActions: function () {
-        var controls = this.$("hgroup"),
+        var currentUser = app.currentUser,
+            controls = this.$("hgroup"),
             actions  = controls.find(".admin-actions"),
-            canEdit  = app.isCurrentUser(this.model.get("owner"));
+            canEdit  = app.isCurrentUserOrAdmin(this.model.get("owner"));
 
         if (canEdit && !actions.length) {
             controls.prepend(tim("hub-admin-actions", {id: this.model.id}));

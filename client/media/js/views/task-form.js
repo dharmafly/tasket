@@ -1,6 +1,6 @@
 var TaskForm = Form.extend({
     events: _.extend({}, Form.prototype.events, {
-        'click .delete': '_onDelete'
+        "click .delete": "_onDelete"
     }),
 
     constructor: function TaskForm() {
@@ -14,7 +14,7 @@ var TaskForm = Form.extend({
     },
     
     render: function () {
-        var template = tim("new-task", {
+        var template = tim("edit-task", {
             description:  this.model.get("description") || "",
             estimates:    this._estimates(),
             isNew:        this.model.isNew(),

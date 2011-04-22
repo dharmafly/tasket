@@ -201,6 +201,14 @@ var cache = new Cache(Tasket.namespace),
         isCurrentUser: function (id) {
             return !!(app.currentUser && id === app.currentUser.id);
         },
+        
+        currentUserIsAdmin: function(){
+            return !!(app.currentUser && app.currentUser.isAdmin());
+        },
+        
+        isCurrentUserOrAdmin: function(id){
+            return app.isCurrentUser(id) || app.currentUserIsAdmin();
+        },
 
         restoreCache: function(){
             var currentUserData, currentUser, username;

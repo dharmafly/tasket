@@ -42,6 +42,10 @@ var User = Model.extend({
         var limit = Tasket.settings.CLAIMED_LIMIT;
         return this.get("tasks.claimed.claimed").length < limit;
     },
+    
+    isAdmin: function(){
+        return this.get("admin");
+    },
 
     // Updates the users tasks when the state of a task changes.
     updateTasks: function (task) {

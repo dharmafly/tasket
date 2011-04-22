@@ -52,7 +52,7 @@ var TaskView = View.extend({
         data.isNotNew = !this.model.isNew();
 
         data.hubId = data.hub;
-        data.canEdit = app.isCurrentUser(data.owner);
+        data.canEdit = app.isCurrentUserOrAdmin(data.owner);
         data.isClaimed = !!data.claimedBy;
         data.description = '{description}';
         data.estimate = this.model.humanEstimate();
@@ -68,7 +68,7 @@ var TaskView = View.extend({
         data.isNotNew = !this.model.isNew();
 
         data.hubId = data.hub;
-        data.canEdit = app.isCurrentUser(data.owner);
+        data.canEdit = app.isCurrentUserOrAdmin(data.owner);
         data.isClaimed = !!data.claimedBy;
         data.estimate = this.model.humanEstimate();
         
@@ -93,29 +93,30 @@ var TaskView = View.extend({
     },
 
     updateControls: function () {
-        var controls    = this.$(".controls"),
+        var currentUser = app.currentUser,
+            controls    = this.$(".controls"),
             template    = tim("task-control"),
             states      = Task.states,
             state       = this.model.get("state"),
             owner       = this.model.get("owner"),
             claimedById = this.model.get("claimedBy"),
-            isLoggedIn  = !!app.currentUser,
+            isLoggedIn  = !!currentUser,
             isDisabled  = false,
             data;
 
         if (state === states.NEW) {
-            isDisabled = !(app.currentUser && app.currentUser.canClaimTasks());
+            isDisabled = !(currentUser && currentUser.canClaimTasks());
             data = {
                 id: this.model.id,
                 type: "claimed",
                 text: "I'll do it",
                 state: Task.states.CLAIMED,
                 title: (function () {
-                    if (!app.currentUser) {
-                        return "Please log in to start claiming tasks";
+                    if (!currentUser) {
+                        return "Please log in to start claiming tasks.";
                     }
-                    else if (!app.currentUser.canClaimTasks()) {
-                        return "You cannot claim this task just now. Please complete one of the 5 tasks you've claimed first";
+                    else if (!currentUser.canClaimTasks()) {
+                        return "You cannot claim this task just now. Please complete one of the " + Tasket.settings.CLAIMED_LIMIT + " tasks that you've claimed first.";
                     }
                     return "";
                 })()
@@ -130,7 +131,7 @@ var TaskView = View.extend({
                 title: ""
             };
         }
-        else if (state === states.DONE && app.isCurrentUser(owner)) {
+        else if (state === states.DONE && app.isCurrentUserOrAdmin(owner)) {
             data = {
                 id: this.model.id
             };

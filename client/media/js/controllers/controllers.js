@@ -293,10 +293,10 @@ var TankController = Backbone.Controller.extend({
     editHub: function (id) {
         var hub = Tasket.getHubs(id);
             
-        if (!this._isLoggedIn("You must be logged in to edit a hub")) {
+        if (!this._isLoggedIn("You must be logged in to edit this.")) {
             return;
         }
-        if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
+        if (!this._hasAdminRights(hub.get("owner"), "You cannot edit this, because you do not own it and you are not an admin.")) {
             return;
         }
         this.displayHub(id)
@@ -310,12 +310,12 @@ var TankController = Backbone.Controller.extend({
         return !!app.currentUser;
     },
 
-    _isOwner: function (id, message) {
-        var isUser = app.isCurrentUser(id);
-        if (!isUser) {
-            this.error(message || "You do not have permission to do this");
+    _hasAdminRights: function (id, message) {
+        var hasRights = app.isCurrentUser(id) || app.currentUserIsAdmin();
+        if (!hasRights) {
+            this.error(message || "Sorry, you do not have permission to do that.");
         }
-        return isUser;
+        return hasRights;
     },
 
     _createHubForm: function (hub) {
@@ -370,16 +370,16 @@ var TankController = Backbone.Controller.extend({
         var hub = Tasket.getHubs(hubId),
             form;
 
-        if (!this._isLoggedIn("You must be logged in to create a task")) {
+        if (!this._isLoggedIn("You must be logged in to create a task.")) {
             return;
         }
 
-        if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
+        if (!this._hasAdminRights(hub.get("owner"), "You cannot create a task here on this " + app.lang.HUB + ", because you do not own it and you are not an admin.")) {
             return;
         }
 
         if (!hub.canAddTask()) {
-            this.error("A hub can only have a maximum of " + Tasket.settings.TASK_LIMIT + " unverified tasks");
+            this.error("A " + app.lang.HUB + " can only have a maximum of " + Tasket.settings.TASK_LIMIT + " unverified tasks");
             return;
         }
 
@@ -396,15 +396,15 @@ var TankController = Backbone.Controller.extend({
             task = Tasket.getTasks(taskId);
 
         if (_.indexOf(hub.getTasks(), taskId) < 0) {
-            this.error("This task does not exist on this hub");
+            this.error("This task does not exist on this " + app.lang.HUB + ".");
             return;
         }
 
-        if (!this._isLoggedIn("You must be logged in to create a task")) {
+        if (!this._isLoggedIn("You must be logged in to create a task.")) {
             return;
         }
 
-        if (!this._isOwner(hub.get("owner"), "You do not own this hub")) {
+        if (!this._hasAdminRights(hub.get("owner"), "You do not own this " + app.lang.HUB + ".")) {
             return;
         }
 
@@ -461,7 +461,7 @@ var TankController = Backbone.Controller.extend({
 
     error: function (message) {
         app.notification.error(
-            message || "You do not have permission to access this"
+            message || "You do not have permission to access this."
         );
         app.back();
     },
@@ -609,6 +609,6 @@ var DashboardController = Backbone.Controller.extend({
 
     showCurrentUserHubs: function () {
         var user = app.currentUser;
-        app.dashboard.detail.title("My Projects").show(); // TODO change text
+        app.dashboard.detail.title(app.lang.MY_HUBS).show(); // TODO change text
     }
 });
