@@ -393,7 +393,10 @@ a.action.locate {
 	transition: opacity 0.15s ease-in;
 }
 
-.select hgroup .admin-actions a,
+/* .select hgroup .admin-actions a,
+
+    To be worked into touch support in future. See tickets #180 and #224.
+*/ 
 :hover > .admin-actions a {
 	opacity: 0.7;
 }
