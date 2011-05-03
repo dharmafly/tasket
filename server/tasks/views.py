@@ -283,6 +283,10 @@ class ProfileView(PutView):
             T.user = profile.user
             T.save()
             T.user.email = request.PUT.get('email', T.user.email)
+            
+            if request.PUT.get('password'):
+                T.user.set_password(request.PUT['password'])
+            
             self.res.write(T.as_json(request_user=request.user))
         else:
             self.res.write(json.dumps(form.errors))
