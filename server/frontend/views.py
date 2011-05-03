@@ -82,8 +82,6 @@ class LoginView(PutView):
             self.res.status_code = 401
             return self.res
                 
-                
-                
 class LogoutView(PutView):
     http_method_names = ['post',]
 

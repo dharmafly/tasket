@@ -298,7 +298,7 @@ class ProfileView(PutView):
                 'errors' : args, 
             }))
             return self.res
-
+    
     @method_decorator(AllowJSONPCallback)
     def post(self, request, user_id=None, image=None):
         if image:
