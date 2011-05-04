@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 
+from django.core import mail
 from django.test import TestCase
 from django.core.urlresolvers import reverse
 
@@ -73,16 +74,12 @@ class ViewTests(TestCase):
         self.assertEqual(logged_in, True)
         self.assertEqual(json.loads(response.content)['id'], 6)
 
-    def test_register_bad_email(self):
+    def test_password_reset(self):
         response = self.client.post(
-            '/users/', json.dumps({
-                'username' : 'newuser',
-                'password' : '12345',
-                'email' : 'newuserexample.com'
-            }), 
-            content_type='application/json',
+            '/users/password-reset/',
+            {'email' : 'testuser1@example.com'}
             )
-        self.assertEqual(response.status_code, 500)
-        self.assertEqual(json.loads(response.content)['error'], "invalid email")
-
+        x = mail.outbox[0].body.splitlines()[-1]
+        response = self.client.get(x)
+        
 

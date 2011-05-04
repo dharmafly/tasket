@@ -11,6 +11,9 @@ from django.core.validators import validate_email
 from django.forms import ValidationError
 from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.contrib.auth.forms import PasswordResetForm
+from django.utils.http import base36_to_int
+from django.contrib.auth.tokens import default_token_generator as token_generator
 
 from utils.helpers import AllowJSONPCallback, PutView
 
@@ -81,7 +84,45 @@ class LoginView(PutView):
             ))
             self.res.status_code = 401
             return self.res
-                
+
+class PasswordReset(PutView):
+    """
+    See https://github.com/premasagar/tasket/issues/219#issuecomment-1093011
+    """
+    http_method_names = ['post', 'get',]
+    
+    def get(self, request, uid, token):
+        """
+        Mainly ripped from django.contrib.auth.views.password_reset_confirm
+        """
+        
+        try:
+            uid_int = base36_to_int(uid)
+            user = User.objects.get(pk=uid_int)
+        except (ValueError, User.DoesNotExist):
+            user = None
+        
+        if user is not None and token_generator.check_token(user, token):
+            # Hack because we're not getting the password
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            login(request, user)
+            return HttpResponseRedirect('/#account/change-password/')
+
+    def post(self, request):
+        try:
+            user = User.objects.get(username=request.POST.get('username'))
+        except User.DoesNotExist:
+            try:
+                user = User.objects.get(email=request.POST.get('email'))
+            except Exception, e:
+                return HttpResponse()
+
+        form = PasswordResetForm({'email' : user.email})
+        if form.is_valid():
+            form.save(email_template_name='password_reset_email.html')
+        
+        return HttpResponse()
+
 class LogoutView(PutView):
     http_method_names = ['post',]
 
