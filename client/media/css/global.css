@@ -1463,6 +1463,10 @@ article.hub .controls {
 	right: 10px;
 }
 
+.lightbox .lightbox-inner .content .description {
+    margin-top: 10px; /* make space for close button */
+}
+
 /* @end */
 
 /* @group Notification
