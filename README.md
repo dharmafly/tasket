@@ -1,8 +1,10 @@
 # Installation
 
     cd tasket
+    easy_install virtualenv
     virtualenv --no-site-packages .
     source bin/activate
+    easy_install django
     easy_install pip
     pip install -r requirements.txt
     cd web
