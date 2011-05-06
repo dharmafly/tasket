@@ -169,6 +169,20 @@ _.extend(Tasket, Backbone.Events, {
 
         return subset;
     },
+    
+    getTasksByState: function (state, callback) {
+        return jQuery.ajax({
+            url: Tasket.endpoint + "tasks/?state=" + state,
+            contentType: "application/json",
+            dataType: "json",
+            success: function(response){
+                callback(new TaskList(response));
+            },
+            error: function(){
+                callback(null);
+            }
+        });
+    },
 
     login: function(username, password, callback) {
         return jQuery.ajax({

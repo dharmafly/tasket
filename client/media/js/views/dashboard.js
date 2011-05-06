@@ -144,7 +144,7 @@ var Dashboard = View.extend({
             ownedClaimed:    user.get("tasks.owned.claimed").length,
             adminedDone:     user.isAdmin() ? // if an admin, this includes all done tasks
                 app.statistics.tasks.done : user.get("tasks.owned.done").length,
-            claimedVerified: user.get("tasks.claimed.verified").length, // TODO: should be recent verified tasks
+            claimedVerified: user.get("tasks.claimed.verified").length, // TODO: should this be recent verified tasks?
             atClaimedLimit:  user.canClaimTasks() ? 0 : Tasket.settings.CLAIMED_LIMIT
         };
     },
@@ -193,7 +193,12 @@ var Dashboard = View.extend({
     updateManagedTasks: function () {
         var tasks = null;
         if (this.model) {
-            tasks = this._getCollection("getTasks", "tasks.owned.done", this.updateManagedTasks);
+            if (app.currentUserIsAdmin() && app.allDoneTasks){
+                tasks = app.allDoneTasks;
+            }
+            else {
+                tasks = this._getCollection("getTasks", "tasks.owned.done", this.updateManagedTasks);
+            }
         }
         return this.updateList(".managed-tasks", tasks);
     },
@@ -227,8 +232,8 @@ var Dashboard = View.extend({
                     title:       app.truncate(title, 15),
                     isHub:       model.type === "hub",
                     isTask:      model.type === "task",
-                    showDone:    app.isCurrentUser(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,
-                    showVerify:  app.isCurrentUser(model.get("owner")) && model.get("state") === Task.states.DONE,
+                    showDone:    app.isCurrentUserOrAdmin(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,
+                    showVerify:  app.isCurrentUserOrAdmin(model.get("owner")) && model.get("state") === Task.states.DONE,
                     href:        (function () {
                         if (model.type === "task") {
                             return "#/hubs/" + model.get("hub") + "/tasks/" + model.id + "/";

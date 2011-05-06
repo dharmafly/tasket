@@ -9,6 +9,9 @@ app.bind("setup", function onSetup() {
     app.lightbox.bind("hide", app.back);
     app.bind("change:currentUser", _.bind(app.dashboard.setUser, app.dashboard));
     app.dashboard.detail.bind("hide", app.back);
+    
+    // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard managed tasks accordingly
+    app.bind("change:allDoneTasks", _.bind(app.dashboard.updateManagedTasks, app.dashboard));
 });
 
 // Called when the app has all dependancies loaded.
@@ -69,8 +72,15 @@ app.bind("ready", function onReady () {
     // Need to restore the user from the cache once all the hubs are loaded.
     // This ensures that the users hubs are not requested before Tasket.hubs
     // is reset.
-    app.restoreCache()
-       .setupAuthentication();
+    app.restoreCache().setupAuthentication();
+       
+    // If the user is an admin, then fetch all "done" state tasks in the whole system
+    if (app.currentUserIsAdmin()){
+        _.bindAll(app, "updateAllDoneTasks");
+        Tasket.bind("task:change", app.updateAllDoneTasks);
+        
+        app.fetchAllDoneTasks();
+    }
 
     Backbone.history.start();
 });

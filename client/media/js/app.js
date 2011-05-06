@@ -26,6 +26,7 @@ var cache = new Cache(Tasket.namespace),
                 authtoken: null,
                 csrftoken: null,
                 currentUser: null,
+                allDoneTasks: null,
                 statistics: {
                     tasks: {
                         "new": 0,
@@ -221,7 +222,6 @@ var cache = new Cache(Tasket.namespace),
                 currentUser = app.cache.get("currentUser");
                 if (currentUser) {
                     window.location.hash = "/login/";
-                    console.log(currentUser);
                     username = currentUser.username;
                     setTimeout(function () {
                         jQuery('#field-username').val(username);
@@ -244,22 +244,73 @@ var cache = new Cache(Tasket.namespace),
         },
 
         destroyCache: function () {
-            app.cache.remove("currentUser");
-            app.cache.remove("authtoken");
-            app.cache.remove("csrftoken");
+            app.cache
+                .remove("currentUser")
+                .remove("authtoken")
+                .remove("csrftoken");
         },
 
         // Requires User model.
-        updateCurrentUser: function (user, cache) {
+        updateCurrentUser: function (user, saveToCache) {
             if (user){
                 if (!Tasket.users.get(user.id)){
                     Tasket.users.add(user);
                 }
                 app.currentUser = user;
-                app.cache.set("currentUser", app.currentUser.toJSON());
+                if (saveToCache !== false){
+                    app.cache.set("currentUser", app.currentUser.toJSON());
+                }
                 app.trigger("change:currentUser", app.currentUser); // see dashboard.js > Dashboard.setUser()
             }
             return app.currentUser;
+        },
+        
+        fetchAllDoneTasks: function(){
+            Tasket.getTasksByState("done", function(doneTasks){
+                if (doneTasks){
+                    app.allDoneTasks = doneTasks;
+                }
+                // There was a server/connectivity error, and we haven't yet fetched the list of done tasks. Use an empty tasks collection.
+                else if (!app.allDoneTasks){
+                    app.allDoneTasks = new TaskList();
+                }
+                app.trigger("change:allDoneTasks", app.allDoneTasks);
+            });
+            
+            return app;
+        },
+        
+        updateAllDoneTasks: function(task){ // based on user.updateTasks(); called when any task changes
+            var allDoneTasks = app.allDoneTasks,
+                id, isDone, wasDone, storedTask;
+            
+            if (app.allDoneTasks){
+                isDone  = task.get("state") === Task.states.DONE;
+                wasDone = task.previous("state") === Task.states.DONE;
+                
+                // Remove this task from the allDoneTasks collection
+                if (isDone || wasDone){
+                    id = task.id;
+                    storedTask = allDoneTasks.detect(function(doneTask){
+                        return id === doneTask.id;
+                    });
+                    
+                    if (storedTask){
+                        allDoneTasks.remove(storedTask, {silent: true});
+                    }
+                    
+                    // Add the changed task, if it is in the DONE state
+                    if (isDone){
+                        allDoneTasks.add(task, {silent: true});
+                    }
+                    
+                    if (storedTask || isDone){
+                        app.trigger("change:allDoneTasks", app.allDoneTasks);
+                    }
+                }
+            }
+            
+            return app;
         },
 
         setAuthtoken: function(authtoken){
