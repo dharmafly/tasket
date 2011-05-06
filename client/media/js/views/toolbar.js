@@ -30,14 +30,18 @@ var Toolbar = View.extend({
                     var taskKeys = ['tasks.claimed.claimed', 'tasks.claimed.verified', 'tasks.claimed.done'],
                         userKeys = ['name', 'image'],
                         changedAttr = user.changedAttributes(),
+                        changedKeys;
+                        
+                    if (changedAttr !== false){ // verify that the change was a valid change to an attribute
                         changedKeys = _.keys(changedAttr);
 
-                    if (_.intersect(changedKeys, taskKeys).length) {
-                        view.updateTasks(user);
-                    }
+                        if (_.intersect(changedKeys, taskKeys).length) {
+                            view.updateTasks(user);
+                        }
 
-                    if (_.intersect(changedKeys, userKeys).length) {
-                        view.updateUser(user);
+                        if (_.intersect(changedKeys, userKeys).length) {
+                            view.updateUser(user);
+                        }
                     }
                 });
             }
@@ -77,7 +81,7 @@ var Toolbar = View.extend({
                     'src', Tasket.thumbnail(user.get('image'), 16, 16, true)
                 );
             }
-            this.userbar.find('a').text(user.get('name'));
+            this.userbar.find('a').text(user.fullname());
         } else {
             this.userbar.hide();
         }
