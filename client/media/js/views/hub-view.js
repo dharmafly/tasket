@@ -40,6 +40,7 @@ var HubView = View.extend({
         this.model.bind("change", hasChanged([
           "estimates.new", "estimates.claimed", "estimates.done", "estimates.verified"
         ], this.updateEstimate));
+        
         this.model.bind("change", hasChanged([
           "tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"
         ], this.refreshTasks));
@@ -66,7 +67,7 @@ var HubView = View.extend({
     },
 
     updateEstimate: function () {
-        this.$("hgroup h1 span").text("(" + (this.model.humanEstimate() || app.lang.HUB_NO_TASKS) + ")");
+        this.$(".estimate").text("(" + (this.model.humanEstimate() || app.lang.HUB_NO_TASKS) + ")");
         return this;
     },
 
