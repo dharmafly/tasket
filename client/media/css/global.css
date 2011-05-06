@@ -487,8 +487,11 @@ form ul,
 	margin-bottom: 0.769em /* 10px */;
 }
 
-.content form .error strong {
+.content form .error strong, .content form strong.warning {
 	color: #ce0300;
+}
+.content form .note {
+	color: #777;
 }
 
 .content form .error input,

@@ -136,7 +136,7 @@
     </script>
     <script type="text/tim" class="task-claimed-by-user">
         <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
-        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task. {{additional}}
+        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a> {{status}} this task. {{additional}}
     </script>
     <script type="text/tim" class="dashboard-detail">
         <h1>{{title}}</h1>
@@ -279,13 +279,13 @@
                 <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
             </li>
             <li>
-                <label for="field-password">Password <strong class="error">(This field is required)</strong></label>
+                <label for="field-password">Password</label>
                 <input type="password" id="field-password" name="password" placeholder="password" value="" />
             </li>
         </ul>
         <div class="actions">
             <button type="submit">Login</button>
-            <!-- <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p> -->
+            <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
         </div>
     </script>
 
@@ -334,6 +334,14 @@
             <li>
                 <label for="field-email">Email Address</label>
                 <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="{{email}}" />
+            </li>
+            <li>
+                <label for="field-password">Password <span class="note">(Keep blank to leave unchanged)</span></label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password-confirm">Confirm Password</label>
+                <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
             </li>
             <li>
                 <label for="field-image">Image</label>
