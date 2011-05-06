@@ -12,6 +12,7 @@ var cache = new Cache(Tasket.namespace),
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 taskBuffer: 20,
                 tankResizeThrottle: 1000,
+                successNotificationHideDelay: 10000, // milliseconds before success notification is hidden; use `0` to not hide at all
                 hubDescriptionTruncate: 45, // No. of chars to truncate hub description to
                 taskDescriptionTruncate: 140, // No. of chars to truncate task description to
                 hubImageWidth: 30,
