@@ -1,5 +1,5 @@
 var Login = Form.extend({
-    constructor: function Login() {
+    constructor: function LoginForm() {
         Form.prototype.constructor.apply(this, arguments);
     },
 

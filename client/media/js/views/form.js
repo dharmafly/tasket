@@ -9,6 +9,8 @@ var Form = View.extend({
         View.prototype.constructor.apply(this, arguments);
     },
     
+    abort: false,
+    
     submit: function (event) {
         var data = {};
         if (event) { 
@@ -22,13 +24,22 @@ var Form = View.extend({
         });
 
         this.trigger("beforeSave", data, this.model, this);
+        
+        // listeners to beforeSave may set the `abort` flag
+        if (this.abort){
+            this.abort = false;
+            this.trigger("abort", this.model, this)
+                .trigger("error", this.model, this);
+        }
+        else {
+            this.model.save(data, {
+                success: _.bind(this._onSuccess, this),
+                error:   _.bind(this._onError, this)
+            });
 
-        this.model.save(data, {
-            success: _.bind(this._onSuccess, this),
-            error:   _.bind(this._onError, this)
-        });
-
-        return this.trigger("submit", this.model, this);
+            this.trigger("submit", this.model, this);
+        }
+        return this;
     },
     
     errors: function (errors) {
