@@ -252,7 +252,7 @@ var TankController = Backbone.Controller.extend({
         var hubView = this.getHubView(id);
         if (hubView) {
             this.hubViews = _.without(this.hubViews, hubView);
-            hubView.remove();
+            hubView.deselect().remove();
         }
         return this;
     },
