@@ -14,3 +14,4 @@ client/media/cache
 client/media/images
 rebuild_db.sh
 /web/node_modules
+Imaging-*

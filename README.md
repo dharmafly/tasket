@@ -31,6 +31,12 @@ Start the server:
 
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
+
+# On Linux, ensure the image library paths are correct
+
+If you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. Follow the instruction in [this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/) (also [see this](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm)). Discussed in [Issue #110](https://github.com/premasagar/tasket/issues/110).
+
+
 # Building a single minified JavaScript file
 
 ## Build software installation
