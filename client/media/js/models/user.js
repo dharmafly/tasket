@@ -48,7 +48,7 @@ var User = Model.extend({
     },
     
     fullname: function(){
-        return this.get("name") || this.get("username");
+        return this.get("name") || this.get("username") || "";
     },
 
     // Updates the users tasks when the state of a task changes
