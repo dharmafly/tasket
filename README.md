@@ -36,7 +36,7 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 If you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
-For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm)) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
+For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
 
 
 # Building a single minified JavaScript file
