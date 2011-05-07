@@ -478,12 +478,12 @@
       {{links}}
       <li>
         <a class="hub-link" href="{{href}}" title="View {{title}}">{{title}}</a>
-        {{isHub}}<a class="button add" href="{{href}}tasks/new/">Add task</a>{{/isHub}}
+        {{isHub}}<a class="button add" title="Add a new task" href="{{href}}tasks/new/">Add task</a>{{/isHub}}
         {{isTask}}
-            {{showDone}}<button class="done" data-task-state="done" data-task-id="{{id}}">Done</button>{{/showDone}}
+            {{showDone}}<button class="done" title="I've done this task" data-task-state="done" data-task-id="{{id}}">Done</button>{{/showDone}}
             {{showVerify}}
-                <button class="reject" data-task-state="new" data-task-id="{{id}}">Reject</button>
-                <button class="verified" data-task-state="verified" data-task-id="{{id}}">Verify</button>
+                <button class="reject" title="Reject. The task was not completed" data-task-state="new" data-task-id="{{id}}">Reject</button>
+                <button class="verified" title="Verify. The task was completed" data-task-state="verified" data-task-id="{{id}}">Verify</button>
             {{/showVerify}}
         {{/isTask}}
       </li>
