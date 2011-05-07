@@ -277,16 +277,19 @@ var Dashboard = View.extend({
     // Scroll down to the appropriate listing and highlight the activity links.
     _onNotificationClick: function (event) {
         var className = event.target.hash.replace("#", "."),
-            element = this.$(className).addClass("highlight"),
-            view = this;
+            element = this.$(className).addClass("highlight");
 
+        // Scroll the dashboard root element to the position of the inner section, and highlight the inner section
+        this.elem
+            .animate(
+                {
+                    "scrollTop": element.position().top
+                },
+                function () {
+                    element.removeClass("highlight");
+                }
+            );
+            
         event.preventDefault();
-        this.elem.animate({"scrollTop": element.position().top}, function () {
-            element.addClass("animate").removeClass("highlight");
-
-            setTimeout(function () {
-                element.removeClass("animate");
-            }, 3000);
-        });
     }
 });

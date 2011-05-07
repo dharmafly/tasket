@@ -948,7 +948,6 @@ article.hub .controls {
 
 .dashboard .notifications {
 	padding: 1.154em /* 15px */ 1em /* 13px */;
-	margin-bottom: 1.538em /* 20px */;
 	background-color: #ececec;
 	background-color: rgba(255, 255, 255, 0.3);
 	border: 1px solid #bcbcbc;
@@ -984,8 +983,26 @@ article.hub .controls {
 .dashboard .quicklinks {
 	position: relative;
 	border-bottom: 1px solid #ccc;
-	padding-bottom: 1.538em /* 20px */;
-	margin-bottom: 1.538em /* 20px */;
+	padding: 1.538em /* 20px */;
+	margin: 0 -1.538em /* 20px; -ve margin used so that highlighting sections fills whole block */;
+    
+    transition: background-color 2s ease-out;
+    -moz-transition: background-color 2s ease-out;
+    -webkit-transition: background-color 2s ease-out;
+    -o-transition: background-color 2s ease-out;
+    -khtml-transition: background-color 2s ease-out;
+    -ms-transition: background-color 2s ease-out;
+}
+
+.dashboard .quicklinks.highlight {
+	background-color: #3db527;
+	
+    transition-duration: 0.38s;
+    -moz-transition-duration: 0.38s;
+    -webkit-transition-duration: 0.38s;
+    -o-transition-duration: 0.38s;
+    -khtml-transition-duration: 0.38s;
+    -ms-transition-duration: 0.38s;
 }
 
 .dashboard .last {
@@ -1060,17 +1077,6 @@ article.hub .controls {
 .dashboard .quicklinks li button:active,
 .dashboard .quicklinks li .button:active {
   opacity: 1;
-}
-
-.dashboard .quicklinks.animate ul li button {
-	-webkit-transition:
-		opacity 3s ease-out,
-		background-color 3s ease-out;
-}
-
-.dashboard .quicklinks.highlight ul li button {
-	opacity: 1;
-	background-color: #ffd64d;
 }
 
 .dashboard .quicklinks.my-projects ul.listing li.select a {
@@ -1152,6 +1158,10 @@ article.hub .controls {
 
 .js.ie .dashboard .quicklinks .active {
 	display: block;
+}
+
+.dashboard footer {
+	padding-top: 0.769em /* 10px */;
 }
 
 .dashboard footer p {

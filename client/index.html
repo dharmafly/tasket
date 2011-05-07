@@ -434,29 +434,51 @@
 
     <script type="text/tim" class="dashboard">
         <ul class="listing notifications">
-            <li><a data-type="ownedClaimed" href="#my-tasks" title="View your tasks"><span></span> of your tasks have been claimed</a></li>
-            <li><a data-type="adminedDone" href="#managed-tasks" title="View your tasks"><span></span> tasks need your approval</a></li>
-            <li><a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"><span></span> tasks you’ve done have been approved</a></li>
-            <li><span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span></li>
+            <li>
+                <!-- <a data-type="ownedClaimed" href="#my-tasks" title="View these claimed tasks"> -->
+                <span data-type="ownedClaimed">
+                    <span></span> of tasks you created have been claimed
+                </span>
+                <!-- </a> -->
+            </li>
+            <li>
+                <a data-type="adminedDone" href="#managed-tasks" title="Verify these tasks">
+                    <span></span> tasks have been done by people and need verifying
+                </a>
+            </li>
+            <li>
+                <!-- <a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"> -->
+                <span data-type="claimedVerified">
+                    <span></span> tasks you’ve done have been verified
+                </span>
+                <!-- </a> -->
+            </li>
+            <li>
+                <span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span>
+            </li>
         </ul>
+        
         <section class="quicklinks my-projects">
             <h1>My Projects</h1>
-            <p class="help">This section provides you a quick list of your recent projects</p>
+            <p class="help">This section has a list of your projects</p>
             <ul class="listing"></ul>
             <p>
                 <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
             </p>
         </section>
+        
         <section class="quicklinks my-tasks">
             <h1>Tasks I’m Doing</h1>
-            <p class="help">This section provides you a quick list of your currently active tasks</p>
+            <p class="help">This section has a list of tasks that you've said you'd complete</p>
             <ul class="listing"></ul>
         </section>
+        
         <section class="quicklinks managed-tasks">
             <h1>Tasks to Verify</h1>
-            <p class="help">This section provides you a quick list of tasks you administer</p>
+            <p class="help">This section has a list of tasks that have been done and need verifying</p>
             <ul class="listing"></ul>
         </section>
+        
         <footer>
             <p class="statistics">
                 <img src="/media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
