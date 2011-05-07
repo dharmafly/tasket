@@ -27,6 +27,7 @@ var cache = new Cache(Tasket.namespace),
                 authtoken: null,
                 csrftoken: null,
                 currentUser: null,
+                selectedHub: null,
                 allDoneTasks: null,
                 statistics: {
                     tasks: {
@@ -58,8 +59,7 @@ var cache = new Cache(Tasket.namespace),
                 app.dashboard.hubAnchorSelect();
             });
             this.tankController.bind("hub:deselect", function(hubView){
-                app.selectedHub = hubView.model.id;
-                app.dashboard.hubAnchorSelect();
+                app.selectedHub = null;
             });
             
             return this;

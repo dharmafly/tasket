@@ -131,8 +131,8 @@ var Dashboard = View.extend({
     hubAnchorSelect: function(){
         var hubAnchor = this.getHubAnchorById(app.selectedHub);
 
+        this.hubAnchorsDeselect();
         if (hubAnchor){
-            this.hubAnchorsDeselect();
             jQuery(hubAnchor).parent().addClass("select");
         }
         return this;
