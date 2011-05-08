@@ -383,7 +383,7 @@ a.action.locate {
 	display: inline-block;
 	width: 16px;
 	height: 16px;
-	background: url(../images/sprites.png?a) 0 -480px;
+	background: url(../images/sprites.png) 0 -480px;
 	text-indent: -900em;
 	opacity: 0;
 	-webkit-transition: opacity 0.15s ease-in;
@@ -1063,8 +1063,11 @@ article.hub .controls {
 }
 
 .dashboard .quicklinks li .reject {
-	right: 20px;
 	background-position: 0 -510px;
+}
+
+.dashboard .quicklinks li .verified {
+	right: 20px;
 }
 
 .dashboard .quicklinks li button:hover,
