@@ -9,6 +9,7 @@ include/
 lib/
 man/
 tasket.db
+web/tasket
 web/pip-log.txt
 client/media/cache
 client/media/images
