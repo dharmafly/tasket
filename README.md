@@ -1,4 +1,9 @@
-# Installation
+# Tasket
+
+An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.
+
+
+## Installation
 
     cd tasket
     easy_install virtualenv
@@ -14,23 +19,23 @@
     cp local_settings.py.example local_settings.py
 
 
-# Edit _local_settings.py_ for the correct database settings - e.g. to use SQLite, use:
+### Edit _local_settings.py_ to supply database settings, e.g. for SQLite, use:
 
     'ENGINE': 'django.db.backends.sqlite3'
 
 
-# Set up the database:
+### Set up the database:
 
     python manage.py syncdb
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
 
   
-# Start the server:
+### Start the server:
     
     python manage.py runserver
 
 
-# In future, you can start the server like this:
+### In future, you can start the server like this:
 
     cd tasket
     source bin/activate
@@ -40,16 +45,16 @@
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 
-# On Linux, ensure that the image library paths are correct
+### On Linux, ensure that the image library paths are correct
 
 If you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
 For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
 
 
-# Building a single minified JavaScript file
+## Building a single minified JavaScript file
 
-## Build software installation
+### Build software installation
 
 We use [smoosh][#smoosh] to package the JavaScript for production. To get it you
 need [Node][#node] >= 4.0.1 and [npm][#npm] installed.
@@ -74,7 +79,7 @@ You may need to make the Smoosh program executable (you may need to prefix this 
     chmod +x ~/node_modules/.bin/smoosh
     
 
-# Building the JavaScript file
+## Building the JavaScript file
     
 To package the JavaScript, `cd` into the _client/media/js/build/_ directory and either run:
 
@@ -95,7 +100,7 @@ JavaScript files used to wrap the Tasket application in a closure.
 [#npm]: http://npmjs.org/
 
 
-# Cron
+## Cron
 
 It's recommended to run the `task_states` management command every so often.
 
@@ -113,19 +118,19 @@ To run this command at 10 minutes pass every hour, add the following to your cro
 NOTE: If you are using virtualenv, make sure you activate it before running the command.
 
 
-# Admin users
+## Admin users
 
-## There are two types of Tasket admins:
+### There are two types of Tasket admins:
 
 1. _'task admins'_ – users that can perform various admin operations using the front end (such as editing any task or hub).
 2. _'super users'_ – users that can log in to the Django backend and edit other users (to make them a 'task admin', for example).
 
 
-## Task admins*
+### Task admins
 Task admins will have access to edit and delete any task or project, as if it was their own. Additionally, they have the power (and are encouraged) to verify (or reject) any Done tasks.
 
 
-## Superusers
+### Superusers
 Only 'superusers' can login to the Django admin. You should avoid creating more superusers than strictly necessary, as they will have access to all the app's data, with the power to delete or cause a mess. Superusers should only use Django to change the admin rights of other users.
 
 *_Do NOT_* delete projects (called "Hubs") or tasks from within Django – do that via the app itself, otherwise there will be broken references between items in the database. Similarly, do not delete users from within Django (currently there is no way to do this via the app).
@@ -133,19 +138,19 @@ Only 'superusers' can login to the Django admin. You should avoid creating more 
 To login as a superuser, go to http://yourdomain.com/admin/ in a browser. You'll need the same username and password as your login to the app (you may already be logged in).
 
 
-## Changing a normal user into a task admin
+### Changing a normal user into a task admin
 
 (The user must already have created an account by signing up within the app).
 
 Log in to Django and go to http://yourdomain.com/admin/tasks/profile/ (or click through the navigation). Click on the user you want to edit. Click the '*Admin*' checkbox and '*Save*' the user.
 
 
-## Changing a normal user into a superuser
+### Changing a normal user into a superuser
 
 Log in to Django and go to http://yourdomain.com/admin/auth/user/ (or click through the navigation). Click on the user you want to edit. Check both the '*Superuser*' and '*Staff*' checkboxes and '*Save*' the user.
 
 
-## Troubleshooting: when no superusers exist
+### Troubleshooting: when no superusers exist
 
 A superuser should have been created when the site was installed. If no superuser exists, running the following will create a one: 
 
