@@ -94,6 +94,7 @@ JavaScript files used to wrap the Tasket application in a closure.
 [#node]: http://nodejs.org/
 [#npm]: http://npmjs.org/
 
+
 # Cron
 
 It's recommended to run the `task_states` management command every so often.
@@ -114,29 +115,38 @@ NOTE: If you are using virtualenv, make sure you activate it before running the 
 
 # Admin users
 
-There are two types of admins:
+## There are two types of Tasket admins:
 
-1. 'task admins' – users that can perform various admin operations using the 
-    front end (such as editing any task and hub).
-2. 'super users' – users that can log in to the django backend and edit other 
-    users (to make them a 'task admin', for example).
+1. _'task admins'_ – users that can perform various admin operations using the front end (such as editing any task or hub).
+2. _'super users'_ – users that can log in to the Django backend and edit other users (to make them a 'task admin', for example).
 
-Only 'super users' can login to the django admin.  A super user should have been 
-created  when the site was installed.  If no super user exists, running the 
-following will create a one: 
 
-> python manage.py createsuperuser
+## Task admins*
+Task admins will have access to edit and delete any task or project, as if it was their own. Additionally, they have the power (and are encouraged) to verify (or reject) any Done tasks.
 
-To login to django as a superuser, go to `/admin/` in a browser.
 
-## Making a normal user in to a task admin
+## Superusers
+Only 'superusers' can login to the Django admin. You should avoid creating more superusers than strictly necessary, as they will have access to all the app's data, with the power to delete or cause a mess. Superusers should only use Django to change the admin rights of other users.
 
-After logging in to django, go to `/admin/tasks/profile/` and click on the user
-you want to edit.
+*_Do NOT_* delete projects (called "Hubs") or tasks from within Django – do that via the app itself, otherwise there will be broken references between items in the database. Similarly, do not delete users from within Django (currently there is no way to do this via the app).
 
-Click the `Admin` checkbox and save the user.
+To login as a superuser, go to http://yourdomain.com/admin/ in a browser. You'll need the same username and password as your login to the app (you may already be logged in).
 
-## Making a normal user a super user
 
-Log in to django and go to `/admin/auth/user/`.  Click on the user you want to 
-edit and check both the 'super user' and 'staff' check boxes.  Save the user.
+## Changing a normal user into a task admin
+
+(The user must already have created an account by signing up within the app).
+
+Log in to Django and go to http://yourdomain.com/admin/tasks/profile/ (or click through the navigation). Click on the user you want to edit. Click the '*Admin*' checkbox and '*Save*' the user.
+
+
+## Changing a normal user into a superuser
+
+Log in to Django and go to http://yourdomain.com/admin/auth/user/ (or click through the navigation). Click on the user you want to edit. Check both the '*Superuser*' and '*Staff*' checkboxes and '*Save*' the user.
+
+
+## Troubleshooting: when no superusers exist
+
+A superuser should have been created when the site was installed. If no superuser exists, running the following will create a one: 
+
+    python manage.py createsuperuser
