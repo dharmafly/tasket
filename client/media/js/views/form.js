@@ -28,8 +28,7 @@ var Form = View.extend({
         // listeners to beforeSave may set the `abort` flag
         if (this.abort){
             this.abort = false;
-            this.trigger("abort", this.model, this)
-                .trigger("error", this.model, this);
+            this.trigger("error", this.model, this);
         }
         else {
             this.model.save(data, {

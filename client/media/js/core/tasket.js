@@ -198,6 +198,17 @@ _.extend(Tasket, Backbone.Events, {
         });
     },
 
+    forgotDetails: function(data, callback) {
+        return jQuery.ajax({
+            url: Tasket.endpoint + "forgot-password/",
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            dataType: "json",
+            success: callback
+        });
+    },
+
     media: function (image) {
         return image ? "/media/" + image : "";
     },

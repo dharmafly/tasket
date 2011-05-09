@@ -285,7 +285,30 @@
         </ul>
         <div class="actions">
             <button type="submit">Login</button>
-            <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p>
+            <p class="note"><a href="#/forgot-details/" title="Retrieve your login details">Forgotten your details?</a></p>
+        </div>
+    </script>
+
+    <script type="text/tim" class="forgot-details">
+        <h1>Forgotten your details?</h1>
+        
+        <p>Please enter your username <em>OR</em> registered email address:</p>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="" />
+            </li>
+        </ul>
+        
+        <p><strong>You'll receive an email</strong> giving you a unique link. Follow the link to reset your password.</p>
+        
+        <div class="actions">
+            <button type="submit">Reset password</button>
+            <p class="note"><a href="#/login/" title="Return to login form">Return to login</a></p>
         </div>
     </script>
 

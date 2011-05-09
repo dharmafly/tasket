@@ -543,10 +543,11 @@ var TankController = Backbone.Controller.extend({
 // Handles signup/about/login etc.
 var PageController = Backbone.Controller.extend({
     routes: {
-        "/about/":   "about",
-        "/login/":   "login",
-        "/sign-up/": "signup",
-        "/account/": "account"
+        "/about/":          "about",
+        "/login/":          "login",
+        "/forgot-details/": "forgotDetails",
+        "/sign-up/":        "signup",
+        "/account/":        "account"
     },
 
     constructor: function PageController() {
@@ -565,6 +566,11 @@ var PageController = Backbone.Controller.extend({
             app.updateCurrentUser(user);
             app.lightbox.hide();
         });
+    },
+    
+    forgotDetails: function () {
+        var form = new ForgotDetails();
+        app.lightbox.content(form.render().el).show();
     },
 
     signup: function () {
