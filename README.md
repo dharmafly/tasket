@@ -2,39 +2,45 @@
 
     cd tasket
     easy_install virtualenv
+    
     virtualenv --no-site-packages .
     source bin/activate
+    
     easy_install django
     easy_install pip
     pip install -r requirements.txt
+    
     cd web
     cp local_settings.py.example local_settings.py
 
-Edit _local_settings.py_ for the correct database settings - e.g. sqlite3
+
+# Edit _local_settings.py_ for the correct database settings - e.g. to use SQLite, use:
 
     'ENGINE': 'django.db.backends.sqlite3'
 
-Set up the database:
+
+# Set up the database:
 
     python manage.py syncdb
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
 
+  
+# Start the server:
     
-# Run the server
+    python manage.py runserver
 
-If not done yet this session:
 
+# In future, you can start the server like this:
+
+    cd tasket
     source bin/activate
     cd web
-    
-Start the server:
-    
     python manage.py runserver
 
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 
-# On Linux, ensure the image library paths are correct
+# On Linux, ensure that the image library paths are correct
 
 If you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
