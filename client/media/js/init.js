@@ -44,8 +44,8 @@ app.bind("ready", function onReady () {
 
         if (state === Task.states.CLAIMED) {
             if (!app.currentUser) {
-                app.notification.warning(
-                    "Please <a href=\"#/login/\">login</a> to start claiming tasks"
+                app.notification.error(
+                    "Please <a href='#/login/'>login</a> to start claiming tasks"
                 );
                 return;
             }
