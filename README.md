@@ -117,6 +117,23 @@ To run this command at 10 minutes pass every hour, add the following to your cro
 NOTE: If you are using virtualenv, make sure you activate it before running the command.
 
 
+## Email
+
+In order to send forgotten password emails, a valid SMTP server will need to be set in `local_settings.py`.  More information on this can be found here:
+http://docs.djangoproject.com/en/1.3/topics/email/
+
+The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
+
+For testing, these can be set to localhost and 1025, and the following run from the command line:
+
+> python -m smtpd -n -c DebuggingServer localhost:1025
+
+All email django sends will then me piped to stdout on the terminal where the above was issued.
+
+## Email template
+
+An email template can be created in `./web/templates/password_reset_email.html`.  It's best to copy the template from `./server/tasks/tempaltes/password_reset_email.html` and edit it to fit your needs.
+
 ## Admin users
 
 ### There are two types of Tasket admins:
