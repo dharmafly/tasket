@@ -44,9 +44,9 @@ An open source micro-volunteering app, allowing individuals and groups to create
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 
-### On Linux, ensure that the image library paths are correct
+### Troubleshooting: images served with 500 Server Error
 
-If you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
+On Linux, if you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
 For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
 
@@ -97,6 +97,10 @@ JavaScript files used to wrap the Tasket application in a closure.
 [#smoosh]: http://github.com/fat/smoosh/
 [#node]: http://nodejs.org/
 [#npm]: http://npmjs.org/
+
+
+## Debug mode
+In /web/localsettings.py, the `DEBUG` flag is set to `True` by default, for ease of development with the local Django server. This should be set to `False` on deploy.
 
 
 ## Cron
