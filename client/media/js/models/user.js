@@ -57,7 +57,7 @@ var User = Model.extend({
             data = {},
             current  = task.get("state"),
             previous = task.previous("state"),
-            newlyClaimed = (previous === Task.states.NEW) && (task.get("owner") === this.id);
+            newlyClaimed = (previous === Task.states.NEW) && (task.get("claimedBy") === this.id);
 
         _.each(["owned", "claimed"], function (group) {
             var previousKey = "tasks." + group + "." + previous,
