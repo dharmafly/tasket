@@ -15,6 +15,7 @@ var Lightbox = View.extend({
     constructor: function Lightbox() {
         View.prototype.constructor.apply(this, arguments);
     },
+    
     show: function (options) {
         this.elem.addClass(this.classes.display);
 
@@ -27,6 +28,7 @@ var Lightbox = View.extend({
 
         return this.trigger(options, "show", this);
     },
+    
     hide: function (options) {
         var duration = this.elem.css("transition-duration") ||
             this.elem.css("-moz-transition-duration") ||
@@ -46,6 +48,7 @@ var Lightbox = View.extend({
 
         return this._trigger(options, "hide", this);
     },
+    
     content: function (content) {
         var element = this.$(".content");
         if (typeof content === "string") {
@@ -55,11 +58,13 @@ var Lightbox = View.extend({
         }
         return this;
     },
+    
     render: function () {
         var template = tim("lightbox");
         this.elem.html(template);
         return this;
     },
+    
     _updateMargin: function () {
         var inner = this.$(".lightbox-inner");
         inner.css({
@@ -68,6 +73,7 @@ var Lightbox = View.extend({
         });
         return this;
     },
+    
     _trigger: function () {
       var options = arguments[0] || {},
           args = Array.prototype.slice.call(arguments, 1);
@@ -78,9 +84,13 @@ var Lightbox = View.extend({
 
       return this;
     },
+    
     _onHide: function (event) {
         if (event.target.nodeName === "A"){
-            this.hide({silent:true});
+            // A link in the HTML may use the attribute `data-lightbox="open` to keep the lightbox open
+            if (event.target.getAttribute("data-lightbox") !== "open"){
+                this.hide({silent:true});
+            }
         }
     
         else if (event.target === this.el || jQuery(event.target).hasClass("close")) {
