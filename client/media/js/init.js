@@ -1,12 +1,17 @@
 // Run after app properties have been setup.
-app.bind("setup", function onSetup() {
+app.bind("setup", function() {
     // Setup the app.
     jQuery("body")
       .append(app.dashboard.render().el)
       .append(app.lightbox.render().hide().el);
 
     // Return to the previous route when the lightbox closes.
-    app.lightbox.bind("hide", app.back);
+    // TODO: For some reason, binding to the "hide" event fails after a few triggers, so binding to "all" instead
+    app.lightbox.bind("all", function(eventName){
+        if (eventName === "hide"){
+            app.back(app.lightbox.historyCount);
+        }
+    });
     app.bind("change:currentUser", _.bind(app.dashboard.setUser, app.dashboard));
     app.dashboard.detail.bind("hide", app.back);
     

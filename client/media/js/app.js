@@ -320,9 +320,9 @@ var cache = new Cache(Tasket.namespace),
             return app.trigger("change:authtoken", authtoken); // see dashboard.js > Dashboard.setUser()
         },
 
-        // Update the location bar with the previous hash.
-        back: function(){
-            var prev = Backbone.history.getPrevious();
+        // Update the location bar with a previous hash.
+        back: function(historyCount){
+            var prev = Backbone.history.getPrevious(historyCount);
             if (!prev) {
                 prev = "/";
             }

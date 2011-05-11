@@ -628,6 +628,6 @@ var DashboardController = Backbone.Controller.extend({
 
     showCurrentUserHubs: function () {
         var user = app.currentUser;
-        app.dashboard.detail.title(app.lang.MY_HUBS).show(); // TODO change text
+        app.dashboard.detail.title(app.lang.MY_HUBS).show();
     }
 });

@@ -11,6 +11,9 @@ var Lightbox = View.extend({
         display: "show",
         animate: "fade-in"
     },
+    
+    // The default step back in history to revert to when the lightbox closes
+    historyCount: 1,
 
     constructor: function Lightbox() {
         View.prototype.constructor.apply(this, arguments);
@@ -26,7 +29,7 @@ var Lightbox = View.extend({
 
         this._updateMargin();
 
-        return this.trigger(options, "show", this);
+        return this.trigger("show", options, this);
     },
     
     hide: function (options) {
@@ -38,15 +41,19 @@ var Lightbox = View.extend({
             0;
             
         this.elem.removeClass(this.classes.animate);
+        
         if (duration) {
             setTimeout(_.bind(function () {
                 this.elem.removeClass(this.classes.display);
             }, this), parseFloat(duration) * 1000);
-        } else {
+        }
+        else {
             this.elem.removeClass(this.classes.display);
         }
-
-        return this._trigger(options, "hide", this);
+        
+        this._trigger(options, "hide", this);
+        this.historyCount = 1;
+        return this;
     },
     
     content: function (content) {
@@ -81,18 +88,23 @@ var Lightbox = View.extend({
       if (!options.silent) {
         this.trigger.apply(this, args);
       }
-
       return this;
     },
     
     _onHide: function (event) {
+        // Links from the lightbox contents shouldn't trigger an auto rewind of history when clicked on
         if (event.target.nodeName === "A"){
-            // A link in the HTML may use the attribute `data-lightbox="open` to keep the lightbox open
-            if (event.target.getAttribute("data-lightbox") !== "open"){
+            // A link to a new lightbox, from within a lightbox. Use the HTML attribute `data-lightbox="open` to prevent history rewind
+            if (event.target.getAttribute("data-lightbox") === "open"){
+                app.lightbox.historyCount ++;
+            }
+            // A link to content outside of the lightbox
+            else {
                 this.hide({silent:true});
             }
         }
     
+        // A normal close lightbox click
         else if (event.target === this.el || jQuery(event.target).hasClass("close")) {
             event.preventDefault();
             this.hide();
