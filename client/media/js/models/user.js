@@ -46,8 +46,12 @@ var User = Model.extend({
     isAdmin: function(){
         return this.get("admin");
     },
+    
+    fullname: function(){
+        return this.get("name") || this.get("username") || "";
+    },
 
-    // Updates the users tasks when the state of a task changes.
+    // Updates the users tasks when the state of a task changes
     updateTasks: function (task) {
         var id = task.id,
             data = {},

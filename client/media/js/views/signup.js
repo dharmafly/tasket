@@ -1,6 +1,19 @@
 var SignUp = FormUpload.extend({
-    constructor: function SignUp() {
+    constructor: function SignUpForm() {
         Form.prototype.constructor.apply(this, arguments);
+
+        // Verify that the passwords match
+        this.bind("beforeSave", function(data, user, form){
+            var pass1 = data.password,
+                pass2 = data["password-confirm"];
+        
+            if ((pass1 || pass2) && pass1 !== pass2){
+                form.errors({
+                    password: ["Passwords do not match"]
+                });
+                form.abort = true; // prevent the user model from saving. see Form.submit()
+            }
+        });
 
         // Remove the password fields from the User model.
         this.bind("submit", function (user) {

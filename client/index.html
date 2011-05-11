@@ -20,7 +20,7 @@
 <body>
     <div class="header-container">
         <header>
-            <h1><a href="/">Tasket</a></h1>
+            <h1><a href="#/">Tasket</a></h1>
             <nav>
                 <ul>
                     <li><a href="#/" title="The Tasket homepage">Home</a></li>
@@ -136,7 +136,7 @@
     </script>
     <script type="text/tim" class="task-claimed-by-user">
         <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
-        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a><br /> {{status}} this task. {{additional}}
+        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a> {{status}} this task. {{additional}}
     </script>
     <script type="text/tim" class="dashboard-detail">
         <h1>{{title}}</h1>
@@ -279,13 +279,36 @@
                 <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
             </li>
             <li>
-                <label for="field-password">Password <strong class="error">(This field is required)</strong></label>
+                <label for="field-password">Password</label>
                 <input type="password" id="field-password" name="password" placeholder="password" value="" />
             </li>
         </ul>
         <div class="actions">
             <button type="submit">Login</button>
-            <!-- <p class="note"><a href="#/forgot/" title="Retrieve your login details">Forgotten your details?</a></p> -->
+            <p class="note"><a href="#/forgot-details/" title="Retrieve your login details">Forgotten your details?</a></p>
+        </div>
+    </script>
+
+    <script type="text/tim" class="forgot-details">
+        <h1>Forgotten your details?</h1>
+        
+        <p>Please enter your username <em>OR</em> registered email address:</p>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="" />
+            </li>
+        </ul>
+        
+        <p><strong>You'll receive an email</strong> giving you a unique link. Follow the link to reset your password.</p>
+        
+        <div class="actions">
+            <button type="submit">Reset password</button>
+            <p class="note"><a href="#/login/" title="Return to login form">Return to login</a></p>
         </div>
     </script>
 
@@ -334,6 +357,14 @@
             <li>
                 <label for="field-email">Email Address</label>
                 <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="{{email}}" />
+            </li>
+            <li>
+                <label for="field-password">Password <span class="note">(Keep blank to leave unchanged)</span></label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password-confirm">Confirm Password</label>
+                <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
             </li>
             <li>
                 <label for="field-image">Image</label>
@@ -426,29 +457,51 @@
 
     <script type="text/tim" class="dashboard">
         <ul class="listing notifications">
-            <li><a data-type="ownedClaimed" href="#my-tasks" title="View your tasks"><span></span> of your tasks have been claimed</a></li>
-            <li><a data-type="adminedDone" href="#managed-tasks" title="View your tasks"><span></span> tasks need your approval</a></li>
-            <li><a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"><span></span> tasks you’ve done have been approved</a></li>
-            <li><span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span></li>
+            <li>
+                <!-- <a data-type="ownedClaimed" href="#my-tasks" title="View these claimed tasks"> -->
+                <span data-type="ownedClaimed">
+                    <span></span> of tasks you created have been claimed
+                </span>
+                <!-- </a> -->
+            </li>
+            <li>
+                <a data-type="adminedDone" href="#managed-tasks" title="Verify these tasks">
+                    <span></span> tasks have been done by people and need verifying
+                </a>
+            </li>
+            <li>
+                <!-- <a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"> -->
+                <span data-type="claimedVerified">
+                    <span></span> tasks you’ve done have been verified
+                </span>
+                <!-- </a> -->
+            </li>
+            <li>
+                <span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span>
+            </li>
         </ul>
+        
         <section class="quicklinks my-projects">
             <h1>My Projects</h1>
-            <p class="help">This section provides you a quick list of your recent projects</p>
+            <p class="help">This section has a list of your projects</p>
             <ul class="listing"></ul>
             <p>
                 <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
             </p>
         </section>
+        
         <section class="quicklinks my-tasks">
             <h1>Tasks I’m Doing</h1>
-            <p class="help">This section provides you a quick list of your currently active tasks</p>
+            <p class="help">This section has a list of tasks that you've said you'd complete</p>
             <ul class="listing"></ul>
         </section>
+        
         <section class="quicklinks managed-tasks">
             <h1>Tasks to Verify</h1>
-            <p class="help">This section provides you a quick list of tasks you administer</p>
+            <p class="help">This section has a list of tasks that have been done and need verifying</p>
             <ul class="listing"></ul>
         </section>
+        
         <footer>
             <p class="statistics">
                 <img src="/media/images/placeholder.png" width="50" height="50" alt="Chart showing percentage of completed tasks" />
@@ -470,12 +523,12 @@
       {{links}}
       <li>
         <a class="hub-link" href="{{href}}" title="View {{title}}">{{title}}</a>
-        {{isHub}}<a class="button add" href="{{href}}tasks/new/">Add task</a>{{/isHub}}
+        {{isHub}}<a class="button add" title="Add a new task" href="{{href}}tasks/new/">Add task</a>{{/isHub}}
         {{isTask}}
-            {{showDone}}<button class="done" data-task-state="done" data-task-id="{{id}}">Done</button>{{/showDone}}
+            {{showDone}}<button class="done" title="I've done this task" data-task-state="done" data-task-id="{{id}}">Done</button>{{/showDone}}
             {{showVerify}}
-                <button class="reject" data-task-state="new" data-task-id="{{id}}">Reject</button>
-                <button class="verified" data-task-state="verified" data-task-id="{{id}}">Verify</button>
+                <button class="reject" title="Reject. The task was not completed" data-task-state="new" data-task-id="{{id}}">Reject</button>
+                <button class="verified" title="Verify. The task was completed" data-task-state="verified" data-task-id="{{id}}">Verify</button>
             {{/showVerify}}
         {{/isTask}}
       </li>

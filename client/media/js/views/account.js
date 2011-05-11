@@ -1,4 +1,8 @@
 var Account = SignUp.extend({
+    constructor: function AccountForm() {
+        SignUp.prototype.constructor.apply(this, arguments);
+    },
+    
     render: function () {
         var data = this.model.toJSON();
 

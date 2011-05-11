@@ -59,7 +59,16 @@ var Notification = Backbone.View.extend({
     },
     
     success: function (message) {
-        return this.show(message, Notification.status.SUCCESS);
+        var hideDelay = app.successNotificationHideDelay,
+            notification = this;
+            
+        this.show(message, Notification.status.SUCCESS);
+        if (hideDelay){
+            window.setTimeout(function(){
+                notification.hide();
+            }, hideDelay);
+        }
+        return this;
     },
     
     warning: function (message) {

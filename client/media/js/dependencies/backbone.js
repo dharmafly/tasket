@@ -67,6 +67,7 @@
     // for all events.
     unbind : function(ev, callback) {
       var calls;
+
       if (!ev) {
         this._callbacks = {};
       } else if (calls = this._callbacks) {
@@ -77,7 +78,18 @@
           if (!list) return this;
           for (var i = 0, l = list.length; i < l; i++) {
             if (callback === list[i]) {
-              list.splice(i, 1);
+              // We need to clone the callback list here before the splice as
+              // .trigger() keeps a reference to callback array when executing
+              // callbacks. This means that if a callback unbinds itself the
+              // array of callbacks would be altered and the reference held in
+              // the loop no longer correlates with the cached array length.
+              // This will cause an error when the loop reaches the last item
+              // in the array.
+              //
+              // An alertnative fix would be to always clone the callback arrays
+              // before the loop starts. But this method is more perfomant as
+              // unbind is called less frequently.
+              calls[ev] = _.clone(list).splice(i, 1);
               break;
             }
           }

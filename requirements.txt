@@ -1,4 +1,4 @@
 PIL==1.1.7
 django-cbv==0.1.5
-sorl-thumbnail
+sorl-thumbnail==11.01
 django-sentry

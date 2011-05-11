@@ -49,6 +49,7 @@ getScript(
     "views/form-upload.js",
     [
         "views/login.js",
+        "views/forgot-details.js",
         "views/signup.js",
         "views/task-form.js",
         "views/hub-form.js",

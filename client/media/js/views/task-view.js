@@ -176,7 +176,7 @@ var TaskView = View.extend({
 
             if (isDone){
                 status = "have done";
-                additional = "It needs verifying by an admin.";
+                additional = "It needs to be verified by an admin.";
             }
             else {
                 status = "are doing";
@@ -189,7 +189,7 @@ var TaskView = View.extend({
 
         this.$(".claimedBy").html(tim(templateName, {
             id: model.id,
-            name: model.get("name"),
+            name: model.fullname(),
             image: this.userImageSrc(model),
             status: status,
             additional: additional,

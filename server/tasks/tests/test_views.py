@@ -334,6 +334,20 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['email'], "test_update@example.com")
 
+        response = self.client.get('/users/2')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['email'], "test_update@example.com")
+        
+    
+    def test_user_change_password(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.put(
+                '/users/2',
+                data=json.dumps({"password" : "6789"}),
+                content_type='application/json',
+            )
+        self.assertTrue(self.client.login(username='TestUser', password='6789'))
+    
     def test_user_delete(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.delete('/users/3')
