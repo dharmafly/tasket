@@ -29,3 +29,6 @@ CLAIMED_LIMIT = 5
 
 # Maximum task estimate
 TASK_ESTIMATE_MAX = 14400
+
+# EMAIL_PORT = 25
+# EMAIL_HOST = "localhost"
