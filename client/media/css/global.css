@@ -1092,8 +1092,8 @@ article.hub .controls {
 .dashboard .quicklinks .info {
 	display: block;
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 1.538em /* 20px */;
+	right: 1.538em /* 20px */;
 	height: 17px;
 	width: 17px;
 	text-indent: -900em;
@@ -1103,8 +1103,8 @@ article.hub .controls {
 
 .js .dashboard .quicklinks .help {
 	position: absolute;
-	top: 20px;
-	right: -5px;
+	top: 40px;
+	right: 5px;
 	width: 13.846em /* 180px */;
 	padding: 0.679em /* 10px */;
 	color: #fff;
