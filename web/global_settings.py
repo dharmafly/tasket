@@ -116,13 +116,3 @@ THUMBNAIL_DUMMY = True
 INTERNAL_IPS = ('127.0.0.1',)
 
 EXPOSED_SETTINGS = ("TASK_ESTIMATE_MAX", "TASK_LIMIT", "CLAIMED_LIMIT",)
-
-
-# How many tasks a hub can have
-TASK_LIMIT = 10
-
-# How many tasks a user can claim
-CLAIMED_LIMIT = 5
-
-# Maximum task estimate
-TASK_ESTIMATE_MAX = 14400
