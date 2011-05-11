@@ -11,7 +11,6 @@ An open source micro-volunteering app, allowing individuals and groups to create
     virtualenv --no-site-packages .
     source bin/activate
     
-    easy_install django
     easy_install pip
     pip install -r requirements.txt
     
