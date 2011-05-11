@@ -136,7 +136,7 @@ All email django sends will then me piped to stdout on the terminal where the ab
 
 ## Email template
 
-An email template can be created in `./web/templates/password_reset_email.html`.  It's best to copy the template from `./server/tasks/tempaltes/password_reset_email.html` and edit it to fit your needs.
+An email template can be created in `./web/templates/password_reset_email.html`.  It's best to copy the template from `./server/tasks/templates/password_reset_email.html` and edit it to fit your needs.
 
 ## Admin users
 
