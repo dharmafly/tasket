@@ -322,6 +322,15 @@ class ProfileView(PutView):
                 )
         if not form.is_valid():
             error_dict = dict(form.errors.items())
+            
+            # Rename password fields to better fit in to the front end
+            if 'password1' in error_dict:
+                error_dict['password'] = error_dict['password1']
+                del error_dict['password1']
+            if 'password2' in error_dict:
+                error_dict['password-confirm'] = error_dict['password2']
+                del error_dict['password2']
+
             self.res.write(json.dumps(error_dict))
             self.res.status_code = 400
             return self.res

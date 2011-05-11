@@ -233,6 +233,21 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['email'], 'foo@example.com')
         
+
+    def test_user_post_bad_password(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99",
+                    "email" : "foo@example.com",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        json_data = json.loads(response.content)
+        self.assertTrue('password' in json_data)
+        self.assertTrue('password-confirm' in json_data)
         
 
     def test_user_post_dupe(self):
