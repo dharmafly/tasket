@@ -49,6 +49,7 @@ getScript(
     "views/form-upload.js",
     [
         "views/login.js",
+        "views/change-password.js",
         "views/forgot-details.js",
         "views/signup.js",
         "views/task-form.js",
@@ -57,8 +58,7 @@ getScript(
     ],
     [
         "views/dashboard-detail-hub.js",
-        "views/account.js",
-        "views/change-password.js"
+        "views/account.js"
     ],
     "core/tasket.js",
     "app.js",
