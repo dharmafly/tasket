@@ -543,7 +543,6 @@ var TankController = Backbone.Controller.extend({
 // Handles signup/about/login etc.
 var PageController = Backbone.Controller.extend({
     routes: {
-        "/about/":          "about",
         "/login/":          "login",
         "/forgot-details/": "forgotDetails",
         "/sign-up/":        "signup",
@@ -553,15 +552,35 @@ var PageController = Backbone.Controller.extend({
 
     constructor: function PageController() {
         Backbone.Controller.prototype.constructor.apply(this, arguments);
+        
+        // Display contents in a lightbox if there's a matching plain HTML template for this route
+        // This makes it easy for new lightbox views to be added, simply by creating a new Tim template in the HTML source
+        this.route(/./, "showContents", function(){
+            var route = Backbone.history.fragment,
+                template;
+            
+            // Already accounted for in the routes hash
+            if (this.routes[route]){
+                return;
+            }
+            
+            route = route.replace(/\//g, "");
+            template = tim.templates()[route];
+            
+            // Check that this template doesn't have any Tim template tags
+            if (template && template.indexOf(tim.settings().start) === -1){
+                this.showContents(template);
+            }
+        });
     },
-
-    about: function () {
-        app.lightbox.content(tim("about")).show();
+    
+    showContents: function(contents){
+        app.lightbox.content(contents).show();
     },
 
     login: function () {
         var form = new Login();
-        app.lightbox.content(form.render().el).show();
+        this.showContents(form.render().el);
 
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
@@ -571,7 +590,7 @@ var PageController = Backbone.Controller.extend({
     
     forgotDetails: function () {
         var form = new ForgotDetails();
-        app.lightbox.content(form.render().el).show();
+        this.showContents(form.render().el);
     },
 
     signup: function () {
@@ -579,7 +598,7 @@ var PageController = Backbone.Controller.extend({
             model: new User()
         });
 
-        app.lightbox.content(form.render().el).show();
+        this.showContents(form.render().el);
 
         // Append iframe for avatar upload.
         form.updateFrame();
@@ -600,7 +619,7 @@ var PageController = Backbone.Controller.extend({
             window.location.hash = "#/login";
         }
 
-        app.lightbox.content(form.render().el).show();
+        this.showContents(form.render().el);
 
         // Append iframe for avatar upload.
         form.updateFrame();
@@ -621,7 +640,7 @@ var PageController = Backbone.Controller.extend({
             app.lightbox.hide();
         });
 
-        app.lightbox.content(form.render().el).show();
+        this.showContents(form.render().el);
     }
 });
 
