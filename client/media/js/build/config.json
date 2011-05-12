@@ -62,6 +62,7 @@
             "../views/dashboard-detail.js",
             "../views/dashboard-detail-hub.js",
             "../views/account.js",
+            "../views/change-password.js",
             "../views/toolbar.js",
             "../controllers/controllers.js",
             "../core/tasket.js",

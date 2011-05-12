@@ -547,7 +547,8 @@ var PageController = Backbone.Controller.extend({
         "/login/":          "login",
         "/forgot-details/": "forgotDetails",
         "/sign-up/":        "signup",
-        "/account/":        "account"
+        "/account/":        "account",
+        "/users/:id/change-password/": "changePassword"
     },
 
     constructor: function PageController() {
@@ -591,7 +592,7 @@ var PageController = Backbone.Controller.extend({
     },
 
     account: function () {
-        var form = new Account({
+        var form = new ChangePassword({
             model: app.currentUser
         });
 
@@ -608,6 +609,19 @@ var PageController = Backbone.Controller.extend({
             app.lightbox.hide();
             app.notification.success("Your account has been updated!");
         });
+    },
+
+    changePassword: function (id) {
+        var form = new ChangePassword({
+            model: Tasket.getUsers(id)
+        });
+
+        form.bind("success", function (user) {
+            app.updateCurrentUser(user);
+            app.lightbox.hide();
+        });
+
+        app.lightbox.content(form.render().el).show();
     }
 });
 
