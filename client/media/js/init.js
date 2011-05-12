@@ -3,7 +3,7 @@ app.bind("setup", function() {
     // Setup the app.
     jQuery("body")
       .append(app.dashboard.render().el)
-      .append(app.lightbox.render().hide().el);
+      .append(app.lightbox.render().el);
 
     // Return to the previous route when the lightbox closes.
     // TODO: For some reason, binding to the "hide" event fails after a few triggers, so binding to "all" instead
