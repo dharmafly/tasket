@@ -592,7 +592,7 @@ var PageController = Backbone.Controller.extend({
     },
 
     account: function () {
-        var form = new ChangePassword({
+        var form = new Account({
             model: app.currentUser
         });
 
