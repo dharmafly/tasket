@@ -176,7 +176,17 @@ _.extend(Tasket, Backbone.Events, {
             contentType: "application/json",
             dataType: "json",
             success: function(response){
-                callback(new TaskList(response));
+                var ids = [];
+            
+                _(response).each(function(model){
+                    ids.push(model.id);
+                    
+                    if (!Tasket.tasks.get(model.id)){
+                        Tasket.tasks.add(model);
+                    }
+                });
+                
+                callback(Tasket.getTasks(ids));
             },
             error: function(){
                 callback(null);
