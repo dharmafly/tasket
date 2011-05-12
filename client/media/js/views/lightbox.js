@@ -41,7 +41,6 @@ var Lightbox = View.extend({
             0;
             
         this.elem.removeClass(this.classes.animate);
-        
         if (duration) {
             setTimeout(_.bind(function () {
                 this.elem.removeClass(this.classes.display);

@@ -23,7 +23,7 @@ var ChangePassword = Form.extend({
                 form.abort = true; // prevent the user model from saving. see Form.submit()
             }
         
-            else if ((pass1 || pass2) && pass1 !== pass2){
+            else if (pass1 !== pass2){
                 form.errors({
                     password: ["Passwords do not match"]
                 });

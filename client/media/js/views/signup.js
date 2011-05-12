@@ -7,7 +7,7 @@ var SignUp = FormUpload.extend({
             var pass1 = data.password,
                 pass2 = data["password-confirm"];
                 
-            if (!pass1 && !pass2){
+            if (form.passwordRequired && !pass1 && !pass2){
                 form.errors({
                     password: ["Password required"],
                     "password-confirm": ["Password required"]
@@ -15,7 +15,7 @@ var SignUp = FormUpload.extend({
                 form.abort = true; // prevent the user model from saving. see Form.submit()
             }
         
-            else if ((pass1 || pass2) && pass1 !== pass2){
+            else if (pass1 !== pass2){
                 form.errors({
                     password: ["Passwords do not match"]
                 });
@@ -30,6 +30,8 @@ var SignUp = FormUpload.extend({
             });
         });
     },
+    
+    passwordRequired: true,
 
     url: function () {
         return this.model.url() + "/image/";
