@@ -222,6 +222,7 @@ class ViewTests(TestCase):
                     "username" : "test99",
                     "email" : "foo@example.com",
                     "password" : "12345",
+                    "password_confirm" : "12345",
                     "name" : "Test User 99",
                     }),
                 content_type='application/json',
@@ -247,7 +248,7 @@ class ViewTests(TestCase):
             )
         json_data = json.loads(response.content)
         self.assertTrue('password' in json_data)
-        self.assertTrue('password-confirm' in json_data)
+        self.assertTrue('password_confirm' in json_data)
         
 
     def test_user_post_dupe(self):
@@ -258,6 +259,7 @@ class ViewTests(TestCase):
                     "username" : "test99",
                     "email" : "foo@example.com",
                     "password" : "12345",
+                    "password_confirm" : "12345",
                     "name" : "Test User 99",
                     }),
                 content_type='application/json',
@@ -285,6 +287,7 @@ class ViewTests(TestCase):
                     "username" : "test99",
                     "email" : "foo@example.com",
                     "password" : "12345",
+                    "password_confirm" : "12345",
                     "name" : "Test User 99",
                     "admin" : True,
                     }),
@@ -332,12 +335,21 @@ class ViewTests(TestCase):
     def test_user_put(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
-                '/users/3',
+                '/users/2',
                 data=json.dumps({"description" : "New <b>description!</b>"}),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("New"), True)
+
+    def test_user_put_wrong_user(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.put(
+                '/users/3',
+                data=json.dumps({"description" : "New <b>description!</b>"}),
+                content_type='application/json',
+            )
+        self.assertEqual(response.status_code, 401)
 
     def test_user_put_update_email(self):
         self.client.login(username='TestUser', password='12345')
@@ -358,7 +370,7 @@ class ViewTests(TestCase):
         self.client.login(username='TestUser', password='12345')
         response = self.client.put(
                 '/users/2',
-                data=json.dumps({"password" : "6789"}),
+                data=json.dumps({"password" : "6789", "password_confirm" : "6789"}),
                 content_type='application/json',
             )
         self.assertTrue(self.client.login(username='TestUser', password='6789'))

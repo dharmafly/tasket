@@ -275,9 +275,19 @@ class ProfileView(PutView):
     @method_decorator(login_required)
     @method_decorator(AllowJSONPCallback)
     def put(self, request, user_id=None):
-        profile = get_object_or_404(Profile, user=user_id)
+        profile = request.user.profile
+        if request.user.profile.pk != int(user_id):
+            self.res.write(json.dumps(
+                {
+                'error' : "Unauthorized",
+                'status' : 401
+                }
+            ))
+            
+            self.res.status_code = 401
+            return self.res
+            
         form = forms.ProfileForm(request.PUT, instance=profile)
-
         if form.is_valid():
             T = form.save(commit=False)
             T.user = profile.user
@@ -306,10 +316,10 @@ class ProfileView(PutView):
     def post(self, request, user_id=None, image=None):
         if image:
             return self.image_upload(request, user_id)
-        
         request.POST = request.JSON
         username = request.JSON.get('username')
         password = request.JSON.get('password')
+        password_confirm = request.JSON.get('password_confirm')
         email = request.JSON.get('email')
         
         form = userforms.UserCreationForm(
@@ -317,7 +327,7 @@ class ProfileView(PutView):
                     'username': username,
                     'email' : email,
                     'password1' : password,
-                    'password2' : password
+                    'password2' : password_confirm
                 }
                 )
         if not form.is_valid():
@@ -328,7 +338,7 @@ class ProfileView(PutView):
                 error_dict['password'] = error_dict['password1']
                 del error_dict['password1']
             if 'password2' in error_dict:
-                error_dict['password-confirm'] = error_dict['password2']
+                error_dict['password_confirm'] = error_dict['password2']
                 del error_dict['password2']
 
             self.res.write(json.dumps(error_dict))

@@ -148,6 +148,21 @@ class HubForm(forms.ModelForm):
 
 class ProfileForm(forms.ModelForm):
     
+    password = forms.CharField(label="Password", widget=forms.PasswordInput, required=False)
+    password_confirm = forms.CharField(label="Confirm password", widget=forms.PasswordInput, required=False)
+    
+    def clean(self):
+        super(ProfileForm, self).clean()
+        cleaned_data = dict(self.cleaned_data)
+        password = self.cleaned_data.get("password")
+        password_confirm = self.cleaned_data.get("password_confirm")
+        if password or password_confirm:
+            if password != password_confirm:
+                self._errors['password'] = self.error_class(['Passwords do not match'])
+        self.cleaned_data = cleaned_data
+        return cleaned_data
+
+    
     class Meta:
         model = Profile
         exclude = ('user', 'createdTime', 'admin',)
