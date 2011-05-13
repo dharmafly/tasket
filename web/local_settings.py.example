@@ -35,3 +35,6 @@ TASK_ESTIMATE_MAX = 14400
 
 CLAIMED_TIME_LIMIT = 24
 DONE_TIME_LIMIT = 24
+
+# Turn CORS on or off (default: False)
+# CROSS_DOMAIN = False

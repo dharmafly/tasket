@@ -439,9 +439,7 @@ def statistics(request):
         }
     }
     
-
-
-
-
-
     return HttpResponse(json.dumps(stats))
+    
+
+

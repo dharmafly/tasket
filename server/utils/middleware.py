@@ -43,13 +43,14 @@ class CORSMiddleware():
             if k.startswith('HTTP_'):
                 AccessControlAllowHeaders.append(fix_headers(k))
         
-        for path, types, headers in self.paths:
-            if request.path.startswith(path) and content_type in types:
-                for k, v in headers:
-                    if k == "Access-Control-Allow-Headers":
-                        v = "%s, %s" % (v, ", ".join(AccessControlAllowHeaders))
-                    response[k] = v
-                break
+        if getattr(settings, 'CROSS_DOMAIN', False) == True:
+            for path, types, headers in self.paths:
+                if request.path.startswith(path) and content_type in types:
+                    for k, v in headers:
+                        if k == "Access-Control-Allow-Headers":
+                            v = "%s, %s" % (v, ", ".join(AccessControlAllowHeaders))
+                        response[k] = v
+                    break
         return response
 
 
