@@ -23,7 +23,7 @@ _.extend(Tasket, Backbone.Events, {
     endpoint: "/",
     
     settings: {
-        TASK_ESTIMATE_MAX: 14400,
+        TASK_ESTIMATE_MAX: 14400, // seconds that a task can take
         TASK_LIMIT: 10, // max number of un-verified tasks on a hub
         CLAIMED_LIMIT: 5 // max number of tasks that a user can claim at one time
     },

@@ -5,12 +5,12 @@ var SignUp = FormUpload.extend({
         // Verify that the passwords match
         this.bind("beforeSave", function(data, user, form){
             var pass1 = data.password,
-                pass2 = data["password-confirm"];
+                pass2 = data.password_confirm;
                 
             if (form.passwordRequired && !pass1 && !pass2){
                 form.errors({
                     password: ["Password required"],
-                    "password-confirm": ["Password required"]
+                    password_confirm: ["Password required"]
                 });
                 form.abort = true; // prevent the user model from saving. see Form.submit()
             }
@@ -25,7 +25,7 @@ var SignUp = FormUpload.extend({
 
         // Remove the password fields from the User model.
         this.bind("submit", function (user) {
-            _.each(["password", "password-confirm"], function (attribute) {
+            _.each(["password", "password_confirm"], function (attribute) {
                 user.unset(attribute, {silent: true});
             });
         });
