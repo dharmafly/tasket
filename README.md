@@ -130,7 +130,9 @@ NOTE: If you are using virtualenv, make sure you activate it before running the 
 ## Email
 
 In order to send forgotten password emails, a valid SMTP server will need to be set in `local_settings.py`.  More information on this can be found here:
-http://docs.djangoproject.com/en/1.3/topics/email/
+
+* http://docs.djangoproject.com/en/1.3/topics/email/
+* http://docs.djangoproject.com/en/1.3/ref/settings/
 
 The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
 
