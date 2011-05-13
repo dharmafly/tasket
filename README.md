@@ -44,6 +44,12 @@ An open source micro-volunteering app, allowing individuals and groups to create
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 
+### Django admin
+
+If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to http://localhost:8000/admin/.
+
+For the password reset email to work properly, you must set up the 'site name' and URL at /admin/sites/site/1/.
+
 ### Troubleshooting: images served with 500 Server Error
 
 On Linux, if you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
