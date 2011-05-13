@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 from global_settings import *
-DEBUG = True
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
@@ -21,6 +19,10 @@ DATABASES = {
 }
 
 
+# ! MAKE THIS False ON DEPLOY !
+DEBUG = True
+TEMPLATE_DEBUG = DEBUG
+
 # How many tasks a hub can have
 TASK_LIMIT = 10
 
@@ -30,11 +32,16 @@ CLAIMED_LIMIT = 5
 # Maximum task estimate
 TASK_ESTIMATE_MAX = 14400
 
+# Time limit on completing a task
+CLAIMED_TIME_LIMIT = 72
+DONE_TIME_LIMIT = 72
+
+# Email messages from
+DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
+
+# Email routing
 # EMAIL_PORT = 25
 # EMAIL_HOST = "localhost"
-
-CLAIMED_TIME_LIMIT = 24
-DONE_TIME_LIMIT = 24
 
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
