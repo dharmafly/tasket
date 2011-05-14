@@ -45,3 +45,5 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
+
+USERS_CAN_CREATE_HUBS = True

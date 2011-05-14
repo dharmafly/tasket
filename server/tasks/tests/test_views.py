@@ -43,6 +43,26 @@ class ViewTests(TestCase):
         json_list = json.loads(response.content)
     
         self.assertEqual(set(json_list.keys()), set(['id', 'createdTime']))
+
+    def test_hubs_post_admin_restrict(self):
+        # TestUser is not an admin, this test should not create a hub
+        self.client.login(username='TestUser', password='12345')
+        
+        # Change the USERS_CAN_CREATE_HUBS setting, to only allow admins to 
+        # create hubs
+        settings.USERS_CAN_CREATE_HUBS = False
+
+        response = self.client.post(
+            '/hubs/', 
+            json.dumps({
+                'title' : 'New Hub',
+            }),
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+    
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(set(json_list.keys()), set(['status', 'error']))
     
     def test_hubs_post_loggedin_error(self):
         self.client.login(username='TestUser', password='12345')

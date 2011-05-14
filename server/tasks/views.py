@@ -79,6 +79,19 @@ class HubView(PutView):
 
         res = HttpResponse()
         
+        # Don't allow a normal user to create a hub, if USERS_CAN_CREATE_HUBS is 
+        # false, and the user is not an admin
+        if not settings.USERS_CAN_CREATE_HUBS and not request.user.profile.admin:
+            res.write(json.dumps(
+                {
+                'error' : "Unauthorized",
+                'status' : 401
+                }
+            ))
+            
+            res.status_code = 401
+            return res
+        
         form = forms.HubForm(request.JSON)
         if form.is_valid():
             H = form.save(commit=False)
