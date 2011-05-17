@@ -464,7 +464,7 @@ form ul,
 
 .content a {
     color: #003663;
-    text-decoration: underline;
+    border-bottom: 1px solid;
     font-weight: bold;
 }
 
@@ -861,7 +861,7 @@ article.hub > hgroup p.description {
 article.hub > hgroup a.readmore {
     font-size:0.9em;
 	color:#ccc;
-	text-decoration:underline;
+	border-bottom: 1px solid;
 }
 
 article.hub > hgroup,
