@@ -462,6 +462,12 @@ form ul,
 	border: none;
 }
 
+.content a {
+    color: #003663;
+    text-decoration: underline;
+    font-weight: bold;
+}
+
 .content strong {
 	font-weight: bold;
 }
@@ -855,6 +861,7 @@ article.hub > hgroup p.description {
 article.hub > hgroup a.readmore {
     font-size:0.9em;
 	color:#ccc;
+	text-decoration:underline;
 }
 
 article.hub > hgroup,
