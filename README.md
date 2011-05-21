@@ -3,10 +3,17 @@
 An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.
 
 
+## Dependencies
+
+* Python 2.6 or above (but < Python 3)
+* [easy_install](http://packages.python.org/distribute/easy_install.html). (On Linux, `sudo apt-get install python-setuptools`)
+
+
 ## Installation
 
     cd tasket
     easy_install virtualenv
+    # if this fails, use `sudo easy_install virtualenv`
     
     virtualenv --no-site-packages .
     source bin/activate
@@ -16,25 +23,28 @@ An open source micro-volunteering app, allowing individuals and groups to create
     
     cd web
     cp local_settings.py.example local_settings.py
-
+    
 
 ### Edit _local_settings.py_ to supply database settings, e.g. for SQLite, use:
 
     'ENGINE': 'django.db.backends.sqlite3'
 
 
-### Set up the database:
+### Set up the database
 
     python manage.py syncdb
+    
+### Optional: Load example data
+
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
 
   
-### Start the server:
+### Start the server
     
     python manage.py runserver
 
 
-### In future, you can start the server like this:
+### In future, you can start the server like this
 
     cd tasket
     source bin/activate
@@ -50,6 +60,7 @@ If you created a superuser account (recommended) when syncdb was run above, you 
 
 For the password reset email to work properly, you must set up the 'site name' and URL at /admin/sites/site/1/.
 
+
 ### Troubleshooting: images served with 500 Server Error
 
 On Linux, if you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
@@ -61,8 +72,8 @@ For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not
 
 ### Build software installation
 
-We use [smoosh][#smoosh] to package the JavaScript for production. To get it you
-need [Node][#node] >= 4.0.1 and [npm][#npm] installed.
+We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it you
+need [Node](http://nodejs.org) >= 4.0.1 and [npm](http://npmjs.org) installed.
 
 For hints on installation, see 
 [joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)). 
@@ -79,7 +90,7 @@ Then install Smoosh:
 
     $ npm install smoosh
 
-You may need to make the Smoosh program executable (you may need to prefix this command with `sudo `:
+You may need to make the Smoosh program executable (you may need to prefix this command with `sudo `):
 
     chmod +x ~/node_modules/.bin/smoosh
     
@@ -99,10 +110,6 @@ _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
 
 NOTE: Ignore any JSHint warnings for header.js and footer.js these are invalid
 JavaScript files used to wrap the Tasket application in a closure.
-
-[#smoosh]: http://github.com/fat/smoosh/
-[#node]: http://nodejs.org/
-[#npm]: http://npmjs.org/
 
 
 ## Debug mode
