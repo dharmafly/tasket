@@ -6,14 +6,14 @@ An open source micro-volunteering app, allowing individuals and groups to create
 ## Dependencies
 
 * Python 2.6 or above (but < Python 3)
-* [easy_install](http://packages.python.org/distribute/easy_install.html). (On Linux, `sudo apt-get install python-setuptools`)
+* [easy_install](http://packages.python.org/distribute/easy_install.html) - on Linux: `sudo apt-get install python-setuptools`
 
 
 ## Installation
 
     cd tasket
     easy_install virtualenv
-    # if this fails, use `sudo easy_install virtualenv`
+    # if this fails, use: sudo easy_install virtualenv
     
     virtualenv --no-site-packages .
     source bin/activate
@@ -108,8 +108,8 @@ or:
 This will run [JSHint](http://jshint.com) against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
 
-NOTE: Ignore any JSHint warnings for header.js and footer.js these are invalid
-JavaScript files used to wrap the Tasket application in a closure.
+NOTE: Ignore any JSHint warnings for header.js and footer.js, as these are partial
+JavaScript files used to enclose the Tasket application in a function closure.
 
 
 ## Debug mode
