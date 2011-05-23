@@ -13,6 +13,7 @@ var Form = View.extend({
     
     submit: function (event) {
         var data = {};
+            
         if (event) { 
             event.preventDefault();
         }
@@ -24,10 +25,10 @@ var Form = View.extend({
         });
 
         this.trigger("beforeSave", data, this.model, this);
+        O("abort?", this.abort);
         
         // listeners to beforeSave may set the `abort` flag
         if (this.abort){
-            this.abort = false;
             this.trigger("error", this.model, this);
         }
         else {
@@ -41,7 +42,7 @@ var Form = View.extend({
         return this;
     },
     
-    errors: function (errors) {
+    errors: function (errors) { O(errors);
         var list = this.$(":input");
 
         list.each(function () {
@@ -68,7 +69,12 @@ var Form = View.extend({
     },
     
     reset: function () {
-        this.$(".error strong").remove();
+        this.abort = false;
+    
+        this.$(".error")
+            .removeClass("error")
+            .find("strong").remove();
+            
         return this;
     },
     

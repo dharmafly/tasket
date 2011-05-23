@@ -4,9 +4,10 @@ var ChangePassword = Form.extend({
         
         // Ensure that user model has loaded from the server before submitting
         this.bind("beforeSave", function(data, user, form){
-            if (!user.get("username")){
+            if (!user.get("username")){ O('!user.get("username")', data, user, form);
                 form.abort = true;
                 user.bind("change:username", _.bind(form.submit, form));
+                // NOTE: if the user doesn't actually exist, then the form will not do anything. That's probably OK. It should never happen.
             }
         });
 
