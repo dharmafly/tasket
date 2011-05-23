@@ -72,7 +72,7 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-To enable emailing to function (e.g. to email a password reset link to users who forget their password), you must set up the 'site name' and URL at _/admin/sites/site/1/_
+To enable emailing (e.g. for users who forget their password to have a password reset link emailed to them), you must set up the 'site name' and URL at _/admin/sites/site/1/_
 
 
 ### Troubleshooting: images served with 500 Server Error
