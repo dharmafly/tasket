@@ -25,7 +25,6 @@ var Form = View.extend({
         });
 
         this.trigger("beforeSave", data, this.model, this);
-        O("abort?", this.abort);
         
         // listeners to beforeSave may set the `abort` flag
         if (this.abort){
@@ -42,7 +41,7 @@ var Form = View.extend({
         return this;
     },
     
-    errors: function (errors) { O(errors);
+    errors: function (errors) {
         var list = this.$(":input");
 
         list.each(function () {
