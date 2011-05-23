@@ -1,19 +1,22 @@
 # Tasket
 
 An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.  
-(Improvements and pull requests welcome).
+
+Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an Issue](https://github.com/premasagar/tasket/issues).
 
 
 ## Dependencies
 
 * Python 2.6 or above (but < Python 3)
-* [easy_install](http://packages.python.org/distribute/easy_install.html) - on Linux: `sudo apt-get install python-setuptools`
-* You may need Python's developer packages, e.g. on Linux: `sudo apt-get install python-dev`
+* [easy_install](http://packages.python.org/distribute/easy_install.html)
+* You may need Python's developer package ("python-dev" or "python-devel")
+
+### To install these dependencies on Linux:
+
+    sudo apt-get install python python-setuptools python-dev
 
 
-## Installation
-
-If you have problems with these instructions, please [raise an Issue](https://github.com/premasagar/tasket/issues), or create a Pull Request.
+## Install Tasket
 
     cd tasket
     easy_install virtualenv
@@ -29,11 +32,11 @@ If you have problems with these instructions, please [raise an Issue](https://gi
     cp local_settings.py.example local_settings.py
     
     
-### Optional: customise _local_settings.py_
+### Optional: customise _web/local_settings.py_
 
 #### Change the database engine
 
-Tasket is set up for quick testing and development using SQLite as its database. For deployment, edit _local_settings.py_ and change the `ENGINE` setting to Postgres or similar.
+Tasket is set up for quick testing and development using SQLite as its database. For deployment, edit _web/local_settings.py_ and change the `ENGINE` setting to Postgres or similar.
 
 #### Tasket behaviour
 
