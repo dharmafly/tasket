@@ -1,15 +1,19 @@
 # Tasket
 
-An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.
+An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.  
+(Improvements and pull requests welcome).
 
 
 ## Dependencies
 
 * Python 2.6 or above (but < Python 3)
 * [easy_install](http://packages.python.org/distribute/easy_install.html) - on Linux: `sudo apt-get install python-setuptools`
+* You may need Python's developer packages, e.g. on Linux: `sudo apt-get install python-dev`
 
 
 ## Installation
+
+If you have problems with these instructions, please [raise an Issue](https://github.com/premasagar/tasket/issues), or create a Pull Request.
 
     cd tasket
     easy_install virtualenv
@@ -24,17 +28,27 @@ An open source micro-volunteering app, allowing individuals and groups to create
     cd web
     cp local_settings.py.example local_settings.py
     
+    
+### Optional: customise _local_settings.py_
 
-### Edit _local_settings.py_ to supply database settings, e.g. for SQLite, use:
+#### Change the database engine
 
-    'ENGINE': 'django.db.backends.sqlite3'
+Tasket is set up for quick testing and development using SQLite as its database. For deployment, edit _local_settings.py_ and change the `ENGINE` setting to Postgres or similar.
+
+#### Tasket behaviour
+
+Tasket allows its behaviour to be modified, via a number of settings in _local_settings.py_.
+(TODO: document these settings)
 
 
-### Set up the database
+### Prepare the database
+
+It is recommended to create a superuser account during this process (follow the instructions in the terminal).
 
     python manage.py syncdb
     
-### Optional: Load example data
+    
+### Optional: Load test data
 
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
 
@@ -56,9 +70,9 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 ### Django admin
 
-If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to http://localhost:8000/admin/.
+If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-For the password reset email to work properly, you must set up the 'site name' and URL at /admin/sites/site/1/.
+To enable emailing to function (e.g. to email a password reset link to users who forget their password), you must set up the 'site name' and URL at _/admin/sites/site/1/_
 
 
 ### Troubleshooting: images served with 500 Server Error
