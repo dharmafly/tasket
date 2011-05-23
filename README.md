@@ -75,7 +75,7 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-To enable emailing (see below), you must set up the 'site name' and URL at _/admin/sites/site/1/_
+To enable emailing (see below), you must edit the site 'Domain name' and 'Display name' at _/admin/sites/site/1/_
 
 
 ### Troubleshooting: images served with 500 Server Error
@@ -169,7 +169,7 @@ For more information on various Django email settings that can be added to _loca
 
 ### Set the site name in Django Admin
 
-To complete the email settings, set the 'site name' and URL in the admin control panel, at _/admin/sites/site/1/_
+To complete the email settings, edit the site 'Domain name' and 'Display name' in the admin panel, at _/admin/sites/site/1/_
 
 
 ## Email template
