@@ -9,13 +9,17 @@ MANAGERS = ADMINS
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.contrib.gis.db.backends.postgis', # Add 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'tasket',                      # Or path to database file if using sqlite3.
-        'USER': '',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
-    }
+        # For development:
+        'ENGINE': 'django.db.backends.sqlite3',
+        
+        # For deployment:
+        #'ENGINE': 'django.contrib.gis.db.backends.postgis', # Or use 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'
+        
+        'NAME': 'tasket',                # Database name, or path to database file if using sqlite3
+        'USER': '',                      # Not used with sqlite3
+        'PASSWORD': '',                  # Not used with sqlite3
+        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3
+        'PORT
 }
 
 
@@ -36,6 +40,9 @@ TASK_ESTIMATE_MAX = 14400
 CLAIMED_TIME_LIMIT = 72
 DONE_TIME_LIMIT = 72
 
+# Whether or not normal users can create hubs (admins can always create them)
+USERS_CAN_CREATE_HUBS = True
+
 # Email messages from
 DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 
@@ -45,5 +52,3 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
-
-USERS_CAN_CREATE_HUBS = True
