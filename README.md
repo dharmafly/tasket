@@ -75,7 +75,7 @@ Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to [http://localhost:8000/admin/](http://localhost:8000/admin/)
 
-To enable emailing (e.g. for users who forget their password to have a password reset link emailed to them), you must set up the 'site name' and URL at _/admin/sites/site/1/_
+To enable emailing (see below), you must set up the 'site name' and URL at _/admin/sites/site/1/_
 
 
 ### Troubleshooting: images served with 500 Server Error
@@ -153,22 +153,30 @@ NOTE: If you are using virtualenv, make sure you activate it before running the 
 
 ## Email
 
-In order to send forgotten password emails, a valid SMTP server will need to be set in `local_settings.py`.  More information on this can be found here:
+In order to send forgotten password emails, a valid SMTP server will need to be set in _web/local_settings.py_. The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
+
+For testing, these can be set to `localhost` and `1025` and the following run from the command line:
+
+    python -m smtpd -n -c DebuggingServer localhost:1025
+
+All email that Django sends will then me piped to stdout on the terminal where the above was issued.
+
+For more information on various Django email settings that can be added to _local_settings.py_, see:
 
 * http://docs.djangoproject.com/en/1.3/topics/email/
 * http://docs.djangoproject.com/en/1.3/ref/settings/
 
-The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
 
-For testing, these can be set to localhost and 1025, and the following run from the command line:
+### Set the site name in Django Admin
 
-> python -m smtpd -n -c DebuggingServer localhost:1025
+To complete the email settings, set the 'site name' and URL in the admin control panel, at _/admin/sites/site/1/_
 
-All email django sends will then me piped to stdout on the terminal where the above was issued.
 
 ## Email template
 
-An email template can be created in `./web/templates/password_reset_email.html`.  It's best to copy the template from `./server/frontend/templates/password_reset_email.html` and edit it to fit your needs.
+An email template can be created in _web/templates/password_reset_email.html_  
+It's best to copy the template from _server/frontend/templates/password_reset_email.html_ and edit it to fit your needs.
+
 
 ## Admin users
 
@@ -207,3 +215,4 @@ Log in to Django and go to http://yourdomain.com/admin/auth/user/ (or click thro
 A superuser should have been created when the site was installed. If no superuser exists, running the following will create a one: 
 
     python manage.py createsuperuser
+
