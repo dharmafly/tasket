@@ -266,48 +266,60 @@ var cache = new Cache(Tasket.namespace),
             return app.currentUser;
         },
         
+        _triggerAllDoneTasksChange: function(){
+            app.trigger("change:allDoneTasks", app.allDoneTasks);
+            return app;
+        },
+        
         fetchAllDoneTasks: function(){
-            Tasket.getTasksByState("done", function(doneTasks){
-                if (doneTasks){
-                    app.allDoneTasks = doneTasks;
+            Tasket.getTasksByState("done", function(allDoneTasks){
+                if (allDoneTasks){
+                    app.allDoneTasks = allDoneTasks;
                 }
                 // There was a server/connectivity error, and we haven't yet fetched the list of done tasks. Use an empty tasks collection.
                 else if (!app.allDoneTasks){
                     app.allDoneTasks = new TaskList();
                 }
-                app.trigger("change:allDoneTasks", app.allDoneTasks);
+                else {
+                    return;
+                }
+                
+                // Trigger on app whenever the allDoneTasks collection changes
+                allDoneTasks
+                    .bind("change", app._triggerAllDoneTasksChange)
+                    .bind("remove", app._triggerAllDoneTasksChange);
+                
+                // Trigger now
+                app._triggerAllDoneTasksChange();
             });
             
             return app;
         },
         
-        updateAllDoneTasks: function(task){ // based on user.updateTasks(); called when any task changes
+        updateAllDoneTasks: function(task){ // based on user.updateTasks(); called when task changes
             var allDoneTasks = app.allDoneTasks,
-                id, isDone, wasDone, storedTask;
+                id, isDone, wasDone, wasDeleted, storedTask;
             
             if (allDoneTasks){
                 isDone  = task.get("state") === Task.states.DONE;
                 wasDone = task.previous("state") === Task.states.DONE;
-                
+
                 // Remove this task from the allDoneTasks collection
                 if (isDone || wasDone){
                     id = task.id;
+                    wasDeleted = !Tasket.tasks.get(id);
                     storedTask = allDoneTasks.detect(function(doneTask){
                         return id === doneTask.id;
                     });
-                    
+
                     // Add the task, if it is in the DONE state
                     if (!storedTask && isDone){
                         allDoneTasks.add(task, {silent: true});
                     }
                     
                     // Remove the task, if it is no longer in the DONE state
-                    else if (storedTask && !isDone){
+                    else if (storedTask && !isDone || storedTask && wasDeleted){
                         allDoneTasks.remove(storedTask, {silent: true});
-                    }
-                    
-                    if (storedTask || isDone){
-                        app.trigger("change:allDoneTasks", app.allDoneTasks);
                     }
                 }
             }

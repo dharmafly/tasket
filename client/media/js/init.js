@@ -20,7 +20,8 @@ app.bind("setup", function() {
     app.bind("change:currentUser", function(){
         if (app.currentUserIsAdmin()){
             if (!app.allDoneTasks){
-                Tasket.bind("task:change:state", app.updateAllDoneTasks);
+                Tasket.bind("task:change:state", app.updateAllDoneTasks)
+                      .bind("task:remove", app.updateAllDoneTasks);
             }
             app.fetchAllDoneTasks();
         }
@@ -29,8 +30,8 @@ app.bind("setup", function() {
             Tasket.unbind("task:change:state", app.updateAllDoneTasks);
         }
     });
-    // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard managed tasks accordingly
-    app.bind("change:allDoneTasks", _.bind(app.dashboard.updateManagedTasks, app.dashboard));
+    // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
+    app.bind("change:allDoneTasks", app.dashboard.updateManagedTasks);
 });
 
 // Called when the app has all dependancies loaded.
