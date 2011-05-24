@@ -141,82 +141,83 @@ var cache = new Cache(Tasket.namespace),
             return window.innerHeight - y;
         },
     
-        createForceDirector: function(options){
-            var f = new ForceDirector(),
-                defaultSettings = {
-                    fps: 10,
-                    numCycles: 200,
-                    updateStepMin: 0.3,
-                    updateStepMax: 1,
-                    updateStepDamping: 0.00001,
-                    animate: false,
-                    animator: null,
-                    callback: null,
-                    
-                    // engine settings
-                    inCoulombK: 50,
-                    inWallRepulsion: 600,
-                    inVelDampK: 0.01,
-                    wallsFlag: true
-                },
-                easing, i;
+        createForceDirector: ForceDirector.create || 
+            function(options){
+                var f = new ForceDirector(),
+                    defaultSettings = {
+                        fps: 10,
+                        numCycles: 200,
+                        updateStepMin: 0.3,
+                        updateStepMax: 1,
+                        updateStepDamping: 0.00001,
+                        animate: false,
+                        animator: null,
+                        callback: null,
+                        
+                        // engine settings
+                        inCoulombK: 50,
+                        inWallRepulsion: 600,
+                        inVelDampK: 0.01,
+                        wallsFlag: true
+                    },
+                    easing, i;
 
-            // Combine options with default settings
-            options = _.defaults(options || {}, defaultSettings);
+                // Combine options with default settings
+                options = _.defaults(options || {}, defaultSettings);
 
-            function loop(){
-                f.updateCycle(options.updateStepMin + easing);
-                easing = easing - (easing * options.updateStepDamping);
+                function loop(){
+                    f.updateCycle(options.updateStepMin + easing);
+                    easing = easing - (easing * options.updateStepDamping);
 
-                if (options.animate && options.animator){
-                    options.animator();
-                }
+                    if (options.animate && options.animator){
+                        options.animator();
+                    }
 
-                if (i <= options.numCycles){
-                    if (options.animate){
-                        window.setTimeout(function(){
+                    if (i <= options.numCycles){
+                        if (options.animate){
+                            window.setTimeout(function(){
+                                loop(++i);
+                            }, 1000 / options.fps);
+                        }
+                        else {
                             loop(++i);
-                        }, 1000 / options.fps);
+                        }
                     }
-                    else {
-                        loop(++i);
+                    else if (options.callback){
+                        options.callback();
                     }
                 }
-                else if (options.callback){
-                    options.callback();
+                
+                function startLoop(newOptions){
+                    if (newOptions){
+                        options = _.extend(options, newOptions);
+                    }
+                    
+                    i = 0;
+                    easing = options.updateStepMax - options.updateStepMin;
+                    
+                    //f.inHookeK = 0.1;
+                    f.inVelDampK = options.inVelDampK;
+                    f.inCoulombK = options.inCoulombK;
+                    f.inWallRepulsion = options.inWallRepulsion;
+                    //f.inBBRepulsion = 200;
+                    //f.inVelDampK = 0.000025;
+                    
+                    f.wallsFlag = options.wallsFlag;
+                    f.top = options.wallTop;
+                    f.bottom = options.wallBottom;
+                    f.left = options.wallLeft;
+                    f.right = options.wallRight;
+                    
+                    loop();
                 }
-            }
-            
-            function startLoop(newOptions){
-                if (newOptions){
-                    options = _.extend(options, newOptions);
-                }
                 
-                i = 0;
-                easing = options.updateStepMax - options.updateStepMin;
-                
-                //f.inHookeK = 0.1;
-                f.inVelDampK = options.inVelDampK;
-                f.inCoulombK = options.inCoulombK;
-                f.inWallRepulsion = options.inWallRepulsion;
-                //f.inBBRepulsion = 200;
-                //f.inVelDampK = 0.000025;
-                
-                f.wallsFlag = options.wallsFlag;
-                f.top = options.wallTop;
-                f.bottom = options.wallBottom;
-                f.left = options.wallLeft;
-                f.right = options.wallRight;
-                
-                loop();
-            }
-            
-            return {
-                engine: f,
-                options: options,
-                go: startLoop
-            };
-        },
+                return {
+                    engine: f,
+                    options: options,
+                    go: startLoop
+                };
+            },
 
         isCurrentUser: function (id) {
             return !!(app.currentUser && id === app.currentUser.id);

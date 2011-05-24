@@ -13,9 +13,10 @@ var TankController = Backbone.Controller.extend({
         Backbone.Controller.prototype.constructor.apply(this, arguments);
     },
 
-    // Get the dimensions of the tank
+    // Get the dimensions of the tank    
     calculateWalls: function(){
-        var wallBuffer = app.wallBuffer;
+        var wallBuffer = app.wallBuffer,
+            viewportHeight = document.documentElement.clientHeight;
 
         this.wallBuffer = wallBuffer;
         this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
@@ -23,10 +24,12 @@ var TankController = Backbone.Controller.extend({
         this.width = this.wallRight - this.wallLeft;
 
          // NOTE: this is zero-bottom y
-        this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
+        //this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
+        this.wallTop = viewportHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallBottom = wallBuffer;
         this.height = this.wallTop - this.wallBottom;
-        this.marginTop = window.innerHeight - this.wallTop;
+        //this.marginTop = window.innerHeight - this.wallTop;
+        this.marginTop = viewportHeight - this.wallTop;
 
         _.extend(this.forceDirector.options, {
             wallTop: this.wallTop,
@@ -42,10 +45,6 @@ var TankController = Backbone.Controller.extend({
         var tank = this;
         this.hubViews = {};
         this.forceDirector = app.createForceDirector();
-        
-        // TODO TEMP visualising forcedirector
-        //window.tasket_app.world.tk.reset();
-        //this.forceDirector.engine = window.tasket_app.world.tk;
         
         this.calculateWalls();
 
