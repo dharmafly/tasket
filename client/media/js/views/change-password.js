@@ -1,13 +1,22 @@
-var SignUp = FormUpload.extend({
-    constructor: function SignUpForm() {
-        Form.prototype.constructor.apply(this, arguments);
+var ChangePassword = Form.extend({
+    constructor: function ChangePassword() {
+        SignUp.prototype.constructor.apply(this, arguments);
+        
+        // Ensure that user model has loaded from the server before submitting
+        this.bind("beforeSave", function(data, user, form){
+            if (!user.get("username")){
+                form.abort = true;
+                user.bind("change:username", _.bind(form.submit, form));
+                // NOTE: if the user doesn't actually exist, then the form will not do anything. That's probably OK. It should never happen.
+            }
+        });
 
         // Verify that the passwords match
         this.bind("beforeSave", function(data, user, form){
             var pass1 = data.password,
                 pass2 = data.password_confirm;
                 
-            if (form.passwordRequired && !pass1 && !pass2){
+            if (!pass1 && !pass2){
                 form.errors({
                     password: ["Password required"],
                     password_confirm: ["Password required"]
@@ -30,16 +39,10 @@ var SignUp = FormUpload.extend({
             });
         });
     },
-    
-    passwordRequired: true,
-
-    url: function () {
-        return this.model.url() + "/image/";
-    },
 
     render: function () {
-        var html = tim("signup");
-        this.elem.html(html).find(".loading").hide();
+        var html = tim("change-password");
+        this.elem.html(html);
         return this;
     }
 });

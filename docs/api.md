@@ -169,3 +169,10 @@ POST JSON:
 
     /settings/      #GET JSON object containing key/value pairs of settings, as 
                      white listed in settings.EXPOSED_SETTINGS
+
+## Stars ## 
+GET /users/[id]/starred/ [{'type': 'task', 'id': pk, 'timestamp': 12345}, ]
+
+GET /starred/[type]/[id] {'type': 'task', 'id': pk, 'timestamp': 12345, starred: true}
+POST /starred/[type]/[id] 200 {'type': 'task', 'id': pk, 'timestamp': 12345, starred: true}
+POST /starred/[type]/[id] 200 {'type': 'task', 'id': pk, starred: false}

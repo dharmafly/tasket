@@ -23,7 +23,7 @@ _.extend(Tasket, Backbone.Events, {
     endpoint: "/",
     
     settings: {
-        TASK_ESTIMATE_MAX: 14400,
+        TASK_ESTIMATE_MAX: 14400, // seconds that a task can take
         TASK_LIMIT: 10, // max number of un-verified tasks on a hub
         CLAIMED_LIMIT: 5 // max number of tasks that a user can claim at one time
     },
@@ -176,7 +176,17 @@ _.extend(Tasket, Backbone.Events, {
             contentType: "application/json",
             dataType: "json",
             success: function(response){
-                callback(new TaskList(response));
+                var ids = [];
+            
+                _(response).each(function(model){
+                    ids.push(model.id);
+                    
+                    if (!Tasket.tasks.get(model.id)){
+                        Tasket.tasks.add(model);
+                    }
+                });
+                
+                callback(Tasket.getTasks(ids));
             },
             error: function(){
                 callback(null);

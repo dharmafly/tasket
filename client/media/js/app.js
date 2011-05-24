@@ -285,7 +285,7 @@ var cache = new Cache(Tasket.namespace),
             var allDoneTasks = app.allDoneTasks,
                 id, isDone, wasDone, storedTask;
             
-            if (app.allDoneTasks){
+            if (allDoneTasks){
                 isDone  = task.get("state") === Task.states.DONE;
                 wasDone = task.previous("state") === Task.states.DONE;
                 
@@ -296,13 +296,14 @@ var cache = new Cache(Tasket.namespace),
                         return id === doneTask.id;
                     });
                     
-                    if (storedTask){
-                        allDoneTasks.remove(storedTask, {silent: true});
+                    // Add the task, if it is in the DONE state
+                    if (!storedTask && isDone){
+                        allDoneTasks.add(task, {silent: true});
                     }
                     
-                    // Add the changed task, if it is in the DONE state
-                    if (isDone){
-                        allDoneTasks.add(task, {silent: true});
+                    // Remove the task, if it is no longer in the DONE state
+                    else if (storedTask && !isDone){
+                        allDoneTasks.remove(storedTask, {silent: true});
                     }
                     
                     if (storedTask || isDone){
@@ -320,9 +321,9 @@ var cache = new Cache(Tasket.namespace),
             return app.trigger("change:authtoken", authtoken); // see dashboard.js > Dashboard.setUser()
         },
 
-        // Update the location bar with the previous hash.
-        back: function(){
-            var prev = Backbone.history.getPrevious();
+        // Update the location bar with a previous hash.
+        back: function(historyCount){
+            var prev = Backbone.history.getPrevious(historyCount);
             if (!prev) {
                 prev = "/";
             }

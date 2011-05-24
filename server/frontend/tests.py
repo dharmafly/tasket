@@ -81,5 +81,12 @@ class ViewTests(TestCase):
             )
         x = mail.outbox[0].body.splitlines()[-1]
         response = self.client.get(x)
+<<<<<<< HEAD
         
+=======
+     
+    def test_settings_view(self):
+        response = self.client.get('/settings/')
+        self.assertEqual(response.status_code, 200)
+>>>>>>> master
 

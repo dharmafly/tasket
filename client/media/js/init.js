@@ -1,15 +1,34 @@
 // Run after app properties have been setup.
-app.bind("setup", function onSetup() {
+app.bind("setup", function() {
     // Setup the app.
     jQuery("body")
       .append(app.dashboard.render().el)
-      .append(app.lightbox.render().hide().el);
+      .append(app.lightbox.render().el);
 
     // Return to the previous route when the lightbox closes.
-    app.lightbox.bind("hide", app.back);
+    // TODO: For some reason, binding to the "hide" event fails after a few triggers, so binding to "all" instead
+    app.lightbox.bind("all", function(eventName){
+        if (eventName === "hide"){
+            app.back(app.lightbox.historyCount);
+        }
+    });
     app.bind("change:currentUser", _.bind(app.dashboard.setUser, app.dashboard));
     app.dashboard.detail.bind("hide", app.back);
     
+    // If the user is an admin, then fetch all "done" state tasks in the whole system
+    _.bindAll(app, "updateAllDoneTasks");
+    app.bind("change:currentUser", function(){
+        if (app.currentUserIsAdmin()){
+            if (!app.allDoneTasks){
+                Tasket.bind("task:change:state", app.updateAllDoneTasks);
+            }
+            app.fetchAllDoneTasks();
+        }
+        else {
+            app.allDoneTasks = null;
+            Tasket.unbind("task:change:state", app.updateAllDoneTasks);
+        }
+    });
     // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard managed tasks accordingly
     app.bind("change:allDoneTasks", _.bind(app.dashboard.updateManagedTasks, app.dashboard));
 });
@@ -73,14 +92,6 @@ app.bind("ready", function onReady () {
     // This ensures that the users hubs are not requested before Tasket.hubs
     // is reset.
     app.restoreCache().setupAuthentication();
-       
-    // If the user is an admin, then fetch all "done" state tasks in the whole system
-    if (app.currentUserIsAdmin()){
-        _.bindAll(app, "updateAllDoneTasks");
-        Tasket.bind("task:change", app.updateAllDoneTasks);
-        
-        app.fetchAllDoneTasks();
-    }
 
     Backbone.history.start();
 });
