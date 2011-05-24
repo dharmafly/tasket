@@ -26,7 +26,8 @@ var Dashboard = View.extend({
             "updateUserTasks",
             "updateUserHubs",
             "updateManagedTasks",
-            "updateStatistics"
+            "updateStatistics",
+            "setUser"
         );
 
         // Setup the user bindings.
@@ -34,16 +35,24 @@ var Dashboard = View.extend({
 
         // Set up the detail instance.
         this.detail = new DashboardDetail();
-        this.detail.bind("all", _.bind(function (event) {
-            if (event === "show") {
+
+        // BIND EVENTS
+        app.bind("change:currentUser", this.setUser)
+           // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
+           .bind("change:allDoneTasks", this.updateManagedTasks)
+           .bind("change:allDoneTasks", this.updateNotifications)
+           .bind("change:statistics", this.updateStatistics);
+           
+        // On changing the contextual detail section
+        this.detail.bind("all", _.bind(function (eventName) {
+            if (eventName === "show") {
                 this.elem.addClass(this.classes.detailShown);
             }
-            else if (event === "hide") {
+            else if (eventName === "hide") {
                 this.elem.removeClass(this.classes.detailShown);
+                app.back();
             }
         }, this));
-
-        app.bind("change:statistics", this.updateStatistics);
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
@@ -143,6 +152,7 @@ var Dashboard = View.extend({
 
     userStatistics: function(){
         var user = this.model;
+        
         return {
             ownedClaimed:    user.get("tasks.owned.claimed").length,
             adminedDone:     user.isAdmin() ? // if an admin, this includes all done tasks
@@ -187,7 +197,8 @@ var Dashboard = View.extend({
 
         if (visible && visible.length) {
             visible.last().addClass("last");
-        } else {
+        }
+        else {
             notifications.hide();
         }
     },

@@ -120,7 +120,8 @@ _.extend(Tasket, Backbone.Events, {
             type       = collection.model.prototype.type,
             subset     = new collection.constructor(),
             toLoad     = new collection.constructor(),
-            toLoadCopy = new collection.constructor();
+            toLoadCopy = new collection.constructor(),
+            silent     = {silent:true};
             
         // If a specific model has been requested, rather than a collection
         if (!_.isArray(ids)){
@@ -136,11 +137,11 @@ _.extend(Tasket, Backbone.Events, {
             if (id){
                 if (!model) {
                     model = new collection.model({id: id});
-                    toLoad.add(model);
-                    toLoadCopy.add(model);
+                    toLoad.add(model, silent);
+                    toLoadCopy.add(model, silent);
                     collection.add(model);
                 }
-                subset.add(model);
+                subset.add(model, silent);
             }
         }, this);
 
@@ -155,7 +156,7 @@ _.extend(Tasket, Backbone.Events, {
                 // but not in toLoad. As they do not exist on the server.
                 toLoadCopy.each(function (model) {
                     if (!toLoad.get(model.id)) {
-                        subset.remove(model);
+                        subset.remove(model, silent);
                         collection.remove(model);
 
                         // Cache the failed model id.

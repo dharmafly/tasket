@@ -4,11 +4,14 @@ var cache = new Cache(Tasket.namespace),
     app = _.extend({
         // Sets up the app. Called by init()
         setup: function () {
+            // Bind app object's methods to the app object
+            _.bindAll(this, "updateAllDoneTasks", "_onChangeUser");
+            
+            // Cache the body element
             this.bodyElem = jQuery("body");
-
-            Tasket.bind("task:change:state", app.updateTaskStatistics);
-
-            return _.extend(this, {
+        
+            // app properties
+            _.extend(this, {
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 taskBuffer: 20,
                 tankResizeThrottle: 1000,
@@ -29,20 +32,36 @@ var cache = new Cache(Tasket.namespace),
                 currentUser: null,
                 selectedHub: null,
                 allDoneTasks: null,
-                statistics: {
-                    tasks: {
-                        "new": 0,
-                        "claimed": 0,
-                        "done": 0,
-                        "verified": 0
-                    }
-                },
                 cache: cache,
+                statistics:     {tasks: this.blankTaskStatistics()},
                 toolbar:        new Toolbar({el: jQuery(".header-container")[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
                 dashboard:      new Dashboard()
             });
+            
+            
+            // BIND EVENTS
+            Tasket.bind("task:change:state", this.updateTaskStatistics);
+            
+            // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
+            app.bind("change:currentUser", this._onChangeUser);
+            
+            return this.trigger("setup", this);
+        },
+        
+        _onChangeUser: function(){        
+            if (app.currentUserIsAdmin()){
+                if (!app.allDoneTasks){
+                    Tasket.bind("task:change:state", app.updateAllDoneTasks)
+                          .bind("task:remove", app.updateAllDoneTasks);
+                }
+                app.fetchAllDoneTasks();
+            }
+            else {
+                app.allDoneTasks = null;
+                Tasket.unbind("task:change:state", app.updateAllDoneTasks);
+            }
         },
 
         // Sets up the app. Called by init() on app "ready".
@@ -87,7 +106,6 @@ var cache = new Cache(Tasket.namespace),
                 else if (app.loaded !== true) {
                     // Setup app properties that are not dependant on anything.
                     app.setup();
-                    app.trigger("setup", app);
 
                     // Kick off init(). Trigger "success" if all deferreds return
                     // successfully. Else trigger an "error" event.
@@ -415,13 +433,29 @@ var cache = new Cache(Tasket.namespace),
                 return supported;
             };
         }()),
+        
+        blankTaskStatistics: function(){
+            return {
+                "new": 0,
+                "claimed": 0,
+                "done": 0,
+                "verified": 0
+            };
+        },
 
         // Update the global statistics object when a task state changes. This
         // is a callback fruntion for the Tasket "task:change:state" event.
         updateTaskStatistics: function (model) {
-            var current  = model.get("state"),
-                previous = model.previous("state");
-
+            var current, previous,
+                wasAlreadyAccountedFor = !model.previous("estimate"); // NOTE: this is a check to see if this task was an empty scaffold, created in Tasket.getModels and the fetched from the server and populated. If it was, then it has already been taken into account by the intial statistics fetch in init.js
+            
+            if (wasAlreadyAccountedFor){
+                return;
+            }
+        
+            current  = model.get("state");
+            previous = model.previous("state");
+            
             app.statistics.tasks[current]  += 1;
             app.statistics.tasks[previous] -= 1;
 
