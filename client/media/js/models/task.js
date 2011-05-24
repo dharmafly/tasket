@@ -28,7 +28,7 @@ var Task = Model.extend({
     defaults: {
         description: "",
         image: "",
-        /* Set estimate to 0 so that we know it is a new task */
+        // Set estimate to 0 so that we know it is a new task. This default should not be changed, as it used in models/hub.js and app.js to determine if a task has been later updated from the default.
         estimate: 0,
         state: TaskStates.NEW
     },
