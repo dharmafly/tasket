@@ -8,7 +8,7 @@ var Dashboard = View.extend({
     },
 
     events: {
-        "click .notifications": "_onNotificationClick",
+        "click a.notifications": "_onNotificationClick",
         "click section.quicklinks.my-projects ul.listing li": "toggleHub",
         "mouseenter .info": "_toggleHelp",
         "mouseleave .info": "_toggleHelp"
@@ -283,20 +283,23 @@ var Dashboard = View.extend({
 
     // Scroll down to the appropriate listing and highlight the activity links.
     _onNotificationClick: function (event) {
-        var className = event.target.hash.replace("#", "."),
-            element = this.$(className).addClass("highlight");
-
-        // Scroll the dashboard root element to the position of the inner section, and highlight the inner section
-        this.elem
-            .animate(
-                {
-                    "scrollTop": element.position().top
-                },
-                function () {
-                    element.removeClass("highlight");
-                }
-            );
+        var hash = event && event.target,
+            className = hash && hash.replace("#", "."),
+            element = className && this.$(className).addClass("highlight");
             
-        event.preventDefault();
+        if (element){
+            // Scroll the dashboard root element to the position of the inner section, and highlight the inner section
+            this.elem
+                .animate(
+                    {
+                        "scrollTop": element.position().top
+                    },
+                    function () {
+                        element.removeClass("highlight");
+                    }
+                );
+                
+            event.preventDefault();
+        }
     }
 });
