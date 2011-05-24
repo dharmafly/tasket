@@ -153,22 +153,6 @@ NOTE: If you are using virtualenv, make sure you activate it before running the 
 
 ## Email
 
-<<<<<<< HEAD
-In order to send forgotten password emails, a valid SMTP server will need to be set in `local_settings.py`.  More information on this can be found here:
-http://docs.djangoproject.com/en/1.3/topics/email/
-
-The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
-
-For testing, these can be set to localhost and 1025, and the following run from the command line:
-
-> python -m smtpd -n -c DebuggingServer localhost:1025
-
-All email django sends will then me piped to stdout on the terminal where the above was issued.
-
-## Email template
-
-An email template can be created in `./web/templates/password_reset_email.html`.  It's best to copy the template from `./server/tasks/tempaltes/password_reset_email.html` and edit it to fit your needs.
-=======
 In order to send forgotten password emails, a valid SMTP server will need to be set in _web/local_settings.py_. The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
 
 For testing, these can be set to `localhost` and `1025` and the following run from the command line:
@@ -193,7 +177,6 @@ To complete the email settings, edit the site 'Domain name' and 'Display name' i
 An email template can be created in _web/templates/password_reset_email.html_  
 It's best to copy the template from _server/frontend/templates/password_reset_email.html_ and edit it to fit your needs.
 
->>>>>>> master
 
 ## Admin users
 

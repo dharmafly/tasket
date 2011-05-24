@@ -36,10 +36,6 @@ CLAIMED_LIMIT = 5
 # Maximum task estimate
 TASK_ESTIMATE_MAX = 14400
 
-<<<<<<< HEAD
-# EMAIL_PORT = 25
-# EMAIL_HOST = "localhost"
-=======
 # Time limit on completing a task
 CLAIMED_TIME_LIMIT = 72
 DONE_TIME_LIMIT = 72
@@ -56,4 +52,3 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
->>>>>>> master

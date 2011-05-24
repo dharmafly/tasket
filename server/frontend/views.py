@@ -95,12 +95,8 @@ class PasswordReset(PutView):
             # Hack because we're not getting the password
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
-<<<<<<< HEAD
-            return HttpResponseRedirect('/#/change-password/')
-=======
             return HttpResponseRedirect('/#/users/%s/change-password/' % user.pk)
         return HttpResponseRedirect('/')
->>>>>>> master
 
     def post(self, request):
         try:
