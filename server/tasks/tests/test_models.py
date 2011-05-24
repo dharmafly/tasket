@@ -88,3 +88,15 @@ class ModelTest(TestCase):
         T.save()
         self.assertEqual(T.as_dict()['claimedTime'], 123456789)
 
+    def test_user_create_signal(self):
+        profiles_before = Profile.objects.all().count()
+        u = User(username='test')
+        u.save()
+        profiles_after = Profile.objects.all().count()
+        self.assertEqual(profiles_before+1, profiles_after)
+
+        
+
+
+
+

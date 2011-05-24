@@ -10,6 +10,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.db.models import signals
+from django.dispatch import dispatcher
 
 from django.conf import settings
 
@@ -297,3 +299,6 @@ class Profile(models.Model):
     def as_json(self, **kwargs):
         return json.dumps(self.as_dict(**kwargs))
         
+def user_post_save(sender, instance, signal, *args, **kwargs):
+    profile, new = Profile.objects.get_or_create(user=instance)
+models.signals.post_save.connect(user_post_save, sender=User)
