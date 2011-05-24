@@ -63,6 +63,7 @@ class ViewTests(TestCase):
     
         self.assertEqual(response.status_code, 401)
         self.assertEqual(set(json_list.keys()), set(['status', 'error']))
+        settings.USERS_CAN_CREATE_HUBS = True
     
     def test_hubs_post_loggedin_error(self):
         self.client.login(username='TestUser', password='12345')
@@ -85,7 +86,7 @@ class ViewTests(TestCase):
             }),
             content_type="application/json",
             )
-    
+        
         self.assertEqual(response.status_code, 401)
         self.assertEqual(json.loads(response.content)['error'], 'Unauthorized')
 
