@@ -31,7 +31,10 @@ getScript(
     "backbone-stack.js",
     "core/core.js",
     "models/models.js",
+    "viz/forcedirector.js",
+    "viz/test-forcedirector.js",
     "views/views.js",
+    "controllers/controllers.js",
     
     [
         "models/hub.js",
@@ -43,8 +46,7 @@ getScript(
         "views/notification.js",
         "views/lightbox.js",
         "views/dashboard.js",
-        "views/form.js",
-        "controllers/controllers.js"
+        "views/form.js"
     ],
     "views/form-upload.js",
     [

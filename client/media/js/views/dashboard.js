@@ -289,7 +289,7 @@ var Dashboard = View.extend({
     },
 
     _toggleHelp: function (event) {
-        $(event.target).siblings('.help').toggleClass('active');
+        jQuery(event.target).siblings('.help').toggleClass('active');
     },
 
     // Scroll down to the appropriate listing and highlight the activity links.

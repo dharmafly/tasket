@@ -46,6 +46,7 @@
             "../models/hub.js",
             "../models/task.js",
             "../models/user.js",
+            "../viz/forcedirector.js",
             "../views/views.js",
             "../views/hub-view.js",
             "../views/task-view.js",
