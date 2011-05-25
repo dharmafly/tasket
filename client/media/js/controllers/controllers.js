@@ -64,30 +64,33 @@ var TankController = Backbone.Controller.extend({
                 left: this.wallLeft,
                 right: this.wallRight
             });
+        
+            this.calculateHubWeights();
         });
+        
+        this.bind("resize", function(){
+            this.updateWalls()
+                .repositionHubViews();
+        });
+
+        jQuery(window).bind("resize", throttle(function(){
+            tank.trigger("resize", tank);
+        }, app.tankResizeThrottle, true));
+
+        // Watch for new hubs and add them to the tank.
+        Tasket.hubs.bind("add", _.bind(function(hub){
+            // If the hub isn't yet shown in the tank, and it still has unverified tasks
+            if (!this.getHubView(hub.id) && hub.isOpen()){
+                this.addHub(hub);
+            }
+        }, this));
+        
         this.updateWalls();
         
         // Add hubs
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
-
-        // Watch for new hubs and add them to the tank.
-        Tasket.hubs.bind("add", _.bind(function(hub){
-            // If the hub isn't yet shown in the tank, and it still has open tasks
-            if (!this.getHubView(hub.id) && hub.isOpen()){
-                this.addHub(hub);
-            }
-        }, this));
-
-        jQuery(window).bind("resize", throttle(function(){
-            if (tank.forceDirector.initialized){
-                //tank.updateWalls()
-                //    .forcedirectHubs();
-                tank.repositionHubViews();
-            }
-            tank.trigger("resize", tank);
-        }, app.tankResizeThrottle, true));
     },
 
     getHubView: function(id){
@@ -481,9 +484,6 @@ var TankController = Backbone.Controller.extend({
     
     repositionHubViews: function(){
         var tank = this;
-        
-        this.updateWalls()
-            .calculateHubWeights();
         
         _(this.hubViews).each(function(hubView){
             var offsetTop = tank.hubViewOffsetTop(hubView),

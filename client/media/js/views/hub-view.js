@@ -19,6 +19,7 @@ var HubView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
+        
         this.forceDirector = ForceDirector.create({
             animate: app.animateTasks,
             numCycles: 400,
@@ -29,22 +30,16 @@ var HubView = View.extend({
             inVelDampK: 0.1
         });
 
-        _.bindAll(this,
-          "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions"
-        );
+        _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions");
 
-        this.model.bind("change:title", this.updateTitle);
-        this.model.bind("change:description", this.updateDescription);
-        this.model.bind("change:image", this.updateImage);
+        this.model
+            .bind("change:title", this.updateTitle)
+            .bind("change:description", this.updateDescription)
+            .bind("change:image", this.updateImage)
         
-        /* hasChanged() function is in core/core.js */
-        this.model.bind("change", hasChanged([
-          "estimates.new", "estimates.claimed", "estimates.done", "estimates.verified"
-        ], this.updateEstimate));
-        
-        this.model.bind("change", hasChanged([
-          "tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"
-        ], this.refreshTasks));
+            // hasChanged() function is in core/core.js
+            .bind("change", hasChanged(["estimates.new", "estimates.claimed", "estimates.done", "estimates.verified"], this.updateEstimate))
+            .bind("change", hasChanged(["tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"], this.refreshTasks));
 
         app.bind("change:currentUser", this.updateAdminActions);
     },
