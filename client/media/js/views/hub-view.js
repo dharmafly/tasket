@@ -353,7 +353,7 @@ var HubView = View.extend({
         var hubView = this,
             forceDirector = this.forceDirector,
             taskViews = this.taskViews,
-            tank = app.tankController,
+            tank = app.tank,
             tankForce = tank.forceDirector,
             walls = tankForce.getWalls(),
             overallCallback;

@@ -13,7 +13,7 @@
         /////
         
         function cacheSettings(){
-            tank = app.tankController;
+            tank = app.tank;
             tankForce = tank.forceDirector;
             walls = tankForce.getWalls();
             buffer = tank.wallBuffer;

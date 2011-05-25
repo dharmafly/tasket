@@ -112,7 +112,7 @@ var Dashboard = View.extend({
     toggleHub: function(event){
         var hubId = app.dashboard.getHubIdFromAnchor(event.target);
         if (hubId === app.selectedHub){
-            app.tankController.getHubView(hubId).toggleTasks();
+            app.tank.getHubView(hubId).toggleTasks();
         }
     },
     

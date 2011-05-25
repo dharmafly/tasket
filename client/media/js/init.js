@@ -40,7 +40,7 @@ app.bind("setup", function() {
 // Called when the app has all dependancies loaded.
 app.bind("ready", function onReady () {
     app.notification.hide();
-    app.tankController.addHubs(Tasket.hubs.models);
+    app.tank.addHubs(Tasket.hubs.models);
 
     // Destroy the cached user details when the logout button is clicked.
     // This block can be removed once Ticket #84 has been resolved and the

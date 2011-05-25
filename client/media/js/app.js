@@ -78,10 +78,7 @@ var cache = new Cache(Tasket.namespace),
             /////
             
             // THE TANK
-            
-            // TODO: TEMP - rename all references in other files from "tankController" to "tank"
-            this.tankController = this.tank;
-            
+                        
             this.tank
                 .bind("hub:select", function(hubView){
                     app.selectedHub = hubView.model.id;
@@ -149,7 +146,7 @@ var cache = new Cache(Tasket.namespace),
         
         // Convert between bottom-zeroed and top-zeroed coordinate systems
         invertY: function(y, maxValue){
-            maxValue = maxValue || app.tankController.viewportHeight;
+            maxValue = maxValue || app.tank.viewportHeight;
         
             return maxValue - y;
         },
