@@ -32,7 +32,6 @@ getScript(
     "core/core.js",
     "models/models.js",
     "viz/forcedirector.js",
-    "viz/test-forcedirector.js",
     "views/views.js",
     "controllers/controllers.js",
     
@@ -67,6 +66,7 @@ getScript(
     "lang/default.js",
     "lang/custom.js",
     "init.js",
+    "viz/test-forcedirector.js",
     
     // Callback function once all are loaded
     function(loaded){

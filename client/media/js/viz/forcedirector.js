@@ -1,65 +1,53 @@
 // Intended as v2 of the /dependencies.forcedirector.js
 
-ForceDirector.create = (function(){
-
-    /*
-    function calculateWalls(viewportHeight, wallBuffer){
-        var wallBuffer = app.wallBuffer,
-            viewportHeight = document.documentElement.clientHeight;
-
-        this.wallBuffer = wallBuffer;
-        this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
-        this.wallLeft = wallBuffer;
-        this.width = this.wallRight - this.wallLeft;
-
-         // NOTE: this is zero-bottom y
-        //this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
-        this.wallTop = viewportHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
-        this.wallBottom = wallBuffer;
-        this.height = this.wallTop - this.wallBottom;
-        //this.marginTop = window.innerHeight - this.wallTop;
-        this.marginTop = viewportHeight - this.wallTop;
-
-        _.extend(this.forceDirector.options, {
-            wallTop: this.wallTop,
-            wallBottom: this.wallBottom,
-            wallLeft: this.wallLeft,
-            wallRight: this.wallRight
-        });
-
-        return this;
-    }
-    */
+(function(){
+    
+    ForceDirector.prototype.v = 2;
     
     ForceDirector.prototype.setWalls = function(dimensions){
-        if (dimensions === false){
+        if (!dimensions){
             this.wallsFlag = false;
         }
         else {
             _.extend(this, {
                 wallsFlag: true,
-                top: dimensions.top,
-                bottom: dimensions.bottom,
-                left: dimensions.left,
-                right: dimensions.right
+                top:    ~~(dimensions.top), // NOTE: ~~(n) === Math.floor(n) but faster
+                bottom: ~~(dimensions.bottom),
+                left:   ~~(dimensions.left),
+                right:  ~~(dimensions.right)
             });
         }
         return this;
+    };
+    
+    ForceDirector.prototype.getWalls = function(){
+        return {
+            top: this.top,
+            bottom: this.bottom,
+            left: this.left,
+            right: this.right
+        };
     };
         
         
     // Apply new API on top of old one
     function tempTranslateOptions(options){
-        return {
-            wallsFlag: options.wallsFlag,
-            top: options.wallTop,
-            bottom: options.wallBottom,
-            left: options.wallLeft,
-            right: options.wallRight
-        };
+        options.top = options.wallTop;
+        delete options.wallTop;
+        
+        options.bottom = options.wallBottom;
+        delete options.wallBottom;
+        
+        options.left = options.wallLeft;
+        delete options.wallLeft;
+        
+        options.right = options.wallRight;
+        delete options.wallRight;
+        
+        return options;
     }
     
-    function createForceDirector(options){
+    ForceDirector.create = function(options){
         var f = new ForceDirector(),
             defaultSettings = {
                 fps: 10,
@@ -83,6 +71,8 @@ ForceDirector.create = (function(){
 
         // TODO: Temporary conversion of old API with new one
         options = tempTranslateOptions(options);
+        
+        f.options = options;
 
         function loop(){
             f.updateCycle(options.updateStepMin + easing);
@@ -110,6 +100,7 @@ ForceDirector.create = (function(){
         function startLoop(newOptions){
             if (newOptions){
                 options = _.extend(options, newOptions);
+                this.setWalls(options.walls);
             }
             
             i = 0;
@@ -122,18 +113,10 @@ ForceDirector.create = (function(){
             //f.inBBRepulsion = 200;
             //f.inVelDampK = 0.000025;
             
-            this.setWalls(options);
-            
             loop();
         }
         
-        return {
-            engine: f,
-            options: options,
-            go: startLoop
-        };
-    }
-    
-
-    return createForceDirector;
+        f.go = startLoop;
+        return f;
+    };
 }());

@@ -81,7 +81,7 @@ var cache = new Cache(Tasket.namespace),
                 app.selectedHub = null;
             });
             
-            return this;
+            return this.trigger("ready", this);
         },
 
         // init() accepts jQuery deferred objects as returned by jQuery.ajax() or
@@ -112,7 +112,6 @@ var cache = new Cache(Tasket.namespace),
                     jQuery.when.apply(null, callbacks).then(
                         function () {
                             app.ready();
-                            app.trigger("ready", app);
                             app.loaded = true;
                         },
                         function () {
@@ -138,86 +137,8 @@ var cache = new Cache(Tasket.namespace),
         
         // Convert between bottom-zeroed and top-zeroed coordinate systems
         invertY: function(y){
-            return window.innerHeight - y;
+            return app.tankController.viewportHeight - y;
         },
-    
-        createForceDirector: ForceDirector.create || 
-            function(options){
-                var f = new ForceDirector(),
-                    defaultSettings = {
-                        fps: 10,
-                        numCycles: 200,
-                        updateStepMin: 0.3,
-                        updateStepMax: 1,
-                        updateStepDamping: 0.00001,
-                        animate: false,
-                        animator: null,
-                        callback: null,
-                        
-                        // engine settings
-                        inCoulombK: 50,
-                        inWallRepulsion: 600,
-                        inVelDampK: 0.01,
-                        wallsFlag: true
-                    },
-                    easing, i;
-
-                // Combine options with default settings
-                options = _.defaults(options || {}, defaultSettings);
-
-                function loop(){
-                    f.updateCycle(options.updateStepMin + easing);
-                    easing = easing - (easing * options.updateStepDamping);
-
-                    if (options.animate && options.animator){
-                        options.animator();
-                    }
-
-                    if (i <= options.numCycles){
-                        if (options.animate){
-                            window.setTimeout(function(){
-                                loop(++i);
-                            }, 1000 / options.fps);
-                        }
-                        else {
-                            loop(++i);
-                        }
-                    }
-                    else if (options.callback){
-                        options.callback();
-                    }
-                }
-                
-                function startLoop(newOptions){
-                    if (newOptions){
-                        options = _.extend(options, newOptions);
-                    }
-                    
-                    i = 0;
-                    easing = options.updateStepMax - options.updateStepMin;
-                    
-                    //f.inHookeK = 0.1;
-                    f.inVelDampK = options.inVelDampK;
-                    f.inCoulombK = options.inCoulombK;
-                    f.inWallRepulsion = options.inWallRepulsion;
-                    //f.inBBRepulsion = 200;
-                    //f.inVelDampK = 0.000025;
-                    
-                    f.wallsFlag = options.wallsFlag;
-                    f.top = options.wallTop;
-                    f.bottom = options.wallBottom;
-                    f.left = options.wallLeft;
-                    f.right = options.wallRight;
-                    
-                    loop();
-                }
-                
-                return {
-                    engine: f,
-                    options: options,
-                    go: startLoop
-                };
-            },
 
         isCurrentUser: function (id) {
             return !!(app.currentUser && id === app.currentUser.id);

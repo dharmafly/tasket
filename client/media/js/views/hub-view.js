@@ -19,7 +19,7 @@ var HubView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
-        this.forceDirector = app.createForceDirector({
+        this.forceDirector = ForceDirector.create({
             numCycles: 400,
             inCoulombK: 750,
             updateStepMin: 0.2,
@@ -354,6 +354,8 @@ var HubView = View.extend({
             forceDirector = this.forceDirector,
             taskViews = this.taskViews,
             tank = app.tankController,
+            tankForce = tank.forceDirector,
+            walls = tankForce.getWalls(),
             overallCallback;
 
         function repositionTasks(){
@@ -373,10 +375,10 @@ var HubView = View.extend({
             });
         }
 
-        forceDirector.engine.reset();
+        forceDirector.reset();
 
         // Add hub node
-        this.forcedNode = this.forceDirector.engine.addProject({
+        this.forcedNode = this.forceDirector.addProject({
             key: "hub-" + this.model.id
         });
 
@@ -391,17 +393,12 @@ var HubView = View.extend({
         }
 
         _.extend(forceDirector.options, {
-            wallTop: tank.wallTop,
-            wallBottom: tank.wallBottom,
-            wallLeft: tank.wallLeft,
-            wallRight: tank.wallRight,
             animate: animate,
             animator: repositionTasks,
             callback: overallCallback
         });
-
-        // Show walls
-        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + (tank.wallRight-tank.wallLeft) + "px; top:" + app.invertY(tank.wallTop) + "px; height: " + (tank.wallTop - tank.wallBottom) + "px; left:" + tank.wallLeft + "px; pointer-events:none;'></div>").prependTo("body");
+        
+        forceDirector.setWalls(walls);
 
         forceDirector.initialized = true;
 
@@ -471,7 +468,7 @@ var HubView = View.extend({
             taskView.cacheDimensions();
 
             // TODO: try setting far away from the nucleus, distributed equally around the circle
-            taskView.forcedNode = this.forceDirector.engine.addTaskToProject({
+            taskView.forcedNode = this.forceDirector.addTaskToProject({
                 key: "task-" + model.id,
                 width: taskView.width + taskBuffer,
                 height: taskView.height + taskBuffer,

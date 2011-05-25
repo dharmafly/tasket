@@ -14,39 +14,50 @@ var TankController = Backbone.Controller.extend({
     },
 
     // Get the dimensions of the tank    
-    calculateWalls: function(){
+    updateWalls: function(){
         var wallBuffer = app.wallBuffer,
-            viewportHeight = document.documentElement.clientHeight;
+            viewportHeight = document.documentElement.clientHeight,
+            //viewportHeight = window.innerHeight,
+            dimensions;
 
+        this.viewportHeight = viewportHeight;
         this.wallBuffer = wallBuffer;
         this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
         this.wallLeft = wallBuffer;
         this.width = this.wallRight - this.wallLeft;
 
          // NOTE: this is zero-bottom y
-        //this.wallTop = window.innerHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallTop = viewportHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
         this.wallBottom = wallBuffer;
         this.height = this.wallTop - this.wallBottom;
-        //this.marginTop = window.innerHeight - this.wallTop;
         this.marginTop = viewportHeight - this.wallTop;
+        
+        dimensions = {
+            top: this.wallTop,
+            bottom: this.wallBottom,
+            left: this.wallLeft,
+            right: this.wallRight
+        };
 
-        _.extend(this.forceDirector.options, {
-            wallTop: this.wallTop,
-            wallBottom: this.wallBottom,
-            wallLeft: this.wallLeft,
-            wallRight: this.wallRight
-        });
-
-        return this;
+        return this.trigger("change:walls", this, dimensions);
     },
 
     initialize: function(options){
         var tank = this;
         this.hubViews = {};
-        this.forceDirector = app.createForceDirector();
+        this.forceDirector = ForceDirector.create();
         
-        this.calculateWalls();
+        // Set walls in the force director
+        this.bind("change:walls", function(tank, dimensions){
+            this.forceDirector.setWalls({
+                top: this.wallTop,
+                bottom: this.wallBottom,
+                left: this.wallLeft,
+                right: this.wallRight
+            });
+        });
+        this.updateWalls();
+        
 
         if (options && options.hubs){
             this.addHubs(options.hubs);
@@ -62,10 +73,11 @@ var TankController = Backbone.Controller.extend({
 
         jQuery(window).bind("resize", throttle(function(){
             if (tank.forceDirector.initialized){
-                //tank.calculateWalls()
+                //tank.updateWalls()
                 //    .forcedirectHubs();
                 tank.repositionHubViews();
             }
+            tank.trigger("resize", tank);
         }, app.tankResizeThrottle, true));
 
         _.bindAll(this, "_onSelectHubs");
@@ -168,7 +180,7 @@ var TankController = Backbone.Controller.extend({
     repositionHubViews: function(){
         var tank = this;
         
-        this.calculateWalls()
+        this.updateWalls()
             .calculateHubWeights();
         
         _(this.hubViews).each(function(hubView){
@@ -212,12 +224,13 @@ var TankController = Backbone.Controller.extend({
         hubView.render();
         
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
-        hubView.forcedNodeHubToHub = this.forceDirector.engine.addTask({
+        hubView.forcedNodeHubToHub = this.forceDirector.addTask({
             key: "hub-" + hubView.model.id,
             x: offset.left,
             y: app.invertY(offset.top),
             width: hubView.width + hubView.nucleusWidth, // NOTE: hubView.nucleusWidth is used as a margin between hubs
-            height: hubView.height
+            height: hubView.height,
+            title: hubView.model.get("title")
         });
         
         return this;
@@ -242,6 +255,7 @@ var TankController = Backbone.Controller.extend({
             this.drawHubView(hubView)
                 .forcedirectHubs();
         }
+        this.trigger("add:hub", this, hub, hubView);
 
         return hubView;
     },
