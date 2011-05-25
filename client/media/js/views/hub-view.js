@@ -20,6 +20,7 @@ var HubView = View.extend({
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
         this.forceDirector = ForceDirector.create({
+            animate: app.animateTasks,
             numCycles: 400,
             inCoulombK: 750,
             updateStepMin: 0.2,
@@ -349,89 +350,6 @@ var HubView = View.extend({
         return this;
     },
 
-    initializeForceDirector: function(animate, callback){
-        var hubView = this,
-            forceDirector = this.forceDirector,
-            taskViews = this.taskViews,
-            tank = app.tank,
-            tankForce = tank.forceDirector,
-            walls = tankForce.getWalls(),
-            overallCallback;
-
-        function repositionTasks(){
-            var hubViewOffset = hubView.offset();
-
-            taskViews.each(function(taskView){
-                var taskPos = taskView.forcedNode.getPos(),
-                    taskElem = taskView.elem;
-
-                // repaint
-                taskView
-                    .cacheDimensions()
-                    .offset({
-                        left: ~~(taskPos.x - taskView.width / 2 - hubViewOffset.left + (hubView.width / 2)),
-                        top:  ~~(app.invertY(taskPos.y + hubViewOffset.top - (hubView.height / 2) + taskView.height / 2))
-                    });
-            });
-        }
-
-        forceDirector.reset();
-
-        // Add hub node
-        this.forcedNode = this.forceDirector.createSun({
-            key: "hub-" + this.model.id
-        });
-
-        if (callback){
-            overallCallback = function(){
-                repositionTasks();
-                callback.call(hubView);
-            };
-        }
-        else {
-            overallCallback = repositionTasks;
-        }
-
-        _.extend(forceDirector.options, {
-            animate: animate,
-            animator: repositionTasks,
-            callback: overallCallback
-        });
-        
-        forceDirector.setWalls(walls);
-
-        forceDirector.initialized = true;
-
-        return this;
-    },
-
-    updateForceDirectedDimensions: function(){
-        if (this.forcedNode){
-            var taskBuffer = app.taskBuffer,
-                hubViewOffset = this.offset();
-
-            this.cacheDimensions();
-
-            this.forcedNode.setWidth(this.width + taskBuffer);
-            this.forcedNode.setHeight(this.height + taskBuffer);
-            this.forcedNode.setPos(
-                hubViewOffset.left - (this.nucleusWidth / 2) - (taskBuffer / 2),
-                app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
-            );
-        }
-
-        return this;
-    },
-
-    forcedirectTasks: function(){
-        if (this.taskViews){
-            this.updateForceDirectedDimensions();
-            //this.forceDirector.go();
-            this.cacheTaskViewCenterBounds();
-        }
-        return this;
-    },
-
     // TODO: addTask needed
     // appendTaskView to the DOM. It will be later removed when the hubView is de-selected
     appendTaskView: function(taskView){
@@ -581,8 +499,97 @@ var HubView = View.extend({
             .show();
             
         return this;
-    }
+    },
+    
+    
+    /////
+    
+    // FORCE-DIRECTION PHYSICS
+    // TODO: totally refactor these, and related methods in controllers.js
 
+    initializeForceDirector: function(animate, callback){
+        var hubView = this,
+            forceDirector = this.forceDirector,
+            taskViews = this.taskViews,
+            tank = app.tank,
+            tankForce = tank.forceDirector,
+            walls = tankForce.getWalls(),
+            overallCallback;
+
+        function repositionTasks(){
+            var hubViewOffset = hubView.offset();
+
+            taskViews.each(function(taskView){
+                var taskPos = taskView.forcedNode.getPos(),
+                    taskElem = taskView.elem;
+
+                // repaint
+                taskView
+                    .cacheDimensions()
+                    .offset({
+                        left: ~~(taskPos.x - taskView.width / 2 - hubViewOffset.left + (hubView.width / 2)),
+                        top:  ~~(app.invertY(taskPos.y + hubViewOffset.top - (hubView.height / 2) + taskView.height / 2))
+                    });
+            });
+        }
+
+        forceDirector.reset();
+
+        // Add hub node
+        this.forcedNode = this.forceDirector.createSun({
+            key: "hub-" + this.model.id
+        });
+
+        if (callback){
+            overallCallback = function(){
+                repositionTasks();
+                callback.call(hubView);
+            };
+        }
+        else {
+            overallCallback = repositionTasks;
+        }
+
+        _.extend(forceDirector.options, {
+            animate: animate,
+            animator: repositionTasks,
+            callback: overallCallback
+        });
+        
+        forceDirector.setWalls(walls);
+
+        forceDirector.initialized = true;
+
+        return this;
+    },
+
+    updateForceDirectedDimensions: function(){
+        if (this.forcedNode){
+            var taskBuffer = app.taskBuffer,
+                hubViewOffset = this.offset();
+
+            this.cacheDimensions();
+
+            this.forcedNode.setWidth(this.width + taskBuffer);
+            this.forcedNode.setHeight(this.height + taskBuffer);
+            this.forcedNode.setPos(
+                hubViewOffset.left - (this.nucleusWidth / 2) - (taskBuffer / 2),
+                app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
+            );
+        }
+
+        return this;
+    },
+
+    forcedirectTasks: function(){
+        if (this.taskViews){
+            this.updateForceDirectedDimensions();
+            //this.forceDirector.go();
+            this.cacheTaskViewCenterBounds();
+        }
+        return this;
+    }
+    
 }, {
     /* Global keeping check of the current z-index */
     zIndex: 0,
