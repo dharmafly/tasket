@@ -45,9 +45,11 @@ var TankController = Backbone.Controller.extend({
     initialize: function(options){
         var tank = this;
         this.hubViews = {};
-        this.forceDirector = ForceDirector.create();
         
-        // Set walls in the force director
+        _.bindAll(this, "_onSelectHubs");
+        
+        // Force director
+        this.forceDirector = ForceDirector.create();
         this.bind("change:walls", function(tank, dimensions){
             this.forceDirector.setWalls({
                 top: this.wallTop,
@@ -58,7 +60,7 @@ var TankController = Backbone.Controller.extend({
         });
         this.updateWalls();
         
-
+        // Add hubs
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
@@ -79,8 +81,6 @@ var TankController = Backbone.Controller.extend({
             }
             tank.trigger("resize", tank);
         }, app.tankResizeThrottle, true));
-
-        _.bindAll(this, "_onSelectHubs");
     },
 
     getHubView: function(id){
@@ -164,19 +164,16 @@ var TankController = Backbone.Controller.extend({
     hubViewOffset: function(hubView){
         return {
             left: this.width / 2 + this.wallLeft + (this.width * Math.random() - this.width / 2),
-            top: this.hubViewOffsetTop(hubView) // if options.hubWeightRange is undefined or 0, then absolute weight used
+            top: this.hubViewOffsetTop(hubView)
         };
     },
     
-    invertY: function(y){
-        return app.invertY(y, app.tankController.viewportHeight);
-    },
-    
     setHubViewOffsetFromForcedNode: function(hubView){
-        var pos = hubView.forcedNodeHubToHub.getPos();
-
+        var node = hubView.forcedNodeHubToHub,
+            pos = node.getPos();
+        
         hubView.offset({
-            left: ~~(pos.x + hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
+            left: ~~(pos.x - node.width / 2 + hubView.nucleusWidth / 2), // NOTE: ~~n === Math.floor(n)
             top: app.invertY(~~pos.y)
         });
     },
@@ -213,14 +210,14 @@ var TankController = Backbone.Controller.extend({
     
         options = options || {};
     
-        if (options.left && options.top){
+        if (_.isNumber(options.left) && _.isNumber(options.top)){
             offset = {
                 left: options.left,
                 top: options.top
             };
         }
         else {
-            offset = this.hubViewOffset(hubView, options.hubWeightRange); // if options.hubWeightRange === undef, a standard range will be used
+            offset = this.hubViewOffset(hubView);
         }
 
         hubView.offsetValues(offset);
@@ -228,11 +225,11 @@ var TankController = Backbone.Controller.extend({
         hubView.render();
         
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
-        hubView.forcedNodeHubToHub = this.forceDirector.addTask({
+        hubView.forcedNodeHubToHub = this.forceDirector.createNode({
             key: "hub-" + hubView.model.id,
-            x: offset.left,
+            x: offset.left - hubView.nucleusWidth,
             y: app.invertY(offset.top),
-            width: hubView.width + hubView.nucleusWidth, // NOTE: hubView.nucleusWidth is used as a margin between hubs
+            width: hubView.width, // TODO: create a margin between hubs
             height: hubView.height,
             title: hubView.model.get("title")
         });
@@ -497,38 +494,31 @@ var TankController = Backbone.Controller.extend({
     },
 
     initializeForceDirector: function(animate, callback){
-        //animate = true;
+        animate = true;
     
         var tank = this,
-            hubViews = this.hubViews,
-            overallCallback;
+            hubViews = this.hubViews;
 
         function repositionHubs(){
             _.each(hubViews, tank.setHubViewOffsetFromForcedNode);
         }
 
-        if (callback){
-            overallCallback = function(){
+        this.forceDirector
+            .bind("loop", repositionHubs)
+            .bind("end", function(){
                 repositionHubs();
-                tank.forcedirectTasks();
-                callback.call(tank);
-            };
-        }
-        else {
-            overallCallback = repositionHubs;
-        }
+                //tank.forcedirectTasks();
+                
+                if (callback){
+                    callback.call(tank);
+                }
+            });
         
         _.extend(this.forceDirector.options, {
-            animate: animate,
-            animator: repositionHubs,
-            callback: overallCallback
+            animate: animate
         });
 
-        // Show the walls
-        //jQuery("<div style='position:absolute; outline:1px solid green; width:" + this.width + "px; top:" + this.marginTop + "px; height: " + this.height + "px; left:" + this.wallLeft + "px; pointer-events:none;'></div>").prependTo("body");
-
         this.forceDirector.initialized = true;
-
         return this;
     },
 
@@ -536,7 +526,7 @@ var TankController = Backbone.Controller.extend({
         if (!this.forceDirector.initialized){
             this.initializeForceDirector(animate, callback);
         }
-
+        
         this.forceDirector.go();
         return this;
     },

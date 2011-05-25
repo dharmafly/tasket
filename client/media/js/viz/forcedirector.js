@@ -1,6 +1,8 @@
 // Intended as v2 of the /dependencies.forcedirector.js
 
 (function(){
+    var noop = function(){};
+
     
     ForceDirector.prototype.v = 2;
     
@@ -28,76 +30,75 @@
             right: this.right
         };
     };
-        
-        
-    // Apply new API on top of old one
-    function tempTranslateOptions(options){
-        options.top = options.wallTop;
-        delete options.wallTop;
-        
-        options.bottom = options.wallBottom;
-        delete options.wallBottom;
-        
-        options.left = options.wallLeft;
-        delete options.wallLeft;
-        
-        options.right = options.wallRight;
-        delete options.wallRight;
-        
-        return options;
-    }
+    
+    ForceDirector.prototype.triggerLoopStart = ForceDirector.prototype.triggerLoopEnd = ForceDirector.prototype.triggerLoop = noop;
+    
+    
+    // Rename existing methods
+    ForceDirector.prototype.createNode = ForceDirector.prototype.addTask;
+    ForceDirector.prototype.createSun = ForceDirector.prototype.addProject;
+    ForceDirector.prototype.createSatellite = ForceDirector.prototype.addTaskToProject;
+    
+    ForceDirector.prototype.looping = false;
     
     ForceDirector.create = function(options){
         var f = new ForceDirector(),
             defaultSettings = {
-                fps: 10,
+                fps: 60,
                 numCycles: 200,
                 updateStepMin: 0.3,
                 updateStepMax: 1,
                 updateStepDamping: 0.00001,
                 animate: false,
-                animator: null,
-                callback: null,
                 
                 // engine settings
+                /*
                 inCoulombK: 50,
                 inWallRepulsion: 600,
-                inVelDampK: 0.01,
+                inVelDampK: 0.01
+                */
             },
-            easing, i;
+            easing, intervalRef, i;
 
         // Combine options with default settings
         options = _.defaults(options || {}, defaultSettings);
-
-        // TODO: Temporary conversion of old API with new one
-        options = tempTranslateOptions(options);
         
         f.options = options;
 
         function loop(){
+            i++;
+            
             f.updateCycle(options.updateStepMin + easing);
             easing = easing - (easing * options.updateStepDamping);
-
-            if (options.animate && options.animator){
-                options.animator();
-            }
-
-            if (i <= options.numCycles){
+            
+            if (i < options.numCycles){
                 if (options.animate){
-                    window.setTimeout(function(){
-                        loop(++i);
-                    }, 1000 / options.fps);
+                    f.triggerLoop();
                 }
                 else {
-                    loop(++i);
+                    loop();
                 }
             }
-            else if (options.callback){
-                options.callback();
+            else {
+                stopLoop();
             }
         }
         
+        function stopLoop(){
+            f.looping = false;
+            
+            if (intervalRef){
+                window.clearInterval(intervalRef);
+                intervalRef = null;
+            }
+            
+            // This method can be overriden, to provide a trigger callback
+            f.triggerLoopEnd();
+        }
+        
         function startLoop(newOptions){
+            f.looping = true;
+            
             if (newOptions){
                 options = _.extend(options, newOptions);
                 this.setWalls(options.walls);
@@ -106,12 +107,25 @@
             i = 0;
             easing = options.updateStepMax - options.updateStepMin;
             
-            //f.inHookeK = 0.1;
-            f.inVelDampK = options.inVelDampK;
-            f.inCoulombK = options.inCoulombK;
-            f.inWallRepulsion = options.inWallRepulsion;
-            //f.inBBRepulsion = 200;
-            //f.inVelDampK = 0.000025;
+            if (options.inVelDampK){
+                f.inVelDampK = options.inVelDampK;
+            }
+            if (options.inHookeK){
+                f.inHookeK = options.inHookeK;
+            }
+            if (options.inWallRepulsion){
+                f.inWallRepulsion = options.inWallRepulsion;
+            }
+            if (options.inBBRepulsion){
+                f.inBBRepulsion = options.inBBRepulsion;
+            }
+            
+            // This method can be overriden, to provide a trigger callback
+            f.triggerLoopStart();
+            
+            if (options.animate){
+                intervalRef = window.setInterval(loop, 1000 / options.fps);
+            }
             
             loop();
         }

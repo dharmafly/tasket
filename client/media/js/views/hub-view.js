@@ -378,7 +378,7 @@ var HubView = View.extend({
         forceDirector.reset();
 
         // Add hub node
-        this.forcedNode = this.forceDirector.addProject({
+        this.forcedNode = this.forceDirector.createSun({
             key: "hub-" + this.model.id
         });
 
@@ -442,7 +442,7 @@ var HubView = View.extend({
     forcedirectTasks: function(){
         if (this.taskViews){
             this.updateForceDirectedDimensions();
-            this.forceDirector.go();
+            //this.forceDirector.go();
             this.cacheTaskViewCenterBounds();
 
             // DEV: Show node
@@ -468,7 +468,7 @@ var HubView = View.extend({
             taskView.cacheDimensions();
 
             // TODO: try setting far away from the nucleus, distributed equally around the circle
-            taskView.forcedNode = this.forceDirector.addTaskToProject({
+            taskView.forcedNode = this.forceDirector.createSatellite({
                 key: "task-" + model.id,
                 width: taskView.width + taskBuffer,
                 height: taskView.height + taskBuffer,

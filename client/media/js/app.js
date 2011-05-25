@@ -68,18 +68,28 @@ var cache = new Cache(Tasket.namespace),
         ready: function () {
             _.extend(this, {
                 // The controllers will make Ajax calls on their init, so are created after app init
-                tankController: new TankController(),
+                tank: new TankController(),
                 pageController: new PageController(),
                 dashController: new DashboardController()
             });
             
-            this.tankController.bind("hub:select", function(hubView){
-                app.selectedHub = hubView.model.id;
-                app.dashboard.hubAnchorSelect();
-            });
-            this.tankController.bind("hub:deselect", function(hubView){
-                app.selectedHub = null;
-            });
+            /////
+            
+            // THE TANK
+            
+            // TODO: TEMP - rename all references in other files from "tankController" to "tank"
+            this.tankController = this.tank;
+            
+            this.tank
+                .bind("hub:select", function(hubView){
+                    app.selectedHub = hubView.model.id;
+                    app.dashboard.hubAnchorSelect();
+                })
+                .bind("hub:deselect", function(hubView){
+                    app.selectedHub = null;
+                });
+            
+            /////
             
             return this.trigger("ready", this);
         },
@@ -136,10 +146,8 @@ var cache = new Cache(Tasket.namespace),
         },
         
         // Convert between bottom-zeroed and top-zeroed coordinate systems
-        // TODO: move version to tank, and add a maxValue here
         invertY: function(y, maxValue){
-            // TODO: TEMP
-            maxValue = app.tankController.viewportHeight;
+            maxValue = maxValue || app.tankController.viewportHeight;
         
             return maxValue - y;
         },

@@ -7,7 +7,6 @@
             strokeWidth = 1,
             canvasStrokeColor = "#333",
             nodeStrokeColor = "#33f",
-            //offset = jQuery("body").offset(),
             canvasElem, canvas, context,
             tank, tankForce, walls, buffer, width, height;
             
@@ -49,32 +48,35 @@
         }
         
         function drawWalls(){
-            //context.save();
             context.strokeStyle = canvasStrokeColor;
             context.strokeWidth = strokeWidth;
             context.strokeRect(0, 0, width, height);
-            //context.restore();
         }
         
         function drawNodes(){
-            var pos;
-
-            //context.save();
             context.strokeStyle = nodeStrokeColor;
             context.strokeWidth = strokeWidth;
             _.each(tankForce.nodes, function(node){
-                 pos = node.getPos();
-                 O(pos.x, pos.y, node.width, height - node.height, node);
-                 context.strokeRect(pos.x, height - pos.y, node.width, node.height);
+                var pos = node.getPos(),
+                    hubView = tank.getHubView(node.key.split("-")[1]);
+                
+                // Draw node pos
+                context.beginPath();
+                context.arc(pos.x, height - pos.y, 5, 0, Math.PI * 2, false);
+                context.closePath();
+                context.stroke();
+                
+                // Draw node boundary
+                context.strokeRect(pos.x - node.width / 2 - hubView.nucleusWidth / 2, height - pos.y, node.width, node.height);
+                
+                // TODO: determine why node pos is not centre of area
             });
-            
-            //context.restore();
         }
         
         function draw(){
             resetSize();
             drawWalls();
-            window.setTimeout(drawNodes, 0); // TODO: find out why this setTimeout is necessary (if not present, drawNodes() functions, but draw() does not. seen in Chrome dev (v13)
+            drawNodes();
         }
         
         function cacheAndDraw(){
@@ -87,8 +89,16 @@
             createCanvas();
             draw();
             
-            tank.bind("addHub", draw);
-            tank.bind("change:walls", cacheAndDraw);
+            // Setup drawing
+            tank.bind("change:walls", cacheSettings);
+            
+            tankForce
+                .bind("loop", draw)
+                .bind("end", draw);
+            
+            if (!tankForce.looping){
+                draw();
+            }
             
             window.testForceDirector = {
                 canvas: canvas,
