@@ -46,10 +46,17 @@ var TankController = Backbone.Controller.extend({
         var tank = this;
         this.hubViews = {};
         
-        _.bindAll(this, "_onSelectHubs");
+        _.bindAll(this, "_onSelectHubs", "repositionHubs");
         
         // Force director
-        this.forceDirector = ForceDirector.create();
+        this.forceDirector = ForceDirector.create({
+            animate: app.animateHubs
+        });
+        
+        this.forceDirector
+            .bind("loop", this.repositionHubs)
+            .bind("end", this.repositionHubs);
+        
         this.bind("change:walls", function(tank, dimensions){
             this.forceDirector.setWalls({
                 top: this.wallTop,
@@ -133,76 +140,6 @@ var TankController = Backbone.Controller.extend({
             this.forcedirectHubs();
         }
         return this;
-    },
-    
-    getHubWeights: function(){
-        return _(this.hubViews).map(function(hubView){
-            return hubView.model.weight();
-        });
-    },
-    
-    calculateHubWeights: function(){
-        var hubWeights = this.hubWeights = this.getHubWeights();
-        this.hubWeightMin = Math.min.apply(Math, hubWeights);
-        this.hubWeightMax = Math.max.apply(Math, hubWeights);
-        this.hubWeightRange = this.hubWeightMax - this.hubWeightMin;
-        
-        return this;
-    },
-
-    hubViewOffsetTop: function(hubView){
-        if (_.isUndefined(this.hubWeights)){
-            throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first"; 
-        }
-    
-        var weight = hubView.model.weight(),
-            adjustedWeight = weight / this.hubWeightRange + this.hubWeightMin;
-
-        return adjustedWeight * (this.height - 90) + this.marginTop + 90; // 90 is expected hubView height
-    },
-    
-    hubViewOffset: function(hubView){
-        return {
-            left: this.width / 2 + this.wallLeft + (this.width * Math.random() - this.width / 2),
-            top: this.hubViewOffsetTop(hubView)
-        };
-    },
-    
-    setHubViewOffsetFromForcedNode: function(hubView){
-        var node = hubView.forcedNodeHubToHub,
-            pos = node.getPos();
-        
-        hubView.offset({
-            left: ~~(pos.x - node.width / 2 + hubView.nucleusWidth / 2), // NOTE: ~~n === Math.floor(n)
-            top: app.invertY(~~pos.y)
-        });
-    },
-    
-    repositionHubViews: function(){
-        var tank = this;
-        
-        this.updateWalls()
-            .calculateHubWeights();
-        
-        _(this.hubViews).each(function(hubView){
-            var offsetTop = tank.hubViewOffsetTop(hubView),
-                forcedNode = hubView.forcedNodeHubToHub;
-                
-            // Set position of force-directed representation, with respect to other hubs
-            forcedNode.setPos(
-                forcedNode.getPos().x,
-                app.invertY(offsetTop)
-            );
-            
-            // Set position of DOM element
-            tank.setHubViewOffsetFromForcedNode(hubView);
-            
-            // Set position of force-directed representation, with respect to tasks - TODO: combine these
-            hubView.updateForceDirectedDimensions();
-        });
-        
-        return this.forcedirectHubs();
-                    //.forcedirectTasks(); // TODO: not currently working (canvas lines move out of sync)
     },
     
     drawHubView: function(hubView, options){
@@ -492,41 +429,89 @@ var TankController = Backbone.Controller.extend({
         );
         app.back();
     },
-
-    initializeForceDirector: function(animate, callback){
-        animate = true;
     
-        var tank = this,
-            hubViews = this.hubViews;
-
-        function repositionHubs(){
-            _.each(hubViews, tank.setHubViewOffsetFromForcedNode);
-        }
-
-        this.forceDirector
-            .bind("loop", repositionHubs)
-            .bind("end", function(){
-                repositionHubs();
-                //tank.forcedirectTasks();
-                
-                if (callback){
-                    callback.call(tank);
-                }
-            });
-        
-        _.extend(this.forceDirector.options, {
-            animate: animate
+    
+    /////
+    
+    // FORCE-DIRECTION PHYSICS
+    // TODO: totally refactor these, and related methods in hub-view.js
+    
+    getHubWeights: function(){
+        return _(this.hubViews).map(function(hubView){
+            return hubView.model.weight();
         });
-
-        this.forceDirector.initialized = true;
+    },
+    
+    calculateHubWeights: function(){
+        var hubWeights = this.hubWeights = this.getHubWeights();
+        this.hubWeightMin = Math.min.apply(Math, hubWeights);
+        this.hubWeightMax = Math.max.apply(Math, hubWeights);
+        this.hubWeightRange = this.hubWeightMax - this.hubWeightMin;
+        
         return this;
     },
 
-    forcedirectHubs: function(animate, callback){
-        if (!this.forceDirector.initialized){
-            this.initializeForceDirector(animate, callback);
+    hubViewOffsetTop: function(hubView){
+        if (_.isUndefined(this.hubWeights)){
+            throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first"; 
         }
+    
+        var weight = hubView.model.weight(),
+            adjustedWeight = weight / this.hubWeightRange + this.hubWeightMin;
+
+        return adjustedWeight * (this.height - 90) + this.marginTop + 90; // 90 is expected hubView height
+    },
+    
+    hubViewOffset: function(hubView){
+        return {
+            left: this.width / 2 + this.wallLeft + (this.width * Math.random() - this.width / 2),
+            top: this.hubViewOffsetTop(hubView)
+        };
+    },
+    
+    setHubViewOffsetFromForcedNode: function(hubView){
+        var node = hubView.forcedNodeHubToHub,
+            pos = node.getPos();
         
+        hubView.offset({
+            left: ~~(pos.x - node.width / 2 + hubView.nucleusWidth / 2), // NOTE: ~~n === Math.floor(n)
+            top: app.invertY(~~pos.y)
+        });
+    },
+    
+    repositionHubViews: function(){
+        var tank = this;
+        
+        this.updateWalls()
+            .calculateHubWeights();
+        
+        _(this.hubViews).each(function(hubView){
+            var offsetTop = tank.hubViewOffsetTop(hubView),
+                forcedNode = hubView.forcedNodeHubToHub;
+                
+            // Set position of force-directed representation, with respect to other hubs
+            forcedNode.setPos(
+                forcedNode.getPos().x,
+                app.invertY(offsetTop)
+            );
+            
+            // Set position of DOM element
+            tank.setHubViewOffsetFromForcedNode(hubView);
+            
+            // Set position of force-directed representation, with respect to tasks - TODO: combine these
+            hubView.updateForceDirectedDimensions();
+        });
+        
+        return this.forcedirectHubs();
+            //.forcedirectTasks(); // TODO: not currently working (canvas lines move out of sync)
+    },
+    
+    repositionHubs: function(){
+        _.each(this.hubViews, this.setHubViewOffsetFromForcedNode);
+        return this;
+    },
+
+    forcedirectHubs: function(){
         this.forceDirector.go();
         return this;
     },

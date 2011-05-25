@@ -1,4 +1,4 @@
-// Intended as v2 of the /dependencies.forcedirector.js
+// Intended as v2 of /dependencies.forcedirector.js - to be merged into that file once an appropriate API is settled on. The ForceDirector GUI app will need updating at that time
 
 (function(){
     var noop = function(){};

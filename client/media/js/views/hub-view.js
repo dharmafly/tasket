@@ -423,30 +423,11 @@ var HubView = View.extend({
         return this;
     },
 
-    // For dev purposes - visualise a node from the force director
-    /*
-    devShowNode: function(forcedNode){
-        forcedNode = forcedNode || this.forcedNode;
-
-        jQuery("<div style='background:rgba(255,0,0,0.5); position:absolute;'></div>")
-            .appendTo("body")
-            .width(forcedNode.width)
-            .height(forcedNode.height)
-            .css({
-                left:forcedNode.getPos().x + "px",
-                top:app.invertY(forcedNode.getPos().y) + "px"
-            });
-    },
-    */
-
     forcedirectTasks: function(){
         if (this.taskViews){
             this.updateForceDirectedDimensions();
             //this.forceDirector.go();
             this.cacheTaskViewCenterBounds();
-
-            // DEV: Show node
-            //this.devShowNode();
         }
         return this;
     },
