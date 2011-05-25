@@ -168,11 +168,15 @@ var TankController = Backbone.Controller.extend({
         };
     },
     
+    invertY: function(y){
+        return app.invertY(y, app.tankController.viewportHeight);
+    },
+    
     setHubViewOffsetFromForcedNode: function(hubView){
         var pos = hubView.forcedNodeHubToHub.getPos();
 
         hubView.offset({
-            left: ~~(pos.x - hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
+            left: ~~(pos.x + hubView.descriptionWidth / 2), // NOTE: ~~n === Math.floor(n)
             top: app.invertY(~~pos.y)
         });
     },
