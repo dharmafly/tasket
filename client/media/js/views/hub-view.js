@@ -19,18 +19,44 @@ var HubView = View.extend({
 
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
+
+        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions");
         
+        
+        // **
+        
+        // Force director
         this.forceDirector = ForceDirector.create({
-            animate: app.animateTasks,
+            animate: app.animateTasks/*,
             numCycles: 400,
             inCoulombK: 750,
             updateStepMin: 0.2,
             updateStepMax: 1.7,
             updateStepDamping: 0.01,
             inVelDampK: 0.1
+            */
         });
-
-        _.bindAll(this, "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions");
+        
+        // Add hub node
+        this.forcedNode = this.forceDirector.createSun({
+            key: "hub-" + this.model.id
+        });            
+        
+        this.forceDirector
+            .bind("loop", this.repositionTasks)
+            .bind("end", this.repositionTasks);
+            
+        app.tank
+            .bind("change:walls", this.updateWalls)
+            .bind("resize", this.updateWalls);
+            
+        this.bind("change:walls", this.repositionTasks);
+        
+        this.updateWalls();
+        
+        
+        // **
+        
 
         this.model
             .bind("change:title", this.updateTitle)
@@ -42,6 +68,12 @@ var HubView = View.extend({
             .bind("change", hasChanged(["tasks.new", "tasks.claimed", "tasks.done", "tasks.verified"], this.refreshTasks));
 
         app.bind("change:currentUser", this.updateAdminActions);
+    },
+    
+    updateWalls: function(tank, dimensions){
+        this.forceDirector.setWalls(dimensions);
+        
+        return this.trigger("change:walls");
     },
 
     updateTitle: function () {
@@ -420,17 +452,12 @@ var HubView = View.extend({
             forceDirectionNeeded, lineWidth, taskViewCenterBounds;
 
         this.loading(false);
-
-        if (!this.forceDirector.initialized){
-            this.initializeForceDirector();
-            forceDirectionNeeded = true;
-        }
-        else {
-            // Detect if any of the tasks has not been force-directed yet
-            forceDirectionNeeded = this.taskViews.any(function(taskView){
-                return !taskView.forcedNode;
-            });
-        }
+        
+        // Detect if any of the tasks has not been force-directed yet
+        forceDirectionNeeded = this.taskViews.any(function(taskView){
+            return !taskView.forcedNode;
+        });
+        
         taskViews.each(function(taskView){
             hubView.appendTaskView(taskView);
         });
@@ -501,18 +528,13 @@ var HubView = View.extend({
     
     // FORCE-DIRECTION PHYSICS
     // TODO: totally refactor these, and related methods in controllers.js
-
-    initializeForceDirector: function(animate, callback){
-        var hubView = this,
-            forceDirector = this.forceDirector,
-            taskViews = this.taskViews,
-            tank = app.tank,
-            tankForce = tank.forceDirector,
-            walls = tankForce.getWalls(),
-            overallCallback;
-
-        function repositionTasks(){
-            var hubViewOffset = hubView.offset();
+    
+    repositionTasks: function(){
+        var taskViews = this.taskViews,
+            hubViewOffset;
+    
+        if (taskViews){
+            hubViewOffset = this.offset();
 
             taskViews.each(function(taskView){
                 var taskPos = taskView.forcedNode.getPos(),
@@ -527,34 +549,7 @@ var HubView = View.extend({
                     });
             });
         }
-
-        forceDirector.reset();
-
-        // Add hub node
-        this.forcedNode = this.forceDirector.createSun({
-            key: "hub-" + this.model.id
-        });
-
-        if (callback){
-            overallCallback = function(){
-                repositionTasks();
-                callback.call(hubView);
-            };
-        }
-        else {
-            overallCallback = repositionTasks;
-        }
-
-        _.extend(forceDirector.options, {
-            animate: animate,
-            animator: repositionTasks,
-            callback: overallCallback
-        });
         
-        forceDirector.setWalls(walls);
-
-        forceDirector.initialized = true;
-
         return this;
     },
 
