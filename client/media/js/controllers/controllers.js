@@ -190,7 +190,11 @@ var TankController = Backbone.Controller.extend({
             model: hub
         });
 
-        hubView.bind("select", this._onSelectHubs);
+        hubView
+            .bind("select", this._onSelectHubs)
+            .bind("change:position:tasks", _.bind(function(hubView){
+                this.trigger("change:position:tasks", this, hubView);
+            }, this));
 
         if (!options.dontDraw){
             this.drawHubView(hubView)
@@ -508,7 +512,7 @@ var TankController = Backbone.Controller.extend({
     
     repositionHubs: function(){
         _.each(this.hubViews, this.setHubViewOffsetFromForcedNode);
-        return this;
+        return this.trigger("change:position:hubs");
     },
 
     forcedirectHubs: function(){

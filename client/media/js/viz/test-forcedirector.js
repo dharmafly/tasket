@@ -5,8 +5,9 @@
     function createTestForceDirector(){
         var PI2 = Math.PI * 2,
             strokeWidth = 1,
-            canvasStrokeColor = "#333",
-            nodeStrokeColor = "#33f",
+            wallStrokeColor = "#333",
+            hubNodeStrokeColor = "#33f",
+            taskNodeStrokeColor = "#33f",
             canvasElem, canvas, context,
             tank, tankForce, walls, buffer, width, height;
             
@@ -48,28 +49,47 @@
         }
         
         function drawWalls(){
-            context.strokeStyle = canvasStrokeColor;
+            context.strokeStyle = wallStrokeColor;
             context.strokeWidth = strokeWidth;
             context.strokeRect(0, 0, width, height);
         }
         
+        function circle(x, y, r){
+            context.beginPath();
+            context.arc(x, y, r, 0, Math.PI * 2, false);
+            context.closePath();
+            context.stroke();
+        }
+        
         function drawNodes(){
-            context.strokeStyle = nodeStrokeColor;
+            context.strokeStyle = hubNodeStrokeColor;
             context.strokeWidth = strokeWidth;
-            _.each(tankForce.nodes, function(node){
-                var pos = node.getPos(),
-                    hubView = tank.getHubView(node.key.split("-")[1]);
+            _.each(tankForce.nodes, function(hubNode){
+                var pos = hubNode.getPos(),
+                    hubView = tank.getHubView(hubNode.key.split("-")[1]),
+                    hubForce = hubView.forceDirector,
+                    taskViews = hubView.taskViews;
                 
                 // Draw node pos
-                context.beginPath();
-                context.arc(pos.x, height - pos.y, 5, 0, Math.PI * 2, false);
-                context.closePath();
-                context.stroke();
+                circle(pos.x, height - pos.y, 5);
                 
                 // Draw node boundary
-                context.strokeRect(pos.x - node.width / 2 - hubView.nucleusWidth / 2, height - pos.y, node.width, node.height);
-                
                 // TODO: determine why node pos is not centre of area
+                context.strokeRect(pos.x - hubNode.width / 2 - hubView.nucleusWidth / 2, height - pos.y, hubNode.width, hubNode.height);
+
+                // Draw tasks
+                if (taskViews){
+                    context.strokeStyle = taskNodeStrokeColor;
+                    _.each(hubForce.nodes, function(taskNode){
+                        if (taskNode.key.indexOf("task-") > 0){
+                            var pos = taskNode.getPos();
+                        
+                            // Draw node pos
+                            circle(pos.x, height - pos.y, 5);
+                        }
+                    });
+                    context.strokeStyle = hubNodeStrokeColor;
+                }
             });
         }
         
@@ -90,7 +110,8 @@
             draw();
             
             // Setup drawing
-            tank.bind("change:walls", cacheSettings);
+            tank.bind("change:walls", cacheSettings)
+                .bind("change:position:tasks", draw);
             
             tankForce
                 .bind("loop", draw)

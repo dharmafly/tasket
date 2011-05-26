@@ -219,13 +219,9 @@ var HubView = View.extend({
 
         function redisplay(){
             if (hubView.tasksVisible()) {
-                // Let the force director be re-initialised
-                if (hubView.forceDirector){
-                    hubView.forceDirector.initialized = false;
-                }
-
                 hubView
                     .generateTaskViews()
+                    .cacheTaskViewCenterBounds()
                     .clearTasks({silent:true})
                     .renderTasks();
             }
@@ -363,6 +359,15 @@ var HubView = View.extend({
         }
         return this;
     },
+    
+    drawLines: function(){
+        var hubView = this;
+    
+        return this.taskViews.each(function(taskView){
+            var offset = taskView.offset();
+            hubView.line(offset.left + taskView.width / 2, offset.top + taskView.height / 2);
+        });
+    },
 
     // Vertically centres the hub title/description.
     _updateMargin: function () {
@@ -466,15 +471,9 @@ var HubView = View.extend({
             this.forcedirectTasks();
         }
 
-        this.appendCanvas()
-            .resizeCanvas();
-
-        taskViews.each(function(taskView){
-            var offset = taskView.offset();
-            hubView.line(offset.left + taskView.width / 2, offset.top + taskView.height / 2);
-        });
-
-        return this;
+        return this.appendCanvas()
+            .resizeCanvas()
+            .drawLines();
     },
 
     render: function(){
@@ -530,7 +529,8 @@ var HubView = View.extend({
     // TODO: totally refactor these, and related methods in controllers.js
     
     repositionTasks: function(){
-        var taskViews = this.taskViews,
+        var hubView = this,
+            taskViews = this.taskViews,
             hubViewOffset;
     
         if (taskViews){
@@ -548,9 +548,12 @@ var HubView = View.extend({
                         top:  ~~(app.invertY(taskPos.y + hubViewOffset.top - (hubView.height / 2) + taskView.height / 2))
                     });
             });
+            
+            this.clearCanvas()
+                .drawLines();
         }
         
-        return this;
+        return this.trigger("change:position:tasks");
     },
 
     updateForceDirectedDimensions: function(){
@@ -574,7 +577,7 @@ var HubView = View.extend({
     forcedirectTasks: function(){
         if (this.taskViews){
             this.updateForceDirectedDimensions();
-            //this.forceDirector.go();
+            this.forceDirector.go();
             this.cacheTaskViewCenterBounds();
         }
         return this;
