@@ -1,29 +1,6 @@
 // Run after app properties have been setup.
 app.bind("setup", function() {
 
-    // FORCE-DIRECTOR
-    
-    // Extend ForceDirector with event bindings
-    _.extend(ForceDirector.prototype, Backbone.Events);
-    
-    // Override noop methods in ForceDirector prototype to allow triggering of events on loop start and end
-    ForceDirector.prototype.triggerLoopStart = function(){
-        this.trigger("start", this);
-        app.tank.trigger("forcedirector:start", this);
-    };
-    
-    ForceDirector.prototype.triggerLoopEnd = function(){
-        this.trigger("end", this);
-        app.tank.trigger("forcedirector:end", this);
-    };
-    
-    ForceDirector.prototype.triggerLoop = function(){
-        this.trigger("loop", this);
-        app.tank.trigger("forcedirector:loop", this);
-    };
-            
-    /////
-
     // BIND EVENTS
 
     // Return to the previous route when the lightbox closes
