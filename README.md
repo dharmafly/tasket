@@ -222,3 +222,7 @@ A superuser should have been created when the site was installed. If no superuse
 
     python manage.py createsuperuser
 
+### JavaScript debug mode
+
+To enter debug mode, add `?debug` to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/
+
