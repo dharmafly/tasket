@@ -49,7 +49,7 @@
                 updateStepMin: 0.3,
                 updateStepMax: 1,
                 updateStepDamping: 0.00001,
-                animate: false,
+                animate: false
                 
                 // engine settings
                 /*
@@ -64,6 +64,18 @@
         options = _.defaults(options || {}, defaultSettings);
         
         f.options = options;
+
+        function stopLoop(){
+            f.looping = false;
+            
+            if (intervalRef){
+                window.clearInterval(intervalRef);
+                intervalRef = null;
+            }
+            
+            // This method can be overriden, to provide a trigger callback
+            f.triggerLoopEnd();
+        }
 
         function loop(){
             i++;
@@ -82,18 +94,6 @@
             else {
                 stopLoop();
             }
-        }
-        
-        function stopLoop(){
-            f.looping = false;
-            
-            if (intervalRef){
-                window.clearInterval(intervalRef);
-                intervalRef = null;
-            }
-            
-            // This method can be overriden, to provide a trigger callback
-            f.triggerLoopEnd();
         }
         
         function startLoop(newOptions){
