@@ -4,9 +4,6 @@ var cache = new Cache(Tasket.namespace),
     app = _.extend({
         // Sets up the app. Called by init()
         setup: function () {
-            var windowSearch = window.location.search,
-                debugMode = /^\?debug[\W\/$]/.test(windowSearch);
-        
             // Bind app object's methods to the app object
             _.bindAll(this, "updateAllDoneTasks", "_onChangeUser");
             
@@ -15,8 +12,6 @@ var cache = new Cache(Tasket.namespace),
         
             // app properties
             _.extend(this, {
-                debug: debugMode,
-                debugForceDirector: debugMode && /debugForceDirector/i.test(windowSearch),
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 hubBuffer: 10,
                 taskBuffer: 10,

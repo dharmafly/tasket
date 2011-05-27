@@ -184,12 +184,10 @@
     }
     
     // Initialise
-    if (app.debugForceDirector){
-        if (app.loaded){
-            createTestForceDirector();
-        }
-        else {
-            app.bind("ready", createTestForceDirector);
-        }
+    if (app.loaded){
+        createTestForceDirector();
+    }
+    else {
+        app.bind("ready", createTestForceDirector);
     }
 }());

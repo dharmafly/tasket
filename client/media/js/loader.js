@@ -9,10 +9,12 @@
 (function(){
     "use strict";
     
-    var tasketDebug = /^\?debug[\W\/]?/.test(window.location.search);
+    var windowSearch = window.location.search,
+        debug = /^\?debug[\W\/]?/.test(windowSearch),
+        debugForceDirector = debug && /debugForceDirector/i.test(windowSearch); // case-insensitive match of "debugforcedirector"
     
     // PRODUCTION MODE
-    if (!tasketDebug){
+    if (!debug){
         // Load production mode scripts
         
         // http://code.jquery.com/jquery-1.6.1.min.js
@@ -87,7 +89,11 @@
             "lang/default.js",
             "lang/custom.js",
             "init.js",
-            "viz/test-forcedirector.js",
+    
+            // TESTS        
+            [
+                debugForceDirector ? "viz/test-forcedirector.js" : ""
+            ],
             
             // Callback function once all are loaded
             function(loaded){
