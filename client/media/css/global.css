@@ -929,7 +929,7 @@ article.hub .controls {
 
 .dashboard {
 	position: fixed;
-	z-index: 999998;
+	/*z-index: 999998; */ /*when set high, this puts the dashboard above the hubs and tasks in the tank*/
 	top: 3.077em /* 40px */;
 	right: 20px;
 	bottom: 20px;
