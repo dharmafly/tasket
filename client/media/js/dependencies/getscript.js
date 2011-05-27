@@ -56,7 +56,8 @@
 var getScript = (function(window){
     "use strict";
     
-    var now = (new Date()).getTime();
+    var now = (new Date()).getTime(),
+        method, slice, toString;
         
     function getScript(srcs, callback, options){
         /**
@@ -104,7 +105,7 @@ var getScript = (function(window){
             script.async = true;
             
             // Apply the src
-            script.src = path + src + (options.bustCache ? "?v=" + now : "");
+            script.src = path + src + (options.noCache ? "?v=" + now : "");
             
             // Go...
             head.appendChild(script);
@@ -140,7 +141,11 @@ var getScript = (function(window){
 
         // **
         
-        var method = (typeof srcs === "string") ? single : multiple;
+        // Falsey arguments may result from conditional assignment of script srcs, and are simply ignored
+        if (!srcs){
+            return;
+        }
+        method = (typeof srcs === "string") ? single : multiple;
         
         options = options || {};
         if (!options.charset){
@@ -212,8 +217,8 @@ var getScript = (function(window){
 
     
     // Array methods, from underscore.js
-    var slice = Array.prototype.slice,
-        toString = Object.prototype.toString; 
+    slice = Array.prototype.slice;
+    toString = Object.prototype.toString; 
         
     function isArray(obj){
         return toString.call(obj) === '[object Array]';
