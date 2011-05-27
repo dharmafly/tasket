@@ -223,7 +223,7 @@ var HubView = View.extend({
     redrawTasks: function(){
         this.cacheTaskViewCenterBounds()
             .clearTasks({silent:true})
-            .renderTasks();
+            .renderTasks(true);
     },
 
     refreshTasks: function () {
@@ -451,7 +451,7 @@ var HubView = View.extend({
         return this;
     },
 
-    renderTasks: function(){
+    renderTasks: function(doForceDirection){
         var hubView = this,
             taskViews = this.taskViews,
             forceDirectionNeeded, lineWidth, taskViewCenterBounds;
@@ -459,7 +459,7 @@ var HubView = View.extend({
         this.loading(false);
         
         // Detect if any of the tasks has not been force-directed yet
-        forceDirectionNeeded = this.taskViews.any(function(taskView){
+        forceDirectionNeeded = doForceDirection === true || this.taskViews.any(function(taskView){
             return !taskView.forcedNode;
         });
         
