@@ -9,7 +9,7 @@
 (function(){
     "use strict";
     
-    var tasketDebug = /debug(\/|$)/.test(window.location.search);
+    var tasketDebug = /^\?debug[\W\/]?/.test(window.location.search);
     
     // PRODUCTION MODE
     if (!tasketDebug){
