@@ -71,7 +71,19 @@ var Hub = Model.extend({
             });
         }
 
-        return this;
+        return this.trigger("add:task", this, task);
+    },
+
+    removeTask: function (task) {
+        var data        = {},
+            state       = task.get('state'),
+            tasksKey    = 'tasks.' + state,
+            estimateKey = 'estimates.' + state;
+
+        data[tasksKey]    = _.without(this.get(tasksKey), task.id);
+        data[estimateKey] = this.get(estimateKey) - task.get('estimate');
+        
+        return this.set(data).trigger("delete:task", this, task);
     },
 
     // Updates the hubs tasks and estimates when the state of a task changes.
@@ -100,18 +112,6 @@ var Hub = Model.extend({
             data["estimates." + previous] = this.get("estimates." + previous) - estimate;
             data["estimates." + current]  = this.get("estimates." + current)  + estimate;
         }
-
-        return this.set(data);
-    },
-
-    removeTask: function (task) {
-        var data        = {},
-            state       = task.get('state'),
-            tasksKey    = 'tasks.' + state,
-            estimateKey = 'estimates.' + state;
-
-        data[tasksKey]    = _.without(this.get(tasksKey), task.id);
-        data[estimateKey] = this.get(estimateKey) - task.get('estimate');
 
         return this.set(data);
     },

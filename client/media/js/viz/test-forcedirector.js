@@ -5,20 +5,22 @@
     function createTestForceDirector(){
         var PI2 = Math.PI * 2,
             strokeWidth = 1,
+            circleRadius = 5,
             wallStrokeColor = "#333",
             hubNodeStrokeColor = "#33f",
-            taskNodeStrokeColor = "#33f",
+            hubNodeStrokeColorForTasks = "#3f3",
+            taskNodeStrokeColor = "#f33",
             canvasElem, canvas, context,
-            tank, tankForce, walls, buffer, width, height;
+            tank = app.tank,
+            tankForce = tank.forceDirector,
+            buffer = tank.wallBuffer,
+            walls, width, height;
             
         /////
         
         function cacheSettings(){
-            tank = app.tank;
-            tankForce = tank.forceDirector;
             walls = tankForce.getWalls();
-            buffer = tank.wallBuffer;
-            width = walls.right - walls.left;
+            width = ~~(walls.right - walls.left);
             height = ~~(walls.top - walls.bottom); // rounding + Math.abs()
         }
         
@@ -28,7 +30,8 @@
                     position:"absolute",
                     top:app.invertY(walls.top) + "px",
                     left:walls.left + "px",
-                    pointerEvents:"none"
+                    pointerEvents:"none",
+                    zIndex:99999
                 })
                 .appendTo("body");
                 
@@ -50,47 +53,78 @@
         
         function drawWalls(){
             context.strokeStyle = wallStrokeColor;
-            context.strokeWidth = strokeWidth;
-            context.strokeRect(0, 0, width, height);
+            rect(0, 0, width, height);
         }
         
         function circle(x, y, r){
             context.beginPath();
-            context.arc(x, y, r, 0, Math.PI * 2, false);
+            context.arc(x, y, r || circleRadius, 0, Math.PI * 2, false);
             context.closePath();
             context.stroke();
         }
         
+        function rect(x, y, width, height){
+            context.strokeRect(x, y, width, height);
+        }
+        
         function drawNodes(){
+            var selectedHub = app.selectedHub,
+                selectedHubView = selectedHub && tank.getHubView(selectedHub),
+                hubForce = selectedHubView && selectedHubView.forceDirector,
+                taskViews = selectedHubView && selectedHubView.taskViews;
+        
             context.strokeStyle = hubNodeStrokeColor;
-            context.strokeWidth = strokeWidth;
-            _.each(tankForce.nodes, function(hubNode){
-                var pos = hubNode.getPos(),
-                    hubView = tank.getHubView(hubNode.key.split("-")[1]),
-                    hubForce = hubView.forceDirector,
-                    taskViews = hubView.taskViews;
+            
+            _.each(tankForce.nodes, function(node){
+                var pos, hubView;
                 
-                // Draw node pos
-                circle(pos.x, height - pos.y, 5);
-                
-                // Draw node boundary
-                // TODO: determine why node pos is not centre of area
-                context.strokeRect(pos.x - hubNode.width / 2 - hubView.nucleusWidth / 2, height - pos.y, hubNode.width, hubNode.height);
-
-                // Draw tasks
-                if (taskViews){
-                    context.strokeStyle = taskNodeStrokeColor;
-                    _.each(hubForce.nodes, function(taskNode){
-                        if (taskNode.key.indexOf("task-") > 0){
-                            var pos = taskNode.getPos();
-                        
-                            // Draw node pos
-                            circle(pos.x, height - pos.y, 5);
-                        }
-                    });
-                    context.strokeStyle = hubNodeStrokeColor;
+                if (node.width && node.height){
+                    pos = node.getPos();
+                    hubView = tank.getHubView(node.key.split("-")[1]);
+                    
+                    // Draw node pos
+                    circle(pos.x, height - pos.y);
+                    
+                    // Draw node boundary
+                    // TODO: determine why the pos circle is not centre of box
+                    rect(pos.x - node.width / 2, height - pos.y - node.height / 2, node.width, node.height);
                 }
             });
+            
+            // Draw tasks
+            if (hubForce){
+                _.each(hubForce.nodes, function(node){
+                    var pos, hubView;
+                
+                    if (node.width && node.height){
+                        pos = node.getPos();
+                        hubView = selectedHubView;
+                    
+                        if (node.key.indexOf("hub-") === 0){
+                            context.strokeStyle = hubNodeStrokeColorForTasks;
+                        }
+                        else {
+                            context.strokeStyle = taskNodeStrokeColor;
+                        }
+                        
+                        // Draw node boundary
+                        rect(pos.x - node.width / 2, height - pos.y - node.height / 2, node.width, node.height);
+                            
+                        // Draw node pos
+                        circle(pos.x, height - pos.y);
+                    }
+                });
+                
+                // Draw hubForce walls
+                /*
+                var hubForceWalls = hubForce.getWalls(),
+                    hubForceWidth = hubForceWalls.right - hubForceWalls.left,
+                    hubForceHeight = ~~(hubForceWalls.top - hubForceWalls.bottom);
+                    
+                //context.strokeStyle = "#ff0";
+                rect(0, 0, hubForceWidth, hubForceHeight);
+                */
+            }
         }
         
         function draw(){
@@ -104,14 +138,22 @@
             draw();
         }
         
+        function invisibleTaskViews(){
+            jQuery("<style>li.task {visibility:hidden !important}</style>")
+                .appendTo("head");
+        }
+        
         function initialize(){
             cacheSettings();
             createCanvas();
+            
+            context.strokeWidth = strokeWidth;
             draw();
             
             // Setup drawing
             tank.bind("change:walls", cacheSettings)
-                .bind("change:position:tasks", draw);
+                .bind("change:position:tasks", draw)
+                .bind("hub:select", draw);
             
             tankForce
                 .bind("loop", draw)
@@ -121,6 +163,7 @@
                 draw();
             }
             
+            // testForceDirector APIT
             window.testForceDirector = {
                 canvas: canvas,
                 context: context,
@@ -130,7 +173,9 @@
                 draw: draw,
                 drawWalls: drawWalls,
                 drawNodes: drawNodes,
-                walls: walls,
+                circle: circle,
+                rect: rect,
+                walls: _.bind(tankForce.getWalls, tankForce),
                 tankForce: tankForce
             };
         }
@@ -139,10 +184,12 @@
     }
     
     // Initialise
-    if (app.loaded){
-        createTestForceDirector();
-    }
-    else {
-        app.bind("ready", createTestForceDirector);
+    if (app.debugForceDirector){
+        if (app.loaded){
+            createTestForceDirector();
+        }
+        else {
+            app.bind("ready", createTestForceDirector);
+        }
     }
 }());

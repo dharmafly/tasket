@@ -20,27 +20,27 @@ var HubView = View.extend({
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
 
-        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions");
+        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions", "_onTaskRemoved");
         
         
         // **
         
         // Force director
         this.forceDirector = ForceDirector.create({
-            animate: app.animateTasks/*,
+            animate: app.animateTasks,
             numCycles: 400,
             inCoulombK: 750,
             updateStepMin: 0.2,
-            updateStepMax: 1.7,
+            updateStepMax: 2,
             updateStepDamping: 0.01,
-            inVelDampK: 0.1
-            */
+            inVelDampK: 0.1,
+            inHookeK: 0.1
         });
         
         // Add hub node
         this.forcedNode = this.forceDirector.createSun({
             key: "hub-" + this.model.id
-        });            
+        });
         
         this.forceDirector
             .bind("loop", this.repositionTasks)
@@ -52,7 +52,7 @@ var HubView = View.extend({
             
         this.bind("change:walls", this.repositionTasks);
         
-        this.updateWalls();
+        this.updateWalls(app.tank, app.tank.forceDirector.getWalls());
         
         
         // **
@@ -62,6 +62,7 @@ var HubView = View.extend({
             .bind("change:title", this.updateTitle)
             .bind("change:description", this.updateDescription)
             .bind("change:image", this.updateImage)
+            .bind("delete:task", this._onTaskRemoved)
         
             // hasChanged() function is in core/core.js
             .bind("change", hasChanged(["estimates.new", "estimates.claimed", "estimates.done", "estimates.verified"], this.updateEstimate))
@@ -71,9 +72,14 @@ var HubView = View.extend({
     },
     
     updateWalls: function(tank, dimensions){
-        this.forceDirector.setWalls(dimensions);
+        var currentWalls = this.forceDirector.getWalls();
         
-        return this.trigger("change:walls");
+        if (!_.isEqual(currentWalls, dimensions)){
+            this.forceDirector.setWalls(dimensions);
+            this.trigger("change:walls");
+        }
+        
+        return this;
     },
 
     updateTitle: function () {
@@ -134,7 +140,7 @@ var HubView = View.extend({
     },
 
     tasksVisible: function(){
-        return this.get("tasksVisible");
+        return !!this.get("tasksVisible");
     },
 
     onclick: function (event) {
@@ -150,7 +156,7 @@ var HubView = View.extend({
 
     showTasks: function (options) {
         this.select();
-
+        
         if (this.tasksVisible()) {
             return this;
         }
@@ -220,6 +226,7 @@ var HubView = View.extend({
         function redisplay(){
             if (hubView.tasksVisible()) {
                 hubView
+                    .removeForceDirectedTaskNodes()
                     .generateTaskViews()
                     .cacheTaskViewCenterBounds()
                     .clearTasks({silent:true})
@@ -233,7 +240,10 @@ var HubView = View.extend({
             redisplay();
         }
 
-        this.tasks.bind("refresh", redisplay);
+        this.tasks
+            .unbind("refresh", redisplay)
+            .bind("refresh", redisplay);
+            
         return this;
     },
 
@@ -349,7 +359,7 @@ var HubView = View.extend({
         return this;
     },
 
-    clearTasks: function(options){
+    clearTasks: function(options){ O("cleartasks");
         this.taskListElem.empty();
         this.clearCanvas()
             .removeCanvas();
@@ -360,6 +370,7 @@ var HubView = View.extend({
         return this;
     },
     
+    // TODO: drawLines doesn't function when app.animateTasks === true
     drawLines: function(){
         var hubView = this;
     
@@ -382,33 +393,15 @@ var HubView = View.extend({
         return this;
     },
 
-    // TODO: addTask needed
-    // appendTaskView to the DOM. It will be later removed when the hubView is de-selected
-    appendTaskView: function(taskView){
-        var taskBuffer = app.taskBuffer,
-            model = taskView.model,
-            taskElem = taskView.elem,
-            hubViewOffset;
-
-        taskView.render();
-        taskElem.appendTo(this.taskListElem);
-
-        // Set up force-direction on this taskView, if not yet done
-        if (!taskView.forcedNode){
-            hubViewOffset = this.offset();
-            taskView.cacheDimensions();
-
-            // TODO: try setting far away from the nucleus, distributed equally around the circle
-            taskView.forcedNode = this.forceDirector.createSatellite({
-                key: "task-" + model.id,
-                width: taskView.width + taskBuffer,
-                height: taskView.height + taskBuffer,
-                x: hubViewOffset.left + taskBuffer / 2 + Math.random() - 0.5, // random seed for dispersing tasks in forceDirector
-                y: app.invertY(hubViewOffset.top + taskBuffer / 2 + Math.random() - 0.5)
-            }, "hub-" + this.model.id);
-            //taskView.forcedNode.addTether(this.forcedNode.getPos().x, this.forcedNode.getPos().y);
-        }
-        return this;
+    // A listener triggered by the model's removeTask function    
+    _onTaskRemoved: function(hub, task){
+        this.taskViews = this.taskViews.chain().reject(function(taskView){
+            if (taskView.model.id === task.id){
+                taskView.remove();
+                return true;
+            }
+        });
+        return this.removeForceDirectorNode("task-" + task.id).forcedirectTasks();
     },
 
     cacheDimensions: function(){
@@ -528,25 +521,36 @@ var HubView = View.extend({
     // FORCE-DIRECTION PHYSICS
     // TODO: totally refactor these, and related methods in controllers.js
     
+    removeForceDirectorNode: function(key){
+        if (this.forceDirector){
+            this.forceDirector.nodes = _.reject(this.forceDirector.nodes, function(node){
+                return node.key === key;
+            });
+        }
+        return this;
+    },
+    
+    removeForceDirectedTaskNodes: function(){
+        if (this.forceDirector){
+            this.forceDirector.nodes = _.reject(this.forceDirector.nodes, function(node){
+                return node.key.indexOf("task-") === 0;
+            });
+        }
+        return this;
+    },
+    
     repositionTasks: function(){
         var hubView = this,
-            taskViews = this.taskViews,
-            hubViewOffset;
+            taskViews = this.taskViews;
     
         if (taskViews){
-            hubViewOffset = this.offset();
-
             taskViews.each(function(taskView){
                 var taskPos = taskView.forcedNode.getPos(),
                     taskElem = taskView.elem;
 
                 // repaint
-                taskView
-                    .cacheDimensions()
-                    .offset({
-                        left: ~~(taskPos.x - taskView.width / 2 - hubViewOffset.left + (hubView.width / 2)),
-                        top:  ~~(app.invertY(taskPos.y + hubViewOffset.top - (hubView.height / 2) + taskView.height / 2))
-                    });
+                taskView.cacheDimensions();
+                hubView.setTaskViewOffsetFromForcedNode(taskView);
             });
             
             this.clearCanvas()
@@ -557,20 +561,73 @@ var HubView = View.extend({
     },
 
     updateForceDirectedDimensions: function(){
-        if (this.forcedNode){
-            var taskBuffer = app.taskBuffer,
-                hubViewOffset = this.offset();
-
+        var hubNodeForTasks = this.forcedNode,
+            hubNodeForOtherHubs, taskBuffer, pos;
+    
+        if (hubNodeForTasks){
             this.cacheDimensions();
-
-            this.forcedNode.setWidth(this.width + taskBuffer);
-            this.forcedNode.setHeight(this.height + taskBuffer);
-            this.forcedNode.setPos(
-                hubViewOffset.left - (this.nucleusWidth / 2) - (taskBuffer / 2),
-                app.invertY(hubViewOffset.top - (this.nucleusWidth / 2) - (taskBuffer / 2))
-            );
+            
+            hubNodeForOtherHubs = this.forcedNodeHubToHub;
+            taskBuffer = app.taskBuffer;
+            /*
+            hubBuffer = app.hubBuffer;
+            bufferDiff = taskBuffer * 2 - hubBuffer * 2;
+            */
+            pos = hubNodeForOtherHubs.getPos();
+            hubNodeForTasks.setWidth(hubNodeForOtherHubs.width + taskBuffer * 2);
+            hubNodeForTasks.setHeight(hubNodeForOtherHubs.height + taskBuffer * 2);
+            hubNodeForTasks.setPos(pos.x, pos.y);
         }
 
+        return this;
+    },
+
+    // TODO: addTask needed
+    // appendTaskView to the DOM. It will be later removed when the hubView is de-selected
+    appendTaskView: function(taskView){
+        var taskBuffer = app.taskBuffer,
+            model = taskView.model,
+            taskElem = taskView.elem,
+            hubNode = this.forcedNode,
+            taskBuffer = app.taskBuffer,
+            hubViewOffset, oppositeCorner;
+            
+        taskView.render();
+        taskElem.appendTo(this.taskListElem);
+
+        // Set up force-direction on this taskView, if not yet done
+        if (!taskView.forcedNode){
+            hubViewOffset = this.offset();
+            taskView.cacheDimensions();
+            // Set far away from the hub, to distribute tasks better
+            // TODO: radiate around the hub, to achieve better spread
+            oppositeCorner = {
+                left: (hubViewOffset.left < app.tank.width / 2 ? app.tank.wallRight : app.tank.wallLeft),
+                top:  (hubViewOffset.top < app.tank.height / 2 ? app.tank.wallTop   : app.tank.wallBottom)
+            };
+            
+            taskView.forcedNode = this.forceDirector.createSatellite({
+                key: "task-" + model.id,
+                width: taskView.width + taskBuffer * 2,
+                height: taskView.height + taskBuffer * 2,
+                x: oppositeCorner.left + Math.random(), // random seed for dispersing tasks in forceDirector
+                y: app.invertY(oppositeCorner.top + Math.random())
+            }, "hub-" + this.model.id);
+        }
+        return this;
+    },
+    
+    setTaskViewOffsetFromForcedNode: function(taskView){
+        var node = taskView.forcedNode,
+            pos = node.getPos(),
+            hubViewOffset = this.offset(),
+            taskBuffer = app.taskBuffer;
+            
+        taskView.offset({
+            left: ~~(pos.x - hubViewOffset.left - node.width / 2), // NOTE: ~~n === Math.floor(n)
+            top: app.invertY(~~pos.y + hubViewOffset.top + this.nucleusWidth / 2)
+        });
+        
         return this;
     },
 

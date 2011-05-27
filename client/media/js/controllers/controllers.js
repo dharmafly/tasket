@@ -58,14 +58,12 @@ var TankController = Backbone.Controller.extend({
             .bind("end", this.repositionHubs);
         
         this.bind("change:walls", function(tank, dimensions){
-            this.forceDirector.setWalls({
-                top: this.wallTop,
-                bottom: this.wallBottom,
-                left: this.wallLeft,
-                right: this.wallRight
-            });
+            var currentWalls = this.forceDirector.getWalls();
         
-            this.calculateHubWeights();
+            if (!_.isEqual(currentWalls, dimensions)){
+                this.forceDirector.setWalls(dimensions);
+                this.calculateHubWeights();
+            }
         });
         
         this.bind("resize", function(){
@@ -142,6 +140,7 @@ var TankController = Backbone.Controller.extend({
             });
             this.forcedirectHubs();
         }
+        
         return this;
     },
     
@@ -167,10 +166,10 @@ var TankController = Backbone.Controller.extend({
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
         hubView.forcedNodeHubToHub = this.forceDirector.createNode({
             key: "hub-" + hubView.model.id,
-            x: offset.left - hubView.nucleusWidth,
+            x: offset.left - hubView.nucleusWidth * 1.5,
             y: app.invertY(offset.top),
-            width: hubView.width, // TODO: create a margin between hubs
-            height: hubView.height,
+            width: hubView.width + app.hubBuffer * 2,
+            height: hubView.height + app.hubBuffer * 2,
             title: hubView.model.get("title")
         });
         
@@ -208,20 +207,24 @@ var TankController = Backbone.Controller.extend({
     // Remove a hub from the tank.
     removeHub: function (id) {
         var hubView = this.getHubView(id);
+        
         if (hubView) {
             this.hubViews = _.without(this.hubViews, hubView);
             hubView.deselect().remove();
         }
+        this.removeForceDirectorNode("hub-" + id);
+        
         return this;
     },
 
     displayHub: function(hubId){
         var controller = this,
             hubView = this.getHubView(hubId);
-
+        
         if (hubView){
             hubView.sendToFront().showTasks();
         }
+        
         return this;
     },
 
@@ -249,6 +252,8 @@ var TankController = Backbone.Controller.extend({
 
             this.addHub(hub);
         }, this));
+        
+        return this;
     },
 
     editHub: function (id) {
@@ -260,7 +265,7 @@ var TankController = Backbone.Controller.extend({
         if (!this._hasAdminRights(hub.get("owner"), "You cannot edit this, because you do not own it and you are not an admin.")) {
             return;
         }
-        this.displayHub(id)
+        return this.displayHub(id)
             ._createHubForm(hub);
     },
 
@@ -353,15 +358,15 @@ var TankController = Backbone.Controller.extend({
             this.error("A " + app.lang.HUB + " can only have a maximum of " + Tasket.settings.TASK_LIMIT + " unverified tasks");
             return;
         }
-
-        this.displayHub(hubId)
+        
+        return this.displayHub(hubId)
             ._createTaskForm(hub, new Task({
                 hub: hubId, // NOTE: Verify this when refactoring hubs.
                 owner: app.currentUser.id,
                 estimate: Task.ESTIMATES[0].value
             }));
     },
-
+    
     editTask: function (hubId, taskId) {
         var hub  = Tasket.getHubs(hubId),
             task = Tasket.getTasks(taskId);
@@ -379,7 +384,7 @@ var TankController = Backbone.Controller.extend({
             return;
         }
 
-        this._createTaskForm(hub, task);
+        return this._createTaskForm(hub, task);
     },
 
     _createTaskForm: function (hub, task) {
@@ -419,15 +424,17 @@ var TankController = Backbone.Controller.extend({
                 .refreshTasks();
         }, this));
         
-        form.bind("delete", _.bind(function (model) {
-            var view = this.getHubView(hub.id);
-            if (view) {
-                view.model.removeTask(task);
+        form.bind("delete", _.bind(function (model) { // TODO create removeTask method
+            var hubView = this.getHubView(hub.id);
+            if (hubView) {                
+                hubView.model.removeTask(task);
             }
             app.currentUser.removeTask(model);
             Tasket.tasks.remove(model);
             app.lightbox.hide();
         }, this));
+        
+        return this;
     },
 
     error: function (message) {
@@ -435,6 +442,8 @@ var TankController = Backbone.Controller.extend({
             message || "You do not have permission to access this."
         );
         app.back();
+        
+        return this;
     },
     
     
@@ -442,6 +451,15 @@ var TankController = Backbone.Controller.extend({
     
     // FORCE-DIRECTION PHYSICS
     // TODO: totally refactor these, and related methods in hub-view.js
+        
+    removeForceDirectorNode: function(key){
+        if (this.forceDirector){
+            this.forceDirector.nodes = _.reject(this.forceDirector.nodes, function(node){
+                return node.key === key;
+            });
+        }
+        return this;
+    },
     
     getHubWeights: function(){
         return _(this.hubViews).map(function(hubView){
