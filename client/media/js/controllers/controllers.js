@@ -492,21 +492,10 @@ var TankController = Backbone.Controller.extend({
             throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first"; 
         }
         
-        /*
-        // TODO: make use of full range
-    
         var weight = hubView.model.weight(),
-            tankHeight = this.height - this.marginTop,
-            adjustedWeight = (weight - this.hubWeightMin) / this.hubWeightMax;
+            weightRatioOfFullRange = (weight - this.hubWeightMin) / this.hubWeightRange;
 
-        O(weight, adjustedWeight, this.height, this.marginTop, adjustedWeight * (this.height - 90) + this.marginTop + 90);
-        O(this.hubWeightMin
-        */
-    
-        var weight = hubView.model.weight(),
-            adjustedWeight = weight / this.hubWeightRange + this.hubWeightMin;
-
-        return adjustedWeight * (this.height - 90) + this.marginTop + 90; // 90 is expected hubView height
+        return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
     },
     
     hubViewOffset: function(hubView){
