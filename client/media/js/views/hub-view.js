@@ -22,7 +22,6 @@ var HubView = View.extend({
 
         _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions", "_onTaskRemoved");
         
-        
         // **
         
         // Force director
@@ -47,8 +46,8 @@ var HubView = View.extend({
             .bind("end", this.repositionTasks);
             
         app.tank
-            .bind("change:walls", this.updateWalls)
-            .bind("resize", this.updateWalls);
+            .bind("resize", this.updateWalls)
+            .bind("change:walls", this.updateWalls);
             
         this.bind("change:walls", this.repositionTasks);
         
@@ -219,6 +218,13 @@ var HubView = View.extend({
         }
         return this;
     },
+    
+    // TODO: tidy this up, and merge with refreshTasks
+    redrawTasks: function(){
+        this.cacheTaskViewCenterBounds()
+            .clearTasks({silent:true})
+            .renderTasks();
+    },
 
     refreshTasks: function () {
         var hubView = this;
@@ -359,7 +365,7 @@ var HubView = View.extend({
         return this;
     },
 
-    clearTasks: function(options){ O("cleartasks");
+    clearTasks: function(options){
         this.taskListElem.empty();
         this.clearCanvas()
             .removeCanvas();
@@ -374,10 +380,11 @@ var HubView = View.extend({
     drawLines: function(){
         var hubView = this;
     
-        return this.taskViews.each(function(taskView){
+        this.taskViews.each(function(taskView){
             var offset = taskView.offset();
             hubView.line(offset.left + taskView.width / 2, offset.top + taskView.height / 2);
         });
+        return this;
     },
 
     // Vertically centres the hub title/description.

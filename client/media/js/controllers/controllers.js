@@ -55,7 +55,17 @@ var TankController = Backbone.Controller.extend({
         
         this.forceDirector
             .bind("loop", this.repositionHubs)
-            .bind("end", this.repositionHubs);
+            .bind("end", this.repositionHubs)
+            // TODO: tasks views don't position correctly on re-paint
+            .bind("end", function(){
+                // Redraw taskviews
+                window.setTimeout(function(){
+                    if (app.selectedHubView && app.selectedHubView.taskViews){
+                        app.selectedHubView.redrawTasks();
+                    }
+                }, 5);
+            });
+            
         
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
@@ -74,6 +84,7 @@ var TankController = Backbone.Controller.extend({
         jQuery(window).bind("resize", throttle(function(){
             tank.trigger("resize", tank);
         }, app.tankResizeThrottle, true));
+        
 
         // Watch for new hubs and add them to the tank.
         Tasket.hubs.bind("add", _.bind(function(hub){
@@ -480,6 +491,17 @@ var TankController = Backbone.Controller.extend({
         if (_.isUndefined(this.hubWeights)){
             throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first"; 
         }
+        
+        /*
+        // TODO: make use of full range
+    
+        var weight = hubView.model.weight(),
+            tankHeight = this.height - this.marginTop,
+            adjustedWeight = (weight - this.hubWeightMin) / this.hubWeightMax;
+
+        O(weight, adjustedWeight, this.height, this.marginTop, adjustedWeight * (this.height - 90) + this.marginTop + 90);
+        O(this.hubWeightMin
+        */
     
         var weight = hubView.model.weight(),
             adjustedWeight = weight / this.hubWeightRange + this.hubWeightMin;

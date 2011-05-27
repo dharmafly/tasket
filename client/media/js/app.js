@@ -16,7 +16,7 @@ var cache = new Cache(Tasket.namespace),
             // app properties
             _.extend(this, {
                 debug: debugMode,
-                debugForceDirector: debugMode && /debugForceDirector/.test(windowSearch),
+                debugForceDirector: debugMode && /debugForceDirector/i.test(windowSearch),
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 hubBuffer: 10,
                 taskBuffer: 10,
