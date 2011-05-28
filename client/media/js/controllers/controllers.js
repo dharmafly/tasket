@@ -597,7 +597,7 @@ var TankController = Backbone.Controller.extend({
     
     hubViewOffset: function(hubView){
         return {
-            left: this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id) + this.wallLeft,
+            left: this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id) + this.wallLeft + Math.random(), // random seed
             top:  this.hubViewOffsetTop(hubView)
         };
     },
