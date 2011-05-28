@@ -215,26 +215,6 @@ var TankController = Backbone.Controller.extend({
             
         return this.trigger("hub:select", selectedHubView, this);
     },
-
-    addHubs: function(hubs, options){
-        var tank = this,
-            hubViewOptions;
-    
-        _(hubs).each(function(hub){
-            this.addHub(hub, {dontDraw:true});
-        }, this);
-
-        if (!options || !options.dontDraw){
-            this.calculateHubWeights();
-        
-            _(this.hubViews).each(function(hubView){
-                tank.drawHubView(hubView);
-            });
-            this.forcedirectHubs();
-        }
-        
-        return this;
-    },
     
     drawHubView: function(hubView, options){
         var offset;
@@ -268,6 +248,26 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
 
+    addHubs: function(hubs, options){
+        var tank = this,
+            hubViewOptions;
+    
+        _(hubs).each(function(hub){
+            this.addHub(hub, {dontDraw:true});
+        }, this);
+
+        if (!options || !options.dontDraw){
+            this.calculateHubWeights();
+        
+            _.each(this.hubViews, function(hubView){
+                tank.drawHubView(hubView);
+            });
+            this.forcedirectHubs();
+        }
+        
+        return this;
+    },
+
     addHub: function(hub, options){
         var hubView, offset;
 
@@ -276,7 +276,7 @@ var TankController = Backbone.Controller.extend({
         }
 
         options = options || {};
-
+        
         hubView = this.hubViews[hub.cid] = new HubView({
             model: hub
         });
@@ -288,7 +288,8 @@ var TankController = Backbone.Controller.extend({
             }, this));
 
         if (!options.dontDraw){
-            this.drawHubView(hubView)
+            this.calculateHubWeights()
+                .drawHubView(hubView)
                 .forcedirectHubs();
         }
         this.trigger("add:hub", this, hub, hubView);
@@ -301,12 +302,16 @@ var TankController = Backbone.Controller.extend({
         var hubView = this.getHubView(id);
         
         if (hubView) {
-            this.hubViews = _.without(this.hubViews, hubView);
+            delete this.hubViews[hubView.model.cid];
             hubView.deselect().remove();
+            
+            if (id === app.selectedHub){
+                this.clearSVG();
+            }
             
             this.removeForceDirectorNode("hub-" + id)
                 .calculateHubWeights()
-                .repositionHubs();
+                .forcedirectHubs();
         }
         
         return this;
@@ -345,7 +350,8 @@ var TankController = Backbone.Controller.extend({
                 "hubs.owned": hubs
             });
 
-            this.addHub(hub);
+            // Add hub and select it for viewing
+            this.addHub(hub).select();
         }, this));
         
         return this;
@@ -584,6 +590,10 @@ var TankController = Backbone.Controller.extend({
         return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
     },
     
+    hubViewOffsetLeft: function(hubView){
+        return this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id) + this.wallLeft + Math.random(); // random seed
+    },
+    
     hubsAlphabetical: function(){
         return _(this.hubViews).chain()
             .sortBy(function(hubView){
@@ -597,7 +607,7 @@ var TankController = Backbone.Controller.extend({
     
     hubViewOffset: function(hubView){
         return {
-            left: this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id) + this.wallLeft + Math.random(), // random seed
+            left: this.hubViewOffsetLeft(hubView),
             top:  this.hubViewOffsetTop(hubView)
         };
     },

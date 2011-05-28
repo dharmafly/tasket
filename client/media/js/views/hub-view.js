@@ -296,9 +296,8 @@ var HubView = View.extend({
         return this;
     },
     
-    // TODO: drawLines doesn't function when app.animateTasks === true
     // TODO: instead of recreating line elements each time, instead change their positions
-    // TODO: track calls to this function and reduce as much as possible.
+    // TODO: profile calls to this function and reduce as much as possible.
     drawLines: function(){
         var hubView = this,
             hubOffset = this.offset(),
