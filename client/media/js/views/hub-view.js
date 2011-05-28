@@ -199,9 +199,9 @@ var HubView = View.extend({
     select: function(){
         if (!this.isSelected()){
             this.set("selected", true);
-            this.trigger("select", this);
             this.elem.addClass("select");
             app.bodyElem.addClass("hubSelected");
+            this.trigger("select", this);
         }
         return this;
     },
@@ -395,8 +395,11 @@ var HubView = View.extend({
         if (forceDirectionNeeded){
             this.forcedirectTasks();
         }
-
-        return this.drawLines();
+        else {
+            this.drawLines();
+        }
+        
+        return this;
     },
 
     render: function(){

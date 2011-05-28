@@ -53,7 +53,7 @@ var TankController = Backbone.Controller.extend({
         var tank = this;
         this.hubViews = {};
         
-        _.bindAll(this, "_onSelectHubs", "repositionHubs");
+        _.bindAll(this, "_onSelectHubs", "_onDeselectHubs", "repositionHubs");
         
         this.scrollbarWidth = this.getScrollbarWidth();
         
@@ -68,11 +68,9 @@ var TankController = Backbone.Controller.extend({
             // TODO: tasks views don't position correctly on re-paint
             .bind("end", function(){
                 // Redraw taskviews
-                window.setTimeout(function(){
-                    if (app.selectedHubView && app.selectedHubView.taskViews){
-                        app.selectedHubView.redrawTasks();
-                    }
-                }, 5);
+                if (app.selectedHubView && app.selectedHubView.taskViews){
+                    app.selectedHubView.redrawTasks();
+                }
             });
         
         this.bind("change:walls", function(tank, dimensions){
@@ -111,19 +109,6 @@ var TankController = Backbone.Controller.extend({
         }
     },
     
-    emptyElement: function(elem){
-        if (elem){
-            while (elem.firstChild) {
-                elem.removeChild(elem.firstChild);
-            }
-        }
-        return this;
-    },
-    
-    clearSVG: function(){
-        return this.emptyElement(this.svg);
-    },
-    
     // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
     getScrollbarWidth: function(){
         var // Outer scrolling div
@@ -155,6 +140,19 @@ var TankController = Backbone.Controller.extend({
 
         // Pixel width of the scroller
         return width1 - width2;
+    },
+    
+    emptyElement: function(elem){
+        if (elem){
+            while (elem.firstChild) {
+                elem.removeChild(elem.firstChild);
+            }
+        }
+        return this;
+    },
+    
+    clearSVG: function(){
+        return this.emptyElement(this.svg);
     },
     
     updateSVGDimensions: function(){
@@ -205,15 +203,20 @@ var TankController = Backbone.Controller.extend({
     },
     */
 
+    // When a hubView is selected, then deselect all the other hubviews
     _onSelectHubs: function(selectedHubView){
         _(this.hubViews)
             .chain()
-            .reject(function(view){
-                return view.model.id === selectedHubView.model.id;
+            .reject(function(hubView){
+                return hubView.model.id === selectedHubView.model.id;
             })
             .invoke("deselect");
             
         return this.trigger("hub:select", selectedHubView, this);
+    },
+    
+    _onDeselectHubs: function(hubView){
+        return this.trigger("hub:deselect", hubView, this);
     },
     
     drawHubView: function(hubView, options){
@@ -283,6 +286,7 @@ var TankController = Backbone.Controller.extend({
 
         hubView
             .bind("select", this._onSelectHubs)
+            .bind("deselect", this._onDeselectHubs)
             .bind("change:position:tasks", _.bind(function(hubView){
                 this.trigger("change:position:tasks", this, hubView);
             }, this));
@@ -304,10 +308,6 @@ var TankController = Backbone.Controller.extend({
         if (hubView) {
             delete this.hubViews[hubView.model.cid];
             hubView.deselect().remove();
-            
-            if (id === app.selectedHub){
-                this.clearSVG();
-            }
             
             this.removeForceDirectorNode("hub-" + id)
                 .calculateHubWeights()
@@ -446,6 +446,11 @@ var TankController = Backbone.Controller.extend({
     newTask: function(hubId){
         var hub = Tasket.getHubs(hubId),
             form;
+            
+        if (!hub){
+            this.error("Sorry. There was a problem creating the task. Please try again.<br>(error: hub-" + hubId + " not found)");
+            return;
+        }
 
         if (!this._isLoggedIn("You must be logged in to create a task.")) {
             return;
@@ -473,15 +478,18 @@ var TankController = Backbone.Controller.extend({
             task = Tasket.getTasks(taskId);
 
         if (_.indexOf(hub.getTasks(), taskId) < 0) {
-            this.error("This task does not exist on this " + app.lang.HUB + ".");
+            this.error("That task does not exist on this " + app.lang.HUB + ".");
+            app.lightbox.hide();
             return;
         }
 
         if (!this._isLoggedIn("You must be logged in to create a task.")) {
+            app.lightbox.hide();
             return;
         }
 
         if (!this._hasAdminRights(hub.get("owner"), "You do not own this " + app.lang.HUB + ".")) {
+            app.lightbox.hide();
             return;
         }
 
@@ -519,10 +527,8 @@ var TankController = Backbone.Controller.extend({
                 
             tank.repositionHubViews();
 
-            // Go to the hub's URL and re-render the tasks
-            hubView
-                .updateLocation()
-                .refreshTasks();
+            // Go to the hub's URL
+            hubView.updateLocation();
         }, this));
         
         form.bind("delete", _.bind(function (model) { // TODO create removeTask method

@@ -87,7 +87,9 @@ var cache = new Cache(Tasket.namespace),
                     app.dashboard.hubAnchorSelect();
                 })
                 .bind("hub:deselect", function(hubView){
-                    app.selectedHubView = app.selectedHub = null;
+                    if (hubView.model.id === app.selectedHub){
+                        app.selectedHubView = app.selectedHub = null;
+                    }
                 });
             
             /////
