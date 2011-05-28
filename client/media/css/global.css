@@ -912,6 +912,13 @@ article.hub .controls {
 	float: right;
 }
 
+/* SVG lines connecting tasks to hubs */
+svg line {
+    stroke: #555;
+    stroke-width:2;
+}
+
+
 /* @end */
 
 /* @group Dashboard

@@ -3,9 +3,7 @@ var HubView = View.extend({
     className: "hub",
 
     defaults: {
-        selected: false,
-        strokeStyle: "#555",
-        lineWidth: 2
+        selected: false
     },
 
     events: {
@@ -277,98 +275,9 @@ var HubView = View.extend({
         return this;
     },
 
-    resizeCanvas: function(){
-        var context = this.canvasContext,
-            bounds = this.taskViewCenterBounds,
-            hubViewOffset = this.offset(),
-            width, height;
-
-        if (!context){
-            return this;
-        }
-
-        this.canvasWidth = width = bounds.right - bounds.left;
-        this.canvasHeight = height = bounds.bottom - bounds.top;
-
-        this.canvasElem
-            .attr({
-                width:  width,
-                height: height
-            })
-            .css({
-                left: bounds.left,
-                top:  bounds.top
-            });
-
-        // Translate coordinates and save canvas state. It will be restored in clearCanvas(), to allow a different translation next time
-        context.save();
-        context.translate(
-            -bounds.left,
-            -bounds.top
-        );
-        return this;
-    },
-
-    initializeCanvas: function(){
-        var canvasElem = this.canvasElem = jQuery(this.make("canvas")),
-            context = this.canvasContext = canvasElem[0].getContext && canvasElem[0].getContext("2d") || null;
-
-        if (!context){
-            return this;
-        }
-
-        context.strokeStyle = this.get("strokeStyle");
-        context.lineWidth = this.get("lineWidth");
-
-        return this;
-    },
-
-    appendCanvas: function(){
-        if (!this.canvasElem){
-            this.initializeCanvas();
-        }
-        if (this.canvasContext){
-            this.tasksElem.prepend(this.canvasElem);
-        }
-        return this;
-    },
-
-    clearCanvas: function(){
-        var context = this.canvasContext,
-            width = this.canvasWidth,
-            height = this.canvasHeight;
-
-        if (context){
-            context.clearRect(-width / 2, -width / 2, width, width);
-            context.restore(); // restore any applied context coordinate translations from resizeCanvas()
-        }
-        return this;
-    },
-
-    removeCanvas: function(){
-        if (this.canvasElem){
-            this.canvasElem.remove();
-        }
-        return this;
-    },
-
-    line: function(x, y){
-        var context = this.canvasContext;
-
-        if (context){
-            context.beginPath();
-            context.moveTo(0, 0);
-            context.lineTo(x, y);
-            context.stroke();
-            context.closePath();
-        }
-        return this;
-    },
-
     clearTasks: function(options){
+        this.clearLines();
         this.taskListElem.empty();
-        this.clearCanvas()
-            .removeCanvas();
 
         if (!options || !options.silent){
             this.set("tasksVisible", false);
@@ -376,13 +285,30 @@ var HubView = View.extend({
         return this;
     },
     
-    // TODO: drawLines doesn't function when app.animateTasks === true
-    drawLines: function(){
-        var hubView = this;
+    line: function(x, y){
+        var offset = this.offset();
+        app.tank.addSVGLine(offset.left, x, offset.top, y);
+        return this;
+    },
     
+    clearLines: function(){
+        app.tank.clearSVG();
+        return this;
+    },
+    
+    // TODO: drawLines doesn't function when app.animateTasks === true
+    // TODO: instead of recreating line elements each time, instead change their positions
+    // TODO: track calls to this function and reduce as much as possible.
+    drawLines: function(){
+        var hubView = this,
+            hubOffset = this.offset(),
+            hubOffsetLeft = hubOffset.left,
+            hubOffsetTop = hubOffset.top;
+    
+        this.clearLines();
         this.taskViews.each(function(taskView){
-            var offset = taskView.offset();
-            hubView.line(offset.left + taskView.width / 2, offset.top + taskView.height / 2);
+            var taskOffset = taskView.offset();
+            hubView.line(hubOffsetLeft + taskOffset.left + taskView.width / 2, hubOffsetTop + taskOffset.top + taskView.height / 2);
         });
         return this;
     },
@@ -471,9 +397,7 @@ var HubView = View.extend({
             this.forcedirectTasks();
         }
 
-        return this.appendCanvas()
-            .resizeCanvas()
-            .drawLines();
+        return this.drawLines();
     },
 
     render: function(){
@@ -560,8 +484,7 @@ var HubView = View.extend({
                 hubView.setTaskViewOffsetFromForcedNode(taskView);
             });
             
-            this.clearCanvas()
-                .drawLines();
+            this.drawLines();
         }
         
         return this.trigger("change:position:tasks");

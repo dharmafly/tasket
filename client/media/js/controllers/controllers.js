@@ -16,11 +16,12 @@ var TankController = Backbone.Controller.extend({
     // Get the dimensions of the tank    
     updateWalls: function(){
         var wallBuffer = app.wallBuffer,
+            viewportWidth = document.documentElement.clientWidth,
             viewportHeight = document.documentElement.clientHeight,
-            //viewportHeight = window.innerHeight,
             dimensions;
 
-        this.viewportHeight = viewportHeight;
+        this.viewportWidth = viewportWidth - this.scrollbarWidth;
+        this.viewportHeight = viewportHeight - this.scrollbarWidth;
         this.wallBuffer = wallBuffer;
         this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
         this.wallLeft = wallBuffer;
@@ -48,6 +49,8 @@ var TankController = Backbone.Controller.extend({
         
         _.bindAll(this, "_onSelectHubs", "repositionHubs");
         
+        this.scrollbarWidth = this.getScrollbarWidth();
+        
         // Force director
         this.forceDirector = ForceDirector.create({
             animate: app.animateHubs
@@ -65,12 +68,12 @@ var TankController = Backbone.Controller.extend({
                     }
                 }, 5);
             });
-            
         
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
         
             if (!_.isEqual(currentWalls, dimensions)){
+                this.updateSVGDimensions();
                 this.forceDirector.setWalls(dimensions);
                 this.calculateHubWeights();
             }
@@ -100,6 +103,78 @@ var TankController = Backbone.Controller.extend({
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
+    },
+    
+    emptyElement: function(elem){
+        if (elem){
+            while (elem.firstChild) {
+                elem.removeChild(elem.firstChild);
+            }
+        }
+        return this;
+    },
+    
+    clearSVG: function(){
+        return this.emptyElement(this.svg);
+    },
+    
+    // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
+    getScrollbarWidth: function(){
+        var // Outer scrolling div
+            outer = jQuery("<div/>").css({
+                position: "absolute",
+                top: "-1000px",
+                left: "-1000px",
+                width: "100px",
+                height: "50px",
+                overflow: "hidden"
+            }).appendTo("body"),
+            
+            // Inner content div
+            inner = jQuery("<div/>").css({
+                width: "100%",
+                height: "200px"
+            }).appendTo(outer),
+            
+            // Width of the inner div without scrollbar
+            width1 = inner[0].offsetWidth,
+            width2;
+        
+        // Width of the inner div with scrollbar
+        outer.css({overflow: "auto"});
+        width2 = inner[0].offsetWidth;
+
+        // Remove the scrolling div from the doc
+        outer.remove();
+
+        // Pixel width of the scroller
+        return width1 - width2;
+    },
+    
+    updateSVGDimensions: function(){
+        var svg = this.svg = jQuery("svg")[0];
+        if (svg){
+            svg.setAttribute("width", this.viewportWidth);
+            svg.setAttribute("height", this.viewportHeight);
+        }
+        return this;
+    },
+    
+    createSVGElement: function(nodeName){
+        return document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+    },
+    
+    addSVGLine: function(x1, x2, y1, y2){
+        var line = this.svg && this.createSVGElement("line");
+    
+        if (line){
+            line.setAttribute("x1", x1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y1", y1);
+            line.setAttribute("y2", y2);
+            this.svg.appendChild(line);
+        }
+        return this;
     },
 
     getHubView: function(id){
