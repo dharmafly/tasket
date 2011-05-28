@@ -26,18 +26,15 @@
         "html5": [
             "../dependencies/html5.js"
         ],
-        "jquery": [
-            "../dependencies/jquery.js"
-        ],
-        "backbone": [
+        "tasket.all": [
+            "./blank-header.js",
+            "../dependencies/jquery.js",
             "../dependencies/underscore.js",
-            "../dependencies/backbone.js"
-        ],
-        "mishmash": [
+            "../dependencies/backbone.js",
             "../dependencies/tim.js",
-            "../dependencies/cache.js"
-        ],
-        "tasket": [
+            "../dependencies/cache.js",
+            "./blank-footer.js",
+            
             "./header.js",
             "../dependencies/vec2.js",
             "../dependencies/forcedirector.js",
@@ -76,14 +73,6 @@
             "../lang/custom.js",
             "../init.js",
             "./footer.js"
-        ],
-        "tasket.all": [
-            "./blank-header.js",
-            "../build/pkg/jquery.js",
-            "../build/pkg/backbone.js",
-            "../build/pkg/mishmash.js",
-            "../build/pkg/tasket.js",
-            "./blank-footer.js"
         ],
         "tasket.loader": [
             "./blank-header.js",
