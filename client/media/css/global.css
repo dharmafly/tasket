@@ -811,17 +811,11 @@ article.hub > hgroup {
 	padding: 0.8em 0.8em 0.8em 4em;
 	background-color: #111;
 	color: #fff;
-	z-index: 1; /* Place this above the canvas element */
+	z-index: 1;
 }
 
 article.hub > div.tasks {
 	position:absolute;
-}
-
-article.hub > div.tasks > canvas {
-	position:absolute;
-	top:0;
-	pointer-events:none; /* TODO: in browsers that don't support pointer-events, the canvas element may obstruct user clicks on hubs underneath */
 }
 
 article.hub > div.tasks > ul {
@@ -914,8 +908,9 @@ article.hub .controls {
 
 /* SVG lines connecting tasks to hubs */
 svg line {
-    stroke: #555;
+    stroke: #777;
     stroke-width:2;
+	pointer-events:none;
 }
 
 
