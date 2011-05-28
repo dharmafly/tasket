@@ -9,7 +9,7 @@ var Dashboard = View.extend({
 
     events: {
         "click a.notifications": "_onNotificationClick",
-        "click section.quicklinks.my-projects ul.listing li": "toggleHub",
+        "click section.quicklinks.my-projects ul.listing li a.hub-link": "toggleHub",
         "mouseenter .info": "_toggleHelp",
         "mouseleave .info": "_toggleHelp"
     },
