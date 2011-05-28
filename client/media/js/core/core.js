@@ -1,4 +1,8 @@
-/*global jQuery, console, _, Backbone, tim*/
+
+var Tasket = {};
+
+
+// **
 
 
 function now(){
@@ -90,8 +94,3 @@ function randomInt(length){
 function nl2br(value) {
     return value.replace(/\n/g, '<br />');
 }
-
-/////
-
-
-var Tasket = {};

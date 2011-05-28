@@ -82,7 +82,7 @@ app.bind("error", function (data) {
     app.notification.error(app.lang.INIT_ERROR);
 });
 
-if (app.supported()) {
+if (app.isSupported()) {
     // Bootstrap the app with all open hubs.
     app.init(jQuery.ajax({
         url: "/hubs/",

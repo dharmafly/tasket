@@ -357,13 +357,18 @@ var cache = new Cache(Tasket.namespace),
             return app;
         },
 
-        // Returns true if the browser supports Taskets API"s.
-        supported: (function () {
-            var canvas = document.createElement("canvas"),
-                supported;
+        // Returns true if the browser supports Tasket's tech
+        isSupported: (function () {
+            var supportsSVG, container = document.createElement("div");
 
-            supported = !!(canvas.getContext && canvas.getContext("2d") && cache.localStorage);
-
+            // SVG SUPPORT
+            // from http://diveintohtml5.org/everything.html#svg
+            container.innerHTML = "<svg></svg>";
+            supportsSVG = !!(window.SVGSVGElement && container.firstChild instanceof window.SVGSVGElement);
+        
+            // LOCAL STORAGE SUPPORT
+            var supported = supportsSVG && !!cache.localStorage;
+            
             return function () {
                 return supported;
             };
