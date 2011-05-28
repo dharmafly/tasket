@@ -18,5 +18,5 @@
 
 */
 
-(function (window, document, jQuery, Backbone, tim) {
+(function (window, document) {
 "use strict";

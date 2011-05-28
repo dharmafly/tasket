@@ -1,5 +1,5 @@
 
-this.Tasket = Tasket;
-this.Tasket._app = app;
+Tasket.app = app;
+window.Tasket = Tasket;
 
-}(this, document, jQuery, Backbone, tim));
+}(this, this.document));

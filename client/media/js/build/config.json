@@ -27,15 +27,13 @@
             "../dependencies/html5.js"
         ],
         "tasket.all": [
-            "./blank-header.js",
+            "./header.js",
             "../dependencies/jquery.js",
             "../dependencies/underscore.js",
             "../dependencies/backbone.js",
             "../dependencies/tim.js",
             "../dependencies/cache.js",
-            "./blank-footer.js",
             
-            "./header.js",
             "../dependencies/vec2.js",
             "../dependencies/forcedirector.js",
             "../dependencies/flatten.js",
