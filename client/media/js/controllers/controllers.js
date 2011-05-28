@@ -16,12 +16,18 @@ var TankController = Backbone.Controller.extend({
     // Get the dimensions of the tank    
     updateWalls: function(){
         var wallBuffer = app.wallBuffer,
-            viewportWidth = document.documentElement.clientWidth,
-            viewportHeight = document.documentElement.clientHeight,
+            viewportWidth = document.documentElement.clientWidth - this.scrollbarWidth,
+            viewportHeight = document.documentElement.clientHeight - this.scrollbarWidth,
             dimensions;
 
-        this.viewportWidth = viewportWidth - this.scrollbarWidth;
-        this.viewportHeight = viewportHeight - this.scrollbarWidth;
+        if (viewportWidth < 0){
+            viewportWidth = 0;
+        }
+        if (viewportHeight < 0){
+            viewportHeight = 0;
+        }
+        this.viewportWidth = viewportWidth;
+        this.viewportHeight = viewportHeight;
         this.wallBuffer = wallBuffer;
         this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
         this.wallLeft = wallBuffer;
