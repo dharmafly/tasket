@@ -303,8 +303,11 @@ var TankController = Backbone.Controller.extend({
         if (hubView) {
             this.hubViews = _.without(this.hubViews, hubView);
             hubView.deselect().remove();
+            
+            this.removeForceDirectorNode("hub-" + id)
+                .calculateHubWeights()
+                .repositionHubs();
         }
-        this.removeForceDirectorNode("hub-" + id);
         
         return this;
     },
@@ -554,7 +557,7 @@ var TankController = Backbone.Controller.extend({
     },
     
     getHubWeights: function(){
-        return _(this.hubViews).map(function(hubView){
+        return _.map(this.hubViews, function(hubView){
             return hubView.model.weight();
         });
     },
@@ -564,6 +567,8 @@ var TankController = Backbone.Controller.extend({
         this.hubWeightMin = Math.min.apply(Math, hubWeights);
         this.hubWeightMax = Math.max.apply(Math, hubWeights);
         this.hubWeightRange = this.hubWeightMax - this.hubWeightMin;
+        this.hubViewOrderX = this.hubsAlphabetical();
+        this.hubViewOrderXSlice = this.width / (this.hubViewOrderX.length - 1);
         
         return this;
     },
@@ -579,10 +584,21 @@ var TankController = Backbone.Controller.extend({
         return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
     },
     
+    hubsAlphabetical: function(){
+        return _(this.hubViews).chain()
+            .sortBy(function(hubView){
+                return hubView.model.get("title") || hubView.model.get("description");
+            })
+            .map(function(hubView){
+                return hubView.model.id;
+            })
+            .value();
+    },
+    
     hubViewOffset: function(hubView){
         return {
-            left: this.width / 2 + this.wallLeft + (this.width * Math.random() - this.width / 2),
-            top: this.hubViewOffsetTop(hubView)
+            left: this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id) + this.wallLeft,
+            top:  this.hubViewOffsetTop(hubView)
         };
     },
     
