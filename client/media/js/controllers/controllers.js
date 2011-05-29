@@ -347,7 +347,6 @@ var TankController = Backbone.Controller.extend({
         
         if (hubView) {
             delete this.hubViews[hub.cid];
-            
             hubView.deselect().remove();
             
             this.removeForceDirectorNode("hub-" + hub.id)
