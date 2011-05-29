@@ -18,7 +18,7 @@ var HubView = View.extend({
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
 
-        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions", "_onTaskRemoved");
+        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions", "_onTaskRemoved", "setTaskViewOffsetFromForcedNode");
         
         // **
         
@@ -394,6 +394,7 @@ var HubView = View.extend({
             this.forcedirectTasks();
         }
         else {
+            this.setAllTaskViewsOffset();
             this.drawLines();
         }
         
@@ -471,23 +472,9 @@ var HubView = View.extend({
     },
     
     repositionTasks: function(){
-        var hubView = this,
-            taskViews = this.taskViews;
-    
-        if (taskViews){
-            taskViews.each(function(taskView){
-                var taskPos = taskView.forcedNode.getPos(),
-                    taskElem = taskView.elem;
-
-                // repaint
-                taskView.cacheDimensions();
-                hubView.setTaskViewOffsetFromForcedNode(taskView);
-            });
-            
-            // Only move lines if they are visible
-            if (this.tasksVisible()){
-                this.drawLines()
-            }
+        if (this.taskViews && this.tasksVisible()){
+            this.setAllTaskViewsOffset();
+            this.drawLines();
         }
         
         return this;
@@ -550,13 +537,19 @@ var HubView = View.extend({
         return this;
     },
     
+    setAllTaskViewsOffset: function(){
+        if (this.taskViews){
+            this.taskViews.each(this.setTaskViewOffsetFromForcedNode);
+        }
+        return this;
+    },
+    
     setTaskViewOffsetFromForcedNode: function(taskView){
         var node = taskView.forcedNode,
             pos = node.getPos(),
-            hubViewOffset = this.offset(),
-            taskBuffer = app.taskBuffer;
+            hubViewOffset = this.offset();
             
-        taskView.offset({
+        taskView.cacheDimensions().offset({
             left: ~~(pos.x - hubViewOffset.left - node.width / 2), // NOTE: ~~n === Math.floor(n)
             top: app.invertY(~~pos.y + hubViewOffset.top + this.nucleusWidth / 2)
         });
