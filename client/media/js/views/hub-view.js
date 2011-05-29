@@ -484,10 +484,13 @@ var HubView = View.extend({
                 hubView.setTaskViewOffsetFromForcedNode(taskView);
             });
             
-            this.drawLines();
+            // Only move lines if they are visible
+            if (this.tasksVisible()){
+                this.drawLines()
+            }
         }
         
-        return this.trigger("change:position:tasks");
+        return this;
     },
 
     updateForceDirectedDimensions: function(){
