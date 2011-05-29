@@ -93,14 +93,54 @@ var TankController = Backbone.Controller.extend({
         }, app.tankResizeThrottle, true));
         
 
-        // Watch for new hubs and add them to the tank.
-        Tasket.hubs.bind("add", _.bind(function(hub){
-            // If the hub isn't yet shown in the tank, and it still has unverified tasks
-            if (!this.getHubView(hub.id) && hub.isOpen()){
-                this.addHub(hub);
-            }
-        }, this));
+        Tasket.hubs
+            // Watch for new hubs and add them to the tank.
+            .bind("add", _.bind(function(hub){
+                // If the hub isn't yet shown in the tank, and it still has unverified tasks
+                if (!this.getHubView(hub.id) && hub.isOpen()){
+                    this.addHub(hub);
+                }
+            }, this))
+            // Remove tasks from global collection when hubs are removed
+            .bind("remove", _.bind(function(hub){
+                hub.forEachTask(function(taskId){
+                    Tasket.tasks.remove(taskId);
+                });
+            }, this));
         
+/*
+        Tasket.tasks
+            // When a task is removed from the global collection, clean up by removing task from its hub model, and the associated users.
+            // TODO: this should be distributed into the user/hub models
+            .bind("remove", _.bind(function(task){
+                var users = Tasket.users,
+                    hub = Tasket.hubs.get(task.get("hub")),
+                    owner = users.get(task.get("owner")),
+                    claimedBy = users.get(task.get("claimedBy")),
+                    doneBy = users.get(task.get("doneBy")),
+                    verifiedBy = users.get(task.get("verifiedBy"));
+                
+                if (hub){
+                    hub.removeTask(task); // NOTE: currently this causes the hub total estimate to be adjusted twice when removing a task
+                }
+                
+                if (owner){
+                    owner.removeTask(task);
+                }
+                
+                if (claimedBy){
+                    claimedBy.removeTask(task);
+                }
+                
+                if (doneBy){
+                    doneBy.removeTask(task);
+                }
+                
+                if (verifiedBy){
+                    verifiedBy.removeTask(task);
+                }
+            }, this));
+   */     
         this.updateWalls();
         
         // Add hubs
@@ -302,14 +342,15 @@ var TankController = Backbone.Controller.extend({
     },
 
     // Remove a hub from the tank.
-    removeHub: function (id) {
-        var hubView = this.getHubView(id);
+    removeHub: function (hub) {
+        var hubView = this.getHubView(hub.id);
         
         if (hubView) {
-            delete this.hubViews[hubView.model.cid];
+            delete this.hubViews[hub.cid];
+            
             hubView.deselect().remove();
             
-            this.removeForceDirectorNode("hub-" + id)
+            this.removeForceDirectorNode("hub-" + hub.id)
                 .calculateHubWeights()
                 .forcedirectHubs();
         }
@@ -357,8 +398,13 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
 
-    editHub: function (id) {
-        var hub = Tasket.getHubs(id);
+    editHub: function (hubId) {
+        var hub = Tasket.getHubs(hubId);
+            
+        if (!hub){
+            this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
+            return;
+        }
             
         if (!this._isLoggedIn("You must be logged in to edit this.")) {
             return;
@@ -366,7 +412,7 @@ var TankController = Backbone.Controller.extend({
         if (!this._hasAdminRights(hub.get("owner"), "You cannot edit this, because you do not own it and you are not an admin.")) {
             return;
         }
-        return this.displayHub(id)
+        return this.displayHub(hubId)
             ._createHubForm(hub);
     },
 
@@ -399,10 +445,10 @@ var TankController = Backbone.Controller.extend({
             HubView.prototype.updateLocation.call({model:hub});
         }, this));
 
-        form.bind("delete", _.bind(function (model) {
-            app.currentUser.removeHub(model);
-            this.removeHub(model.id);
-            Tasket.hubs.remove(model);
+        form.bind("delete", _.bind(function (hub) {
+            app.currentUser.removeHub(hub);
+            this.removeHub(hub);
+            Tasket.hubs.remove(hub);
             app.lightbox.hide();
             window.location.hash = "/";
         }, this));
@@ -448,7 +494,7 @@ var TankController = Backbone.Controller.extend({
             form;
             
         if (!hub){
-            this.error("Sorry. There was a problem creating the task. Please try again.<br>(error: hub-" + hubId + " not found)");
+            this.error("Sorry. There was a problem creating the task. Please refresh the page and try again. (error: hub-" + hubId + " not found)");
             return;
         }
 
@@ -575,12 +621,14 @@ var TankController = Backbone.Controller.extend({
     },
     
     calculateHubWeights: function(){
-        var hubWeights = this.hubWeights = this.getHubWeights();
+        var hubWeights = this.hubWeights = this.getHubWeights(),
+            totalHubViews;
+            
         this.hubWeightMin = Math.min.apply(Math, hubWeights);
         this.hubWeightMax = Math.max.apply(Math, hubWeights);
         this.hubWeightRange = this.hubWeightMax - this.hubWeightMin;
         this.hubViewOrderX = this.hubsAlphabetical();
-        this.hubViewOrderXSlice = this.width / (this.hubViewOrderX.length - 1);
+        this.hubViewOrderXSlice = this.width / this.hubViewOrderX.length;
         
         return this;
     },
@@ -591,13 +639,15 @@ var TankController = Backbone.Controller.extend({
         }
         
         var weight = hubView.model.weight(),
-            weightRatioOfFullRange = (weight - this.hubWeightMin) / this.hubWeightRange;
+            weightRatioOfFullRange = (weight - this.hubWeightMin) / (this.hubWeightRange || 0.5); // 0.5 is to supply a number for when there is no difference at all
 
         return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
     },
     
     hubViewOffsetLeft: function(hubView){
-        return this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id) + this.wallLeft + Math.random(); // random seed
+        return this.hubViewOrderX.length < 2 ?
+            this.wallLeft + this.width / 2 :
+            this.wallLeft + this.hubViewOrderXSlice / 2 + (this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id)) + Math.random(); // random seed
     },
     
     hubsAlphabetical: function(){
@@ -621,7 +671,7 @@ var TankController = Backbone.Controller.extend({
     setHubViewOffsetFromForcedNode: function(hubView){
         var node = hubView.forcedNodeHubToHub,
             pos = node.getPos();
-        
+
         hubView.offset({
             left: ~~(pos.x - node.width / 2 + hubView.nucleusWidth / 2), // NOTE: ~~n === Math.floor(n)
             top: app.invertY(~~pos.y)

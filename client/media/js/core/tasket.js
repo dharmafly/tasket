@@ -139,7 +139,7 @@ _.extend(Tasket, Backbone.Events, {
                     model = new collection.model({id: id});
                     toLoad.add(model, silent);
                     toLoadCopy.add(model, silent);
-                    collection.add(model);
+                    collection.add(model, silent);
                 }
                 subset.add(model, silent);
             }
@@ -157,7 +157,7 @@ _.extend(Tasket, Backbone.Events, {
                 toLoadCopy.each(function (model) {
                     if (!toLoad.get(model.id)) {
                         subset.remove(model, silent);
-                        collection.remove(model);
+                        collection.remove(model, silent);
 
                         // Cache the failed model id.
                         Tasket.failed[model.type].push(model.id);

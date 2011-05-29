@@ -200,7 +200,6 @@ var HubView = View.extend({
         if (!this.isSelected()){
             this.set("selected", true);
             this.elem.addClass("select");
-            app.bodyElem.addClass("hubSelected");
             this.trigger("select", this);
         }
         return this;
@@ -210,7 +209,6 @@ var HubView = View.extend({
         if (this.isSelected()){
             this.set("selected", false);
             this.elem.removeClass("select");
-            app.bodyElem.removeClass("hubSelected");
             this.clearTasks();
             this.trigger("deselect", this);
         }

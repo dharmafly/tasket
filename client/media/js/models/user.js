@@ -67,14 +67,14 @@ var User = Model.extend({
                 currentIds;
             
             // When a task is rejected, it moves back to a "new" state. Since there is no "claimed.new" collection, then return.
-            if (currentKey === "tasks.claimed.new"){
+            if (currentKey === "tasks.claimed." + Task.states.NEW){
                 return;
             }
 
             // If the task is in the array of previous ids or we're iterating
             // through the claimed tasks and this is a new one (in which case
             // it won't be in an array) then update the data.
-            if (_.indexOf(previousIds, id) > -1 || (group === 'claimed' && newlyClaimed)) {
+            if (_.indexOf(previousIds, id) >= 0 || (group === "claimed" && newlyClaimed)) {
                 data[previousKey] = _.without(previousIds, id);
 
                 currentIds = _.clone(this.get(currentKey));
@@ -89,7 +89,7 @@ var User = Model.extend({
     },
 
     // Removes the task from the current users tasks.
-    removeTask: function (task) {
+    removeTask: function (task, options) {
         var data = {};
 
         _.each(["owned", "claimed"], function (group) {
@@ -101,13 +101,13 @@ var User = Model.extend({
             }
         }, this);
 
-        return this.set(data);
+        return this.set(data, options);
     },
 
     // Removes the hub from the current users hubs.
     removeHub: function (hub) {
         return this.set({
-            'hubs.owned': _.without(this.get('hubs.owned'), hub.id)
+            "hubs.owned": _.without(this.get("hubs.owned"), hub.id)
         });
     }
 });

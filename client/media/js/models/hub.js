@@ -70,11 +70,22 @@ var Hub = Model.extend({
                 "estimates.new": currentEstimates + task.get("estimate")
             });
         }
-
-        return this.trigger("add:task", this, task);
+        
+        return this;
+    },
+    
+    forEachTask: function (iterator){ // iterator is passed the taskId
+        var hub = this;
+        _.each(Task.states, function(state){
+            var tasks = hub.get("tasks." + state);
+            if (tasks) {
+                _.each(tasks, iterator);
+            }
+        });
+        return this;
     },
 
-    removeTask: function (task) {
+    removeTask: function (task, options) {
         var data        = {},
             state       = task.get('state'),
             tasksKey    = 'tasks.' + state,
@@ -83,7 +94,7 @@ var Hub = Model.extend({
         data[tasksKey]    = _.without(this.get(tasksKey), task.id);
         data[estimateKey] = this.get(estimateKey) - task.get('estimate');
         
-        return this.set(data).trigger("delete:task", this, task);
+        return this.set(data, options);
     },
 
     // Updates the hubs tasks and estimates when the state of a task changes.
@@ -99,7 +110,7 @@ var Hub = Model.extend({
             currentIds;
 
         // If this hub owns this task.
-        if (_.indexOf(previousIds, id) > -1) {
+        if (_.indexOf(previousIds, id) >= 0) {
             // Remove from the previous array of ids.
             data[previousKey] = _.without(previousIds, id);
 
@@ -121,6 +132,7 @@ var Hub = Model.extend({
         _.each(["new", "claimed", "done"], function (key) {
             estimate += this.get("estimates." + key);
         }, this);
+        
         return estimate;
     },
 
