@@ -221,6 +221,16 @@
         "state": "claimed",
         "estimate": 900
     }
+},
+
+{
+    "pk": 1, 
+    "model": "tasks.star", 
+    "fields": {
+        "user": 2, 
+        "star_type" : "task",
+        "object_id" : 3
+    }
 }
 
 ]

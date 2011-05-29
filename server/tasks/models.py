@@ -76,13 +76,14 @@ class Task(models.Model):
                 return t
             return int(time.mktime(t.timetuple()))
 
-    def as_dict(self):
+    def as_dict(self, request_user=None):
         """
         Custom method for returning specifically formatted JSON.
 
         Handy for outputting related objects as a list, etc.
         
         """
+        
         obj_dict = {
             "id": str(self.pk),
             "description": self.description.strip(),
@@ -108,16 +109,23 @@ class Task(models.Model):
         if self.verifiedTime: 
             obj_dict["verifiedTime"] = self.format_timestamp(self.verifiedTime)
         
+        if request_user and request_user.is_authenticated():
+            try:
+                starred = Star.objects.get(user=request_user, star_type='task', object_id=self.pk)
+                obj_dict["starred"] = starred.as_json()
+            except Star.DoesNotExist:
+                pass
+        
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
         return obj_dict
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         """
         Dumps the objects as_dict method in to JSON.
         """
-        return json.dumps(self.as_dict())
+        return json.dumps(self.as_dict(**kwargs))
 
 
 class Hub(models.Model):
@@ -155,7 +163,7 @@ class Hub(models.Model):
         return int(time.mktime(self.createdTime.timetuple()))
     
     
-    def as_dict(self):
+    def as_dict(self, request_user=None):
         """
         Custom method for returning specifically formatted JSON.
     
@@ -196,6 +204,14 @@ class Hub(models.Model):
         
         if self.image:
             obj_dict["image"] = self.image.name
+        
+        if request_user and request_user.is_authenticated():
+            try:
+                starred = Star.objects.get(user=request_user, star_type='hub', object_id=self.pk)
+                obj_dict["starred"] = starred.as_json()
+            except Star.DoesNotExist:
+                pass
+        
 
         for k,v in obj_dict.items():
             if v == None:
@@ -203,12 +219,11 @@ class Hub(models.Model):
         
         return obj_dict
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         """
         Dumps the objects as_dict method in to JSON.
         """
-        return json.dumps(self.as_dict())
-
+        return json.dumps(self.as_dict(**kwargs))
 
 
 class Profile(models.Model):
@@ -291,6 +306,13 @@ class Profile(models.Model):
         if self.image:
             obj_dict["image"] = self.image.name
 
+        if request_user and request_user.is_authenticated():
+            try:
+                starred = Star.objects.get(user=request_user, star_type='profile', object_id=self.pk)
+                obj_dict["starred"] = starred.as_json()
+            except Star.DoesNotExist:
+                pass
+
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
@@ -299,6 +321,39 @@ class Profile(models.Model):
     def as_json(self, **kwargs):
         return json.dumps(self.as_dict(**kwargs))
         
+
+class Star(models.Model):
+    STAR_TYPES = (
+        ('task', 'Task'),
+        ('hub', 'Hub'),
+        ('profile', 'User'),
+    )
+    
+    star_type = models.CharField(blank=False, max_length=100, null=False, choices=STAR_TYPES)
+    object_id = models.IntegerField(blank=False, null=False)
+    user = models.ForeignKey(Profile)
+    starred_time = UnixTimestampField(blank=True, default=datetime.datetime.now)
+    
+    objects = managers.StarredManager()
+    
+    def __unicode__(self):
+        return u"%s-%s-%s" % (self.star_type, self.object_id, self.user)
+    
+    def created_timestamp(self):
+        return int(time.mktime(self.starred_time.timetuple()))
+    
+    def as_dict(self):
+        obj_dict = {
+            'type' : self.star_type,
+            'id' : self.object_id,
+            'timestamp' : self.created_timestamp(),
+            'starred' : True, # By existing, this is True
+        }
+        return obj_dict
+    
+    def as_json(self):
+        return json.dumps(self.as_dict())
+
 def user_post_save(sender, instance, signal, *args, **kwargs):
     profile, new = Profile.objects.get_or_create(user=instance)
 models.signals.post_save.connect(user_post_save, sender=User)

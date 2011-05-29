@@ -64,6 +64,7 @@ class UnverifiedTaskManager(JsonManager):
     
 
 class ProfileManager(JsonManager): pass
+class StarredManager(JsonManager): pass
 
 
 

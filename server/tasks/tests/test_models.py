@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 
 from django.contrib.auth.models import User
 
-from tasks.models import Hub, Task, Profile
+from tasks.models import Hub, Task, Profile, Star
 import tasks
 
 class ModelTest(TestCase):
@@ -95,7 +95,12 @@ class ModelTest(TestCase):
         profiles_after = Profile.objects.all().count()
         self.assertEqual(profiles_before+1, profiles_after)
 
+    def test_star_unicode(self):
+        self.assertEqual(unicode(Star.objects.all()[0]), 'task-3-TestUser')
         
+    def test_star_queryset(self):
+        stars = len(json.loads(Star.objects.all().as_json()))
+        self.assertEqual(stars, 1)
 
 
 

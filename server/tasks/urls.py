@@ -23,6 +23,10 @@ urlpatterns = patterns('',
     url(r'^users/$',views.ProfileView.as_view(), name="user"),
     url(r'^users/(?P<user_id>\d+)$',views.ProfileView.as_view(), name="user"),
     url(r'^users/(?P<user_id>\d+)/(?P<image>image)/$',views.ProfileView.as_view(), name="user_image"),
+    url(r'^users/(?P<user_id>\d+)/(?P<starred>starred)/$',views.ProfileView.as_view(), name="user_starred"),
+    
+    # Starred Methods
+    url(r'^starred/(?P<star_type>task|hub|profile)/(?P<object_id>\d+)/$',views.StarredView.as_view(), name="starred"),
     
     # Images
     url(r'^thumb/(?P<size>[^/]+)/(?P<path>.*)$',views.thumbs),
