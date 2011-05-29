@@ -84,11 +84,13 @@ var cache = new Cache(Tasket.namespace),
                 .bind("hub:select", function(hubView){
                     app.selectedHubView = hubView;
                     app.selectedHub = hubView.model.id;
+                    app.bodyElem.addClass("hubSelected");
                     app.dashboard.hubAnchorSelect();
                 })
                 .bind("hub:deselect", function(hubView){
                     if (hubView.model.id === app.selectedHub){
                         app.selectedHubView = app.selectedHub = null;
+                        app.bodyElem.removeClass("hubSelected");
                     }
                 });
             
@@ -251,7 +253,7 @@ var cache = new Cache(Tasket.namespace),
             return app;
         },
         
-        updateAllDoneTasks: function(task){ // based on user.updateTasks(); called when task changes
+        updateAllDoneTasks: function(task){ // based on user.updateTask(); called when task changes state
             var allDoneTasks = app.allDoneTasks,
                 id, isDone, wasDone, wasDeleted, storedTask;
             
