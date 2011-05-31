@@ -239,3 +239,5 @@ _.extend(Tasket, Backbone.Events, {
         Tasket.trigger.apply(Tasket, args);
     }
 });
+
+// TODO: widgetised to do app. browser extension, Sqwidget
