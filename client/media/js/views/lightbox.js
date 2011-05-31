@@ -28,6 +28,9 @@ var Lightbox = View.extend({
         }, this), 0);
 
         this._updateMargin();
+        
+        // If contents is a form, then focus its first control
+        this.$(":input:first").focus();
 
         return this.trigger("show", options, this);
     },
@@ -39,6 +42,9 @@ var Lightbox = View.extend({
             this.elem.css("-o-transition-duration") ||
             this.elem.css("-ms-transition-duration") ||
             0;
+        
+        // Put control in the main body, and away from the lightbox's contents (amongst other things, this will close the keyboard on an iPhone/iPad when the lightbox previously contained a form that the user submitted)
+        app.bodyElem.focus();
             
         this.elem.removeClass(this.classes.animate);
         if (duration) {
