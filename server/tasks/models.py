@@ -320,7 +320,28 @@ class Profile(models.Model):
         
     def as_json(self, **kwargs):
         return json.dumps(self.as_dict(**kwargs))
+    
+    def starred(self, user=None):
+        """
+        Returns a QuerySet of Star objects for this model.
         
+        If a user object is supplied, then only return a single object that
+        matches the user.
+        
+        setting.PUBLIC_STARS will determin if stars for other users are public.
+        """
+        
+        if not user:
+            # All stars (for all users) for this object
+            return Star.objects.filter(star_type='profile', object_id=self.pk)
+        
+        # An object can only be starred once per user, so use .get to return a 
+        # single object.
+        star = Star.objects.get(star_type='profile', object_id=self.pk, user=user)
+        if star:
+            return star
+        else:
+            return False
 
 class Star(models.Model):
     STAR_TYPES = (

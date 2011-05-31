@@ -231,6 +231,15 @@
         "star_type" : "task",
         "object_id" : 3
     }
+},
+{
+    "pk": 2, 
+    "model": "tasks.star", 
+    "fields": {
+        "user": 2, 
+        "star_type" : "profile",
+        "object_id" : 2
+    }
 }
 
 ]

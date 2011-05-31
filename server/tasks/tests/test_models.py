@@ -72,6 +72,12 @@ class ModelTest(TestCase):
         self.assertTrue('estimates' in json_data)
         self.assertTrue('tasks' in json_data)
         self.assertEqual(json_data['username'], 'TestUser')
+
+    def test_profile_starred(self):
+        self.assertEqual(self.P.starred().count(), 1)
+
+    def test_profile_starred_for_user(self):
+        self.assertTrue(self.P.starred(user=self.U))
     
     def test_hub_queryset_as_json(self):
         obs = Hub.objects.all().as_json()
