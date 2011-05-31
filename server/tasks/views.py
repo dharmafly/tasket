@@ -81,7 +81,7 @@ class HubView(PutView):
         
         # Don't allow a normal user to create a hub, if USERS_CAN_CREATE_HUBS is 
         # false, and the user is not an admin
-        if not settings.USERS_CAN_CREATE_HUBS and not request.user.profile.admin:
+        if not getattr(settings, "USERS_CAN_CREATE_HUBS", True) and not request.user.profile.admin:
             res.write(json.dumps(
                 {
                 'error' : "Unauthorized",
