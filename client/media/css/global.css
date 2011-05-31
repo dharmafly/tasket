@@ -745,6 +745,12 @@ form ul,
 /* @group Task Widget
 -----------------------------------------------------------------------------*/
 
+
+body, body > *:not(a), article.hub, article.hub a.nucleus-wrapper {
+	/* prevent highlight color on iPad, Android, etc */
+	-webkit-tap-highlight-color: transparent;
+}
+
 article.hub {
 	z-index: 0;
 	position: absolute;
@@ -775,6 +781,9 @@ article.hub a.nucleus-wrapper {
 	border-radius: 4em;
 	z-index: 2; /* start above the hub description */
 	outline:none;
+	
+	/* prevent highlight color on iPad, Android, etc */
+	-webkit-tap-highlight-color: stransparent;
 }
 
 article.hub.loading a.nucleus-wrapper::after {
