@@ -16,3 +16,4 @@ TEMPLATE_DEBUG = True
 
 if os.environ.get('DJANGO_DEBUG') == "true":
     DEBUG = True
+DEBUG = True
