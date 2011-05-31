@@ -241,3 +241,4 @@ _.extend(Tasket, Backbone.Events, {
 });
 
 // TODO: widgetised to do app. browser extension, Sqwidget
+// iPad improvements: scrollable lightbox content (e.g. faq), svg lines
