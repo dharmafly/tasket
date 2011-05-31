@@ -59,7 +59,7 @@ var Task = Model.extend({
     
         var task = this,
             currentState = this.get("state"),
-            timestamp, error, attr, toSet;
+            timestamp, error, attr, toSet, doneBy, owner;
             
         if (!newState){
             return currentState;
@@ -126,7 +126,7 @@ var Task = Model.extend({
                 
                 case TaskStates.VERIFIED:
                     // If we're not moving directly from "done" -> "verified", then error
-                    if (!currentState === TaskStates.DONE){
+                    if (currentState !== TaskStates.DONE){
                         error(currentState, newState, userid);
                     }
                     

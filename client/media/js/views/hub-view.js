@@ -510,7 +510,6 @@ var HubView = View.extend({
             model = taskView.model,
             taskElem = taskView.elem,
             hubNode = this.forcedNode,
-            taskBuffer = app.taskBuffer,
             hubViewOffset, oppositeCorner;
             
         taskView.render();
