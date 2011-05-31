@@ -8,10 +8,10 @@ var Dashboard = View.extend({
     },
 
     events: {
-        "click a.notifications": "_onNotificationClick",
+        "click ul.notifications a": "_onNotificationClick",
         "click section.quicklinks.my-projects ul.listing li a.hub-link": "toggleHub",
-        "mouseenter .info": "_toggleHelp",
-        "mouseleave .info": "_toggleHelp"
+        "mouseenter a.info": "_toggleHelp",
+        "mouseleave a.info": "_toggleHelp"
     },
 
     constructor: function Dashboard() {
@@ -294,8 +294,8 @@ var Dashboard = View.extend({
 
     // Scroll down to the appropriate listing and highlight the activity links.
     _onNotificationClick: function (event) {
-        var hash = event && event.target,
-            className = hash && hash.replace("#", "."),
+        var hash = event && event.target && event.target.hash,
+            className = hash && hash.replace && hash.replace("#", "."),
             element = className && this.$(className).addClass("highlight");
             
         if (element){
