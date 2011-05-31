@@ -56,6 +56,7 @@ var TankController = Backbone.Controller.extend({
         _.bindAll(this, "_onSelectHubs", "_onDeselectHubs", "repositionHubs");
         
         this.scrollbarWidth = this.getScrollbarWidth();
+        this.svg = this.createSVGRoot(jQuery("#vector")[0]);
         
         // Force director
         this.forceDirector = ForceDirector.create({
@@ -195,22 +196,28 @@ var TankController = Backbone.Controller.extend({
         return this.emptyElement(this.svg);
     },
     
-    updateSVGDimensions: function(){
-        var svg = this.svg = jQuery("svg")[0];
-        if (svg){
-            svg.setAttribute("width", this.viewportWidth);
-            svg.setAttribute("height", this.viewportHeight);
-        }
-        return this;
-    },
-    
     createSVGElement: function(nodeName){
         return document.createElementNS("http://www.w3.org/2000/svg", nodeName);
     },
     
+    // NOTE: Creating the <svg> element this way allows it to render on iPad et al, whereas including the <svg> element directly in the HTML document does not. Inspired by http://keith-wood.name/svg.html
+    createSVGRoot: function(container){
+        var svg = this.createSVGElement("svg");
+	    svg.setAttribute("version", "1.1");
+	
+	    container.appendChild(svg);
+	    return svg;
+    },
+    
+    updateSVGDimensions: function(){
+        this.svg.setAttribute("width", this.viewportWidth);
+        this.svg.setAttribute("height", this.viewportHeight);
+        return this;
+    },
+    
     addSVGLine: function(x1, x2, y1, y2){
         var line = this.svg && this.createSVGElement("line");
-    
+
         if (line){
             line.setAttribute("x1", x1);
             line.setAttribute("x2", x2);
