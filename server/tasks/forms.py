@@ -124,7 +124,7 @@ class TaskForm(forms.ModelForm):
         estimate = self.cleaned_data['estimate']
         TASK_ESTIMATE_MAX = getattr(settings, "TASK_ESTIMATE_MAX", 14400)
         if estimate > TASK_ESTIMATE_MAX:
-            self._errors['estimate'] = self.error_class(['Estimate is too high, enter a value less than %s' % TASK_ESTIMATE_MAX)
+            self._errors['estimate'] = self.error_class(['Estimate is too high, enter a value less than %s' % TASK_ESTIMATE_MAX])
         return estimate
     
     def clean(self):
