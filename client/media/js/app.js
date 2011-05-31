@@ -363,16 +363,15 @@ var cache = new Cache(Tasket.namespace),
 
         // Returns true if the browser supports Tasket's tech
         isSupported: (function () {
-            var container = document.createElement("div"),
-                supportsSVG, supportsLocalStorage;
+            var supportsSVG, supportsLocalStorage;
 
             // SVG SUPPORT
             // from http://diveintohtml5.org/everything.html#svg
-            container.innerHTML = "<svg></svg>";
-            supportsSVG = !!(window.SVGSVGElement && container.firstChild instanceof window.SVGSVGElement);
+            supportsSVG = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
         
             // LOCAL STORAGE SUPPORT
-            supportsLocalStorage = supportsSVG && !!cache.localStorage;
+            // This has already been determined by cache.js, so we'll use that
+            supportsLocalStorage = !!cache.localStorage;
             
             return function () {
                 return supportsSVG && supportsLocalStorage;
