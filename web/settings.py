@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sys
+import os
 sys.path.append('../server')
 from global_settings import *
 
@@ -10,6 +11,8 @@ try:
     from local_settings import *
 except ImportError:
     pass
-
-# DEBUG = True
+    
 TEMPLATE_DEBUG = True
+
+if os.environ.get('DJANGO_DEBUG') == "true":
+    DEBUG = True
