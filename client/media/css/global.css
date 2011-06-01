@@ -887,6 +887,7 @@ article.hub .description {
 
 article.hub .description .estimate {
 	color: #888;
+	white-space: nowrap;
 }
 
 article.hub .meta .claimedBy,
