@@ -104,6 +104,18 @@ var Task = Model.extend({
         // In normal mode, require task states to change only in an ordered manner
         else {
             switch (newState){
+                case TaskStates.NEW:
+                    // If we're not moving directly from "done" -> "verified", then error
+                    if (currentState === TaskStates.DONE){
+                        if (!attr.owner){
+                            toSet.owner = userid;
+                        }
+                    }
+                    else {
+                        error(currentState, newState, userid);
+                    }
+                break;
+                
                 case TaskStates.CLAIMED:
                     if (currentState === TaskStates.NEW){
                         toSet.claimedBy = userid;
@@ -115,7 +127,7 @@ var Task = Model.extend({
                 break;
                 
                 case TaskStates.DONE:
-                    if (userid && currentState === TaskStates.CLAIMED){
+                    if (currentState === TaskStates.CLAIMED){
                         toSet.doneBy = userid;
                         toSet.doneTime = timestamp;
                     }
@@ -126,13 +138,15 @@ var Task = Model.extend({
                 
                 case TaskStates.VERIFIED:
                     // If we're not moving directly from "done" -> "verified", then error
-                    if (currentState !== TaskStates.DONE){
-                        error(currentState, newState, userid);
+                    if (currentState === TaskStates.DONE){
+                        // Set the new user properties on the task
+                        toSet.verifiedBy = userid;
+                        toSet.verifiedTime = timestamp;
                     }
                     
-                    // Set the new user properties on the task
-                    toSet.verifiedBy = userid;
-                    toSet.verifiedTime = timestamp;
+                    else {
+                        error(currentState, newState, userid);
+                    }
                 break;
 
                 default:
