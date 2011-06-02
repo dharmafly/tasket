@@ -135,7 +135,7 @@
     }
 },
 {
-    "pk": 4, 
+    "pk": 2, 
     "model": "tasks.task",
     "fields": {
         "verifiedBy": 3,
@@ -239,6 +239,24 @@
         "user": 2, 
         "star_type" : "profile",
         "object_id" : 2
+    }
+},
+{
+    "pk": 3, 
+    "model": "tasks.star", 
+    "fields": {
+        "user": 2, 
+        "star_type" : "hub",
+        "object_id" : 3
+    }
+},
+{
+    "pk": 4, 
+    "model": "tasks.star", 
+    "fields": {
+        "user": 2, 
+        "star_type" : "profile",
+        "object_id" : 3
     }
 }
 

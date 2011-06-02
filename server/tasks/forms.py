@@ -6,9 +6,29 @@ from django.contrib.auth.models import User
 from django.utils.html import escape
 from django.conf import settings
 
-from models import Task, Hub, Profile
+from models import Task, Hub, Profile, Star
 
-class TaskForm(forms.ModelForm):
+class StarredForm(forms.ModelForm):
+    starred = forms.BooleanField(required=False)
+    
+    def clean_starred(self):
+        if not self.instance.pk:
+            self._errors['starred'] = self.error_class(["Objects must be saved before they can be starred"])
+            return
+
+        model_name = self.Meta.model._meta.verbose_name
+        starred = self.cleaned_data.get('starred')
+        if starred:
+            # A star is being added
+            # Make sure there isn't already a star for this object and user
+            star = Star.objects.get_or_create(star_type=model_name, user=self.request.user.profile, object_id=self.instance.pk)
+        else:
+            try:
+                Star.objects.get(star_type=model_name, user=self.request.user.profile, object_id=self.instance.pk).delete()
+            except Star.DoesNotExist:
+                pass
+
+class TaskForm(StarredForm):
     def __init__(self, *args, **kwargs):
         if 'request' in kwargs:
             self.request = kwargs['request']
@@ -140,13 +160,13 @@ class TaskForm(forms.ModelForm):
         cleaned_data = self.state_logic()
         return cleaned_data
 
-class HubForm(forms.ModelForm):
+class HubForm(StarredForm):
     
     class Meta:
         model = Hub
         exclude = ('owner', 'createdTime',)
 
-class ProfileForm(forms.ModelForm):
+class ProfileForm(StarredForm):
     
     password = forms.CharField(label="Password", widget=forms.PasswordInput, required=False)
     password_confirm = forms.CharField(label="Confirm password", widget=forms.PasswordInput, required=False)

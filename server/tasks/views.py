@@ -235,6 +235,7 @@ class TasksView(PutView):
         task = get_object_or_404(Task, pk=task_id)
         request.PUT['hub'] = task.hub.pk
         request.PUT['state'] = request.PUT.get('state', Task.STATE_NEW)
+        
         form = forms.TaskForm(request.PUT, instance=task, request=request)
         if form.is_valid():
             T = form.save()

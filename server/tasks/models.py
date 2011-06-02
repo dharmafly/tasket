@@ -20,7 +20,36 @@ import managers
 
 from sorl.thumbnail import ImageField
 
-class Task(models.Model):
+class StarredModel(models.Model):
+    """
+    Abstract base class for models with stars attached to them.
+    """
+    
+    class Meta:
+        abstract = True
+            
+    def starred(self, user=None):
+        """
+        Returns a QuerySet of Star objects for this model.
+        
+        If a user object is supplied, then only return a single object that
+        matches the user.
+        """
+        star_type = self._meta.verbose_name
+
+        if not user:
+            # All stars (for all users) for this object
+            return Star.objects.filter(star_type=star_type, object_id=self.pk)
+        
+        # An object can only be starred once per user, so use. get to return a 
+        # single object.
+        try:
+            star = Star.objects.get(star_type=star_type, object_id=self.pk, user=user)
+            return star
+        except Star.DoesNotExist:
+            return None
+
+class Task(StarredModel):
     """
     A task's JSON object should look like this:
     
@@ -66,7 +95,7 @@ class Task(models.Model):
 
     objects = managers.TaskManager()
     unverified = managers.UnverifiedTaskManager()
-
+    
     def __unicode__(self):
         return self.description[:10]
     
@@ -110,11 +139,9 @@ class Task(models.Model):
             obj_dict["verifiedTime"] = self.format_timestamp(self.verifiedTime)
         
         if request_user and request_user.is_authenticated():
-            try:
-                starred = Star.objects.get(user=request_user, star_type='task', object_id=self.pk)
-                obj_dict["starred"] = starred.as_json()
-            except Star.DoesNotExist:
-                pass
+            star = self.starred(user=request_user)
+            if star:
+                obj_dict["starred"] = star.as_json()
         
         for k,v in obj_dict.items():
             if v == None:
@@ -128,7 +155,7 @@ class Task(models.Model):
         return json.dumps(self.as_dict(**kwargs))
 
 
-class Hub(models.Model):
+class Hub(StarredModel):
     """
     Stores collections of tasks.  A 'hub' JSON object should look like this:
     
@@ -206,11 +233,9 @@ class Hub(models.Model):
             obj_dict["image"] = self.image.name
         
         if request_user and request_user.is_authenticated():
-            try:
-                starred = Star.objects.get(user=request_user, star_type='hub', object_id=self.pk)
-                obj_dict["starred"] = starred.as_json()
-            except Star.DoesNotExist:
-                pass
+            star = self.starred(user=request_user)
+            if star:
+                obj_dict["starred"] = star.as_json()
         
 
         for k,v in obj_dict.items():
@@ -226,7 +251,7 @@ class Hub(models.Model):
         return json.dumps(self.as_dict(**kwargs))
 
 
-class Profile(models.Model):
+class Profile(StarredModel):
     user = models.OneToOneField(User, primary_key=True)
     name = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
@@ -248,8 +273,8 @@ class Profile(models.Model):
         def format_estimate_list(qs):
             return qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
 
-        def format_id_list(qs):
-            return [str(o.pk) for o in qs]
+        def format_id_list(qs, id_attr='pk'):
+            return [str(getattr(o, id_attr)) for o in qs]
         
         # Querysets for 'Tasks' and 'Estimates' properties.
         owned_new_qs      = self.tasks_owned.filter(state=Task.STATE_NEW)
@@ -260,6 +285,7 @@ class Profile(models.Model):
         claimed_claimed_qs  = self.tasks_claimed.filter(state=Task.STATE_CLAIMED)
         claimed_done_qs     = self.tasks_claimed.filter(state=Task.STATE_DONE)
         claimed_verified_qs = self.tasks_claimed.filter(state=Task.STATE_VERIFIED)
+        starred_qs          = self.star_set.filter(star_type='task')
         
         obj_dict = {
             "id": str(self.user.pk),
@@ -283,6 +309,7 @@ class Profile(models.Model):
                     "done": format_id_list(claimed_done_qs),
                     "verified": format_id_list(claimed_verified_qs),
                 },
+                "starred": format_id_list(starred_qs, id_attr='object_id')
             },
             "estimates" : {
                 "owned": {
@@ -307,11 +334,9 @@ class Profile(models.Model):
             obj_dict["image"] = self.image.name
 
         if request_user and request_user.is_authenticated():
-            try:
-                starred = Star.objects.get(user=request_user, star_type='profile', object_id=self.pk)
-                obj_dict["starred"] = starred.as_json()
-            except Star.DoesNotExist:
-                pass
+            star = self.starred(user=request_user)
+            if star:
+                obj_dict["starred"] = star.as_json()
 
         for k,v in obj_dict.items():
             if v == None:
@@ -320,30 +345,15 @@ class Profile(models.Model):
         
     def as_json(self, **kwargs):
         return json.dumps(self.as_dict(**kwargs))
-    
-    def starred(self, user=None):
-        """
-        Returns a QuerySet of Star objects for this model.
-        
-        If a user object is supplied, then only return a single object that
-        matches the user.
-        
-        setting.PUBLIC_STARS will determin if stars for other users are public.
-        """
-        
-        if not user:
-            # All stars (for all users) for this object
-            return Star.objects.filter(star_type='profile', object_id=self.pk)
-        
-        # An object can only be starred once per user, so use .get to return a 
-        # single object.
-        star = Star.objects.get(star_type='profile', object_id=self.pk, user=user)
-        if star:
-            return star
-        else:
-            return False
+
+def user_post_save(sender, instance, signal, *args, **kwargs):
+    profile, new = Profile.objects.get_or_create(user=instance)
+models.signals.post_save.connect(user_post_save, sender=User)
+
 
 class Star(models.Model):
+
+    # Types should match the verbose_name of the model they relate to.
     STAR_TYPES = (
         ('task', 'Task'),
         ('hub', 'Hub'),
@@ -375,6 +385,3 @@ class Star(models.Model):
     def as_json(self):
         return json.dumps(self.as_dict())
 
-def user_post_save(sender, instance, signal, *args, **kwargs):
-    profile, new = Profile.objects.get_or_create(user=instance)
-models.signals.post_save.connect(user_post_save, sender=User)

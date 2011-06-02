@@ -140,13 +140,6 @@ class ViewTests(TestCase):
         response = self.client.get('/tasks/3')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
-
-    def test_task_get_single_with_star(self):
-        self.client.login(username='TestUser', password='12345')
-        response = self.client.get('/tasks/3')
-        json_data = json.loads(response.content)
-        self.assertEqual(json_data['description'].startswith("This is"), True)
-        self.assertTrue('starred' in json_data)
     
     def test_task_get_by_id(self):
         response = self.client.get('/tasks/?ids=4,5')
@@ -439,15 +432,4 @@ class ViewTests(TestCase):
 
         response = self.client.get('/thumb/30x30/images/users/foo.jpg?crop')
         self.assertEqual(response.status_code, 404)
-
-    def test_starred_for_user(self):
-        self.client.login(username='TestUser', password='12345')
-        response = self.client.get('/users/%s/starred/' % 2)
-        json_data = json.loads(response.content)
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(json_data), 1)
-
-
-
-
 
