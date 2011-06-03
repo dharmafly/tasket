@@ -9,6 +9,19 @@ from django.conf import settings
 from models import Task, Hub, Profile, Star
 
 class StarredForm(forms.ModelForm):
+
+    def __init__(self, *args, **kwargs):
+        if 'request' in kwargs:
+            self.request = kwargs['request']
+            del kwargs['request']
+        else:
+            raise Exception('Request MUST be passed to this form')
+        
+        self.status_code = 500
+        super(StarredForm, self).__init__(*args, **kwargs)
+
+
+    
     starred = forms.BooleanField(required=False)
     
     def clean_starred(self):
@@ -32,16 +45,7 @@ class StarredForm(forms.ModelForm):
                 pass
 
 class TaskForm(StarredForm):
-    def __init__(self, *args, **kwargs):
-        if 'request' in kwargs:
-            self.request = kwargs['request']
-            del kwargs['request']
-        else:
-            raise Exception('Request MUST be passed to this form')
-        
-        self.status_code = 500
-        super(TaskForm, self).__init__(*args, **kwargs)
-    
+
     class Meta:
         model = Task
         exclude = ('owner', 'createdTime',)

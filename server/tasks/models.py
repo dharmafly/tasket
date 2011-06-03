@@ -285,7 +285,9 @@ class Profile(StarredModel):
         claimed_claimed_qs  = self.tasks_claimed.filter(state=Task.STATE_CLAIMED)
         claimed_done_qs     = self.tasks_claimed.filter(state=Task.STATE_DONE)
         claimed_verified_qs = self.tasks_claimed.filter(state=Task.STATE_VERIFIED)
-        starred_qs          = self.star_set.filter(star_type='task')
+        starred_tasks_qs    = self.star_set.filter(star_type='task')
+        starred_hubs_qs    = self.star_set.filter(star_type='hub')
+        starred_users_qs    = self.star_set.filter(star_type='profile')
         
         obj_dict = {
             "id": str(self.user.pk),
@@ -309,7 +311,11 @@ class Profile(StarredModel):
                     "done": format_id_list(claimed_done_qs),
                     "verified": format_id_list(claimed_verified_qs),
                 },
-                "starred": format_id_list(starred_qs, id_attr='object_id')
+            },
+            "starred": {
+                'tasks' : format_id_list(starred_tasks_qs, id_attr='object_id'),
+                'hubs' : format_id_list(starred_hubs_qs, id_attr='object_id'),
+                'users' : format_id_list(starred_users_qs, id_attr='object_id'),
             },
             "estimates" : {
                 "owned": {

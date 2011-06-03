@@ -92,7 +92,7 @@ class HubView(PutView):
             res.status_code = 401
             return res
         
-        form = forms.HubForm(request.JSON)
+        form = forms.HubForm(request.JSON, request=request)
         if form.is_valid():
             H = form.save(commit=False)
             H.owner = request.user.profile
@@ -119,7 +119,7 @@ class HubView(PutView):
             if k not in request.POST:
                 request.POST[k] = v
 
-        form = forms.HubForm(request.POST, request.FILES, instance=hub)
+        form = forms.HubForm(request.POST, request.FILES, instance=hub, request=request)
         if form.is_valid():
             H = form.save()
             res.write(json.dumps({'image' : H.image.name}))
@@ -133,7 +133,7 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def put(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
-        form = forms.HubForm(request.PUT, instance=hub)
+        form = forms.HubForm(request.PUT, instance=hub, request=request)
         if form.is_valid():
             H = form.save()
             response_json =  {
@@ -304,7 +304,7 @@ class ProfileView(PutView):
             self.res.status_code = 401
             return self.res
             
-        form = forms.ProfileForm(request.PUT, instance=profile)
+        form = forms.ProfileForm(request.PUT, instance=profile, request=request)
         if form.is_valid():
             T = form.save(commit=False)
             T.user = profile.user
@@ -370,7 +370,7 @@ class ProfileView(PutView):
 
         user = authenticate(username=username, password=password)
 
-        form = forms.ProfileForm(request.JSON)
+        form = forms.ProfileForm(request.JSON, request=request)
         T = form.save(commit=False)
         T.user = user
         T.save()
@@ -411,7 +411,7 @@ class ProfileView(PutView):
             if k not in request.POST:
                 request.POST[k] = v
         
-        form = forms.ProfileForm(request.POST, request.FILES, instance=profile)
+        form = forms.ProfileForm(request.POST, request.FILES, instance=profile, request=request)
         if form.is_valid():
             P = form.save()
             res.write(json.dumps({'image' : P.image.name}))
