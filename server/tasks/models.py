@@ -312,7 +312,7 @@ class Profile(StarredModel):
                     "verified": format_id_list(claimed_verified_qs),
                 },
             },
-            "starred": {
+            "stars": {
                 'tasks' : format_id_list(starred_tasks_qs, id_attr='object_id'),
                 'hubs' : format_id_list(starred_hubs_qs, id_attr='object_id'),
                 'users' : format_id_list(starred_users_qs, id_attr='object_id'),

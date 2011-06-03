@@ -52,6 +52,12 @@ class StarredTests(TestCase):
         json_data = json.loads(response.content)
         self.assertTrue('starred' in json_data)
     
+    def test_stars_object(self):
+        self.test_star_task()
+        response = self.client.get('/users/2')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['stars']['tasks'], ['3','2',])
+    
     def test_delete_star(self):
         self.client.login(username='TestUser', password='12345')
         
@@ -94,5 +100,5 @@ class StarredTests(TestCase):
     def test_profile_star(self):
         response = self.client.get('/users/2')
         json_data = json.loads(response.content)
-        self.assertTrue('starred' in json_data)
+        self.assertFalse('starred' in json_data)
         
