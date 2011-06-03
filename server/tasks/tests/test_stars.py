@@ -94,6 +94,5 @@ class StarredTests(TestCase):
     def test_profile_star(self):
         response = self.client.get('/users/2')
         json_data = json.loads(response.content)
-        print json_data
         self.assertFalse('starred' in json_data)
         

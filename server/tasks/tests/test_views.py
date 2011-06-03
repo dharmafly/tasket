@@ -41,7 +41,6 @@ class ViewTests(TestCase):
             content_type="application/json",
             )
         json_list = json.loads(response.content)
-    
         self.assertEqual(set(json_list.keys()), set(['id', 'createdTime']))
 
     def test_hubs_post_admin_restrict(self):
@@ -129,12 +128,12 @@ class ViewTests(TestCase):
     def test_hub_task_list(self):
         response = self.client.get('/hubs/2/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 3)
+        self.assertEqual(len(json_data), 4)
     
     def test_task_get(self):
         response = self.client.get('/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 5)
+        self.assertEqual(len(json_data), 6)
     
     def test_task_get_single(self):
         response = self.client.get('/tasks/3')
@@ -409,7 +408,7 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['tasks']['new'], "1")
         self.assertEqual(json_data['tasks']['claimed'], "2")
         self.assertEqual(json_data['tasks']['done'], "1")
-        self.assertEqual(json_data['tasks']['verified'], "1")
+        self.assertEqual(json_data['tasks']['verified'], "2")
 
     def test_thumb(self):
         self.client.login(username='TestUser', password='12345')

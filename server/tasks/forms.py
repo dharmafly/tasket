@@ -12,12 +12,15 @@ class StarredForm(forms.ModelForm):
     starred = forms.BooleanField(required=False)
     
     def clean_starred(self):
+        if 'starred' not in self.data:
+            return self.cleaned_data
+        
         if not self.instance.pk:
             self._errors['starred'] = self.error_class(["Objects must be saved before they can be starred"])
             return
 
         model_name = self.Meta.model._meta.verbose_name
-        starred = self.cleaned_data.get('starred')
+        starred = self.cleaned_data['starred']
         if starred:
             # A star is being added
             # Make sure there isn't already a star for this object and user

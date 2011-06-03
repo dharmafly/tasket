@@ -26,8 +26,8 @@ class CommandsTests(TestCase):
         self.assertEqual(claimed_count_before, 2)
         self.assertEqual(claimed_count_after, 0)
 
-        self.assertEqual(verified_count_before, 1)
-        self.assertEqual(verified_count_after, 2)
+        self.assertEqual(verified_count_before, 2)
+        self.assertEqual(verified_count_after, 3)
         
         tasks = Task.objects.filter(state=Task.STATE_VERIFIED)
         owner,verifiedBy = ([unicode(t.owner) for t in tasks], [unicode(t.verifiedBy) for t in tasks])

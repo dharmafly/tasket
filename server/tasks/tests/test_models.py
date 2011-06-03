@@ -86,7 +86,7 @@ class ModelTest(TestCase):
 
     def test_verified(self):
         H = Hub.unverified.all()
-        self.assertEqual(len(H), 2)
+        self.assertEqual(len(H), 1)
 
 
     def test_timestamp_field(self):
