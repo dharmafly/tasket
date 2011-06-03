@@ -9,7 +9,9 @@ var Dashboard = View.extend({
 
     events: {
         "click .notifications": "_onNotificationClick",
-        "click section.quicklinks.my-projects ul.listing li": "toggleHub"
+        "click section.quicklinks.my-projects ul.listing li": "toggleHub",
+        "mouseenter .info": "_toggleHelp",
+        "mouseleave .info": "_toggleHelp"
     },
 
     constructor: function Dashboard() {
@@ -92,11 +94,12 @@ var Dashboard = View.extend({
             this["update" + method]();
         }, this);
 
-        this.elem.append(this.detail.hide({silent: true}).render().el);
+        this.elem.append(this.detail.render().el);
 
         return this;
     },
-    
+
+
     toggleHub: function(event){
         var hubId = app.dashboard.getHubIdFromAnchor(event.target);
         if (hubId === app.selectedHub){
@@ -272,6 +275,10 @@ var Dashboard = View.extend({
             } while (watch.length);
         });
         return collection;
+    },
+
+    _toggleHelp: function (event) {
+        $(event.target).siblings('.help').toggleClass('active');
     },
 
     // Scroll down to the appropriate listing and highlight the activity links.

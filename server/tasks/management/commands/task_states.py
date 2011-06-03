@@ -8,8 +8,8 @@ from tasks.models import Task
 
 class Command(BaseCommand):
     
-    CLAIMED_TIME_LIMIT = int(getattr(settings, "CLAIMED_TIME_LIMIT", 24))
-    DONE_TIME_LIMIT = int(getattr(settings, "DONE_TIME_LIMIT", 24))
+    CLAIMED_TIME_LIMIT = int(getattr(settings, "CLAIMED_TIME_LIMIT", 72))
+    DONE_TIME_LIMIT = int(getattr(settings, "DONE_TIME_LIMIT", 72))
     
     def mark_claimed(self):
         

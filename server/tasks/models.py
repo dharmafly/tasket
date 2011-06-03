@@ -10,6 +10,8 @@ from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes import generic
 from django.contrib.auth.models import User
 from django.db.models import Sum
+from django.db.models import signals
+from django.dispatch import dispatcher
 
 from django.conf import settings
 
@@ -18,7 +20,36 @@ import managers
 
 from sorl.thumbnail import ImageField
 
-class Task(models.Model):
+class StarredModel(models.Model):
+    """
+    Abstract base class for models with stars attached to them.
+    """
+    
+    class Meta:
+        abstract = True
+            
+    def starred(self, user=None):
+        """
+        Returns a QuerySet of Star objects for this model.
+        
+        If a user object is supplied, then only return a single object that
+        matches the user.
+        """
+        star_type = self._meta.verbose_name
+
+        if not user:
+            # All stars (for all users) for this object
+            return Star.objects.filter(star_type=star_type, object_id=self.pk)
+        
+        # An object can only be starred once per user, so use. get to return a 
+        # single object.
+        try:
+            star = Star.objects.get(star_type=star_type, object_id=self.pk, user=user)
+            return star
+        except Star.DoesNotExist:
+            return None
+
+class Task(StarredModel):
     """
     A task's JSON object should look like this:
     
@@ -64,7 +95,7 @@ class Task(models.Model):
 
     objects = managers.TaskManager()
     unverified = managers.UnverifiedTaskManager()
-
+    
     def __unicode__(self):
         return self.description[:10]
     
@@ -74,13 +105,14 @@ class Task(models.Model):
                 return t
             return int(time.mktime(t.timetuple()))
 
-    def as_dict(self):
+    def as_dict(self, request_user=None):
         """
         Custom method for returning specifically formatted JSON.
 
         Handy for outputting related objects as a list, etc.
         
         """
+        
         obj_dict = {
             "id": str(self.pk),
             "description": self.description.strip(),
@@ -106,19 +138,24 @@ class Task(models.Model):
         if self.verifiedTime: 
             obj_dict["verifiedTime"] = self.format_timestamp(self.verifiedTime)
         
+        if request_user and request_user.is_authenticated():
+            star = self.starred(user=request_user)
+            if star:
+                obj_dict["starred"] = star.as_json()
+        
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
         return obj_dict
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         """
         Dumps the objects as_dict method in to JSON.
         """
-        return json.dumps(self.as_dict())
+        return json.dumps(self.as_dict(**kwargs))
 
 
-class Hub(models.Model):
+class Hub(StarredModel):
     """
     Stores collections of tasks.  A 'hub' JSON object should look like this:
     
@@ -153,7 +190,7 @@ class Hub(models.Model):
         return int(time.mktime(self.createdTime.timetuple()))
     
     
-    def as_dict(self):
+    def as_dict(self, request_user=None):
         """
         Custom method for returning specifically formatted JSON.
     
@@ -194,6 +231,12 @@ class Hub(models.Model):
         
         if self.image:
             obj_dict["image"] = self.image.name
+        
+        if request_user and request_user.is_authenticated():
+            star = self.starred(user=request_user)
+            if star:
+                obj_dict["starred"] = star.as_json()
+        
 
         for k,v in obj_dict.items():
             if v == None:
@@ -201,15 +244,14 @@ class Hub(models.Model):
         
         return obj_dict
 
-    def as_json(self):
+    def as_json(self, **kwargs):
         """
         Dumps the objects as_dict method in to JSON.
         """
-        return json.dumps(self.as_dict())
+        return json.dumps(self.as_dict(**kwargs))
 
 
-
-class Profile(models.Model):
+class Profile(StarredModel):
     user = models.OneToOneField(User, primary_key=True)
     name = models.CharField(blank=True, max_length=255)
     description = models.TextField(blank=True)
@@ -231,8 +273,8 @@ class Profile(models.Model):
         def format_estimate_list(qs):
             return qs.aggregate(estimate=Sum('estimate'))['estimate'] or 0
 
-        def format_id_list(qs):
-            return [str(o.pk) for o in qs]
+        def format_id_list(qs, id_attr='pk'):
+            return [str(getattr(o, id_attr)) for o in qs]
         
         # Querysets for 'Tasks' and 'Estimates' properties.
         owned_new_qs      = self.tasks_owned.filter(state=Task.STATE_NEW)
@@ -243,6 +285,7 @@ class Profile(models.Model):
         claimed_claimed_qs  = self.tasks_claimed.filter(state=Task.STATE_CLAIMED)
         claimed_done_qs     = self.tasks_claimed.filter(state=Task.STATE_DONE)
         claimed_verified_qs = self.tasks_claimed.filter(state=Task.STATE_VERIFIED)
+        starred_qs          = self.star_set.filter(star_type='task')
         
         obj_dict = {
             "id": str(self.user.pk),
@@ -266,6 +309,7 @@ class Profile(models.Model):
                     "done": format_id_list(claimed_done_qs),
                     "verified": format_id_list(claimed_verified_qs),
                 },
+                "starred": format_id_list(starred_qs, id_attr='object_id')
             },
             "estimates" : {
                 "owned": {
@@ -289,6 +333,11 @@ class Profile(models.Model):
         if self.image:
             obj_dict["image"] = self.image.name
 
+        if request_user and request_user.is_authenticated():
+            star = self.starred(user=request_user)
+            if star:
+                obj_dict["starred"] = star.as_json()
+
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
@@ -296,4 +345,43 @@ class Profile(models.Model):
         
     def as_json(self, **kwargs):
         return json.dumps(self.as_dict(**kwargs))
-        
+
+def user_post_save(sender, instance, signal, *args, **kwargs):
+    profile, new = Profile.objects.get_or_create(user=instance)
+models.signals.post_save.connect(user_post_save, sender=User)
+
+
+class Star(models.Model):
+
+    # Types should match the verbose_name of the model they relate to.
+    STAR_TYPES = (
+        ('task', 'Task'),
+        ('hub', 'Hub'),
+        ('profile', 'User'),
+    )
+    
+    star_type = models.CharField(blank=False, max_length=100, null=False, choices=STAR_TYPES)
+    object_id = models.IntegerField(blank=False, null=False)
+    user = models.ForeignKey(Profile)
+    starred_time = UnixTimestampField(blank=True, default=datetime.datetime.now)
+    
+    objects = managers.StarredManager()
+    
+    def __unicode__(self):
+        return u"%s-%s-%s" % (self.star_type, self.object_id, self.user)
+    
+    def created_timestamp(self):
+        return int(time.mktime(self.starred_time.timetuple()))
+    
+    def as_dict(self):
+        obj_dict = {
+            'type' : self.star_type,
+            'id' : self.object_id,
+            'timestamp' : self.created_timestamp(),
+            'starred' : True, # By existing, this is True
+        }
+        return obj_dict
+    
+    def as_json(self):
+        return json.dumps(self.as_dict())
+

@@ -12,7 +12,7 @@
     var _saveLocation = Backbone.History.prototype.saveLocation,
         _loadUrl      = Backbone.History.prototype.loadUrl;
 
-    /* Public: Returns the previous hash before the current one.
+    /* Public: Returns the previous hash before the current one (or more).
      * If this does not exist, returns undefined.
      *
      * Examples
@@ -20,10 +20,13 @@
      *   Backbone.history.getPrevious();
      *   // => '/hubs/'
      *
+     *   Backbone.history.getPrevious(2);
+     *   // => '/help/'
+     *
      * Returns a hash String.
      */
-    Backbone.History.prototype.getPrevious = function () {
-        return this.stack()[this.stack().length - 2];
+    Backbone.History.prototype.getPrevious = function (historyCount) {
+        return this.stack()[this.stack().length - 1 - (historyCount || 1)];
     };
 
     /* Public: Returns the full stack of hashes since the application

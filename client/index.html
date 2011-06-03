@@ -285,7 +285,7 @@
         </ul>
         <div class="actions">
             <button type="submit">Login</button>
-            <p class="note"><a href="#/forgot-details/" title="Retrieve your login details">Forgotten your details?</a></p>
+            <p class="note"><a href="#/forgot-details/" data-lightbox="open" title="Retrieve your login details">Forgotten your details?</a></p>
         </div>
     </script>
 
@@ -308,12 +308,12 @@
         
         <div class="actions">
             <button type="submit">Reset password</button>
-            <p class="note"><a href="#/login/" title="Return to login form">Return to login</a></p>
+            <p class="note"><a href="#/login/" data-lightbox="open" title="Return to login form">Return to login</a></p>
         </div>
     </script>
 
     <script type="text/tim" class="signup">
-        <h1>Register for a Tasket Account</h1>
+        <h1>Register for an Account</h1>
         <p>Please provide the following details and we’ll create an account for you.</p>
         <ul>
             <li>
@@ -333,8 +333,8 @@
                 <input type="password" id="field-password" name="password" placeholder="password" value="" />
             </li>
             <li>
-                <label for="field-password-confirm">Confirm Password</label>
-                <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
+                <label for="field-password_confirm">Confirm Password</label>
+                <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
             </li>
             <li>
                 <label for="field-image">Image</label>
@@ -363,8 +363,8 @@
                 <input type="password" id="field-password" name="password" placeholder="password" value="" />
             </li>
             <li>
-                <label for="field-password-confirm">Confirm Password</label>
-                <input type="password" id="field-password-confirm" name="password-confirm" placeholder="password again" value="" />
+                <label for="field-password_confirm">Confirm Password</label>
+                <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
             </li>
             <li>
                 <label for="field-image">Image</label>
@@ -374,6 +374,23 @@
         </ul>
         <div class="actions">
             <button type="submit">Update</button>
+        </div>
+    </script>
+
+    <script type="text/tim" class="change-password">
+        <h1>Change your Password</h1>
+        <ul>
+            <li>
+                <label for="field-password">Password</label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password_confirm">Confirm Password</label>
+                <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Change password</button>
         </div>
     </script>
 
@@ -483,6 +500,7 @@
         
         <section class="quicklinks my-projects">
             <h1>My Projects</h1>
+            <a class="info" href="#info">Help</a>
             <p class="help">This section has a list of your projects</p>
             <ul class="listing"></ul>
             <p>
@@ -492,12 +510,14 @@
         
         <section class="quicklinks my-tasks">
             <h1>Tasks I’m Doing</h1>
+            <a class="info" href="#info">Help</a>
             <p class="help">This section has a list of tasks that you've said you'd complete</p>
             <ul class="listing"></ul>
         </section>
         
         <section class="quicklinks managed-tasks">
             <h1>Tasks to Verify</h1>
+            <a class="info" href="#info">Help</a>
             <p class="help">This section has a list of tasks that have been done and need verifying</p>
             <ul class="listing"></ul>
         </section>
@@ -519,6 +539,7 @@
             </a></p>
         </footer>
     </script>
+    
     <script type="text/tim" class="dashboard-link">
       {{links}}
       <li>
@@ -534,13 +555,15 @@
       </li>
       {{/links}}
     </script>
+    
     <script type="text/tim" class="unsupported">
       <h1>Unsupported Browser</h1>
-      <p>Sorry Tasket currently only works on newer browsers such as Google
-         Chrome, Safari, Firefox and IE9. We are trying hard to support as many
-         older browsers as possible in future releases. In the meantime please
-         use one of the above.</p>
+      <p>Sorry, this web app currently only works on modern browsers, such as <a href="www.google.co.uk/chrome">Google Chrome</a>, <a href="http://firefox.com">Firefox</a>, <a href="http://www.apple.com/safari/">Safari</a> and <a href="http://windows.microsoft.com/en-GB/internet-explorer/products/ie/home">Internet Explorer 9</a>.</p>
+      
+      <p>We are trying hard to support as many older browsers as possible in future releases. In the meantime please use one of the above.</p>
     </script>
+    
+
     <!-- SCRIPTS -->
     <script src="/media/js/dev/getscript.js"></script>
     <script src="/media/js/scripts.js"></script>

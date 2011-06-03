@@ -432,7 +432,7 @@ form ul,
 
 /* @end */
 
-/* @group Content Elements
+/* @group Lightbox Content Elements
 -----------------------------------------------------------------------------*/
 
 .content h1,
@@ -440,7 +440,7 @@ form ul,
 .content h3 {
 	font-weight: bold;
 	font-size: 1.384em /* 18px */;
-	/* Pull the bottom border in line with the close button */
+	/* Line up the right-hand side of the bottom border with the lightbox's close button */
 	margin: 1.538em /* 20px */ -0.679em /* 10px */ 1.538em /* 20px */ 0;
 	padding-bottom: 0.679em /* 10px */;
 	border-bottom: 1px solid #ccc;
@@ -452,11 +452,20 @@ form ul,
 
 .content h2 {
 	font-size: 1.231em /* 16px */;
+	margin-top:2.217em;
 }
 
 .content h3 {
 	font-size: 1.077em /* 14px */;
+	padding-bottom:0;
+	margin-bottom:0;
 	border: none;
+}
+
+.content a {
+    color: #003663;
+    border-bottom: 1px solid;
+    font-weight: bold;
 }
 
 .content strong {
@@ -852,6 +861,7 @@ article.hub > hgroup p.description {
 article.hub > hgroup a.readmore {
     font-size:0.9em;
 	color:#ccc;
+	border-bottom: 1px solid;
 }
 
 article.hub > hgroup,
@@ -1092,8 +1102,8 @@ article.hub .controls {
 .dashboard .quicklinks .info {
 	display: block;
 	position: absolute;
-	top: 0;
-	right: 0;
+	top: 1.538em /* 20px */;
+	right: 1.538em /* 20px */;
 	height: 17px;
 	width: 17px;
 	text-indent: -900em;
@@ -1103,8 +1113,8 @@ article.hub .controls {
 
 .js .dashboard .quicklinks .help {
 	position: absolute;
-	top: 20px;
-	right: -5px;
+	top: 40px;
+	right: 5px;
 	width: 13.846em /* 180px */;
 	padding: 0.679em /* 10px */;
 	color: #fff;

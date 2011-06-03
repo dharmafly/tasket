@@ -19,17 +19,6 @@ from utils.helpers import AllowJSONPCallback, PutView
 
 from tasks.models import Profile
 
-# def login_view(request):
-#     form = AuthenticationForm(request, data=request.POST)
-#     print form.errors
-#     return render_to_response(
-#         'login.html',
-#         {
-#             'form' : form,
-#         },
-#         context_instance=RequestContext(request)
-#         )
-
 class LoginView(PutView):
 
     http_method_names = ['get','post',]
@@ -106,7 +95,8 @@ class PasswordReset(PutView):
             # Hack because we're not getting the password
             user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
-            return HttpResponseRedirect('/#/change-password/')
+            return HttpResponseRedirect('/#/users/%s/change-password/' % user.pk)
+        return HttpResponseRedirect('/')
 
     def post(self, request):
         try:

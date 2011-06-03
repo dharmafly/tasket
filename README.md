@@ -1,41 +1,67 @@
 # Tasket
 
-An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.
+An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.  
+
+Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an Issue](https://github.com/premasagar/tasket/issues).
 
 
-## Installation
+## Dependencies
+
+* Python 2.6 or above (but < Python 3)
+* [easy_install](http://packages.python.org/distribute/easy_install.html)
+* You may need Python's developer package ("python-dev" or "python-devel")
+
+### To install these dependencies on Linux:
+
+    sudo apt-get install python python-setuptools python-dev
+
+
+## Install Tasket
 
     cd tasket
     easy_install virtualenv
+    # if this fails, use: sudo easy_install virtualenv
     
     virtualenv --no-site-packages .
     source bin/activate
     
-    easy_install django
     easy_install pip
     pip install -r requirements.txt
     
     cd web
     cp local_settings.py.example local_settings.py
+    
+    
+### Optional: customise _web/local_settings.py_
+
+#### Change the database engine
+
+Tasket is set up for quick testing and development using SQLite as its database. For deployment, edit _web/local_settings.py_ and change the `ENGINE` setting to Postgres or similar.
+
+#### Tasket behaviour
+
+Tasket allows its behaviour to be modified, via a number of settings in _local_settings.py_.
+(TODO: document these settings)
 
 
-### Edit _local_settings.py_ to supply database settings, e.g. for SQLite, use:
+### Prepare the database
 
-    'ENGINE': 'django.db.backends.sqlite3'
-
-
-### Set up the database:
+It is recommended to create a superuser account during this process (follow the instructions in the terminal).
 
     python manage.py syncdb
+    
+    
+### Optional: Load test data
+
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
 
   
-### Start the server:
+### Start the server
     
     python manage.py runserver
 
 
-### In future, you can start the server like this:
+### In future, you can start the server like this
 
     cd tasket
     source bin/activate
@@ -45,9 +71,16 @@ An open source micro-volunteering app, allowing individuals and groups to create
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
 
-### On Linux, ensure that the image library paths are correct
+### Django admin
 
-If you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
+If you created a superuser account (recommended) when syncdb was run above, you can now log in to the django admin interface by going to [http://localhost:8000/admin/](http://localhost:8000/admin/)
+
+To enable emailing (see below), you must edit the site 'Domain name' and 'Display name' at _/admin/sites/site/1/_
+
+
+### Troubleshooting: images served with 500 Server Error
+
+On Linux, if you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
 For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
 
@@ -56,8 +89,8 @@ For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not
 
 ### Build software installation
 
-We use [smoosh][#smoosh] to package the JavaScript for production. To get it you
-need [Node][#node] >= 4.0.1 and [npm][#npm] installed.
+We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it you
+need [Node](http://nodejs.org) >= 4.0.1 and [npm](http://npmjs.org) installed.
 
 For hints on installation, see 
 [joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)). 
@@ -74,7 +107,7 @@ Then install Smoosh:
 
     $ npm install smoosh
 
-You may need to make the Smoosh program executable (you may need to prefix this command with `sudo `:
+You may need to make the Smoosh program executable (you may need to prefix this command with `sudo `):
 
     chmod +x ~/node_modules/.bin/smoosh
     
@@ -92,12 +125,12 @@ or:
 This will run [JSHint](http://jshint.com) against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
 
-NOTE: Ignore any JSHint warnings for header.js and footer.js these are invalid
-JavaScript files used to wrap the Tasket application in a closure.
+NOTE: Ignore any JSHint warnings for header.js and footer.js, as these are partial
+JavaScript files used to enclose the Tasket application in a function closure.
 
-[#smoosh]: http://github.com/fat/smoosh/
-[#node]: http://nodejs.org/
-[#npm]: http://npmjs.org/
+
+## Debug mode
+In /web/localsettings.py, the `DEBUG` flag is set to `True` by default, for ease of development with the local Django server. This should be set to `False` on deploy.
 
 
 ## Cron
@@ -120,20 +153,30 @@ NOTE: If you are using virtualenv, make sure you activate it before running the 
 
 ## Email
 
-In order to send forgotten password emails, a valid SMTP server will need to be set in `local_settings.py`.  More information on this can be found here:
-http://docs.djangoproject.com/en/1.3/topics/email/
+In order to send forgotten password emails, a valid SMTP server will need to be set in _web/local_settings.py_. The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
 
-The two main settings are `EMAIL_HOST` and `EMAIL_PORT`.
+For testing, these can be set to `localhost` and `1025` and the following run from the command line:
 
-For testing, these can be set to localhost and 1025, and the following run from the command line:
+    python -m smtpd -n -c DebuggingServer localhost:1025
 
-> python -m smtpd -n -c DebuggingServer localhost:1025
+All email that Django sends will then me piped to stdout on the terminal where the above was issued.
 
-All email django sends will then me piped to stdout on the terminal where the above was issued.
+For more information on various Django email settings that can be added to _local_settings.py_, see:
+
+* http://docs.djangoproject.com/en/1.3/topics/email/
+* http://docs.djangoproject.com/en/1.3/ref/settings/
+
+
+### Set the site name in Django Admin
+
+To complete the email settings, edit the site 'Domain name' and 'Display name' in the admin panel, at _/admin/sites/site/1/_
+
 
 ## Email template
 
-An email template can be created in `./web/templates/password_reset_email.html`.  It's best to copy the template from `./server/tasks/tempaltes/password_reset_email.html` and edit it to fit your needs.
+An email template can be created in _web/templates/password_reset_email.html_  
+It's best to copy the template from _server/frontend/templates/password_reset_email.html_ and edit it to fit your needs.
+
 
 ## Admin users
 
@@ -172,3 +215,4 @@ Log in to Django and go to http://yourdomain.com/admin/auth/user/ (or click thro
 A superuser should have been created when the site was installed. If no superuser exists, running the following will create a one: 
 
     python manage.py createsuperuser
+

@@ -3,6 +3,8 @@ var Account = SignUp.extend({
         SignUp.prototype.constructor.apply(this, arguments);
     },
     
+    passwordRequired: false,
+    
     render: function () {
         var data = this.model.toJSON();
 

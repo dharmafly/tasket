@@ -11,10 +11,14 @@ var Lightbox = View.extend({
         display: "show",
         animate: "fade-in"
     },
+    
+    // The default step back in history to revert to when the lightbox closes
+    historyCount: 1,
 
     constructor: function Lightbox() {
         View.prototype.constructor.apply(this, arguments);
     },
+    
     show: function (options) {
         this.elem.addClass(this.classes.display);
 
@@ -25,8 +29,9 @@ var Lightbox = View.extend({
 
         this._updateMargin();
 
-        return this.trigger(options, "show", this);
+        return this.trigger("show", options, this);
     },
+    
     hide: function (options) {
         var duration = this.elem.css("transition-duration") ||
             this.elem.css("-moz-transition-duration") ||
@@ -40,12 +45,16 @@ var Lightbox = View.extend({
             setTimeout(_.bind(function () {
                 this.elem.removeClass(this.classes.display);
             }, this), parseFloat(duration) * 1000);
-        } else {
+        }
+        else {
             this.elem.removeClass(this.classes.display);
         }
-
-        return this._trigger(options, "hide", this);
+        
+        this._trigger(options, "hide", this);
+        this.historyCount = 1;
+        return this;
     },
+    
     content: function (content) {
         var element = this.$(".content");
         if (typeof content === "string") {
@@ -55,11 +64,13 @@ var Lightbox = View.extend({
         }
         return this;
     },
+    
     render: function () {
         var template = tim("lightbox");
         this.elem.html(template);
         return this;
     },
+    
     _updateMargin: function () {
         var inner = this.$(".lightbox-inner");
         inner.css({
@@ -68,6 +79,7 @@ var Lightbox = View.extend({
         });
         return this;
     },
+    
     _trigger: function () {
       var options = arguments[0] || {},
           args = Array.prototype.slice.call(arguments, 1);
@@ -75,14 +87,23 @@ var Lightbox = View.extend({
       if (!options.silent) {
         this.trigger.apply(this, args);
       }
-
       return this;
     },
+    
     _onHide: function (event) {
+        // Links from the lightbox contents shouldn't trigger an auto rewind of history when clicked on
         if (event.target.nodeName === "A"){
-            this.hide({silent:true});
+            // A link to a new lightbox, from within a lightbox. Use the HTML attribute `data-lightbox="open` to prevent history rewind
+            if (event.target.getAttribute("data-lightbox") === "open"){
+                app.lightbox.historyCount ++;
+            }
+            // A link to content outside of the lightbox
+            else {
+                this.hide({silent:true});
+            }
         }
     
+        // A normal close lightbox click
         else if (event.target === this.el || jQuery(event.target).hasClass("close")) {
             event.preventDefault();
             this.hide();

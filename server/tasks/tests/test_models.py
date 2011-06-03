@@ -7,7 +7,7 @@ from django.core.files.base import ContentFile
 
 from django.contrib.auth.models import User
 
-from tasks.models import Hub, Task, Profile
+from tasks.models import Hub, Task, Profile, Star
 import tasks
 
 class ModelTest(TestCase):
@@ -72,6 +72,12 @@ class ModelTest(TestCase):
         self.assertTrue('estimates' in json_data)
         self.assertTrue('tasks' in json_data)
         self.assertEqual(json_data['username'], 'TestUser')
+
+    def test_profile_starred(self):
+        self.assertEqual(self.P.starred().count(), 1)
+
+    def test_profile_starred_for_user(self):
+        self.assertTrue(self.P.starred(user=self.U))
     
     def test_hub_queryset_as_json(self):
         obs = Hub.objects.all().as_json()
@@ -87,4 +93,14 @@ class ModelTest(TestCase):
         T = Task(claimedTime=123456789, owner_id=2, hub_id=2, description="asd")
         T.save()
         self.assertEqual(T.as_dict()['claimedTime'], 123456789)
+
+    def test_user_create_signal(self):
+        profiles_before = Profile.objects.all().count()
+        u = User(username='test')
+        u.save()
+        profiles_after = Profile.objects.all().count()
+        self.assertEqual(profiles_before+1, profiles_after)
+
+
+
 
