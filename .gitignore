@@ -4,7 +4,9 @@ screenshot.png
 web/local_settings.py
 .Python
 bin/
-/build/
+client/media/js/build/pkg/html5.js
+client/media/js/build/pkg/tasket.all.js
+client/media/js/build/pkg/tasket.loader.js
 include/
 lib/
 man/
@@ -12,7 +14,7 @@ tasket.db
 web/tasket
 web/pip-log.txt
 client/media/cache
-client/media/images
+client/media/images/*/*
 rebuild_db.sh
-/web/node_modules
+web/node_modules
 Imaging-*

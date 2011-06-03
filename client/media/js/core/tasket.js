@@ -120,7 +120,8 @@ _.extend(Tasket, Backbone.Events, {
             type       = collection.model.prototype.type,
             subset     = new collection.constructor(),
             toLoad     = new collection.constructor(),
-            toLoadCopy = new collection.constructor();
+            toLoadCopy = new collection.constructor(),
+            silent     = {silent:true};
             
         // If a specific model has been requested, rather than a collection
         if (!_.isArray(ids)){
@@ -136,11 +137,11 @@ _.extend(Tasket, Backbone.Events, {
             if (id){
                 if (!model) {
                     model = new collection.model({id: id});
-                    toLoad.add(model);
-                    toLoadCopy.add(model);
-                    collection.add(model);
+                    toLoad.add(model, silent);
+                    toLoadCopy.add(model, silent);
+                    collection.add(model, silent);
                 }
-                subset.add(model);
+                subset.add(model, silent);
             }
         }, this);
 
@@ -155,8 +156,8 @@ _.extend(Tasket, Backbone.Events, {
                 // but not in toLoad. As they do not exist on the server.
                 toLoadCopy.each(function (model) {
                     if (!toLoad.get(model.id)) {
-                        subset.remove(model);
-                        collection.remove(model);
+                        subset.remove(model, silent);
+                        collection.remove(model, silent);
 
                         // Cache the failed model id.
                         Tasket.failed[model.type].push(model.id);
@@ -238,3 +239,6 @@ _.extend(Tasket, Backbone.Events, {
         Tasket.trigger.apply(Tasket, args);
     }
 });
+
+// TODO: widgetised to do app. browser extension, Sqwidget
+// iPad improvements: scrollable lightbox content (e.g. faq), svg lines

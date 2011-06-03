@@ -282,8 +282,13 @@ var ForceDirector = (function(){
             else{
                 pNode = this.nodesByKey[pKey];
             }
+            
+            if (!pNode){
+                throw "Attempting to add satellite to undefined";
+            }
 
             node = this.addTask(params);
+            
             this.addLink({target:node.key, source:pNode.key, value:1});
             return node;
         },

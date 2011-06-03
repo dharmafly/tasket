@@ -56,7 +56,8 @@
 var getScript = (function(window){
     "use strict";
     
-    var now = (new Date()).getTime();
+    var now = (new Date()).getTime(),
+        method, slice, toString;
         
     function getScript(srcs, callback, options){
         /**
@@ -104,7 +105,7 @@ var getScript = (function(window){
             script.async = true;
             
             // Apply the src
-            script.src = path + src + (options.bustCache ? "?v=" + now : "");
+            script.src = path + src + (options.noCache ? "?v=" + now : "");
             
             // Go...
             head.appendChild(script);
@@ -134,13 +135,21 @@ var getScript = (function(window){
             
             // Doesn't call callback until after all scripts have loaded
             for (i = 0; i < length; i++){
-                single(srcs[i], checkIfComplete, options);
+                // Falsey arguments may result from conditional assignment of script srcs, and are simply ignored
+                if (!srcs[i]){
+                    callback.call(options.target, true);
+                }
+                else {
+                    single(srcs[i], checkIfComplete, options);
+                }
             }
         }
 
         // **
         
-        var method = (typeof srcs === "string") ? single : multiple;
+        method = (typeof srcs === "string") ? single : multiple;
+        
+        callback = callback || function(){};
         
         options = options || {};
         if (!options.charset){
@@ -149,8 +158,7 @@ var getScript = (function(window){
         if (!options.target){
             options.target = window;
         }
-        
-        callback = callback || function(){};        
+              
         return method.call(window, srcs, callback, options);
     }
     
@@ -190,7 +198,7 @@ var getScript = (function(window){
     // **
 
     /**
-     * Load an array of srcs is loaded in series, one after the next.
+     * Load an array of srcs in series, one after the next.
      *
      * @param {Array} srcs array of source files to load
      * @param {Function} callback
@@ -212,8 +220,8 @@ var getScript = (function(window){
 
     
     // Array methods, from underscore.js
-    var slice = Array.prototype.slice,
-        toString = Object.prototype.toString; 
+    slice = Array.prototype.slice;
+    toString = Object.prototype.toString; 
         
     function isArray(obj){
         return toString.call(obj) === '[object Array]';

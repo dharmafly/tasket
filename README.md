@@ -94,8 +94,9 @@ need [Node](http://nodejs.org) >= 4.0.1 and [npm](http://npmjs.org) installed.
 
 For hints on installation, see 
 [joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)). 
-In particular, you may need to add NPM to your system paths, and also to Node's paths. 
-Add to your Bash (or similar) config file:
+In particular, you may need to add NPM to your system paths, and also to Node's paths.
+
+Add to your shell (e.g. Bash) config file:
 
     # Make NPM packages available to the terminal - type `npm bin` to get your system's path
     export PATH=$HOME/node_modules/.bin:$PATH
@@ -105,22 +106,27 @@ Add to your Bash (or similar) config file:
 
 Then install Smoosh:
 
-    $ npm install smoosh
+    npm install smoosh
 
-You may need to make the Smoosh program executable (you may need to prefix this command with `sudo `):
+You may need to make the Smoosh program executable:
 
+    # you may need to prefix this command with 'sudo'
     chmod +x ~/node_modules/.bin/smoosh
     
 
 ## Building the JavaScript file
     
-To package the JavaScript, `cd` into the _client/media/js/build/_ directory and either run:
+To package the JavaScript:
 
-    $ smoosh -c ./config.json
+    cd client/media/js/build/
     
-or:
+and either run Smoosh directly:
 
-    $ node make.js
+    smoosh -c ./config.json
+    
+or run from Node.js:
+
+    node make.js
 
 This will run [JSHint](http://jshint.com) against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
@@ -215,4 +221,8 @@ Log in to Django and go to http://yourdomain.com/admin/auth/user/ (or click thro
 A superuser should have been created when the site was installed. If no superuser exists, running the following will create a one: 
 
     python manage.py createsuperuser
+
+### JavaScript debug mode
+
+To enter debug mode, add `?debug` to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/
 

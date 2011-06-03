@@ -1,42 +1,23 @@
 // Run after app properties have been setup.
 app.bind("setup", function() {
-    // Setup the app.
-    jQuery("body")
+
+    // BIND EVENTS
+
+    // Return to the previous route when the lightbox closes
+    app.lightbox.bind("hide", function(){
+        app.back(app.lightbox.historyCount);
+    });
+    
+    // Render views
+    app.bodyElem
       .append(app.dashboard.render().el)
       .append(app.lightbox.render().el);
-
-    // Return to the previous route when the lightbox closes.
-    // TODO: For some reason, binding to the "hide" event fails after a few triggers, so binding to "all" instead
-    app.lightbox.bind("all", function(eventName){
-        if (eventName === "hide"){
-            app.back(app.lightbox.historyCount);
-        }
-    });
-    app.bind("change:currentUser", _.bind(app.dashboard.setUser, app.dashboard));
-    app.dashboard.detail.bind("hide", app.back);
-    
-    // If the user is an admin, then fetch all "done" state tasks in the whole system
-    _.bindAll(app, "updateAllDoneTasks");
-    app.bind("change:currentUser", function(){
-        if (app.currentUserIsAdmin()){
-            if (!app.allDoneTasks){
-                Tasket.bind("task:change:state", app.updateAllDoneTasks);
-            }
-            app.fetchAllDoneTasks();
-        }
-        else {
-            app.allDoneTasks = null;
-            Tasket.unbind("task:change:state", app.updateAllDoneTasks);
-        }
-    });
-    // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard managed tasks accordingly
-    app.bind("change:allDoneTasks", _.bind(app.dashboard.updateManagedTasks, app.dashboard));
 });
 
 // Called when the app has all dependancies loaded.
 app.bind("ready", function onReady () {
     app.notification.hide();
-    app.tankController.addHubs(Tasket.hubs.models);
+    app.tank.addHubs(Tasket.hubs.models);
 
     // Destroy the cached user details when the logout button is clicked.
     // This block can be removed once Ticket #84 has been resolved and the
@@ -101,8 +82,7 @@ app.bind("error", function (data) {
     app.notification.error(app.lang.INIT_ERROR);
 });
 
-if (app.supported()) {
-
+if (app.isSupported()) {
     // Bootstrap the app with all open hubs.
     app.init(jQuery.ajax({
         url: "/hubs/",
@@ -123,7 +103,7 @@ if (app.supported()) {
                 json.tasks[key] = parseInt(value, 10);
             });
             app.statistics = json;
-            app.trigger("change:statistics", app.statistics);
+            app.trigger("change:statistics", app.statistics, app);
         }
     }));
 
@@ -137,7 +117,9 @@ if (app.supported()) {
     // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
     app.init();
 
-} else {
+}
+
+else {
     (function () {
 
         // Display friendly unsupported message to the user.

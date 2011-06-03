@@ -4,13 +4,17 @@ var cache = new Cache(Tasket.namespace),
     app = _.extend({
         // Sets up the app. Called by init()
         setup: function () {
+            // Bind app object's methods to the app object
+            _.bindAll(this, "updateAllDoneTasks", "_onChangeUser");
+            
+            // Cache the body element
             this.bodyElem = jQuery("body");
-
-            Tasket.bind("task:change:state", app.updateTaskStatistics);
-
-            return _.extend(this, {
+        
+            // app properties
+            _.extend(this, {
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
-                taskBuffer: 20,
+                hubBuffer: 10,
+                taskBuffer: 10,
                 tankResizeThrottle: 1000,
                 successNotificationHideDelay: 10000, // milliseconds before success notification is hidden; use `0` to not hide at all
                 hubDescriptionTruncate: 45, // No. of chars to truncate hub description to
@@ -21,6 +25,8 @@ var cache = new Cache(Tasket.namespace),
                 userInTaskImageWidth: 14,
                 userInTaskImageHeight: 14,
                 userPlaceholderImage: "images/placeholder.png",
+                animateHubs: false,
+                animateTasks: false,
                 loaded: false,
                 useCsrfToken: true,
                 useSessionId: true,
@@ -29,40 +35,68 @@ var cache = new Cache(Tasket.namespace),
                 currentUser: null,
                 selectedHub: null,
                 allDoneTasks: null,
-                statistics: {
-                    tasks: {
-                        "new": 0,
-                        "claimed": 0,
-                        "done": 0,
-                        "verified": 0
-                    }
-                },
                 cache: cache,
+                statistics:     {tasks: this.blankTaskStatistics()},
                 toolbar:        new Toolbar({el: jQuery(".header-container")[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
                 dashboard:      new Dashboard()
             });
+            
+            
+            // BIND EVENTS
+            Tasket.bind("task:change:state", this.updateTaskStatistics);
+            
+            // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
+            app.bind("change:currentUser", this._onChangeUser);
+            
+            return this.trigger("setup", this);
+        },
+        
+        _onChangeUser: function(){        
+            if (app.currentUserIsAdmin()){
+                if (!app.allDoneTasks){
+                    Tasket.bind("task:change:state", app.updateAllDoneTasks)
+                          .bind("task:remove", app.updateAllDoneTasks);
+                }
+                app.fetchAllDoneTasks();
+            }
+            else {
+                app.allDoneTasks = null;
+                Tasket.unbind("task:change:state", app.updateAllDoneTasks);
+            }
         },
 
         // Sets up the app. Called by init() on app "ready".
         ready: function () {
             _.extend(this, {
                 // The controllers will make Ajax calls on their init, so are created after app init
-                tankController: new TankController(),
+                tank: new TankController(),
                 pageController: new PageController(),
                 dashController: new DashboardController()
             });
             
-            this.tankController.bind("hub:select", function(hubView){
-                app.selectedHub = hubView.model.id;
-                app.dashboard.hubAnchorSelect();
-            });
-            this.tankController.bind("hub:deselect", function(hubView){
-                app.selectedHub = null;
-            });
+            /////
             
-            return this;
+            // THE TANK
+                        
+            this.tank
+                .bind("hub:select", function(hubView){
+                    app.selectedHubView = hubView;
+                    app.selectedHub = hubView.model.id;
+                    app.bodyElem.addClass("hubSelected");
+                    app.dashboard.hubAnchorSelect();
+                })
+                .bind("hub:deselect", function(hubView){
+                    if (hubView.model.id === app.selectedHub){
+                        app.selectedHubView = app.selectedHub = null;
+                        app.bodyElem.removeClass("hubSelected");
+                    }
+                });
+            
+            /////
+            
+            return this.trigger("ready", this);
         },
 
         // init() accepts jQuery deferred objects as returned by jQuery.ajax() or
@@ -87,14 +121,12 @@ var cache = new Cache(Tasket.namespace),
                 else if (app.loaded !== true) {
                     // Setup app properties that are not dependant on anything.
                     app.setup();
-                    app.trigger("setup", app);
 
                     // Kick off init(). Trigger "success" if all deferreds return
                     // successfully. Else trigger an "error" event.
                     jQuery.when.apply(null, callbacks).then(
                         function () {
                             app.ready();
-                            app.trigger("ready", app);
                             app.loaded = true;
                         },
                         function () {
@@ -119,85 +151,10 @@ var cache = new Cache(Tasket.namespace),
         },
         
         // Convert between bottom-zeroed and top-zeroed coordinate systems
-        invertY: function(y){
-            return window.innerHeight - y;
-        },
-    
-        createForceDirector: function(options){
-            var f = new ForceDirector(),
-                defaultSettings = {
-                    fps: 10,
-                    numCycles: 200,
-                    updateStepMin: 0.3,
-                    updateStepMax: 1,
-                    updateStepDamping: 0.00001,
-                    animate: false,
-                    animator: null,
-                    callback: null,
-                    
-                    // engine settings
-                    inCoulombK: 50,
-                    inWallRepulsion: 600,
-                    inVelDampK: 0.01,
-                    wallsFlag: true
-                },
-                easing, i;
-
-            // Combine options with default settings
-            options = _.defaults(options || {}, defaultSettings);
-
-            function loop(){
-                f.updateCycle(options.updateStepMin + easing);
-                easing = easing - (easing * options.updateStepDamping);
-
-                if (options.animate && options.animator){
-                    options.animator();
-                }
-
-                if (i <= options.numCycles){
-                    if (options.animate){
-                        window.setTimeout(function(){
-                            loop(++i);
-                        }, 1000 / options.fps);
-                    }
-                    else {
-                        loop(++i);
-                    }
-                }
-                else if (options.callback){
-                    options.callback();
-                }
-            }
-            
-            function startLoop(newOptions){
-                if (newOptions){
-                    options = _.extend(options, newOptions);
-                }
-                
-                i = 0;
-                easing = options.updateStepMax - options.updateStepMin;
-                
-                //f.inHookeK = 0.1;
-                f.inVelDampK = options.inVelDampK;
-                f.inCoulombK = options.inCoulombK;
-                f.inWallRepulsion = options.inWallRepulsion;
-                //f.inBBRepulsion = 200;
-                //f.inVelDampK = 0.000025;
-                
-                f.wallsFlag = options.wallsFlag;
-                f.top = options.wallTop;
-                f.bottom = options.wallBottom;
-                f.left = options.wallLeft;
-                f.right = options.wallRight;
-                
-                loop();
-            }
-            
-            return {
-                engine: f,
-                options: options,
-                go: startLoop
-            };
+        invertY: function(y, maxValue){
+            maxValue = maxValue || app.tank.viewportHeight;
+        
+            return maxValue - y;
         },
 
         isCurrentUser: function (id) {
@@ -266,48 +223,60 @@ var cache = new Cache(Tasket.namespace),
             return app.currentUser;
         },
         
+        _triggerAllDoneTasksChange: function(){
+            app.trigger("change:allDoneTasks", app.allDoneTasks);
+            return app;
+        },
+        
         fetchAllDoneTasks: function(){
-            Tasket.getTasksByState("done", function(doneTasks){
-                if (doneTasks){
-                    app.allDoneTasks = doneTasks;
+            Tasket.getTasksByState("done", function(allDoneTasks){
+                if (allDoneTasks){
+                    app.allDoneTasks = allDoneTasks;
                 }
                 // There was a server/connectivity error, and we haven't yet fetched the list of done tasks. Use an empty tasks collection.
                 else if (!app.allDoneTasks){
                     app.allDoneTasks = new TaskList();
                 }
-                app.trigger("change:allDoneTasks", app.allDoneTasks);
+                else {
+                    return;
+                }
+                
+                // Trigger on app whenever the allDoneTasks collection changes
+                allDoneTasks
+                    .bind("change", app._triggerAllDoneTasksChange)
+                    .bind("remove", app._triggerAllDoneTasksChange);
+                
+                // Trigger now
+                app._triggerAllDoneTasksChange();
             });
             
             return app;
         },
         
-        updateAllDoneTasks: function(task){ // based on user.updateTasks(); called when any task changes
+        updateAllDoneTasks: function(task){ // based on user.updateTask(); called when task changes state
             var allDoneTasks = app.allDoneTasks,
-                id, isDone, wasDone, storedTask;
+                id, isDone, wasDone, wasDeleted, storedTask;
             
             if (allDoneTasks){
                 isDone  = task.get("state") === Task.states.DONE;
                 wasDone = task.previous("state") === Task.states.DONE;
-                
+
                 // Remove this task from the allDoneTasks collection
                 if (isDone || wasDone){
                     id = task.id;
+                    wasDeleted = !Tasket.tasks.get(id);
                     storedTask = allDoneTasks.detect(function(doneTask){
                         return id === doneTask.id;
                     });
-                    
+
                     // Add the task, if it is in the DONE state
                     if (!storedTask && isDone){
                         allDoneTasks.add(task, {silent: true});
                     }
                     
                     // Remove the task, if it is no longer in the DONE state
-                    else if (storedTask && !isDone){
+                    else if (storedTask && !isDone || storedTask && wasDeleted){
                         allDoneTasks.remove(storedTask, {silent: true});
-                    }
-                    
-                    if (storedTask || isDone){
-                        app.trigger("change:allDoneTasks", app.allDoneTasks);
                     }
                 }
             }
@@ -392,24 +361,45 @@ var cache = new Cache(Tasket.namespace),
             return app;
         },
 
-        // Returns true if the browser supports Taskets API"s.
-        supported: (function () {
-            var canvas = document.createElement("canvas"),
-                supported;
+        // Returns true if the browser supports Tasket's tech
+        isSupported: (function () {
+            var supportsSVG, supportsLocalStorage;
 
-            supported = !!(canvas.getContext && canvas.getContext("2d") && cache.localStorage);
-
+            // SVG SUPPORT
+            // from http://diveintohtml5.org/everything.html#svg
+            supportsSVG = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
+        
+            // LOCAL STORAGE SUPPORT
+            // This has already been determined by cache.js, so we'll use that
+            supportsLocalStorage = !!cache.localStorage;
+            
             return function () {
-                return supported;
+                return supportsSVG && supportsLocalStorage;
             };
         }()),
+        
+        blankTaskStatistics: function(){
+            return {
+                "new": 0,
+                "claimed": 0,
+                "done": 0,
+                "verified": 0
+            };
+        },
 
         // Update the global statistics object when a task state changes. This
         // is a callback fruntion for the Tasket "task:change:state" event.
         updateTaskStatistics: function (model) {
-            var current  = model.get("state"),
-                previous = model.previous("state");
-
+            var current, previous,
+                wasAlreadyAccountedFor = !model.previous("estimate"); // NOTE: this is a check to see if this task was an empty scaffold, created in Tasket.getModels and the fetched from the server and populated. If it was, then it has already been taken into account by the intial statistics fetch in init.js
+            
+            if (wasAlreadyAccountedFor){
+                return;
+            }
+        
+            current  = model.get("state");
+            previous = model.previous("state");
+            
             app.statistics.tasks[current]  += 1;
             app.statistics.tasks[previous] -= 1;
 

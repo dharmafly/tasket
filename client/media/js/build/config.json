@@ -8,10 +8,12 @@
         "maxerr":  1000,
         "indent":  4,
         "predef": [
-            "jQuery", "Backbone", "_", "tim", "Tasket", "Cache", "app",
+            "window", "jQuery", "Backbone", "_", "tim", "getScript", "Tasket",
+            "Cache", "app",
             "Account", "CollectionModel", "Dashboard", "DashboardController",
             "DashboardDetail", "DashboardDetailHub", "Form", "FormUpload",
             "Hub", "HubForm", "HubList", "HubView", "Lightbox", "Login",
+            "ForgotDetails", "ChangePassword",
             "Model", "Notification", "PageController", "SignUp",
             "TankController", "Task", "TaskEstimates", "TaskForm", "TaskList",
             "TaskStates", "TaskView", "Tasket", "User", "UserList", "View",
@@ -24,19 +26,14 @@
         "html5": [
             "../dependencies/html5.js"
         ],
-        "jquery": [
-            "../dependencies/jquery.js"
-        ],
-        "backbone": [
-            "../dependencies/underscore.js",
-            "../dependencies/backbone.js"
-        ],
-        "mishmash": [
-            "../dependencies/tim.js",
-            "../dependencies/cache.js"
-        ],
-        "tasket": [
+        "tasket.all": [
             "./header.js",
+            "../dependencies/jquery.js",
+            "../dependencies/underscore.js",
+            "../dependencies/backbone.js",
+            "../dependencies/tim.js",
+            "../dependencies/cache.js",
+            
             "../dependencies/vec2.js",
             "../dependencies/forcedirector.js",
             "../dependencies/flatten.js",
@@ -46,6 +43,8 @@
             "../models/hub.js",
             "../models/task.js",
             "../models/user.js",
+            "../viz/forcedirector.js",
+            "../viz/forcedirector.backbone.js",
             "../views/views.js",
             "../views/hub-view.js",
             "../views/task-view.js",
@@ -72,6 +71,12 @@
             "../lang/custom.js",
             "../init.js",
             "./footer.js"
+        ],
+        "tasket.loader": [
+            "./blank-header.js",
+            "../dependencies/getscript.js",
+            "../loader.js",
+            "./blank-footer.js"
         ]
     }
 }

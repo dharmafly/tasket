@@ -8,10 +8,10 @@ var Dashboard = View.extend({
     },
 
     events: {
-        "click .notifications": "_onNotificationClick",
-        "click section.quicklinks.my-projects ul.listing li": "toggleHub",
-        "mouseenter .info": "_toggleHelp",
-        "mouseleave .info": "_toggleHelp"
+        "click ul.notifications a": "_onNotificationClick",
+        "click section.quicklinks.my-projects ul.listing li a.hub-link": "toggleHub",
+        "mouseenter a.info": "_toggleHelp",
+        "mouseleave a.info": "_toggleHelp"
     },
 
     constructor: function Dashboard() {
@@ -26,7 +26,8 @@ var Dashboard = View.extend({
             "updateUserTasks",
             "updateUserHubs",
             "updateManagedTasks",
-            "updateStatistics"
+            "updateStatistics",
+            "setUser"
         );
 
         // Setup the user bindings.
@@ -34,16 +35,24 @@ var Dashboard = View.extend({
 
         // Set up the detail instance.
         this.detail = new DashboardDetail();
-        this.detail.bind("all", _.bind(function (event) {
-            if (event === "show") {
+
+        // BIND EVENTS
+        app.bind("change:currentUser", this.setUser)
+           // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
+           .bind("change:allDoneTasks", this.updateManagedTasks)
+           .bind("change:allDoneTasks", this.updateNotifications)
+           .bind("change:statistics", this.updateStatistics);
+           
+        // On changing the contextual detail section
+        this.detail.bind("all", _.bind(function (eventName) {
+            if (eventName === "show") {
                 this.elem.addClass(this.classes.detailShown);
             }
-            else if (event === "hide") {
+            else if (eventName === "hide") {
                 this.elem.removeClass(this.classes.detailShown);
+                app.back();
             }
         }, this));
-
-        app.bind("change:statistics", this.updateStatistics);
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
@@ -103,7 +112,7 @@ var Dashboard = View.extend({
     toggleHub: function(event){
         var hubId = app.dashboard.getHubIdFromAnchor(event.target);
         if (hubId === app.selectedHub){
-            app.tankController.getHubView(hubId).toggleTasks();
+            app.tank.getHubView(hubId).toggleTasks();
         }
     },
     
@@ -143,6 +152,7 @@ var Dashboard = View.extend({
 
     userStatistics: function(){
         var user = this.model;
+        
         return {
             ownedClaimed:    user.get("tasks.owned.claimed").length,
             adminedDone:     user.isAdmin() ? // if an admin, this includes all done tasks
@@ -187,7 +197,8 @@ var Dashboard = View.extend({
 
         if (visible && visible.length) {
             visible.last().addClass("last");
-        } else {
+        }
+        else {
             notifications.hide();
         }
     },
@@ -278,25 +289,28 @@ var Dashboard = View.extend({
     },
 
     _toggleHelp: function (event) {
-        $(event.target).siblings('.help').toggleClass('active');
+        jQuery(event.target).siblings('.help').toggleClass('active');
     },
 
     // Scroll down to the appropriate listing and highlight the activity links.
     _onNotificationClick: function (event) {
-        var className = event.target.hash.replace("#", "."),
-            element = this.$(className).addClass("highlight");
-
-        // Scroll the dashboard root element to the position of the inner section, and highlight the inner section
-        this.elem
-            .animate(
-                {
-                    "scrollTop": element.position().top
-                },
-                function () {
-                    element.removeClass("highlight");
-                }
-            );
+        var hash = event && event.target && event.target.hash,
+            className = hash && hash.replace && hash.replace("#", "."),
+            element = className && this.$(className).addClass("highlight");
             
-        event.preventDefault();
+        if (element){
+            // Scroll the dashboard root element to the position of the inner section, and highlight the inner section
+            this.elem
+                .animate(
+                    {
+                        "scrollTop": element.position().top
+                    },
+                    function () {
+                        element.removeClass("highlight");
+                    }
+                );
+                
+            event.preventDefault();
+        }
     }
 });

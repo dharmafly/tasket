@@ -1,5 +1,5 @@
 
-this.Tasket = Tasket;
-this.Tasket._app = app;
+Tasket.app = app;
+window.Tasket = Tasket;
 
-}(this));
+}(this, this.document));
