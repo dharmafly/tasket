@@ -19,7 +19,7 @@ from utils.decorators import json_login_required as login_required
 from sorl.thumbnail import get_thumbnail
 from utils.helpers import AllowJSONPCallback, PutView
 
-from models import Hub, Task, Profile
+from models import Hub, Task, Profile, Star
 import forms
 
 
@@ -39,12 +39,12 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def get_hub_tasks(self, request, hub_id, tasks=None):
         hub = get_object_or_404(Hub, pk=hub_id)
-        self.res.write(hub.task_set.all().as_json())
+        self.res.write(hub.task_set.all().as_json(request_user=request.user))
         return self.res
         
-    def get_single(self, reqeust, hub_id=None, tasks=None):
+    def get_single(self, request, hub_id=None, tasks=None):
         hub = get_object_or_404(Hub, pk=hub_id)        
-        self.res.write(hub.as_json())
+        self.res.write(hub.as_json(request_user=request.user))
         return self.res
     
     
@@ -64,7 +64,7 @@ class HubView(PutView):
             hubs = hubs.filter(pk__in=ids)
         
         res = self.res
-        res.write(hubs.as_json())
+        res.write(hubs.as_json(request_user=request.user))
         return res
         
     @method_decorator(login_required)
@@ -170,7 +170,7 @@ class TasksView(PutView):
     
     def get_single(self, request, task_id):
         task = get_object_or_404(Task, pk=task_id)
-        self.res.write(task.as_json())
+        self.res.write(task.as_json(request_user=request.user))
         return self.res
         
     @method_decorator(AllowJSONPCallback)
@@ -188,7 +188,7 @@ class TasksView(PutView):
         if 'state' in request.GET:
             tasks = tasks.filter(state=request.GET['state'])
         
-        self.res.write(tasks.as_json())
+        self.res.write(tasks.as_json(request_user=request.user))
         return self.res
         
     @method_decorator(login_required)
@@ -204,7 +204,7 @@ class TasksView(PutView):
             T = form.save(commit=False)
             T.owner = request.user.profile
             T.save()
-            self.res.write(T.as_json())
+            self.res.write(T.as_json(request_user=request.user))
         else:
             self.res.write(json.dumps(form.errors))
             self.res.status_code = form.status_code
@@ -235,10 +235,11 @@ class TasksView(PutView):
         task = get_object_or_404(Task, pk=task_id)
         request.PUT['hub'] = task.hub.pk
         request.PUT['state'] = request.PUT.get('state', Task.STATE_NEW)
+        
         form = forms.TaskForm(request.PUT, instance=task, request=request)
         if form.is_valid():
             T = form.save()
-            self.res.write(T.as_json())
+            self.res.write(T.as_json(request_user=request.user))
         else:
             self.res.write(json.dumps(form.errors))
             self.res.status_code = form.status_code
@@ -271,7 +272,10 @@ class ProfileView(PutView):
         return self.res
         
     @method_decorator(AllowJSONPCallback)
-    def get(self, request, user_id=None):
+    def get(self, request, user_id=None, starred=None):
+        if starred:
+            return self.starred(request, user_id)
+        
         if user_id:
             return self.get_single(request, user_id)
         
@@ -383,7 +387,11 @@ class ProfileView(PutView):
                 )
             )
         return self.res
-
+    
+    def starred(self, request, user_id):
+        qs = Star.objects.filter(user=user_id)
+        return HttpResponse(qs.as_json())
+    
     def image_upload(self, request, user_id):
         res = HttpResponse()
         if int(user_id) != request.user.pk:
@@ -413,6 +421,14 @@ class ProfileView(PutView):
             res.status_code = 400
         return res
 
+
+class StarredView(PutView):
+    http_method_names = ['get', 'post',]
+    
+    def get(self, request, star_type, object_id):
+        obj = get_object_or_404(Star, star_type=star_type, object_id=object_id)
+        print obj
+        return HttpResponse(obj.as_json())
 
 def thumbs(request, size, path):
     try:

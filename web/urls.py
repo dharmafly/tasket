@@ -19,7 +19,7 @@ urlpatterns = patterns('',
     (r'^', include('sorl.thumbnail.urls')),
 
     # sentry
-    (r'^sentry/', include('sentry.urls')),
+    (r'^sentry/', include('sentry.web.urls')),
 
     # Uncomment the admin/doc line below to enable admin documentation:
     # (r'^admin/doc/', include('django.contrib.admindocs.urls')),

@@ -11,7 +11,7 @@ try:
     from local_settings import *
 except ImportError:
     pass
-    
+
 TEMPLATE_DEBUG = True
 
 if os.environ.get('DJANGO_DEBUG') == "true":

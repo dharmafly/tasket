@@ -433,9 +433,3 @@ class ViewTests(TestCase):
         response = self.client.get('/thumb/30x30/images/users/foo.jpg?crop')
         self.assertEqual(response.status_code, 404)
 
-
-
-
-
-
-
