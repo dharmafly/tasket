@@ -117,7 +117,24 @@ class ViewTests(TestCase):
                 content_type='application/json',
             )
         self.assertEqual(json.loads(response.content)['updated'], True)
-    
+
+    def test_hubs_put_task_order(self):
+        self.client.login(username='TestUser', password='12345')
+
+        response = self.client.put(
+            '/hubs/2', 
+            data=json.dumps({
+                'title' : 'New Hub',
+                'tasks' : {
+                    'order': ["1","2","3","7", "sym"]
+                }
+            }),
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+        self.assertEqual(json_list['hub']['tasks']['order'], ['2', '3', '7'])
+
+
     def test_hub_delete(self):
         self.client.login(username='TestUser', password='12345')
         hubs = Hub.objects.all()

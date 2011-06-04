@@ -101,6 +101,8 @@ class ModelTest(TestCase):
         profiles_after = Profile.objects.all().count()
         self.assertEqual(profiles_before+1, profiles_after)
 
-
-
-
+    def test_order_field(self):
+        self.H.task_order = ["1","2","3","8"]
+        self.H.save()
+        self.assertEqual(self.H.task_order, ["8"])
+        

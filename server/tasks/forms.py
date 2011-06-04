@@ -174,6 +174,14 @@ class HubForm(StarredForm):
         model = Hub
         exclude = ('owner', 'createdTime',)
 
+    def clean_task_order(self):
+        try:
+            task_order_raw = self.data['tasks']['order']
+        except KeyError:
+            task_order_raw = []
+        return task_order_raw
+
+
 class ProfileForm(StarredForm):
     
     password = forms.CharField(label="Password", widget=forms.PasswordInput, required=False)

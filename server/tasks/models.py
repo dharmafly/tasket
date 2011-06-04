@@ -15,7 +15,7 @@ from django.dispatch import dispatcher
 
 from django.conf import settings
 
-from utils.fields import UnixTimestampField
+from utils.fields import UnixTimestampField, TaskListField
 import managers
 
 from sorl.thumbnail import ImageField
@@ -154,6 +154,11 @@ class Task(StarredModel):
         """
         return json.dumps(self.as_dict(**kwargs))
 
+def task_post_save(sender, instance, signal, *args, **kwargs):
+    instance.hub.save()
+models.signals.post_save.connect(task_post_save, sender=Task)
+
+
 
 class Hub(StarredModel):
     """
@@ -175,6 +180,7 @@ class Hub(StarredModel):
     image = ImageField(upload_to='images/hubs/', null=True, blank=True)
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
     createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
+    task_order = TaskListField(blank=True, null=True)
     
     # objects = managers.HubManager()
     objects = managers.HubManager()
@@ -186,6 +192,19 @@ class Hub(StarredModel):
     class Meta:
         ordering = ('-id',)
 
+    def update_task_list(self):
+        task_order = []
+        task_order_raw = self.task_order or []
+        hub_task_ids = [str(o.pk) for o in self.task_set.all()]
+        for t in task_order_raw:
+            if t in hub_task_ids:
+                task_order.append(t)
+        self.task_order = task_order
+
+    def save(self, *args, **kwargs):
+        self.update_task_list()
+        super(Hub, self).save(*args, **kwargs)
+    
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
     
@@ -231,6 +250,9 @@ class Hub(StarredModel):
         
         if self.image:
             obj_dict["image"] = self.image.name
+        
+        if self.task_order:
+            obj_dict["tasks"]["order"] = self.task_order
         
         if request_user and request_user.is_authenticated():
             star = self.starred(user=request_user)
@@ -360,6 +382,8 @@ models.signals.post_save.connect(user_post_save, sender=User)
 class Star(models.Model):
 
     # Types should match the verbose_name of the model they relate to.
+    # TODO: some fancy auto discovery system for knowing what models can be 
+    # starred.
     STAR_TYPES = (
         ('task', 'Task'),
         ('hub', 'Hub'),
