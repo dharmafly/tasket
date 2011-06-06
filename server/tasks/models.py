@@ -408,7 +408,6 @@ class Star(models.Model):
             'type' : self.star_type,
             'id' : self.object_id,
             'timestamp' : self.created_timestamp(),
-            'starred' : True, # By existing, this is True
         }
         return obj_dict
     
