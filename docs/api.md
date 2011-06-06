@@ -181,7 +181,7 @@ type, for example:
 When an object has been starred by a user, it will have a `starred` property, 
 containing an object, for example:
 
-> 'starred': '{"timestamp": 1307117640, "starred": true, "type": "profile", "id": 2}'
+> 'starred': '{"timestamp": 1307117640, "type": "profile", "id": 2}'
 
 If an object has no stars, the `starred` property wont exist.
 
