@@ -56,10 +56,13 @@ class TaskForm(StarredForm):
         """
         cleaned_data = dict(self.cleaned_data)
         
+        updating_state = False
         updating =  bool(self.instance.pk) #Is this a new or updated model?
         new_state = self.cleaned_data.get('state', Task.STATE_NEW)
         old_state = self.instance.state
-        claimedBy = self.request.user
+        claimedBy = self.request.user.profile
+        
+        # If user is an admin, always let them do anything.
         if self.request.user.profile.admin:
             return cleaned_data
 
@@ -104,13 +107,27 @@ class TaskForm(StarredForm):
             if new_state == Task.STATE_DONE:
                 # Reset all times
                 self.instance.verifiedTime = None
+        
+        def check_required_fields(required):
+            """
+            Returns a state_error if required is not a subset of cleaned_data
+            """
+            if updating_state:
+                required = set(required)
+                provided = set(k for k,v in cleaned_data.items() if v is not None)
+                provided.update(k for k,v in self.instance.as_dict().items() if bool(v))
+                if not required.issubset(provided):
+                    for field in required.difference(provided):
+                        self._errors[field] = self.error_class(['%s is required' % field])
 
         if new_state != old_state or not updating:
             reset(new_state)
+            updating_state = True
         
         # This is a 'new' task being updated somehow
         if new_state == Task.STATE_CLAIMED:
-            
+            cleaned_data['claimedBy'] = claimedBy
+            check_required_fields(("claimedBy", "owner"))
             if new_state != old_state:
                 # Limit number of user's claimed Tasks
                 claimed_limit = getattr(settings, 'CLAIMED_LIMIT', 5)
@@ -120,18 +137,17 @@ class TaskForm(StarredForm):
                             self._errors['error'] = self.error_class(['You can only claim %s tasks at once' % claimed_limit])
                     except Hub.DoesNotExist:
                         pass
-        
+    
             if old_state == Task.STATE_NEW:
                 cleaned_data['claimedBy'] = self.request.user.profile
                 cleaned_data['claimedTime'] = datetime.datetime.now()
             if old_state == Task.STATE_CLAIMED:
                 if self.instance.claimedBy != self.request.user.profile:
                     state_error("This Task has already been claimed")
-            
+        
 
         if new_state == Task.STATE_DONE:
-            if old_state == Task.STATE_NEW:
-                state_error("Only claimed tasks can be 'done'")
+            check_required_fields(("claimedBy", "owner"))
             if old_state == Task.STATE_CLAIMED:
                 if self.request.user.profile != self.instance.claimedBy:
                     state_error("You cannot mark this task as done.")
@@ -139,11 +155,12 @@ class TaskForm(StarredForm):
                     cleaned_data['doneTime'] = datetime.datetime.now()
 
         if new_state == Task.STATE_VERIFIED:
-            if old_state in [Task.STATE_NEW, Task.STATE_CLAIMED]:
-                state_error("New and claimed tasks can't be verified")
-            else:
-                cleaned_data['verifiedBy'] = self.request.user.profile
-                cleaned_data['verifiedTime'] = datetime.datetime.now()
+            check_required_fields(("verifiedBy", "claimedBy", "owner"))
+            if self.request.user.profile != self.instance.owner:
+                state_error("You cannot mark this task as verified.")
+        
+            cleaned_data['verifiedBy'] = self.request.user.profile
+            cleaned_data['verifiedTime'] = datetime.datetime.now()
 
         return cleaned_data
     

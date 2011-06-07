@@ -25,11 +25,14 @@ class WorkflowTests(TestCase):
         """
         An owner of a task verifies it's really done.
         """
-        
-        self.client.login(username=self.U2.user.username, password='12345')
+
+        self.client.login(username=self.U1.user.username, password='12345')
         response = self.client.put(
                 '/tasks/3',
-                data=json.dumps({"state" : Task.STATE_VERIFIED}),
+                data=json.dumps({
+                    "state" : Task.STATE_VERIFIED,
+                    "claimedBy" : 2,
+                    }),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
@@ -42,10 +45,13 @@ class WorkflowTests(TestCase):
         This should fail
         """
         
-        self.client.login(username=self.U1.user.username, password='12345')
+        self.client.login(username=self.U2.user.username, password='12345')
         response = self.client.put(
                 '/tasks/5',
-                data=json.dumps({"state" : Task.STATE_VERIFIED}),
+                data=json.dumps({
+                        "state" : Task.STATE_VERIFIED,
+                        "verifiedBy" : 3
+                    }),
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
@@ -103,6 +109,7 @@ class WorkflowTests(TestCase):
                 content_type='application/json',
             )
         json_data = json.loads(response.content)
+        self.assertTrue('claimedBy' in json_data)
         self.assertEqual(response.status_code, 500)
         
     def test_authorization_header(self):
