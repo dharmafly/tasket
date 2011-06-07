@@ -5,9 +5,6 @@ from django.conf import settings
 import views
 
 urlpatterns = patterns('',
-    # Home
-    url(r'^$',views.home, name="home"),
-
     # Hub Methods
     url(r'^hubs/(?P<hub_id>\d+)$',views.HubView.as_view()),
     url(r'^hubs/(?P<hub_id>\d+)/(?P<tasks>tasks)/$',views.HubView.as_view(), name="hub_tasks"),
@@ -33,5 +30,9 @@ urlpatterns = patterns('',
 
     # Statistics
     url(r'^statistics/$',views.statistics),
+    
+    # Home
+    url(r'^(?P<file_name>.*\.html)',views.home, name="home"),
+    url(r'^$',views.home, name="home"),
     
    )

@@ -23,8 +23,15 @@ from models import Hub, Task, Profile, Star
 import forms
 
 
-def home(request):
+def home(request, file_name=None):
     get_token(request)
+    static_index_paths = getattr(settings, 'INDEX_PATHS', [])
+    if file_name and file_name in static_index_paths:
+        try:
+            f = open("%s/client/%s" % (settings.ROOT_PATH, file_name), "r")
+            return HttpResponse(f.read())
+        except:
+            raise Http404
     f = open("%s/client/index.html" % settings.ROOT_PATH, "r")
     return HttpResponse(f.read())
 
