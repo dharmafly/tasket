@@ -2,6 +2,7 @@ screenshot.png
 .DS_Store
 *.pyc
 web/local_settings.py
+web/build/
 .Python
 bin/
 client/media/js/build/pkg/html5.js
