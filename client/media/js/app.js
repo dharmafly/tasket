@@ -16,7 +16,7 @@ var cache = new Cache(Tasket.namespace),
                 hubBuffer: 10,
                 taskBuffer: 10,
                 tankResizeThrottle: 1000,
-                successNotificationHideDelay: 10000, // milliseconds before success notification is hidden; use `0` to not hide at all
+                successNotificationHideDelay: 6180, // milliseconds before success notification is hidden; use `0` to not hide at all
                 hubDescriptionTruncate: 45, // No. of chars to truncate hub description to
                 taskDescriptionTruncate: 140, // No. of chars to truncate task description to
                 hubImageWidth: 30,
@@ -53,7 +53,7 @@ var cache = new Cache(Tasket.namespace),
             return this.trigger("setup", this);
         },
         
-        _onChangeUser: function(){        
+        _onChangeUser: function(){
             if (app.currentUserIsAdmin()){
                 if (!app.allDoneTasks){
                     Tasket.bind("task:change:state", app.updateAllDoneTasks)

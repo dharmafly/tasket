@@ -779,6 +779,7 @@ var PageController = Backbone.Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
+            app.notification.success("You are now logged in.");
         });
     },
     
@@ -800,7 +801,7 @@ var PageController = Backbone.Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification.success("Your account has been created!");
+            app.notification.success("Your account has been created.");
         });
     },
 
