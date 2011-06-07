@@ -68,7 +68,7 @@ var Lightbox = View.extend({
         } else {
             element.empty().append(content);
         }
-        return this;
+        return this._updateMargin();
     },
     
     render: function () {
