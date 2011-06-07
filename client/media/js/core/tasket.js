@@ -25,7 +25,8 @@ _.extend(Tasket, Backbone.Events, {
     settings: {
         TASK_ESTIMATE_MAX: 14400, // seconds that a task can take
         TASK_LIMIT: 10, // max number of un-verified tasks on a hub
-        CLAIMED_LIMIT: 5 // max number of tasks that a user can claim at one time
+        CLAIMED_LIMIT: 5, // max number of tasks that a user can claim at one time
+        AUTOVERIFY_TASKS_DONE_BY_OWNER: true // If this task was "done" by its owner, then automatically verify it - see /models/task.js
     },
 
     lang: {},
