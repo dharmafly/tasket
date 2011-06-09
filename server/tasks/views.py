@@ -32,7 +32,8 @@ def home(request, file_name=None):
             return HttpResponse(f.read())
         except:
             raise Http404
-    f = open("%s/client/index.html" % settings.ROOT_PATH, "r")
+    index_file = getattr(settings, 'DEFAULT_INDEX_FILE', 'index.html')
+    f = open("%s/client/%s" % (settings.ROOT_PATH, index_file), "r")
     return HttpResponse(f.read())
 
 

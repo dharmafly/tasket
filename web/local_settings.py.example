@@ -55,3 +55,4 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 
 
 # INDEX_PATHS = ['filename.html',]
+# DEFAULT_INDEX_FILE = 'index.html'
