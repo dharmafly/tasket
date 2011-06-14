@@ -1,0 +1,43 @@
+/*
+----------------------------------------------
+ Toodledoo IE8 Styles
+ Developed by Ollie Bettany / Dharmafly
+ Created: 13/06/2011
+----------------------------------------------
+*/
+
+  header {
+    margin-bottom: -29px;
+  }
+
+  #main {
+    background: url(../images/ie-border-left.png) repeat-y left top;
+    padding-left: 1px;
+  }
+  
+  aside,
+  #content,
+  footer {
+    background: #F8F5F3 url(../images/ie-border-right.png) repeat-y right top;
+  }
+
+  #content .edit-item .move a {
+    background-position: -75px -25px;
+  }
+  #content .edit-item .move a:hover {
+    background-position: -75px -5px;
+  }
+
+  #content .edit-item .edit a {
+    background-position: -55px -22px;
+  }
+  #content .edit-item .edit a:hover {
+    background-position: -55px -2px;
+  }
+
+  #content .edit-item .delete a {
+    background-position: -41px -22px;
+  }
+  #content .edit-item .delete a:hover {
+    background-position: -41px -2px;
+  }

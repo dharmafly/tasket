@@ -19,3 +19,5 @@ client/media/images/*/*
 rebuild_db.sh
 web/node_modules
 Imaging-*
+client/media/notepad/template.html
+client/media/images/logo.png

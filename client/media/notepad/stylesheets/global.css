@@ -1,0 +1,555 @@
+/*
+----------------------------------------------
+ Toodledoo Global Styles
+ Developed by Ollie Bettany / Dharmafly
+ Created: 13/06/2011
+----------------------------------------------
+*/
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0b1 | 201101 
+   NOTE: WORK IN PROGRESS
+   USE WITH CAUTION AND TEST WITH ABANDON */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	outline: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+
+/* remember to define visible focus styles! 
+:focus {
+	outline: ?????;
+} */
+
+/* remember to highlight inserts somehow! */
+ins {
+	text-decoration: none;
+}
+del {
+	text-decoration: line-through;
+}
+
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+/* PAGETOP */
+
+#pagetop {
+	overflow: visible; 
+	height: 0px;
+	margin: 0;
+	padding: 0;
+}
+
+#pagetop p {	
+	overflow: visible;
+	height: 0px;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+#pagetop a { 
+	position: absolute;
+	top: 0;
+	left: -9999em;
+	font-size: 1.8em;
+}
+
+#pagetop a:focus, 
+#pagetop a:active,
+#pagetop a:hover {
+	left: 50%;
+	color: #fff;
+	background: #c11d1b;
+	padding: 0.3em;
+	text-decoration: none;
+	display: block;
+	border: 1px solid #fff;
+	z-index: 100;
+}
+
+/* TOP LEVEL STYLES */
+
+  body {
+    font-family: Tahoma, Helvetica, serif;
+    font-size: 63.5%;
+    /*
+    margin: 15px 50px 0;
+    */
+  }
+  
+  strong {
+    font-weight: bolder;
+  }
+  
+  
+/* LAYOUT */
+
+  #wrapper {
+    position: relative;
+    min-width: 625px;
+    max-width: 1200px;
+    margin: 15px 50px 0;
+  }
+  
+  #main {
+    -moz-box-shadow: 0px 1px 10px #888;
+    -webkit-box-shadow: 0px 1px 10px #888;
+    box-shadow: 0px 1px 10px #888;
+  }
+
+/* HEADER */ 
+  
+  header {
+    background: url(../images/bg-header.png) repeat-x left bottom;
+    min-height: 110px;
+    margin: 0 1px -26px 1px;
+    position: relative;
+    z-index: 3;
+  }
+
+  
+    header h1,
+    header h1 a {
+      width: 210px;
+      height: 52px;
+    }
+  
+      header h1 a {
+        display: block;
+        text-indent: -1000em;
+        background: url(../images/logo.png) no-repeat;
+      }
+    
+    
+/* MAINNAV */ 
+
+  #mainnav {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: #333;
+    z-index: 4;
+  }
+  
+  #mainnav,
+  footer nav {
+    font-family: Arial, Helvetica, serif;
+  }
+  
+    #mainnav li,
+    footer nav li {
+      float: left;
+      background: url(../images/sprite1.png) no-repeat left -898px;
+      padding-left: 8px;
+      margin-left: 7px;
+      line-height: 1.2em;
+      font-size: 1.2em;
+    }
+    
+    #mainnav li:first-child,
+    footer nav li:first-child,
+    #mainnav .message {
+      background: none;
+      margin: 0;
+      padding: 0;
+    }
+    
+    #mainnav .message {
+      margin-left: 20px;
+    }
+    
+    
+    #mainnav a {
+      color: #6ab6da;
+      text-decoration: none;
+      font-weight: bolder;
+      text-transform: lowercase;
+    }
+    #mainnav a:hover {
+      text-decoration: underline;
+    }
+  
+/* ASIDE */
+
+  aside,
+  #content,
+  footer {
+    background: #f8f5f3 url(../images/bg-content.png);
+  }
+  
+  aside {
+    border-bottom: 1px solid #9dcfe7;
+    padding-top: 60px;
+    position: relative;
+    z-index: 2; 
+    float: right;
+    width: 100%;
+  }
+  
+    aside h1 {
+      background-color: #6ab6da;
+      -webkit-border-top-left-radius: 5px;
+      -webkit-border-top-right-radius: 5px;
+      -moz-border-radius-topleft: 5px;
+      -moz-border-radius-topright: 5px;
+      border-top-left-radius: 5px;
+      border-top-right-radius: 5px;
+      font-size: 1.3em;
+      line-height: 1.1em;
+      font-style: italic;
+      border-bottom: 1px solid #60a6c6;
+      text-align: right;
+      margin: 0 13px;
+    }
+    
+    aside h1,
+    aside h1 a {
+      color: #fff;
+    }
+    
+      aside h1 a {
+        padding: 4px 25px 4px 10px;
+        display: block;
+        text-decoration: none;
+        background: url(../images/sprite1.png) no-repeat right -294px;
+      }
+    
+      aside h1 a:hover {
+        text-decoration: underline;
+      }
+    
+    aside h1 {
+      float: right;
+    }
+    
+    aside nav {
+      position: absolute;
+      display: none;
+      right: 0;
+      top: 85px;
+      background-color: #6ab6da;
+      max-width: 25em;
+    }
+    
+      aside nav ul {
+        padding: 28px 28px 18px 28px;
+        font-weight: bolder;
+        border-bottom: 1px solid #60a6c6;
+      }
+      
+      aside nav li {
+        margin-bottom: 10px;
+        font-size: 1.3em;
+        line-height: 1.3em;
+      }
+      
+      aside nav .star a {
+        background: url(../images/sprite1.png) no-repeat right -1101px;
+        padding: 1px 25px 1px 0;
+      }
+      
+      aside nav .new-list {
+        font-weight: normal;
+        font-style: italic;
+      }
+      
+         aside nav .new-list a {
+           background: url(../images/sprite1.png) no-repeat 0 -799px;
+           line-height: 13px;
+           padding-left: 17px;
+         }
+      
+      aside nav a {
+        color: #fff;
+        text-decoration: none;
+      }
+      aside nav a:hover {
+        text-decoration: underline;
+      }
+      
+      aside nav .showing {
+        border-top: 1px solid #9dcfe7;
+        padding: 6px 6px 6px 12px;
+      }
+      
+      aside nav .showing a {
+        padding-left: 30px;
+        display: block;
+        background: url(../images/sprite1.png) no-repeat 0 -499px;
+        font-size: 1.2em;
+        line-height: 17px;
+      }
+      
+      body.incomplete aside nav .showing a {
+        background-position: 5px -599px;
+      }
+      
+      body.complete aside nav .showing a {
+        background-position: 5px -699px;
+      }
+    
+      .open h1 a {
+        background-position: right -391px;
+      } 
+      
+      .open nav {
+        display: block;
+      }
+  
+  
+/* CONTENT */
+
+  #content {
+    background-color: #f8f5f3;
+    clear: both;
+    position: relative;
+    z-index: 1;
+  }
+  
+    #content h1 {
+      font-size: 2em;
+      text-decoration: underline;
+      padding: 40px 0 10px 120px;
+      border-top: 4px solid #6ab6da;
+    }
+  
+    #content .item-list > li {
+      border-bottom: 1px solid #ccc;
+      position: relative;
+      padding: 10px 0 10px 120px;
+      line-height: 1.8em;
+    }
+    
+    #content .item-list > li:hover {
+      background-color: #fff;
+      border-bottom: 2px solid #000;
+      margin-bottom: -1px;
+    }
+    
+    #content .item-list p {
+      font-size: 1.5em;
+      background: url(../images/sprite1.png) no-repeat 0 -94px;
+      padding-left: 15px;
+      margin-right: 150px;
+    }
+    
+    #content .item-list .completed p {
+      text-decoration: line-through;
+      color: #9b9b9b;
+      background-position: 0 -194px;
+    }
+    
+    #content .edit-item li {
+       position: absolute;
+    }
+    
+      #content .edit-item li a {
+        display: block;
+        text-indent: -1000em;
+        background: url(../images/sprite2.png) no-repeat;
+        opacity: 0.5;
+      }
+      
+      #content .edit-item li a:hover,
+      #content .edit-item .star a,
+      #content .edit-item .tick a {
+        opacity: 1;
+      }
+      
+/* star */
+
+    #content .edit-item .star {
+      top: 8px;
+      left: 30px;
+    }
+    
+      #content .edit-item .star a {
+        width: 21px;
+        height: 21px;
+        background-position: 0 0;
+      }
+      #content .star .edit-item .star a {
+        background-position: 0 -21px;
+      }
+  
+/* tick */    
+      
+    #content .edit-item .tick {
+      top: 8px;
+      left: 65px;
+    }
+
+      #content .edit-item .tick a {
+        width: 20px;
+        height: 21px;
+        background-position: -21px 0;
+        opacity: 1;
+      }
+      #content .completed .edit-item .tick a {
+        background-position: -21px -21px;
+      }
+      
+
+/* move */
+
+    #content .edit-item .move {
+      top: 12px;
+      right: 100px;
+    }
+
+      #content .edit-item .move a {
+        width: 15px;
+        height: 16px;
+        background-position: -75px -5px;
+      }
+
+
+/* edit */
+
+        #content .edit-item .edit {
+          top: 12px;
+          right: 67px;
+        }
+
+          #content .edit-item .edit a {
+            width: 20px;
+            height: 19px;
+            background-position: -55px -2px;
+          }
+            
+/* delete */
+
+        #content .edit-item .delete {
+          top: 10px;
+          right: 40px;
+        }
+
+          #content .edit-item .delete a {
+            width: 14px;
+            height: 19px;
+            background-position: -41px -2px;
+          }
+
+/* add new item */
+
+      #content .new-item {
+        margin: 10px 0 0 114px;
+        line-height: 19px;
+        padding: 0 0 10px 29px;
+        background: url(../images/sprite1.png) no-repeat left top;
+        display: block;
+        font-size: 1.3em;
+        font-style: italic;
+      }
+      
+      #content .new-item:hover {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+      
+  
+/* FOOTER */
+
+  footer nav {
+    background: url(../images/bg-footer.png) left top;
+    padding: 90px 10px 10px 30px;
+    overflow: hidden;
+  }
+  
+    footer nav ul {
+      float: left;
+    }
+    
+    footer nav p {
+      float: right;
+    }
+  
+    footer nav li {
+      float: left;
+      background-position: left -998px;
+      text-transform: lowercase;
+    }
+  
+    footer nav a {
+      color: #9B9B9B;
+    }
+    
+      footer nav li a {
+        text-decoration: none;
+      }
+      footer nav li a:hover {
+        text-decoration: underline;
+      }
+  
+/* Dharmafly */
+
+  footer a.df {
+  	text-decoration:none;
+  	border:none;
+  	padding-top:0.16em;
+  	display:block;
+  	text-align: right;
+  }
+  
+  footer a.df span.df-name {
+  	font-family:Calibri,Helvetica,Arial,sans-serif;
+  	text-transform:uppercase;
+  	font-weight:bold;
+  }
+  
+  footer a.df:hover {
+  	color:#70873f;
+  }
+  
+  footer a.df:hover span.df-name {
+  	border-bottom-width:1px;
+  	border-bottom-style:solid;
+  }
+  
+  
+  
+  
+        
+
+        
+
+        
