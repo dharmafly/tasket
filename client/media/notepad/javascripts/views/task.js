@@ -1,30 +1,25 @@
-(function ( window, $, undefined) {
-   'use strict';
-    var Task = Backbone.View.extend({
-            tagName: 'li',
-            className: 'start completed',
+ var TaskView = View.extend({
+         tagName: 'li',
+         events: {
+         },
 
-           /*
-            * Display object name in browser console.
-            *
-            *
-            */
-            constructor: function () {
-                Backbone.View.prototype.constructor.apply(this, arguments);
-            },
+        /*
+         * Display object name in browser console.
+         *
+         *
+         */
+         constructor: function () {
+             Backbone.View.prototype.constructor.apply(this, arguments);
+         },
 
-           /*
-            * Renders the view.
-            *
-            * Returns the view's element.
-            *
-            */
-            render: function () {
-                return $(this.el).html(App.Utils.getTemplate('task'), this.model.toJSON())[0];
-            }
+         initialize: function () {
+             this.id = this.model.id;
+         },
 
+         render: function () {
+             return $(this.el).html(tim('task', {
+                 itemText: this.model.get('description')
+             }))[0];
+         }
 
-    });
-    this.Task = Task;
-
-}).call(App.Views, window, jQuery, undefined);
+ });
