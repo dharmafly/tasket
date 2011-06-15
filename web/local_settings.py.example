@@ -55,5 +55,5 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 # CROSS_DOMAIN = False
 
 
-# INDEX_PATHS = ['filename.html',]
+INDEX_PATHS = ['notepad.html',]
 # DEFAULT_INDEX_FILE = 'index.html'
