@@ -10,12 +10,9 @@
 
         <link rel="shortcut icon" href="/favicon.ico">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        
         <!-- HTML5 ELEMENT RECOGNITION FOR OLD IEs -->
-        <!--[if lte IE 8]><script src="/media/notepad/javascripts/html5.js"></script><![endif]-->
-        
+        <!--[if lte IE 8]><script src="/media/notepad/javascripts/dependencies/html5.js"></script><![endif]-->
         <link rel="stylesheet" href="/media/notepad/stylesheets/global.css?v0.1">
-        
         <!-- IE CSS FIXES -->
         <!--[if lte IE 8]><link href="/media/notepad/stylesheets/ie8.css" rel=stylesheet><![endif]-->
         <!--[if lte IE 7]><link href="/media/notepad/stylesheets/ie7.css" rel=stylesheet><![endif]-->
@@ -28,12 +25,10 @@
       <p><a id="skiplink" class="hiddenlink" href="#content">Skip to content</a></p>
     </div>
   	<div id="wrapper">
-  	  
   	  <header>
   	    <h1><a href="/">Tasket Notepad</a></h1>
   	  </header>
   	  <!-- end header //-->
-  	  
   	  <nav id="mainnav">
   	    <ul>
   	      <li class="first"><a href="/" title="Find out more">About</a></li>
@@ -66,60 +61,6 @@
     	  <!-- end aside //-->
   	  
     	  <section id="content">
-    	    <h1>Work list 2</h1>
-    	    <ul class="item-list">
-    	      <li>
-    	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    	        <ul class="edit-item">
-    	          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-    	          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-    	          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-    	          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-    	          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
-    	        </ul>
-    	      </li>
-    	      <li class="star completed">
-    	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    	        <ul class="edit-item">
-    	          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-    	          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-    	          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-    	          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-    	          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
-    	        </ul>
-    	      </li>
-    	      <li>
-    	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    	        <ul class="edit-item">
-    	          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-    	          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-    	          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-    	          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-    	          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
-    	        </ul>
-    	      </li>
-    	      <li class="star">
-    	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    	        <ul class="edit-item">
-    	          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-    	          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-    	          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-    	          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-    	          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
-    	        </ul>
-    	      </li>
-    	      <li>
-    	        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-    	        <ul class="edit-item">
-    	          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-    	          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-    	          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-    	          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-    	          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
-    	        </ul>
-    	      </li>
-    	    </ul>
-    	    <a class="new-item">Add new item</a>
     	  </section>
     	  <!-- end content //-->
 
@@ -133,28 +74,39 @@
               <a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">App by <span class="df-name">Dharmafly</span>
               </a>
             </p>
-          </nav>        
+          </nav>
         </footer>
         <!-- end footer //-->
       </div>
     </div>
     <!-- end wrapper //-->
-  	  	
-  	
+
   	<!-- TEMPLATES -->
+		<script type=text/tim class=task-form>
+			<input type=text placeholder="my todo item">
+			<a href="#" class=cancel-add-item>Cancel</a>
+		</script>
+    <script type=text/tim class=task-list>
+			<h1>{{listTitle}}</h1>
+        <ul class="item-list">
+        </ul>
+        <a class="new-item">Add new item</a>
+		</script>
+
     <script type=text/tim class=task>
-        
-    </script>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <ul class="edit-item">
+          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
+          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
+          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
+          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
+          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
+        </ul>
+	  </script>
     <!-- end TEMPLATES //-->
-    
-    
-    <!-- SCRIPTS -->
-    <script src="javascripts/jquery-1.5.2.min.js"></script>
-    <!--[if IE 6]>
-    <script src="javascripts/DD_belatedPNG_0.0.8a-min.js"></script>
-    <script>
-      DD_belatedPNG.fix("header h1 a, #mainnav li, footer nav li, #content .new-item, #content .edit-item li a, aside nav .star a, aside nav .new-list a, aside nav .showing a, #content .item-list p");
-    </script>
-    <![endif]-->
+
+    <!-- Scripts-->
+    <script src="/media/js/dependencies/jquery.js"></script>
+    <script src="/media/notepad/javascripts/loader.js"></script>
   </body>
 </html>
