@@ -13,7 +13,7 @@ var TaskListView = View.extend({
     *
     *
     */
-    constructor: function () {
+    constructor: function TaskListView () {
         Backbone.View.prototype.constructor.apply(this, arguments);
     },
 
@@ -41,9 +41,9 @@ var TaskListView = View.extend({
             });
 
 
-        //forward sub-view event to the controller
-        this.taskFormView.bind("add-item", function forwardEvent(itemText) {
-            view.trigger("add-item", itemText);
+        //forward all task-form events (i.e. 'add-item', 'edit-item') to the controller
+        this.taskFormView.bind("all", function forwardEvent() {
+            TaskListView.prototype.trigger.apply(view, arguments);
         });
 
         //delegate all item action events to the ul.item-list element.
@@ -103,8 +103,18 @@ var TaskListView = View.extend({
     *
     */
     _onNewItemClick: function (event) {
-        this.$('a.new-item').hide();
-        jQuery(this.taskFormView.el).show();
+        var newItemElement = this.$(".new-item"),
+            taskFormView = this.taskFormView;
+
+        if (newItemElement.next().children("input").length) {
+            newItemElement.hide();
+            taskFormView.elem.show();
+
+        } else {
+            taskFormView.reset();
+            newItemElement.hide().after(this.taskFormView.el);
+        }
+
     },
 
     /*
@@ -123,20 +133,37 @@ var TaskListView = View.extend({
         event.preventDefault();
 
         if ("_on" + action in this) {
-            this["_on"+action](modelCid);
+            this["_on"+action](modelCid, event.target);
         }
     },
 
    /**
-    * Processes the 'delete' action.
+    * Handles the 'delete' action.
     * Triggers the 'remove-item' event and passes along the cid of the selected task.
     *
-    * cid - The cid of a Task instance.
+    * cid    - The cid of a Task instance.
+    * target - The event target element (optional).
     *
     * returns nothing.
     */
-    _ondelete: function (cid) {
+    _ondelete: function (cid, target) {
         this.trigger("remove-item", cid);
+    },
+
+   /**
+    * Handles the 'edit' action.
+    * Triggers the 'update-item' event and passes along the cid of the selected task.
+    *
+    * cid - The cid of a Task instance.
+    *
+    * target - The event target element.
+    * returns nothing.
+    */
+    _onedit: function (cid, target) {
+        var task = this.collection.getByCid(cid);
+        this.taskFormView.editTask(task,target);
     }
+
+
 
 });

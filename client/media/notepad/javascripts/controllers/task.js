@@ -52,6 +52,11 @@ var TaskController = Backbone.Controller.extend({
                     Tasket.tasks.add(newTask);
                     newTask.save();
 
+                }).bind("update-item", function (cid, attrValues) {
+                    var task = Tasket.tasks.getByCid(cid);
+                    task.set(attrValues);
+                    task.save();
+
                 }).bind("remove-item", function (cid) {
                     var task = Tasket.tasks.getByCid(cid);
                     task.destroy();

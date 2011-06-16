@@ -8,19 +8,24 @@
          *
          *
          */
-         constructor: function () {
+         constructor: function TaskView () {
              Backbone.View.prototype.constructor.apply(this, arguments);
          },
 
-         initialize: function () {
+         initialize: function (options) {
              var view = this;
 
              this.elem = jQuery(this.el);
-             _.bindAll(this, 'remove','showActionControls');
-
-             this.model.bind("remove", view.remove);
-
              this.elem.attr('data-cid', this.model.cid);
+
+             _.bindAll(this, "remove", "showActionControls", "render");
+
+             this.model
+                 .bind("remove", view.remove)
+                 .bind("change", function (task) {
+                     view.$("p").text(task.get("description"));
+                 });
+
          },
 
          render: function () {
