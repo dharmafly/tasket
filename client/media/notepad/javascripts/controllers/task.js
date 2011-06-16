@@ -29,32 +29,27 @@ var TaskController = Backbone.Controller.extend({
     showTasks: function () {
         if (!this.taskViewRendered) {
             var controller = this,
-                hub   = Tasket.getHubs(1),
-                taskListView,
-                tasks,
-                newTask;
+                hub   = Tasket.getHubs(1);
 
             hub.bind("change", function () {
-                taskListView = new TaskListView({model: hub});
-                tasks = Tasket.getTasks(hub.get("tasks.new"));
-
+                var tasks = Tasket.getTasks(hub.get("tasks.new")),
+                    taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
 
                 //event handler for passing loaded tasks to the view
                 tasks.bind("refresh", function () {
                     taskListView.renderTasks(tasks);
                 });
 
-                //event handler for creating new items
+                //event handler for saving new items
                 taskListView.bind("add-item", function (itemText) {
-                    newTask = new Task({
+                    var newTask = new Task({
                         description: itemText,
                         owner: 1, //TODO: update the 3 lines below
                         hub: hub.id, //
                         estimate: Tasket.settings.TASK_ESTIMATE_MAX //
                     });
 
-                    taskListView.renderTasks(newTask);
-                    debugger;
+                    Tasket.tasks.add(newTask);
                     newTask.save();
 
                 }).bind("remove-item", function (cid) {
@@ -62,13 +57,6 @@ var TaskController = Backbone.Controller.extend({
                     task.destroy();
                 });
 
-
-
-            Tasket.tasks.bind("change:id", function(collection, task){
-                if (task.get("hub") === app.selectedHub){
-                    // remove "unsaved" className from view
-                }
-            });
 
             $('#main aside').after(taskListView.render());
             controller.taskViewRendered = true;

@@ -19,9 +19,27 @@ var TaskListView = View.extend({
 
     initialize: function (options) {
         var view = this;
+
         this.taskFormView = new TaskFormView();
         this.elem = jQuery(this.el);
         _.bindAll(this,"_onControlAction");
+
+        this.collection
+            // display the action controls once a hub task is saved
+            .bind("change:id", function (task, collection) {
+                var taskView = view.taskViews[task.cid];
+
+                if (task.get("hub") == view.model.id) {
+                    taskView.showActionControls();
+                }
+
+            // Append new items to the list
+            }).bind("add", function (task, collection) {
+               if (task.get("hub") == view.model.id) {
+                    view.renderTasks(task);
+               }
+            });
+
 
         //forward sub-view event to the controller
         this.taskFormView.bind("add-item", function forwardEvent(itemText) {

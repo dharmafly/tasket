@@ -16,10 +16,9 @@
              var view = this;
 
              this.elem = jQuery(this.el);
-             _.bindAll(this, 'remove','_showActionControls');
+             _.bindAll(this, 'remove','showActionControls');
 
              this.model.bind("remove", view.remove);
-             this.model.bind("change:id", view._showActionControls);
 
              this.elem.attr('data-cid', this.model.cid);
          },
@@ -28,6 +27,7 @@
              jQuery(this.el).html(tim('task',{
                  itemText: this.model.get('description')
              }));
+
              //make action controllers invisible if the task has not been saved yet.
              if (!this.model.id) {
                  this.elem.find("ul.edit-item").addClass("invisible");
@@ -42,7 +42,7 @@
          *
          */
 
-         _showActionControls: function () {
+         showActionControls: function () {
              this.$("ul.edit-item").removeClass("invisible");
          }
 
