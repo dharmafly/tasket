@@ -179,6 +179,7 @@ class Hub(StarredModel):
     description = models.TextField(blank=True, null=True)
     image = ImageField(upload_to='images/hubs/', null=True, blank=True)
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
+    private = models.BooleanField(default=False)
     createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     task_order = TaskListField(blank=True, null=True)
     
