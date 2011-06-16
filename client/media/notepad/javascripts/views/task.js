@@ -13,7 +13,10 @@
          },
 
          initialize: function () {
-             this.id = this.model.id;
+             var view = this;
+             _.bindAll(this, 'remove');
+             this.model.bind("remove", view.remove);
+             jQuery(this.el).attr('data-cid', this.model.cid);
          },
 
          render: function () {

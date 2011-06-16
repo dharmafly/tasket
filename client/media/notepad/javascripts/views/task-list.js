@@ -2,8 +2,8 @@ var TaskListView = View.extend({
     tagName: 'section',
     id: 'content',
     taskFormView: null,
-    /* collection of taskView instances, organised as {id: x, instance: ...}*/
-    taskViews: [],
+    /* collection of taskView instances, organised by task.cid => taskView  */
+    taskViews: {},
     events: {
         'click a.new-item': '_onNewItemClick'
     },
@@ -20,13 +20,16 @@ var TaskListView = View.extend({
     initialize: function (options) {
         var view = this;
         this.taskFormView = new TaskFormView();
-        this.model = options.model;
-
+        this.elem = jQuery(this.el);
+        _.bindAll(this,"_onControlAction");
 
         //forward sub-view event to the controller
         this.taskFormView.bind("add-item", function forwardEvent(itemText) {
             view.trigger("add-item", itemText);
         });
+
+        //delegate all item action events to the ul.item-list element.
+        this.elem.delegate("ul.edit-item li a", "click", view._onControlAction);
     },
 
     /*
@@ -40,11 +43,10 @@ var TaskListView = View.extend({
             listTitle = hub.get('title'),
             taskFormView = this.taskFormView;
 
-        $(this.el).html(tim('task-list', {listTitle: listTitle}));
+        this.elem.html(tim('task-list', {listTitle: listTitle}));
         this.$('.new-item').after(taskFormView.render());
-        $(taskFormView.el).hide();
+        jQuery(taskFormView.el).hide();
 
-        O('RENDERING LIST');
         return this.el;
     },
 
@@ -67,10 +69,9 @@ var TaskListView = View.extend({
 
         tasks = tasks instanceof TaskList ? tasks : new TaskList(tasks);
 
-        O(tasks);
         tasks.each(function (task) {
             taskView = new TaskView({model: task});
-            view.taskViews.push({id: task.id, instance: task});
+            view.taskViews[task.cid] = taskView;
             view.$('.item-list').append(taskView.render());
         });
     },
@@ -85,7 +86,37 @@ var TaskListView = View.extend({
     */
     _onNewItemClick: function (event) {
         this.$('a.new-item').hide();
-        $(this.taskFormView.el).show();
+        jQuery(this.taskFormView.el).show();
+    },
+
+    /*
+    * Handles all action events delegated to the .item-list element on initialisation.
+    * Looks at the event target parent element and calls a view method to process that action.
+    *
+    * event - An event object.
+    *
+    * Returns nothing.
+    *
+    */
+    _onControlAction: function (event) {
+        var modelCid = jQuery(event.target).parents("li[data-cid]").data("cid"),
+            action = _.first( jQuery(event.target).parent().attr("className").split(' '));
+
+        event.preventDefault();
+
+        if ("_on" + action in this) {
+            this["_on"+action](modelCid);
+        } else {
+            O("cannot find action %s", action);
+        }
+    },
+
+    /*
+    *
+    *
+    */
+    _ondelete: function (cid) {
+        this.trigger("remove-item", cid);
     }
 
 });

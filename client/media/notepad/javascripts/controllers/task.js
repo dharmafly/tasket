@@ -45,7 +45,7 @@ var TaskController = Backbone.Controller.extend({
                 });
 
                 //event handler for creating new items
-                taskListView.bind('add-item', function (itemText) {
+                taskListView.bind("add-item", function (itemText) {
                     newTask = new Task({
                         description: itemText,
                         owner: 1, //TODO: update the 3 lines below
@@ -53,14 +53,22 @@ var TaskController = Backbone.Controller.extend({
                         estimate: Tasket.settings.TASK_ESTIMATE_MAX //
                     });
 
-                    //update the view once the item has been assigend an id.
-                    newTask.bind("change:id", function () {
-                        taskListView.renderTasks(newTask);
-                    });
+                    taskListView.renderTasks(newTask);
                     newTask.save();
+                });
+                taskListView.bind("remove-item", function (cid) {
+                    O('removing item');
+                    var task = Tasket.tasks.getByCid(cid);
+                    task.destroy();
                 });
 
 
+
+            Tasket.tasks.bind("change:id", function(collection, task){
+                if (task.get("hub") === app.selectedHub){
+                    // remove "unsaved" className from view
+                }
+            });
 
             $('#main aside').after(taskListView.render());
             controller.taskViewRendered = true;

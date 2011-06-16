@@ -67,7 +67,7 @@
              }
 
              this.$("input").val("");
-             this.hide();
+             this.reset();
          }
 
  });
