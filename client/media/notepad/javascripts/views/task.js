@@ -14,15 +14,36 @@
 
          initialize: function () {
              var view = this;
-             _.bindAll(this, 'remove');
+
+             this.elem = jQuery(this.el);
+             _.bindAll(this, 'remove','_showActionControls');
+
              this.model.bind("remove", view.remove);
-             jQuery(this.el).attr('data-cid', this.model.cid);
+             this.model.bind("change:id", view._showActionControls);
+
+             this.elem.attr('data-cid', this.model.cid);
          },
 
          render: function () {
-             return $(this.el).html(tim('task', {
+             jQuery(this.el).html(tim('task',{
                  itemText: this.model.get('description')
-             }))[0];
+             }));
+             //make action controllers invisible if the task has not been saved yet.
+             if (!this.model.id) {
+                 this.elem.find("ul.edit-item").addClass("invisible");
+             }
+             return this.el;
+         },
+
+        /*
+         * Handles the 'change:id' event emitted by the view's model.
+         *
+         * returns nothing.
+         *
+         */
+
+         _showActionControls: function () {
+             this.$("ul.edit-item").removeClass("invisible");
          }
 
  });

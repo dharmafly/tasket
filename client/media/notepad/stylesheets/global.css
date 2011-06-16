@@ -469,6 +469,13 @@ table {
             background-position: -41px -2px;
           }
 
+/* disable edit-item controls */
+	      #content .invisible {
+		    visibility: hidden;
+          }
+
+
+
 /* add new item */
 
       #content .new-item {

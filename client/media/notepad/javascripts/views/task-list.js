@@ -106,14 +106,16 @@ var TaskListView = View.extend({
 
         if ("_on" + action in this) {
             this["_on"+action](modelCid);
-        } else {
-            O("cannot find action %s", action);
         }
     },
 
-    /*
+   /**
+    * Processes the 'delete' action.
+    * Triggers the 'remove-item' event and passes along the cid of the selected task.
     *
+    * cid - The cid of a Task instance.
     *
+    * returns nothing.
     */
     _ondelete: function (cid) {
         this.trigger("remove-item", cid);

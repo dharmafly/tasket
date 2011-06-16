@@ -54,10 +54,10 @@ var TaskController = Backbone.Controller.extend({
                     });
 
                     taskListView.renderTasks(newTask);
+                    debugger;
                     newTask.save();
-                });
-                taskListView.bind("remove-item", function (cid) {
-                    O('removing item');
+
+                }).bind("remove-item", function (cid) {
                     var task = Tasket.tasks.getByCid(cid);
                     task.destroy();
                 });
