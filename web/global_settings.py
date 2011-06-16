@@ -88,6 +88,7 @@ INSTALLED_APPS = [
     'paging',
     'sentry',
     'sentry.client',
+    'south',
 ]
 
 DEFAULT_TYPE = (

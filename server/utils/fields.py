@@ -3,6 +3,12 @@ import datetime
 from django.db import models
 from django import forms
 
+# Needed for South.
+# See http://south.aeracode.org/docs/tutorial/part4.html#simple-inheritance
+from south.modelsinspector import add_introspection_rules
+add_introspection_rules([], ["^utils\.fields\.UnixTimestampField"])
+add_introspection_rules([], ["^utils\.fields\.TaskListField"])
+
 class UnixTimestampField(models.DateTimeField):
     """
     Subclass of DateTimeField that converts values from a unix timestamp in to a 
