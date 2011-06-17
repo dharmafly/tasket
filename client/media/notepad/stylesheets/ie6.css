@@ -33,6 +33,10 @@
      padding: 0;
      position: absolute;
   }
+
+  #content .new-item {
+	   cursor: pointer;
+  }
   
   /*
   footer nav ul,

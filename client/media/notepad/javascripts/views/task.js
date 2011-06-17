@@ -27,11 +27,13 @@
                  })
                  .bind("change:state", function (task) {
                      var state = task.get("state");
+
                      if (state === "done") {
                          view.elem.addClass("completed");
                      } else {
                          view.elem.removeClass("completed");
                      }
+
                  })
                  .bind("change:starred", function (task) {
                      var starred = !!task.get("starred");

@@ -54,7 +54,7 @@ var TaskController = Backbone.Controller.extend({
                 taskListView.bind("add-item", function (itemText) {
                     var newTask = new Task({
                         description: itemText,
-                        owner: 1, //TODO: update the 3 lines below
+                        owner: "1", //TODO: update the 3 lines below
                         hub: hub.id, //
                         estimate: Tasket.settings.TASK_ESTIMATE_MAX //
                     });

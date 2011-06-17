@@ -177,10 +177,12 @@ var TaskListView = View.extend({
     * Returns nothing.
     */
     _ontick: function (cid, target) {
-        this.trigger("update-item", cid, {
-            state: 'done',
-            claimedBy: 1 //update this
-       });
+        var currentUserId = "1",
+            task = this.collection.getByCid(cid),
+            forceMode = true;
+
+        task.state(Task.states.DONE, currentUserId, forceMode)
+            .save();
     },
 
    /*

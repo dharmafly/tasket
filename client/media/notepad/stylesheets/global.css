@@ -109,7 +109,7 @@ table {
 /* TOP LEVEL STYLES */
 
   body {
-    font-family: Tahoma, Helvetica, serif;
+    font-family: Tahoma, Helvetica, Arial, sans-serif;
     font-size: 63.5%;
     /*
     margin: 15px 50px 0;
@@ -125,9 +125,9 @@ table {
 
   #wrapper {
     position: relative;
-    min-width: 625px;
+    min-width: 650px;
     max-width: 1200px;
-    margin: 15px 50px 0;
+    margin: 15px auto 0;
   }
   
   #main {
@@ -141,7 +141,7 @@ table {
   header {
     background: url(../images/bg-header.png) repeat-x left bottom;
     min-height: 110px;
-    margin: 0 1px -26px 1px;
+    margin: 0 30px -26px 30px;
     position: relative;
     z-index: 3;
   }
@@ -165,7 +165,7 @@ table {
   #mainnav {
     position: absolute;
     top: 10px;
-    right: 10px;
+    right: 40px;
     color: #333;
     z-index: 4;
   }
@@ -239,28 +239,34 @@ table {
       border-bottom: 1px solid #60a6c6;
       text-align: right;
       margin: 0 13px;
+			float: right;
+
     }
     
     aside h1,
     aside h1 a {
       color: #fff;
     }
-    
-      aside h1 a {
-        padding: 4px 25px 4px 10px;
+
+    aside h1 a {
         display: block;
         text-decoration: none;
-        background: url(../images/sprite1.png) no-repeat right -294px;
-      }
-    
-      aside h1 a:hover {
-        text-decoration: underline;
-      }
-    
-    aside h1 {
-      float: right;
     }
-    
+
+    aside h1 a:hover {
+        text-decoration: underline;
+    }
+
+    aside h1 {
+       float: right;
+    }
+
+    aside h1 a span {
+      padding: 4px 25px 4px 10px;
+      display: block;
+      background: url(../images/sprite1.png) no-repeat right -294px;
+    }
+
     aside nav {
       position: absolute;
       display: none;
@@ -469,10 +475,6 @@ table {
             background-position: -41px -2px;
           }
 
-/* disable edit-item controls */
-	      #content .invisible {
-		    visibility: hidden;
-          }
 
 
 
@@ -526,23 +528,23 @@ table {
       footer nav li a:hover {
         text-decoration: underline;
       }
-  
+
 /* Dharmafly */
 
   footer a.df {
-  	text-decoration:none;
-  	border:none;
-  	padding-top:0.16em;
-  	display:block;
-  	text-align: right;
+    text-decoration:none;
+    border:none;
+    padding-top:0.16em;
+    display:block;
+    text-align: right;
   }
-  
+
   footer a.df span.df-name {
-  	font-family:Calibri,Helvetica,Arial,sans-serif;
-  	text-transform:uppercase;
-  	font-weight:bold;
+    font-family: Calibri,Helvetica,Arial,sans-serif;
+    text-transform:uppercase;
+    font-weight:bold;
   }
-  
+
   footer a.df:hover {
   	color:#70873f;
   }

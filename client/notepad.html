@@ -11,7 +11,7 @@
         <link rel="shortcut icon" href="/favicon.ico">
         <link rel="apple-touch-icon" href="/apple-touch-icon.png">
         <!-- HTML5 ELEMENT RECOGNITION FOR OLD IEs -->
-        <!--[if lte IE 8]><script src="/media/notepad/javascripts/dependencies/html5.js"></script><![endif]-->
+        <!--[if lte IE 8]><script src="/media/js/dependencies/html5.js"></script><![endif]-->
         <link rel="stylesheet" href="/media/notepad/stylesheets/global.css?v0.1">
         <!-- IE CSS FIXES -->
         <!--[if lte IE 8]><link href="/media/notepad/stylesheets/ie8.css" rel=stylesheet><![endif]-->
@@ -108,5 +108,11 @@
     <!-- Scripts-->
     <script src="/media/js/dependencies/jquery.js"></script>
     <script src="/media/notepad/javascripts/loader.js"></script>
+    <!--[if IE 6]>
+    <script src='/media/notepad/javascripts/dependencies/DD_belatedPNG_0.0.8a-min.js'></script>
+    <script>
+      DD_belatedPNG.fix('header h1 a, #mainnav li, footer nav li, #content .new-item, #content .edit-item li a, aside nav .star a, aside nav .new-list a, aside nav .showing a, aside.open, aside.closed, #content .item-list p');
+    </script>
+    <![endif]-->
   </body>
 </html>
