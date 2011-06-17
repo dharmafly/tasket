@@ -32,8 +32,18 @@ var TaskController = Backbone.Controller.extend({
                 hub   = Tasket.getHubs(1);
 
             hub.bind("change", function () {
-                var tasks = Tasket.getTasks(hub.get("tasks.new")),
-                    taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
+                var tasks, taskListView;
+
+                //do not execute the following code block if taskListView has already rendered.
+                if (controller.taskViewRendered) {
+                    return;
+                }
+
+                tasks = Tasket.getTasks(hub.get("tasks.new"));
+                taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
+
+                $('#main aside').after(taskListView.render());
+                controller.taskViewRendered = true;
 
                 //event handler for passing loaded tasks to the view
                 tasks.bind("refresh", function () {
@@ -60,11 +70,8 @@ var TaskController = Backbone.Controller.extend({
                 }).bind("remove-item", function (cid) {
                     var task = Tasket.tasks.getByCid(cid);
                     task.destroy();
+
                 });
-
-
-            $('#main aside').after(taskListView.render());
-            controller.taskViewRendered = true;
         });
       }
     },

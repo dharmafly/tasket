@@ -106,10 +106,13 @@ var TaskListView = View.extend({
         var newItemElement = this.$(".new-item"),
             taskFormView = this.taskFormView;
 
+
+        // the text input is located underneat the New Element link
         if (newItemElement.next().children("input").length) {
             newItemElement.hide();
-            taskFormView.elem.show();
+            taskFormView.elem.show().find("input").focus();
 
+        // the text input is hidden in a list item
         } else {
             taskFormView.reset();
             newItemElement.hide().after(this.taskFormView.el);
@@ -134,6 +137,8 @@ var TaskListView = View.extend({
 
         if ("_on" + action in this) {
             this["_on"+action](modelCid, event.target);
+        } else {
+          throw "_on" + action + " method does not exist";
         }
     },
 
@@ -162,6 +167,35 @@ var TaskListView = View.extend({
     _onedit: function (cid, target) {
         var task = this.collection.getByCid(cid);
         this.taskFormView.editTask(task,target);
+    },
+
+
+   /*
+    * Handles the _ontick action and triggers the 'update-item' event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
+    *
+    *
+    * Returns nothing.
+    */
+    _ontick: function (cid, target) {
+        this.trigger("update-item", cid, {
+            state: 'done',
+            claimedBy: 1 //update this
+       });
+    },
+
+   /*
+    * Handles the _onstar action and triggers the 'update-item' event passing along 'starred:!starred' as update values.
+    *
+    * Returns nothing.
+    */
+
+    _onstar: function (cid, target) {
+        var task = this.collection.getByCid(cid),
+            starred = !task.get("starred");
+
+        this.trigger("update-item", cid, {
+            starred: starred
+        });
     }
 
 

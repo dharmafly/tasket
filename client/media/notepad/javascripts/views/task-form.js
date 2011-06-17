@@ -54,7 +54,7 @@
              jQuery(target).parents("li:not(.edit)").find("p")
                  .html(this.el);
 
-             this.elem.show();
+             this.elem.show().find("input").focus();
 
              return this;
          },

@@ -22,13 +22,36 @@
 
              this.model
                  .bind("remove", view.remove)
-                 .bind("change", function (task) {
+                 .bind("change:description", function (task) {
                      view.$("p").text(task.get("description"));
+                 })
+                 .bind("change:state", function (task) {
+                     var state = task.get("state");
+                     if (state === "done") {
+                         view.elem.addClass("completed");
+                     } else {
+                         view.elem.removeClass("completed");
+                     }
+                 })
+                 .bind("change:starred", function (task) {
+                     var starred = !!task.get("starred");
+
+                     if (starred && !view.elem.hasClass("star")) {
+                        view.elem.addClass("star");
+                     }
+
+                     if (!starred) {
+                         view.elem.removeClass("star");
+                     }
+
                  });
 
          },
 
          render: function () {
+             var starred = !!this.model.get("starred"),
+                 done =  this.model.get("state") == "done";
+
              jQuery(this.el).html(tim('task',{
                  itemText: this.model.get('description')
              }));
@@ -37,6 +60,14 @@
              if (!this.model.id) {
                  this.elem.find("ul.edit-item").addClass("invisible");
              }
+
+             if (starred) {
+                 this.elem.addClass("star");
+             }
+             if (done) {
+                 this.elem.addClass("completed");
+             }
+
              return this.el;
          },
 
