@@ -1,119 +1,129 @@
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <title>Tasket Notepad</title>
-        <meta name="author" content="Dharmafly">
-        <meta name="description" content="Micro-volunteering app for crowd-managed tasks">
-        
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
-        <link rel="shortcut icon" href="/favicon.ico">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        
-        <!-- HTML5 ELEMENT RECOGNITION FOR OLD IEs -->
-        <!--[if lte IE 8]><script src="/media/js/dependencies/html5.js"></script><![endif]-->
-        
-        <link rel="stylesheet" href="/media/notepad/stylesheets/global.css?v0.1">
-        
-        <!-- IE CSS FIXES -->
-        <!--[if lte IE 8]><link href="/media/notepad/stylesheets/ie8.css" rel=stylesheet><![endif]-->
-        <!--[if lte IE 7]><link href="/media/notepad/stylesheets/ie7.css" rel=stylesheet><![endif]-->
-        <!--[if lte IE 6]><link href="/media/notepad/stylesheets/ie6.css" rel=stylesheet><![endif]-->
-  </head>
-
-  <body>
-  <!--<![endif]-->
-    <div id="pagetop">
-      <p><a id="skiplink" class="hiddenlink" href="#content">Skip to content</a></p>
-    </div>
+<!--[if IE]><html lang="en" class="ie"><![endif]--><!--[if !(IE)]><!-->
+<html lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>Tasket Notepad</title>
+    <meta name="author" content="Dharmafly">
+    <meta name="description" content="Micro-volunteering app for crowd-managed tasks">
     
-  	<div id="wrapper">
-  	  <header>
-  	    <h1><a href="/#/">Tasket Notepad</a></h1>
-  	  </header>
-  	  
-  	  <nav id="mainnav">
-  	    <ul>
-  	      <li class="first"><a href="/" title="Find out more">About</a></li>
-  	      <li><a href="/" title="Find out more">Info</a></li>
-  	      <li><a href="/" title="Some general info">Help</a></li>
-  	      <li class="message">You are logged in as <strong>Pat Simian</strong></li>
-  	      <li><a href="/" title="Log out">Log out</a></li>
-  	    </ul>
-  	  </nav>
-  	  
-  	  <div id="main">
-  	    <aside class="closed">
-    	    <h1><a href="/"><span>Close lists</span></a></h1>
-    	    <nav>
-    	      <ul>
-    	        <li class="star"><a href="/">Starred</a></li>
-    	        <li><a href="/">Work list 1</a></li>
-    	        <li><a href="/">Work list 2</a></li>
-    	        <li><a href="/">Bill's personal list - this is an example of a wrapping item</a></li>
-    	        <li><a href="/">Shopping list</a></li>
-    	        <li><a href="/">Anne's list</a></li>
-    	        <li class="new-list"><a href="/">Add new list</a></li>
-      	      </ul>
-      	      <div class="showing">
-      	        <a href="/">Showing all</a>
-      	      </div>
-    	    </nav>
-    	</aside>
-  	  
-        <section id="content"></section>
-
-        <footer>
-          <nav>
-            <ul>
-              <li class="first"><a href="/" title="Find out more about Toodledoo">About</a></li>
-              <li><a href="/" title="Tell us what you think of Toodledoo">Contact Us</a></li>
-            </ul>
-            <p>
-              <a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">App by <span class="df-name">Dharmafly</span>
-              </a>
-            </p>
-          </nav>
-        </footer>
-      </div>
-    </div>
-    <!-- end wrapper //-->
+    <!-- ChromeFrame for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     
+    <!-- HTML5 ELEMENT RECOGNITION FOR OLD IEs -->
+    <!--[if lte IE 8]><script src="/media/js/dependencies/html5.js"></script><![endif]-->
 
-  	<!-- TEMPLATES -->
-		<script type=text/tim class=task-form>
-			<input type=text placeholder="my todo item">
-			<a href="#" class=cancel-add-item>Cancel</a>
-		</script>
-    <script type=text/tim class=task-list>
-			<h1>{{listTitle}}</h1>
-        <ul class="item-list">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <script>document.documentElement.className += ' js';</script>
+    <link rel="stylesheet" href="/media/notepad/stylesheets/global.css?v0.1">
+    
+    <!-- IE CSS FIXES -->
+    <!--[if lte IE 8]><link href="/media/notepad/stylesheets/ie8.css" rel=stylesheet><![endif]-->
+    <!--[if lte IE 7]><link href="/media/notepad/stylesheets/ie7.css" rel=stylesheet><![endif]-->
+    <!--[if lte IE 6]><link href="/media/notepad/stylesheets/ie6.css" rel=stylesheet><![endif]-->
+</head>
+
+<body>
+<!--<![endif]-->
+<div id="pagetop">
+  <p><a id="skiplink" class="hiddenlink" href="#content">Skip to content</a></p>
+</div>
+
+<div id="wrapper">
+  <header>
+    <h1><a href="/#/">Tasket Notepad</a></h1>
+  </header>
+  
+  <nav id="mainnav">
+    <ul>
+      <li class="first"><a href="/" title="Find out more">About</a></li>
+      <li><a href="/" title="Find out more">Info</a></li>
+      <li><a href="/" title="Some general info">Help</a></li>
+      <li class="message">You are logged in as <strong>Pat Simian</strong></li>
+      <li><a href="/" title="Log out">Log out</a></li>
+    </ul>
+  </nav>
+  
+  <div id="main">
+    <aside class="closed">
+	    <h1><a href="/"><span>Close lists</span></a></h1>
+	    <nav>
+	      <ul>
+	        <li class="star"><a href="/">Starred</a></li>
+	        <li><a href="/">Work list 1</a></li>
+	        <li><a href="/">Work list 2</a></li>
+	        <li><a href="/">Bill's personal list - this is an example of a wrapping item</a></li>
+	        <li><a href="/">Shopping list</a></li>
+	        <li><a href="/">Anne's list</a></li>
+	        <li class="new-list"><a href="/">Add new list</a></li>
+  	      </ul>
+  	      <div class="showing">
+  	        <a href="/">Showing all</a>
+  	      </div>
+	    </nav>
+	</aside>
+  
+    <section id="content"></section>
+
+    <footer>
+      <nav>
+        <ul>
+          <li class="first"><a href="/" title="Find out more about Toodledoo">About</a></li>
+          <li><a href="/" title="Tell us what you think of Toodledoo">Contact Us</a></li>
         </ul>
-        <a class="new-item">Add new item</a>
-		</script>
+        <p>
+          <a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">App by <span class="df-name">Dharmafly</span>
+          </a>
+        </p>
+      </nav>
+    </footer>
+  </div>
+</div>
+<!-- end wrapper //-->
 
-    <script type=text/tim class=task>
-			<p>{{itemText}}</p>
-        <ul class="edit-item">
-          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
-        </ul>
-	  </script>
-    <!-- end TEMPLATES //-->
 
-    <!-- Scripts-->
-    <script src="/media/js/dependencies/jquery.js"></script>
-    <script src="/media/notepad/javascripts/loader.js"></script>
-    <!--[if IE 6]>
-    <script src='/media/notepad/javascripts/dependencies/DD_belatedPNG_0.0.8a-min.js'></script>
-    <script>
-      DD_belatedPNG.fix('header h1 a, #mainnav li, footer nav li, #content .new-item, #content .edit-item li a, aside nav .star a, aside nav .new-list a, aside nav .showing a, aside.open, aside.closed, #content .item-list p');
-    </script>
-    <![endif]-->
-  </body>
+<!-- TEMPLATES -->
+<script type=text/tim class=task-form>
+    <input type=text placeholder="my todo item">
+    <a href="#" class=cancel-add-item>Cancel</a>
+</script>
+
+<script type=text/tim class=task-list>
+    <h1>{{listTitle}}</h1>
+    <ul class="item-list"></ul>
+    <a class="new-item">Add new item</a>
+</script>
+
+<script type=text/tim class=task>
+    <p>{{itemText}}</p>
+    <ul class="edit-item">
+        <li class="move"><a href="/" title="Move this item">Move this item</a></li>
+        <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
+        <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
+        <li class="star"><a href="/" title="Star this item">Star this item</a></li>
+        <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
+    </ul>
+</script>
+
+<script type="text/tim" class="lightbox">
+    <section class="lightbox-inner">
+        <div class="content"></div>
+        <button class="action close">Close</button>
+    </section>
+</script>
+<!-- end TEMPLATES //-->
+
+<!-- Scripts-->
+<script src="/media/js/dependencies/jquery.js"></script>
+<script src="/media/notepad/javascripts/loader.js"></script>
+<!--[if IE 6]>
+<script src='/media/notepad/javascripts/dependencies/DD_belatedPNG_0.0.8a-min.js'></script>
+<script>
+  DD_belatedPNG.fix('header h1 a, #mainnav li, footer nav li, #content .new-item, #content .edit-item li a, aside nav .star a, aside nav .new-list a, aside nav .showing a, aside.open, aside.closed, #content .item-list p');
+</script>
+<![endif]-->
+</body>
 </html>
