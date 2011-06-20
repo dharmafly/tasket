@@ -6,14 +6,26 @@ var notepad = _.extend({
     },
     
     _setupLightbox: function(){
-        var lightbox = this.lightbox = new Lightbox();
+        var lightbox = app.lightbox = new Lightbox();
         app.bodyElem.append(lightbox.render().el);
+        
+        // Return to the previous route when the lightbox closes
+        lightbox.bind("hide", function(){
+            app.back(lightbox.historyCount);
+        });
     },
 
     bootstrap: function () {
-        app.bodyElem = jQuery("body");
+        app.bodyElem = jQuery("body"); // TODO: Lightbox and others looks for app.bodyElem (App should be a class)
         this.controller = new TaskController();
+        app.accountController = new AccountController();
         this._setupLightbox();
+        
+        // If user lands on root update the url to "/#/" for consistency. This
+        // can be removed should the history API be implemented.
+        if (!window.location.hash) {
+            window.location.hash = "/";
+        }
         Backbone.history.start();
     }
 

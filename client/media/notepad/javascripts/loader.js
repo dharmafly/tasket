@@ -35,6 +35,15 @@ window.O = function(){
             //jsClientPath + '/views/task.js',
             jsCorePath + '/views/views.js',
             jsCorePath + '/views/lightbox.js',
+            jsCorePath + '/views/form.js',
+            
+            jsCorePath + '/views/form-upload.js', // TODO: remove?
+            
+            jsCorePath + '/views/signup.js',
+            jsCorePath + '/views/account.js',
+            jsCorePath + '/views/login.js',
+            jsCorePath + '/views/forgot-details.js',
+            jsCorePath + '/views/change-password.js',
             
             jsClientPath + '/views/task.js',
             jsClientPath + '/views/task-list.js',
@@ -42,6 +51,7 @@ window.O = function(){
 
             // controllers
             jsClientPath + '/controllers/task.js',
+            jsCorePath + '/controllers/account-controller.js',
 
 
             //core
