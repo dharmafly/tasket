@@ -43,7 +43,12 @@
       <li><a href="/" title="Find out more">Info</a></li>
       <li><a href="/" title="Some general info">Help</a></li>
       <li class="message">You are logged in as <strong>Pat Simian</strong></li>
-      <li><a href="/" title="Log out">Log out</a></li>
+      <li class="login">
+        <a href="#/login/" title="Login">Login</a>
+        <form action="/logout/" method="post">
+            <button title="Logout" class="link" type="submit">Logout</button>
+        </form>
+      </li>
     </ul>
   </nav>
   

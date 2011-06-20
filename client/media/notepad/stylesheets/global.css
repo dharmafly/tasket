@@ -198,14 +198,36 @@ table {
     }
     
     
-    #mainnav a {
+    #mainnav a, button.link {
       color: #6ab6da;
       text-decoration: none;
       font-weight: bolder;
       text-transform: lowercase;
     }
-    #mainnav a:hover {
+    #mainnav a:hover, button.link:hover {
       text-decoration: underline;
+      cursor:pointer;
+    }
+    
+    button.link {
+	    padding: 0;
+	    margin:0;
+	    font-size: 1em /* 13px */;
+	    text-shadow: none;
+	    line-height: 1.231em /* 16px */;
+	    min-height: 0;
+	    background: none;
+	    border: none;
+	    -webkit-border-radius: 0;
+	    -moz-border-radius: 0;
+	    -ms-border-radius: 0;
+	    -o-border-radius: 0;
+	    border-radius: 0;
+	    -webkit-box-shadow: none;
+	    -moz-box-shadow: none;
+	    -ms-box-shadow: none;
+	    -o-box-shadow: none;
+	    box-shadow: none;
     }
   
 /* ASIDE */
@@ -632,18 +654,18 @@ table {
 	top: 10px;
 	right: 10px;
 }
-
-.lightbox .lightbox-inner .content .description {
-    margin-top: 10px; /* make space for close button */
-}
 /* @end */
 
 /* @group Lightbox Content Elements
 -----------------------------------------------------------------------------*/
 
-.content h1,
-.content h2,
-.content h3 {
+.lightbox .content .description {
+    margin-top: 10px; /* make space for close button */
+}
+
+.lightbox .content h1,
+.lightbox .content h2,
+.lightbox .content h3 {
 	font-weight: bold;
 	font-size: 1.384em /* 18px */;
 	/* Line up the right-hand side of the bottom border with the lightbox's close button */
@@ -652,86 +674,86 @@ table {
 	border-bottom: 1px solid #ccc;
 }
 
-.content h1 {
+.lightbox .content h1 {
 	margin-top: 0;
 }
 
-.content h2 {
+.lightbox .content h2 {
 	font-size: 1.231em /* 16px */;
 	margin-top:2.217em;
 }
 
-.content h3 {
+.lightbox .content h3 {
 	font-size: 1.077em /* 14px */;
 	padding-bottom:0;
 	margin-bottom:0;
 	border: none;
 }
 
-.content a {
+.lightbox .content a {
     color: #003663;
     border-bottom: 1px solid;
     font-weight: bold;
 }
 
-.content strong {
+.lightbox .content strong {
 	font-weight: bold;
 }
 
-.content em,
-.content blockquote {
+.lightbox .content em,
+.lightbox .content blockquote {
 	font-style: italic;
 }
 
-.content blockquote {
+.lightbox .content blockquote {
 	padding-left: 0.615em /* 8px */;
 	margin-left: -0.615em /* -8px */;
 	border-left: 1px solid #ccc;
 }
 
-.content code {
+.lightbox .content code {
 	font-family: monospace;
 }
 
-.content form {
+.lightbox .content form {
 	width: 23.077em /* 300px */;
 	max-width: 100%;
 }
 
-.content form li {
+.lightbox .content form li {
 	margin-bottom: 0.769em /* 10px */;
 }
 
-.content form .error strong, .content form strong.warning {
+.lightbox .content form .error strong, .lightbox .content form strong.warning {
 	color: #ce0300;
 }
-.content form .note {
+.lightbox .content form .note {
 	color: #777;
 }
 
-.content form .error input,
-.content form .error textarea,
-.content form input:invalid,
-.content form textarea:invalid	{
+.lightbox .content form .error input,
+.lightbox .content form .error textarea,
+.lightbox .content form input:invalid,
+.lightbox .content form textarea:invalid	{
 	background-color: rgb(255, 234, 239);
 	border-color: rgb(255, 188, 192);
 	color: rgb(184, 26, 26);
 }
 
-.content form label,
-.content form input,
-.content form textarea {
+.lightbox .content form label,
+.lightbox .content form input,
+.lightbox .content form textarea {
 	display: block;
 }
 
-.content form label {
+.lightbox .content form label {
 	font-weight: bold;
 	line-height: 1.5;
 }
 
-.content form input,
-.content form textarea,
-.content form select {
+.lightbox .content form input,
+.lightbox .content form textarea,
+.lightbox .content form select {
 	border: 1px solid #ccc;
 	padding: 0.461em /* 4px */;
 	font-size: 1em /* 13px */;
@@ -739,21 +761,21 @@ table {
 	max-width: 100%;
 }
 
-.content form textarea {
+.lightbox .content form textarea {
 	/* Fixes an issue in FF where the font size is reset */
 	font: 13px/1.6em Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
 }
 
-.content form select {
+.lightbox .content form select {
 	width: 23.077em /* 300px */;
 }
 
-.content form .actions {
+.lightbox .content form .actions {
 	text-align: right;
 	position: relative;
 }
 
-.content form .actions .note {
+.lightbox .content form .actions .note {
 	text-align: left;
 	position: absolute;
 	top: 0;
@@ -761,9 +783,15 @@ table {
 	line-height: 2.153em /* 28px */;
 }
 
-.content form .actions .note a.delete {
+.lightbox .content form .actions .note a.delete {
 	font-weight: bold;
 	color: #C92D2D;
 }
+/* @end */
 
+
+/* @group Login control - see button.link */
+nav#mainnav .login form {
+	display: none;
+}
 /* @end */
