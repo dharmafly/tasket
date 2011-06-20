@@ -1,8 +1,9 @@
  var TaskFormView = View.extend({
          events: {
-             'click .cancel-add-item': '_onCancelClicked',
+             'click .cancel-add-item': '_onCancel',
              'change input': '_onInputChange'
          },
+         tagName: 'span',
 
          /* Caches a reference to the add-item link */
          addItemElement: null,
@@ -18,6 +19,7 @@
 
          initialize: function (options) {
              this.elem = jQuery(this.el);
+             this.addItemView = options.addItemView;
          },
 
          /*
@@ -43,8 +45,14 @@
          */
 
          editTask: function (task, target) {
-             var taskDescription = task.get("description");
-             this.reset();
+             console.debug('editing task %o',target);
+             task = task || this.model;
+
+
+             var taskDescription = task.get("description"),
+                 originalDescription = this.$("input").attr("data-original-description"),
+                 parentParagraph = this.elem.parents("p");
+
 
              this.$("input")
                  .val(taskDescription)
@@ -54,8 +62,10 @@
              jQuery(target).parents("li:not(.edit)").find("p")
                  .html(this.el);
 
-             this.elem.show().find("input").focus();
+             console.info('paragrah:'+originalDescription);
+             parentParagraph.text(originalDescription);
 
+             this.elem.show().find("input").focus();
              return this;
          },
 
@@ -70,26 +80,18 @@
          */
 
          reset: function () {
-             var parentParagraph = this.elem.parents("p"),
-                 originalDescription = this.$("input").attr("data-original-description");
-
-             // cache a reference to addItem element at the first time the method is run
-             if (!this.addItemElement) {
-                 this.addItemElement = this.elem.prev();
-             }
-
-
-             if (! this.elem.prev().hasClass("add-item")) {
-                 this.addItemElement.show().after(this.el);
-                 parentParagraph.text(originalDescription);
-             }
-
-             this.$("input")
-                 .val("")
-                 .removeAttr("data-cid")
-                 .removeAttr("data-original-description");
-
+             this.$("input").val("");
+             this.elem.hide();
              return this;
+         },
+
+         defaultPosition: function () {
+            var taskView = this.addItemView;
+            this.editTask(taskView.model, taskView.$(".edit a"));
+         },
+
+         elementInDefaultPosition: function () {
+             return this.elem.parents("li")[0] === this.addItemView.el;
          },
 
 
@@ -102,9 +104,18 @@
          * Returns nothing.
          *
          */
-         _onCancelClicked: function (event) {
-             this.reset().addItemElement.show();
-             this.elem.hide();
+         _onCancel: function (event) {
+             console.info('canceling %o',this.el);
+
+             var originalDescription = this.$("input").attr("data-original-description"),
+                 parentParagraph = this.elem.parents("p");
+
+             parentParagraph.text(originalDescription);
+
+             if (! this.elementInDefaultPosition()) {
+                 this.defaultPosition();
+             }
+             this.reset();
              event.preventDefault();
          },
 
@@ -121,20 +132,22 @@
          *
          */
          _onInputChange: function (event) {
-             var input = jQuery(event.target),
-                 inputText = input.val(),
-                 cid = input.attr("data-cid"),
-                 triggerArguments = cid ?
-                   ["update-item", cid, {description: inputText}] :
-                   ["add-item", inputText];
+            console.info('input change');
+            // var input = jQuery(event.target),
+            //     inputText = input.val(),
+            //     cid = input.attr("data-cid"),
+            //     triggerArguments = this.elementInDefaultPosition() ?
+            //       ["add-item", inputText]:
+            //       ["update-item", cid, {description: inputText}] ;
 
 
-             // the form input has to be re-positioned before than the task model emits a change event
-             // and TaskView gets re-rendered.
+            // if (!this.elementInDefaultPosition()) {
+            //     //this.defaultPosition();
+            // }
+            // this.reset();
 
-             this.reset().elem.hide();
-             TaskFormView.prototype.trigger.apply(this, triggerArguments);
-             event.preventDefault();
+            // TaskFormView.prototype.trigger.apply(this, triggerArguments);
+            // event.preventDefault();
          }
 
  });

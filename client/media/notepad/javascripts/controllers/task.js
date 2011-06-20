@@ -29,7 +29,8 @@ var TaskController = Backbone.Controller.extend({
     showTasks: function () {
         if (!this.taskViewRendered) {
             var controller = this,
-                hub   = Tasket.getHubs(1);
+                hub = notepad.selectedHub = Tasket.getHubs(1);
+                currentUser = notepad.currentUser = {id: 1};
 
             hub.bind("change", function () {
                 var tasks, taskListView;
@@ -54,7 +55,7 @@ var TaskController = Backbone.Controller.extend({
                 taskListView.bind("add-item", function (itemText) {
                     var newTask = new Task({
                         description: itemText,
-                        owner: "1", //TODO: update the 3 lines below
+                        owner: notepad.currentUser.id, //TODO: update the 3 lines below
                         hub: hub.id, //
                         estimate: Tasket.settings.TASK_ESTIMATE_MAX //
                     });

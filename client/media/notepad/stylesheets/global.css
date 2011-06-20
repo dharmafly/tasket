@@ -491,11 +491,15 @@ table {
           right: 40px;
         }
 
-          #content .edit-item .delete a {
-            width: 14px;
-            height: 19px;
-            background-position: -41px -2px;
-          }
+        #content .edit-item .delete a {
+          width: 14px;
+          height: 19px;
+          background-position: -41px -2px;
+        }
+
+				#content .edit-item.invisible {
+					visibility: hidden;
+        }
 
 
 

@@ -20,7 +20,14 @@ var TaskListView = View.extend({
     initialize: function (options) {
         var view = this;
 
-        this.taskFormView = new TaskFormView();
+        this.taskView = new TaskView({model: new Task({
+            hub: notepad.selectedHub.id,
+            owner: notepad.currentUser.id
+        })});
+        this.taskFormView = new TaskFormView({
+            addItemView: this.taskView
+        });
+
         this.elem = jQuery(this.el);
         _.bindAll(this,"_onControlAction");
 
@@ -59,15 +66,21 @@ var TaskListView = View.extend({
     render: function () {
         var hub = this.model,
             listTitle = hub.get('title'),
+            taskView = this.taskView,
             taskFormView = this.taskFormView;
 
         this.elem.html(tim('task-list', {listTitle: listTitle}));
-        this.$('.new-item').after(taskFormView.render());
-        jQuery(taskFormView.el).hide();
+        this.$('.new-item-list').append(taskView.render());
+        //position the form view in the add-item-list element
+        //and then hide it
+        //taskFormView.editTask(taskView.model, taskView.$('.edit a'));
+        taskFormView.defaultPosition();
+        taskFormView.render();
+        taskFormView.elem.hide();
+
 
         return this.el;
     },
-
 
     /*
     * Public: Appends one or several tasks items to the view.
@@ -104,19 +117,17 @@ var TaskListView = View.extend({
     */
     _onNewItemClick: function (event) {
         var newItemElement = this.$(".new-item"),
+            addItemContainer = this.taskView.el,
+            taskView = this.taskView,
             taskFormView = this.taskFormView;
 
-
-        // the text input is located underneat the New Element link
-        if (newItemElement.next().children("input").length) {
-            newItemElement.hide();
-            taskFormView.elem.show().find("input").focus();
-
-        // the text input is hidden in a list item
-        } else {
+        //newItemElement.hide();
+        if (!taskFormView.elementInDefaultPosition()) {
             taskFormView.reset();
-            newItemElement.hide().after(this.taskFormView.el);
+            taskFormView.defaultPosition();
         }
+
+        taskFormView.elem.show();
 
     },
 
@@ -166,6 +177,7 @@ var TaskListView = View.extend({
     */
     _onedit: function (cid, target) {
         var task = this.collection.getByCid(cid);
+        this.taskFormView.reset();
         this.taskFormView.editTask(task,target);
     },
 

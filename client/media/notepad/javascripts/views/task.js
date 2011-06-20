@@ -16,9 +16,10 @@
              var view = this;
 
              this.elem = jQuery(this.el);
-             this.elem.attr('data-cid', this.model.cid);
 
              _.bindAll(this, "remove", "showActionControls", "render");
+
+             this.elem.attr('data-cid', this.model.cid);
 
              this.model
                  .bind("remove", view.remove)
@@ -52,10 +53,11 @@
 
          render: function () {
              var starred = !!this.model.get("starred"),
-                 done =  this.model.get("state") == "done";
+                 done = this.model.get("state") == "done",
+                 description = this.model.get("description");
 
-             jQuery(this.el).html(tim('task',{
-                 itemText: this.model.get('description')
+             jQuery(this.el).html(tim("task", {
+                 itemText: description
              }));
 
              //make action controllers invisible if the task has not been saved yet.
@@ -70,7 +72,7 @@
                  this.elem.addClass("completed");
              }
 
-             return this.el;
+            return this.el;
          },
 
         /*

@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 // notepad.js is the Notepad app's specific app.js
 // TODO: more tank-related functionality out of app.js and into tank.js
 
@@ -14,6 +15,17 @@ var notepad = _.extend({
             app.back(lightbox.historyCount);
         });
     },
+=======
+var notepad = _.extend({
+
+        selectedHub: null,
+
+        setup: function () {
+        },
+
+        bootstrap: function () {
+            var taskController = new TaskController();
+>>>>>>> Stashed changes
 
     bootstrap: function () {
         app.bodyElem = jQuery("body"); // TODO: Lightbox and others looks for app.bodyElem (App should be a class)
