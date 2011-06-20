@@ -1,5 +1,7 @@
  var TaskView = View.extend({
          tagName: 'li',
+         /* keep track of the previous value of the Task's description*/
+         previousDescription: null,
          events: {
          },
 
@@ -74,6 +76,44 @@
 
             return this.el;
          },
+
+
+        /*
+         *
+         *
+         *
+         *
+         *
+         */
+         makeEditable: function () {
+             var input  = $('<input type="text" placeholder="New item"/>'),
+                 cancel = $('<a href="#" class="cancel">cancel</a> '),
+                 paragraph = this.$("p"),
+                 description = this.previousDescription = this.model.get("description");
+
+             if (description) {
+               input.val(description);
+             }
+
+             paragraph.empty().append(input);
+             paragraph.append(cancel);
+             paragraph.find("input").focus();
+         },
+
+
+         /*
+         *
+         *
+         */
+         reset: function () {
+             if (this.model.isNew()) {
+                 this.collection.remove(this.model);
+             } else {
+                 console.info('setting previous description');
+                 this.$("p").text(this.previousDescription);
+             }
+         },
+
 
         /*
          * Handles the 'change:id' event emitted by the view's model.

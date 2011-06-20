@@ -22,14 +22,15 @@ var TaskListView = View.extend({
 
         this.taskView = new TaskView({model: new Task({
             hub: notepad.selectedHub.id,
-            owner: notepad.currentUser.id
+            owner: notepad.currentUser.id,
+            estimate: Tasket.settings.TASK_ESTIMATE_MAX
         })});
         this.taskFormView = new TaskFormView({
             addItemView: this.taskView
         });
 
         this.elem = jQuery(this.el);
-        _.bindAll(this,"_onControlAction");
+        _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress");
 
         this.collection
             // display the action controls once a hub task is saved
@@ -42,6 +43,8 @@ var TaskListView = View.extend({
 
             // Append new items to the list
             }).bind("add", function (task, collection) {
+               var taskView;
+
                if (task.get("hub") == view.model.id) {
                     view.renderTasks(task);
                }
@@ -54,7 +57,10 @@ var TaskListView = View.extend({
         });
 
         //delegate all item action events to the ul.item-list element.
-        this.elem.delegate("ul.edit-item li a", "click", view._onControlAction);
+        this.elem
+            .delegate("ul.edit-item li a", "click", view._onControlAction)
+            .delegate("li p a.cancel", "click", view._onCancel)
+            .delegate("li p input", "keypress", view._onKeypress);
     },
 
     /*
@@ -66,20 +72,9 @@ var TaskListView = View.extend({
     render: function () {
         var hub = this.model,
             listTitle = hub.get('title'),
-            taskView = this.taskView,
-            taskFormView = this.taskFormView;
+            taskView = this.taskView;
 
-        this.elem.html(tim('task-list', {listTitle: listTitle}));
-        this.$('.new-item-list').append(taskView.render());
-        //position the form view in the add-item-list element
-        //and then hide it
-        //taskFormView.editTask(taskView.model, taskView.$('.edit a'));
-        taskFormView.defaultPosition();
-        taskFormView.render();
-        taskFormView.elem.hide();
-
-
-        return this.el;
+        return this.elem.html(tim('task-list', {listTitle: listTitle}))[0];
     },
 
     /*
@@ -101,11 +96,32 @@ var TaskListView = View.extend({
         tasks = tasks instanceof TaskList ? tasks : new TaskList(tasks);
 
         tasks.each(function (task) {
-            taskView = new TaskView({model: task});
+            taskView = new TaskView({model: task, collection: view.collection});
             view.taskViews[task.cid] = taskView;
             view.$('.item-list').append(taskView.render());
+
+
+            if (task.isNew()) {
+                taskView.makeEditable();
+            }
         });
     },
+
+    /*
+    *
+    * Returns the taskView instance associated to an event target element.
+    *
+    * element - An event target element.
+    *
+    * returns an instance of TaskView.
+    *
+    *
+    */
+    _getElementView: function (element) {
+        var li = jQuery(element).parents("li[data-cid]");
+        return this.taskViews[ jQuery(li).attr("data-cid") ];
+    },
+
 
     /*
     * Handles the click event fired by the new item link
@@ -116,19 +132,13 @@ var TaskListView = View.extend({
     *
     */
     _onNewItemClick: function (event) {
-        var newItemElement = this.$(".new-item"),
-            addItemContainer = this.taskView.el,
-            taskView = this.taskView,
-            taskFormView = this.taskFormView;
 
-        //newItemElement.hide();
-        if (!taskFormView.elementInDefaultPosition()) {
-            taskFormView.reset();
-            taskFormView.defaultPosition();
-        }
-
-        taskFormView.elem.show();
-
+        var newTask = new Task({
+            hub: notepad.selectedHub.id,
+            owner: notepad.currentUser.id
+        });
+        this.collection.add(newTask);
+        event.preventDefault();
     },
 
     /*
@@ -176,9 +186,8 @@ var TaskListView = View.extend({
     * returns nothing.
     */
     _onedit: function (cid, target) {
-        var task = this.collection.getByCid(cid);
-        this.taskFormView.reset();
-        this.taskFormView.editTask(task,target);
+        var taskView = this.taskViews[cid];
+        taskView.makeEditable();
     },
 
 
@@ -210,8 +219,42 @@ var TaskListView = View.extend({
         this.trigger("update-item", cid, {
             starred: starred
         });
+    },
+
+    /*
+    * Handles the cancel edit event.
+    *
+    * event - An event object.
+    *
+    * returns nothing.
+    *
+    */
+
+    _onCancel: function (event) {
+        console.info('onCancel!');
+        var taskView = this._getElementView(event.target);
+        taskView.reset();
+        event.preventDefault();
+
+    },
+
+    /*
+    * Handles the onChange event on the editing input field.
+    *
+    * event - An event object.
+    *
+    *
+    * Returns nothing.
+    */
+
+    _onKeypress: function (event) {
+        var description, taskView;
+
+        if (_.include([0,13], event.which)) {
+            description = jQuery(event.target).val();
+            taskView = this._getElementView(event.target);
+
+            this.trigger('update-item', taskView.model, {description: description});
+        }
     }
-
-
-
 });
