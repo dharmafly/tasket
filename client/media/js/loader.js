@@ -55,7 +55,9 @@
             "models/models.js",
             "viz/forcedirector.js",
             "views/views.js",
-            "controllers/controllers.js",
+            "controllers/tank-controller.js",
+            "controllers/account-controller.js",
+            "controllers/dashboard-controller.js",
             
             [
                 "models/hub.js",

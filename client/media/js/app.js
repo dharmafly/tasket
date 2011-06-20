@@ -72,9 +72,12 @@ var cache = new Cache(Tasket.namespace),
             _.extend(this, {
                 // The controllers will make Ajax calls on their init, so are created after app init
                 tank: new TankController(),
-                pageController: new PageController(),
+                pageController: new AccountController(), // TODO: rename
                 dashController: new DashboardController()
             });
+            
+            // TODO temp
+            this.accountController = this.pageController;
             
             /////
             
