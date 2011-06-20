@@ -34,6 +34,8 @@ window.O = function(){
             // views
             //jsClientPath + '/views/task.js',
             jsCorePath + '/views/views.js',
+            jsCorePath + '/views/lightbox.js',
+            
             jsClientPath + '/views/task.js',
             jsClientPath + '/views/task-list.js',
             jsClientPath + '/views/task-form.js',

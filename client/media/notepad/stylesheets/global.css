@@ -555,10 +555,215 @@ table {
   }
   
   
-  
-  
-        
+/* @group Lightbox
+-----------------------------------------------------------------------------*/
 
-        
+.lightbox {
+	display: none;
+	opacity: 0;
+	z-index: 1000000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #000;
+	background-color: rgba(0, 0, 0, 0.9);
+	-webkit-transition: opacity 200ms ease-in;
+	-moz-transition: opacity 200ms ease-in;
+	-ms-transition: opacity 200ms ease-in;
+	-o-transition: opacity 200ms ease-in;
+	transition: opacity 200ms ease-in;
+}
 
-        
+.ie .lightbox {
+	background-color: transparent;
+	background-image: url(../images/overlay-90.png);
+}
+
+.lightbox.fade-in {
+	opacity: 1;
+}
+
+.lightbox.show {
+	display: block;
+}
+
+.lightbox .lightbox-inner {
+	z-index: 100;
+	position: fixed;
+	top: 100px;
+	left: 50%;
+	width: 35.384em /* 460px */;
+	max-height: 90%;
+	margin-left: -19.230em /* -250px */;
+	overflow: auto;
+	overflow-x: hidden;
+	/* Need to use ems here so the lightbox remains centered */
+	border-width: 0.308em /* 4px */;
+	
+	border: 1px solid #b4b4b4;
+	border-color: rgba(180, 180, 180, 1);
+	padding: 1.538em /* 20px */;
+	
+	border-color: #aaa;
+	-webkit-border-radius: 0.385em /* 5px */;
+	-moz-border-radius: 0.385em /* 5px */;
+	-ms-border-radius: 0.385em /* 5px */;
+	-o-border-radius: 0.385em /* 5px */;
+	border-radius: 0.385em /* 5px */;
+	
+	background-color: #efefef;
+	background-color: #e6e6e6;
+	background-color: rgba(230, 230, 230, 0.95);
+	
+	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	-moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	-o-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
+}
+
+.ie .lightbox .lightbox-inner {
+	position: absolute;
+}
+
+.lightbox .close {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+}
+
+.lightbox .lightbox-inner .content .description {
+    margin-top: 10px; /* make space for close button */
+}
+/* @end */
+
+/* @group Lightbox Content Elements
+-----------------------------------------------------------------------------*/
+
+.content h1,
+.content h2,
+.content h3 {
+	font-weight: bold;
+	font-size: 1.384em /* 18px */;
+	/* Line up the right-hand side of the bottom border with the lightbox's close button */
+	margin: 1.538em /* 20px */ -0.679em /* 10px */ 1.538em /* 20px */ 0;
+	padding-bottom: 0.679em /* 10px */;
+	border-bottom: 1px solid #ccc;
+}
+
+.content h1 {
+	margin-top: 0;
+}
+
+.content h2 {
+	font-size: 1.231em /* 16px */;
+	margin-top:2.217em;
+}
+
+.content h3 {
+	font-size: 1.077em /* 14px */;
+	padding-bottom:0;
+	margin-bottom:0;
+	border: none;
+}
+
+.content a {
+    color: #003663;
+    border-bottom: 1px solid;
+    font-weight: bold;
+}
+
+.content strong {
+	font-weight: bold;
+}
+
+.content em,
+.content blockquote {
+	font-style: italic;
+}
+
+.content blockquote {
+	padding-left: 0.615em /* 8px */;
+	margin-left: -0.615em /* -8px */;
+	border-left: 1px solid #ccc;
+}
+
+.content code {
+	font-family: monospace;
+}
+
+.content form {
+	width: 23.077em /* 300px */;
+	max-width: 100%;
+}
+
+.content form li {
+	margin-bottom: 0.769em /* 10px */;
+}
+
+.content form .error strong, .content form strong.warning {
+	color: #ce0300;
+}
+.content form .note {
+	color: #777;
+}
+
+.content form .error input,
+.content form .error textarea,
+.content form input:invalid,
+.content form textarea:invalid	{
+	background-color: rgb(255, 234, 239);
+	border-color: rgb(255, 188, 192);
+	color: rgb(184, 26, 26);
+}
+
+.content form label,
+.content form input,
+.content form textarea {
+	display: block;
+}
+
+.content form label {
+	font-weight: bold;
+	line-height: 1.5;
+}
+
+.content form input,
+.content form textarea,
+.content form select {
+	border: 1px solid #ccc;
+	padding: 0.461em /* 4px */;
+	font-size: 1em /* 13px */;
+	width: 22.307em /* 290px */;
+	max-width: 100%;
+}
+
+.content form textarea {
+	/* Fixes an issue in FF where the font size is reset */
+	font: 13px/1.6em Arial, "Helvetica Neue", Helvetica, Geneva, sans-serif;
+}
+
+.content form select {
+	width: 23.077em /* 300px */;
+}
+
+.content form .actions {
+	text-align: right;
+	position: relative;
+}
+
+.content form .actions .note {
+	text-align: left;
+	position: absolute;
+	top: 0;
+	margin: 0;
+	line-height: 2.153em /* 28px */;
+}
+
+.content form .actions .note a.delete {
+	font-weight: bold;
+	color: #C92D2D;
+}
+
+/* @end */
