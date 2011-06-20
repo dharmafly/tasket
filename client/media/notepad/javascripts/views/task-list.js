@@ -1,7 +1,6 @@
 var TaskListView = View.extend({
     tagName: 'section',
     id: 'content',
-    taskFormView: null,
     /* collection of taskView instances, organised by task.cid => taskView  */
     taskViews: {},
     events: {
@@ -22,12 +21,8 @@ var TaskListView = View.extend({
 
         this.taskView = new TaskView({model: new Task({
             hub: notepad.selectedHub.id,
-            owner: notepad.currentUser.id,
-            estimate: Tasket.settings.TASK_ESTIMATE_MAX
+            owner: notepad.currentUser.id
         })});
-        this.taskFormView = new TaskFormView({
-            addItemView: this.taskView
-        });
 
         this.elem = jQuery(this.el);
         _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress");
@@ -51,10 +46,6 @@ var TaskListView = View.extend({
             });
 
 
-        //forward all task-form events (i.e. 'add-item', 'edit-item') to the controller
-        this.taskFormView.bind("all", function forwardEvent() {
-            TaskListView.prototype.trigger.apply(view, arguments);
-        });
 
         //delegate all item action events to the ul.item-list element.
         this.elem
@@ -135,7 +126,8 @@ var TaskListView = View.extend({
 
         var newTask = new Task({
             hub: notepad.selectedHub.id,
-            owner: notepad.currentUser.id
+            owner: notepad.currentUser.id,
+            estimate: Tasket.settings.TASK_ESTIMATE_MAX
         });
         this.collection.add(newTask);
         event.preventDefault();

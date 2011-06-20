@@ -109,7 +109,6 @@
              if (this.model.isNew()) {
                  this.collection.remove(this.model);
              } else {
-                 console.info('setting previous description');
                  this.$("p").text(this.previousDescription);
              }
          },
