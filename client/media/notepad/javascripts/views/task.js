@@ -79,24 +79,24 @@
 
 
         /*
+         * Replaces embeds into the the list item's paragraph element a text input together
+         * with a 'save' and a 'cancel' button.
          *
          *
-         *
-         *
+         * Returns nothing.
          *
          */
          makeEditable: function () {
-             var input  = $('<input type="text" placeholder="New item"/>'),
-                 cancel = $('<a href="#" class="cancel">cancel</a> '),
+             var html  = jQuery(tim("task-edit", {placeholder: "A new item"})),
                  paragraph = this.$("p"),
                  description = this.previousDescription = this.model.get("description");
 
+             paragraph.empty().append(html);
+
              if (description) {
-               input.val(description);
+               paragraph.find("input").val(description);
              }
 
-             paragraph.empty().append(input);
-             paragraph.append(cancel);
              paragraph.find("input").focus();
          },
 

@@ -32,7 +32,7 @@ var TaskListView = View.extend({
         })});
 
         this.elem = jQuery(this.el);
-        _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress");
+        _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress", "_onSave");
 
 
         this.model.bind("change:title", function (task) {
@@ -63,6 +63,7 @@ var TaskListView = View.extend({
         this.elem
             .delegate(".item-list ul.edit-item li a", "click", view._onControlAction)
             .delegate("li p a.cancel", "click", view._onCancel)
+            .delegate("li p a.save", "click", view._onSave)
             .delegate("li p input", "keypress", view._onKeypress);
     },
 
@@ -306,5 +307,14 @@ var TaskListView = View.extend({
 
             this.trigger('update-item', taskView.model, {description: description});
         }
+    },
+
+    _onSave: function (event) {
+        var taskView = this._getElementView(event.target),
+            description = taskView.$("input").val();
+
+        this.trigger('update-item', taskView.model, {description: description});
+
+        event.preventDefault();
     }
 });
