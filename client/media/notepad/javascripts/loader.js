@@ -59,6 +59,7 @@ window.O = function(){
             jsCorePath + '/core/tasket.js',
             jsCorePath + '/app.js',
             jsClientPath + '/notepad.js',
+            jsClientPath + '/lang/default.js',
 
 
 

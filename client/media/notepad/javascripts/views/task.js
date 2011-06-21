@@ -84,17 +84,16 @@ var TaskView = View.extend({
     *
     */
     makeEditable: function () {
-        var input  = $('<input type="text" placeholder="New item"/>'),
-            cancel = $('<a href="#" class="cancel">cancel</a> '),
+        var html  = jQuery(tim('task-edit', {placeholder: app.lang.NEW_TASK})),
             paragraph = this.$("p"),
             description = this.previousDescription = this.model.get("description");
 
-        if (description) {
-            input.val(description);
-        }
 
-        paragraph.empty().append(input);
-        paragraph.append(cancel);
+        paragraph.empty().append(html);
+
+        if (description) {
+            paragraph.find("input").val(description);
+        }
         paragraph.find("input").focus();
     },
 
