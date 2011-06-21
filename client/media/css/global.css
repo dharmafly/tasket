@@ -73,6 +73,7 @@ img {
 	border: none;
 }
 
+/* @group Buttons */
 .form-button {
 	display: inline-block;
 }
@@ -372,6 +373,7 @@ a.action.locate {
 .ie a.action.locate {
 	background-position: 2px -178px;
 }
+/* @end */
 
 /* Tank task & hub controls */
 

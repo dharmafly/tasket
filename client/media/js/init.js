@@ -116,7 +116,6 @@ if (app.isSupported()) {
 
     // TODO: setTimeout in case of non-load -> show error and cancel all open xhr
     app.init();
-
 }
 
 else {

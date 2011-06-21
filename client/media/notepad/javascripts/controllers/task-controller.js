@@ -29,8 +29,9 @@ var TaskController = Backbone.Controller.extend({
     showTasks: function () {
         if (!this.taskViewRendered) {
             var controller = this,
-                hub = notepad.selectedHub = Tasket.getHubs(1);
-                currentUser = notepad.currentUser = {id: 1};
+                // TODO TEMP
+                hub = app.selectedHub = Tasket.getHubs(1),
+                currentUser = app.currentUser;
 
             hub.bind("change", function () {
                 var tasks, taskListView;

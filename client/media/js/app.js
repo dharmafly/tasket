@@ -1,7 +1,7 @@
 // UI SETTINGS
 
 var cache = new Cache(Tasket.namespace),
-    app = _.extend({
+    app = _.extend({    
         // Sets up the app. Called by init()
         setup: function () {
             // Bind app object's methods to the app object
@@ -86,7 +86,7 @@ var cache = new Cache(Tasket.namespace),
             this.tank
                 .bind("hub:select", function(hubView){
                     app.selectedHubView = hubView;
-                    app.selectedHub = hubView.model.id;
+                    app.selectedHub = hubView.model.id; // TODO: this should be changed to cache the whole model object, not just the id
                     app.bodyElem.addClass("hubSelected");
                     app.dashboard.hubAnchorSelect();
                 })
@@ -173,17 +173,20 @@ var cache = new Cache(Tasket.namespace),
         },
 
         restoreCache: function(){
-            var currentUserData, currentUser, username;
+            var currentUserData = app.cache.get("currentUser"),
+                currentUser, username;
 
             // If we don't have a session cookie, destroy the cache. Django will
             // continually set this cookie so this will only really work if the
             // cookie itself expires.
             if (!this.getCookie("sessionid")) {
-                // Redirect to login and pre-populate the username field.
-                currentUser = app.cache.get("currentUser");
-                if (currentUser) {
+                if (currentUserData) {
+                    username = currentUserData.username;
+                    
+                    // Redirect to login form
                     window.location.hash = "/login/";
-                    username = currentUser.username;
+                    
+                    // Pre-populate the username field
                     setTimeout(function () {
                         jQuery('#field-username').val(username);
                     }, 200);
@@ -193,8 +196,7 @@ var cache = new Cache(Tasket.namespace),
                 this.destroyCache();
             }
 
-            currentUserData = app.cache.get("currentUser");
-            if (currentUserData && this.getCookie("sessionid")){
+            else if (currentUserData){
                 currentUser = app.updateCurrentUser(new User(currentUserData), false);
                 currentUser.fetch();
             }

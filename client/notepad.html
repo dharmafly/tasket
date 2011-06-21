@@ -41,7 +41,9 @@
           <li class="first"><a href="/" title="Find out more">About</a></li>
           <li><a href="/" title="Find out more">Info</a></li>
           <li><a href="/" title="Some general info">Help</a></li>
-          <li class="message">You are logged in as <strong>Pat Simian</strong></li>
+          <li class="user vcard">You are logged in as 
+            <strong><a class="fn" href="#/account/" title="Edit your account details"></a></strong>
+          </li>
           <li class="login">
             <a href="#/login/" title="Login">Login</a>
             <form action="/logout/" method="post">
@@ -191,7 +193,7 @@
                 <label for="field-password_confirm">Confirm Password</label>
                 <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
             </li>
-            <li>
+            <li class="upload-image">
                 <label for="field-image">Image</label>
                 <input id="field-image" type="file" name="image" />
                 <p class="loading">Uploading image</p>
@@ -221,7 +223,7 @@
                 <label for="field-password_confirm">Confirm Password</label>
                 <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
             </li>
-            <li>
+            <li class="upload-image">
                 <label for="field-image">Image</label>
                 <input id="field-image" type="file" name="image" />
                 <p class="loading">Uploading image</p>
@@ -248,7 +250,27 @@
             <button type="submit">Change password</button>
         </div>
     </script>
+    
+    <script type="text/tim" class="iframe-upload">
+        <!doctype html>
+        <head>
+            <link rel="stylesheet" href="{{stylesheet}}" />
+            <style>
+                html, body, form, form input[type=file] {
+                    background: none; border: none; margin: 0;
+                }
+            </style>
+        </head>
+        <body class="content">
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="{{name}}" />
+            </form>
+        </body>
+    </script>
+    
     <!-- end TEMPLATES //-->
+
+
 
     <!-- Scripts-->
     <script src="/media/js/dependencies/jquery.js"></script>
