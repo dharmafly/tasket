@@ -48,7 +48,7 @@ window.O = function(){
             jsClientPath + '/views/task-list.js',
 
             // controllers
-            jsClientPath + '/controllers/task.js',
+            jsClientPath + '/controllers/task-controller.js',
             jsCorePath + '/controllers/account-controller.js',
 
 
