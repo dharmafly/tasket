@@ -17,7 +17,6 @@ var TaskView = View.extend({
     },
     initialize: function (options) {
         var view = this;
-        
         this.elem = jQuery(this.el);
         _.bindAll(this, "remove", "showActionControls", "render");
 
@@ -63,7 +62,7 @@ var TaskView = View.extend({
 
         //make action controllers invisible if the task has not been saved yet.
         if (!this.model.id) {
-            this.elem.find("ul.edit-item").addClass("invisible");
+            this.elem.addClass("unsaved");
         }
 
         if (starred) {
@@ -118,7 +117,7 @@ var TaskView = View.extend({
     *
     */
     showActionControls: function () {
-        this.$("ul.edit-item").removeClass("invisible");
+        this.elem.removeClass("unsaved");
     },
 
     _onMouseover: function () {

@@ -473,43 +473,43 @@ table {
   footer nav {
     font-family: Arial, Helvetica, serif;
   }
-    #mainnav a, button.link {
-      color: #6ab6da;
-      text-decoration: none;
-      font-weight: bold;
-      text-transform: lowercase;
-    }
-    #mainnav a:hover, button.link:hover {
-      text-decoration: underline;
-      cursor:pointer;
-    }
+  #mainnav a, button.link {
+    color: #6ab6da;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: lowercase;
+  }
+  #mainnav a:hover, button.link:hover {
+    text-decoration: underline;
+    cursor:pointer;
+  }
   
-    #mainnav li,
-    footer nav li {
-      float: left;
-      background: url(../images/sprite1.png) no-repeat left -898px;
-      padding-left: 8px;
-      margin-left: 7px;
-      line-height: 1.2em;
-      font-size: 1.2em;
-    }
-    
-    #mainnav li:first-child,
-    footer nav li:first-child,
-    #mainnav li.user {
-      background: none;
-      margin: 0;
-      padding: 0;
-    }
-    
-    #mainnav li.user {
-      margin-left: 20px;
-      display:none; /* displayed on user login */
-    }
-    
-    #mainnav li.user a.fn {
-      text-transform:none;
-    }
+  #mainnav li,
+  footer nav li {
+    float: left;
+    background: url(../images/sprite1.png) no-repeat left -898px;
+    padding-left: 8px;
+    margin-left: 7px;
+    line-height: 1.2em;
+    font-size: 1.2em;
+  }
+  
+  #mainnav li:first-child,
+  footer nav li:first-child,
+  #mainnav li.user {
+    background: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  #mainnav li.user {
+    margin-left: 20px;
+    display:none; /* displayed on user login */
+  }
+  
+  #mainnav li.user a.fn {
+    text-transform:none;
+  }
   
 /* ASIDE */
 
