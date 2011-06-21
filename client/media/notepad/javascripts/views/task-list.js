@@ -190,12 +190,16 @@ var TaskListView = View.extend({
     * Returns nothing.
     */
     _ontick: function (cid, target) {
-        var currentUserId = "1",
+        var currentUserId = notepad.currentUser.id,
             task = this.collection.getByCid(cid),
-            forceMode = true;
+            forceMode = true,
+            newState = task.get("state") === Task.states.DONE ?
+              Task.states.NEW :
+              Task.states.DONE ;
 
-        task.state(Task.states.DONE, currentUserId, forceMode)
+        task.state(newState, currentUserId, forceMode)
             .save();
+
     },
 
    /*
@@ -208,7 +212,7 @@ var TaskListView = View.extend({
         var task = this.collection.getByCid(cid),
             starred = !task.get("starred");
 
-        this.trigger("update-item", cid, {
+        this.trigger("update-item", task, {
             starred: starred
         });
     },
@@ -223,7 +227,6 @@ var TaskListView = View.extend({
     */
 
     _onCancel: function (event) {
-        console.info('onCancel!');
         var taskView = this._getElementView(event.target);
         taskView.reset();
         event.preventDefault();

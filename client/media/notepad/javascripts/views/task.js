@@ -31,7 +31,7 @@
                  .bind("change:state", function (task) {
                      var state = task.get("state");
 
-                     if (state === "done") {
+                     if (_.include(["verified", "done"], state)) {
                          view.elem.addClass("completed");
                      } else {
                          view.elem.removeClass("completed");
