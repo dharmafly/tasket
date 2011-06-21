@@ -10,6 +10,8 @@ var TaskListView = View.extend({
         "click header .edit a": "_onTitleEdit",
         "click header a.cancel": "_onTitleEditCancel",
         "click header a.save": "_onTitleEditSave",
+        "mouseover header h1 a": "_onTitleMouseover",
+        "mouseout header h1 a": "_onTitleMouseout",
         "keypress header input": "_onKeypressTitle",
         "click a.new-item": "_onNewItemClick"
     },
@@ -113,7 +115,7 @@ var TaskListView = View.extend({
 
     _onTitleEdit: function (event) {
         var listTitle = this.previousTitle =  this.$("header h1 a").text(),
-            html = jQuery(tim("task-edit" ,{}));
+            html = jQuery(tim("task-edit" ,{placeholder: false}));
 
         this.$("header h1").replaceWith(html);
         this.$("header input").val(listTitle).focus();
@@ -150,6 +152,15 @@ var TaskListView = View.extend({
             jQuery('<h1><a href="#">'+title+'</a></h1>')
         );
         this.$("header .cancel, header .save").remove();
+    },
+
+    _onTitleMouseover: function (event) {
+        this.$("header").addClass("hover");
+        event.preventDefault();
+    },
+    _onTitleMouseout: function (event) {
+        this.$("header").removeClass("hover");
+        event.preventDefault();
     },
 
 

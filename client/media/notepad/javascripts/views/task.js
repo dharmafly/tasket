@@ -3,6 +3,8 @@
          /* keep track of the previous value of the Task's description*/
          previousDescription: null,
          events: {
+             "mouseover": "_onMouseover",
+             "mouseout": "_onMouseout"
          },
 
         /*
@@ -64,7 +66,7 @@
 
              //make action controllers invisible if the task has not been saved yet.
              if (!this.model.id) {
-                 this.elem.find("ul.edit-item").addClass("invisible");
+                 this.elem.addClass("unsaved");
              }
 
              if (starred) {
@@ -122,7 +124,16 @@
          */
 
          showActionControls: function () {
-             this.$("ul.edit-item").removeClass("invisible");
+             this.elem.removeClass("unsaved");
+         },
+
+         _onMouseover: function () {
+             this.elem.addClass("hover");
+         },
+
+         _onMouseout: function () {
+             this.elem.removeClass("hover");
          }
+
 
  });
