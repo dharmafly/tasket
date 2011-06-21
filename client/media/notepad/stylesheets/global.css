@@ -138,7 +138,7 @@ table {
 
 /* HEADER */ 
   
-  header {
+  header#pageheader {
     background: url(../images/bg-header.png) repeat-x left bottom;
     min-height: 110px;
     margin: 0 30px -26px 30px;
@@ -147,13 +147,13 @@ table {
   }
 
   
-    header h1,
-    header h1 a {
+    header#pageheader h1,
+    header#pageheader h1 a {
       width: 210px;
       height: 52px;
     }
   
-      header h1 a {
+      header#pageheader h1 a {
         display: block;
         text-indent: -1000em;
         background: url(../images/logo.png) no-repeat;

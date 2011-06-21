@@ -52,18 +52,7 @@ var TaskController = Backbone.Controller.extend({
                 });
 
                 //event handler for saving new items
-                taskListView.bind("add-item", function (itemText) {
-                    var newTask = new Task({
-                        description: itemText,
-                        owner: notepad.currentUser.id, //TODO: update the 3 lines below
-                        hub: hub.id, //
-                        estimate: Tasket.settings.TASK_ESTIMATE_MAX //
-                    });
-
-                    Tasket.tasks.add(newTask);
-                    newTask.save();
-
-                }).bind("update-item", function (task, attrValues) {
+                taskListView.bind("update-item", function (task, attrValues) {
                     task.set(attrValues);
                     task.save();
 

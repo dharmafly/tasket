@@ -1,10 +1,17 @@
 var TaskListView = View.extend({
-    tagName: 'section',
-    id: 'content',
-    /* collection of taskView instances, organised by task.cid => taskView  */
+    el: jQuery("section#content"),
+    // collection of taskView instances, organised by task.cid => taskView  
     taskViews: {},
+
+    // caches the hub title so it can be restored when cancelling an edit.
+
+    previousTitle: null,
     events: {
-        'click a.new-item': '_onNewItemClick'
+        "click header .edit a": "_onTitleEdit",
+        "click header a.cancel": "_onTitleEditCancel",
+        "click header a.save": "_onTitleEditSave",
+        "keypress header input": "_onKeypressTitle",
+        "click a.new-item": "_onNewItemClick"
     },
 
    /*
@@ -26,6 +33,11 @@ var TaskListView = View.extend({
 
         this.elem = jQuery(this.el);
         _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress");
+
+
+        this.model.bind("change:title", function (task) {
+            view._resetTitle(task.get("title"));
+        });
 
         this.collection
             // display the action controls once a hub task is saved
@@ -49,7 +61,7 @@ var TaskListView = View.extend({
 
         //delegate all item action events to the ul.item-list element.
         this.elem
-            .delegate("ul.edit-item li a", "click", view._onControlAction)
+            .delegate(".item-list ul.edit-item li a", "click", view._onControlAction)
             .delegate("li p a.cancel", "click", view._onCancel)
             .delegate("li p input", "keypress", view._onKeypress);
     },
@@ -91,12 +103,55 @@ var TaskListView = View.extend({
             view.taskViews[task.cid] = taskView;
             view.$('.item-list').append(taskView.render());
 
-
+            //new item
             if (task.isNew()) {
                 taskView.makeEditable();
             }
         });
     },
+
+    _onTitleEdit: function (event) {
+        var listTitle = this.previousTitle =  this.$("header h1 a").text(),
+            html = jQuery(tim("task-edit" ,{}));
+
+        this.$("header h1").replaceWith(html);
+        this.$("header input").val(listTitle).focus();
+        event.preventDefault();
+    },
+
+    _onTitleEditSave: function (event) {
+        var newTitle = this.$("header input").val();
+        this._saveTitle(newTitle);
+        event.preventDefault();
+    },
+
+
+    _onTitleEditCancel: function (event) {
+        this._resetTitle(this.previousTitle);
+        event.preventDefault();
+    },
+
+    _saveTitle: function (title) {
+        this.model.set({title: title});
+        this.model.save();
+    },
+
+    _onKeypressTitle: function (event) {
+        var newTitle = jQuery(event.target).val();
+
+        if (_.include([13, 0], event.which)) {
+            this._saveTitle(newTitle);
+        }
+    },
+
+    _resetTitle: function (title) {
+        this.$("header input").replaceWith(
+            jQuery('<h1><a href="#">'+title+'</a></h1>')
+        );
+        this.$("header .cancel, header .save").remove();
+    },
+
+
 
     /*
     *
