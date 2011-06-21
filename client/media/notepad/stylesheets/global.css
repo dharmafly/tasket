@@ -1,15 +1,12 @@
 /*
 ----------------------------------------------
- Toodledoo Global Styles
- Developed by Ollie Bettany / Dharmafly
- Created: 13/06/2011
+ Tasket Notepad
+ Created by Dharmafly
 ----------------------------------------------
 */
 
 /* http://meyerweb.com/eric/tools/css/reset/ 
-   v2.0b1 | 201101 
-   NOTE: WORK IN PROGRESS
-   USE WITH CAUTION AND TEST WITH ABANDON */
+   v2.0b1 | 201101 */
 
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
@@ -120,6 +117,309 @@ table {
     font-weight: bolder;
   }
   
+  /* @group Buttons */
+    .form-button {
+	    display: inline-block;
+    }
+
+    button, .button, .button:visited {
+	    font-size: 1em /* 13px */;
+	    text-shadow: 0 1px 1px #000;
+	    line-height: 1.923em /* 25px */;
+	    min-height: 1.923em /* 25px */;
+	    color: #fff;
+	    display: inline-block;
+	    padding: 0 0.8667em /* 15px */;
+	    border: none;
+	    background-color: #232323;
+	    background-image: -webkit-gradient(
+		    linear, left bottom, left top, from(#101010), to(#232323)
+	    );
+	    background-image: -moz-linear-gradient(
+		    90deg, #101010, #232323
+	    );
+	    background-image: -webkit-linear-gradient(
+		    90deg, #101010, #232323
+	    );
+	    background-image: linear-gradient(
+		    90deg, #101010, #232323
+	    );
+	    -webkit-border-radius: 0.231em /* 3px */;
+	    -moz-border-radius: 0.231em /* 3px */;
+	    -ms-border-radius: 0.231em /* 3px */;
+	    -o-border-radius: 0.231em /* 3px */;
+	    border-radius: 0.231em /* 3px */;
+	    -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	    -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	    -ms-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	    -o-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+	    cursor: pointer;
+    }
+
+    /* Fix line-height bug in FF & Opera 
+       http://www.cssnewbie.com/input-button-line-height-bug/
+     */
+    button {
+	    line-height: 1.386em /* 18px */;
+	    padding-top: 0.231em /* 3px */;
+	    padding-bottom: 0.308em /* 4px */;
+    }
+
+    button:hover, button:focus,
+    .button:hover, .button:focus {
+	    background-color: #444;
+	    background-image: -webkit-gradient(
+		    linear, left bottom, left top, from(#232323), to(#444)
+	    );
+	    background-image: -moz-linear-gradient(
+		    90deg, #232323, #444
+	    );
+	    background-image: -webkit-linear-gradient(
+		    90deg, #232323, #444
+	    );
+	    background-image: linear-gradient(
+		    90deg, #232323, #444
+	    );
+	    border: none;
+    }
+
+    button:active, .button:active {
+	    color: #454545;
+	    text-shadow: 0 -1px 0 #000;
+	    background-color: #111;
+	    background-image: -webkit-gradient(
+		    linear, left bottom, left top, from(#000), to(#111)
+	    );
+	    background-image: -moz-linear-gradient(
+		    90deg, #232323, #444
+	    );
+	    background-image: -webkit-linear-gradient(
+		    90deg, #232323, #444
+	    );
+	    background-image: linear-gradient(
+		    90deg, #232323, #444
+	    );
+	    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	    -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	    -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+	    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+    }
+
+    button[disabled],
+    button.disabled,
+    .button.disabled,
+    button[disabled]:hover, button[disabled]:focus,
+    button.disabled:hover, button.disabled:focus,
+    .button.disabled:hover, .button.disabled:focus {
+	    cursor: default;
+	    background-color: #ccc;
+	    background-image: -webkit-gradient(
+		    linear, left bottom, left top, from(#b9b9b9), to(#ccc)
+	    );
+	    background-image: -moz-linear-gradient(
+		    90deg, #b9b9b9, #ccc
+	    );
+	    background-image: -webkit-linear-gradient(
+		    90deg, #b9b9b9, #ccc
+	    );
+	    background-image: linear-gradient(
+		    90deg, #b9b9b9, #ccc
+	    );
+	    color: #898989;
+	    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.2);
+	    border: none;
+    }
+
+    button.link {
+	    padding: 0;
+	    margin:0;
+	    font-size: 1em /* 13px */;
+	    text-shadow: none;
+	    line-height: 1.231em /* 16px */;
+	    min-height: 0;
+	    background: none;
+	    border: none;
+	    color: #fff;
+	    -webkit-border-radius: 0;
+	    -moz-border-radius: 0;
+	    -ms-border-radius: 0;
+	    -o-border-radius: 0;
+	    border-radius: 0;
+	    -webkit-box-shadow: none;
+	    -moz-box-shadow: none;
+	    -ms-box-shadow: none;
+	    -o-box-shadow: none;
+	    box-shadow: none;
+    }
+
+    .action, a:link.action {
+	    color: #484848;
+	    text-shadow: none;
+	    min-height: 1.769em /* 23px */;
+	    background-color: #ececec;
+	    background-repeat: no-repeat;
+	    background-position: 30px 30px, 0 0;
+	    background-image: url(../../images/sprites.png);
+	    background-image:
+	    url(../../images/sprites.png),
+	    -webkit-gradient(
+		    linear, left bottom, left top, from(#e2e5e5), to(#fefefe)
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    -moz-linear-gradient(
+		    90deg, #e2e5e5, #fefefe
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    -webkit-linear-gradient(
+		    90deg, #e2e5e5, #fefefe
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    linear-gradient(
+		    90deg, #e2e5e5, #fefefe
+	    );
+	    border: 1px solid #8f9397;
+	    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	    -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	    -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+	    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+
+    .ie .action,
+    .ie a:link.action,
+    .ie .action:hover,
+    .ie a:hover.action,
+    .ie .action:focus,
+    .ie a:focus.action,
+    .ie .action:active,
+    .ie a:active.action {
+	    background-image: url(../../images/sprites.png);
+    }
+
+    .action:hover, a:hover.action,
+    .action:focus, a:focus.action {
+	    background-color: #ececec;
+	    background-image:
+	    url(../../images/sprites.png),
+	    -webkit-gradient(
+		    linear, left bottom, left top, from(#ececec), to(#fff)
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    -moz-linear-gradient(
+		    90deg, #fefefe, #fff
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    -webkit-linear-gradient(
+		    90deg, #fefefe, #fff
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    linear-gradient(
+		    90deg, #fafafa, #fff
+	    );
+	    border: 1px solid #a3a3a3;
+	    -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+	    -moz-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.0.5);
+	    -ms-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+	    -o-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+	    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.05);
+    }
+
+    .ie .action:hover, a:hover.action,
+    .ie .action:focus, a:focus.action {
+	    background-color: #fafafa;
+    }
+      
+    .action:active, a:active.action {
+	    color: #555;
+	    background-color: #ccc;
+	    text-shadow: none;
+	    background-image:
+	    url(../../images/sprites.png),
+	    -webkit-gradient(
+		    linear, left bottom, left top, from(#bbb), to(#ccc)
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	     -moz-linear-gradient(
+		    90deg, #fefefe, #fff
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    -webkit-linear-gradient(
+		    90deg, #fefefe, #fff
+	    );
+	    background-image:
+	    url(../../images/sprites.png),
+	    linear-gradient(
+		    90deg, #fafafa, #fff
+	    );
+	    border: 1px solid #a3a3a3;
+	    -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	    -moz-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	    -ms-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	    -o-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+	    box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+    }
+
+    .ie .action:active, a:active.action {
+	    background-color: #fefefe;
+    }
+
+    a.action.edit,
+    .action.delete,
+    .action.close,
+    a.action.locate {
+	    display: inline-block;
+	    text-indent: -999em;
+	    padding: 0;
+	    width: 17px;
+	    height: 17px;
+	    min-height: 17px;
+	    -webkit-box-sizing: content-box;
+	    -moz-box-sizing: content-box;
+	    -o-box-sizing: content-box;
+	    box-sizing: content-box;
+    }
+
+    a.action.edit {
+	    background-position: 3px -88px, 0 0;
+    }
+
+    .ie a.action.edit {
+	    background-position: 3px -88px;
+    }
+
+    .action.close, .action.delete {
+	    background-position: 4px -116px;
+	    background-position: 4px -116px, 0 0;
+    }
+
+    .ie .action.close,
+    .ie .action.delete {
+	    background-position: 4px -116px;
+    }
+
+    a.action.locate {
+	    position: relative;
+	    top: 1px;
+	    width: 23px;
+	    height: 23px;
+	    background-position: 2px -178px, 0 0;
+    }
+
+    .ie a.action.locate {
+	    background-position: 2px -178px;
+    }
+    /* @end */
+  
   
 /* LAYOUT */
 
@@ -145,7 +445,6 @@ table {
     position: relative;
     z-index: 3;
   }
-
   
     header#pageheader h1,
     header#pageheader h1 a {
@@ -174,6 +473,17 @@ table {
   footer nav {
     font-family: Arial, Helvetica, serif;
   }
+    
+    #mainnav a, button.link {
+      color: #6ab6da;
+      text-decoration: none;
+      font-weight: bold;
+      text-transform: lowercase;
+    }
+    #mainnav a:hover, button.link:hover {
+      text-decoration: underline;
+      cursor:pointer;
+    }
   
     #mainnav li,
     footer nav li {
@@ -187,47 +497,19 @@ table {
     
     #mainnav li:first-child,
     footer nav li:first-child,
-    #mainnav .message {
+    #mainnav li.user {
       background: none;
       margin: 0;
       padding: 0;
     }
     
-    #mainnav .message {
+    #mainnav li.user {
       margin-left: 20px;
+      display:none; /* displayed on user login */
     }
     
-    
-    #mainnav a, button.link {
-      color: #6ab6da;
-      text-decoration: none;
-      font-weight: bolder;
-      text-transform: lowercase;
-    }
-    #mainnav a:hover, button.link:hover {
-      text-decoration: underline;
-      cursor:pointer;
-    }
-    
-    button.link {
-	    padding: 0;
-	    margin:0;
-	    font-size: 1em /* 13px */;
-	    text-shadow: none;
-	    line-height: 1.231em /* 16px */;
-	    min-height: 0;
-	    background: none;
-	    border: none;
-	    -webkit-border-radius: 0;
-	    -moz-border-radius: 0;
-	    -ms-border-radius: 0;
-	    -o-border-radius: 0;
-	    border-radius: 0;
-	    -webkit-box-shadow: none;
-	    -moz-box-shadow: none;
-	    -ms-box-shadow: none;
-	    -o-box-shadow: none;
-	    box-shadow: none;
+    #mainnav li.user a.fn {
+      text-transform:none;
     }
   
 /* ASIDE */
@@ -585,6 +867,7 @@ table {
 -----------------------------------------------------------------------------*/
 
 .lightbox {
+    font-size:1.3em;
 	display: none;
 	opacity: 0;
 	z-index: 1000000;
@@ -626,9 +909,7 @@ table {
 	overflow: auto;
 	overflow-x: hidden;
 	/* Need to use ems here so the lightbox remains centered */
-	border-width: 0.308em /* 4px */;
-	
-	border: 1px solid #b4b4b4;
+	border: 0.308em solid #b4b4b4 /* 4px */;
 	border-color: rgba(180, 180, 180, 1);
 	padding: 1.538em /* 20px */;
 	
@@ -799,3 +1080,9 @@ nav#mainnav .login form {
 	display: none;
 }
 /* @end */
+
+
+/* User account "upload-image" field disabled */
+.lightbox .content form .upload-image {
+    display:none;
+}

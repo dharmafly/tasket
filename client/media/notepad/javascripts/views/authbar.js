@@ -1,3 +1,4 @@
+// A subset of the Tasket Toolbar.js
 // Setup the toolbar.
 var Toolbar = View.extend({
     constructor: function Toolbar() {
@@ -8,12 +9,11 @@ var Toolbar = View.extend({
         View.prototype.initialize.apply(this, arguments);
         
         var view = this,
-            methods = ["toggleLogin", "updateUser", "updateTasks", "updateSignup"];
+            methods = ["toggleLogin", "updateUser", "updateSignup"];
 
         this.toolbar  = jQuery(this.el);
         this.login    = this.toolbar.find(".login");
-        this.userbar  = this.toolbar.find("h2");
-        this.tasks    = this.toolbar.find(".tasks");
+        this.userbar  = this.toolbar.find(".user");
 
         this.addCSRFToken();
 
@@ -27,18 +27,13 @@ var Toolbar = View.extend({
             // the appropriate areas.
             if (user) {
                 user.bind("change", function () {
-                    var taskKeys = ["tasks.claimed.claimed", "tasks.claimed.verified", "tasks.claimed.done"],
-                        userKeys = ["name", "image"],
+                    var userKeys = ["name", "image"],
                         changedAttr = user.changedAttributes(),
                         changedKeys;
                         
                     if (changedAttr !== false){ // verify that the change was a valid change to an attribute
                         changedKeys = _.keys(changedAttr);
-
-                        if (_.intersect(changedKeys, taskKeys).length) {
-                            view.updateTasks(user);
-                        }
-
+                        
                         if (_.intersect(changedKeys, userKeys).length) {
                             view.updateUser(user);
                         }
@@ -84,24 +79,6 @@ var Toolbar = View.extend({
             this.userbar.find("a").text(user.fullname());
         } else {
             this.userbar.hide();
-        }
-    },
-
-    // Update the tasks status bar in the toolbar or hide it if there
-    // is no current user.
-    updateTasks: function (user) {
-        var taskLists;
-        if (user) {
-            taskLists = user.get("tasks");
-            this.tasks.show();
-            this.tasks.find(".pending").text(
-                user.get("tasks.claimed.claimed").length
-            );
-            this.tasks.find(".done").text(
-                user.get("tasks.claimed.done").length + user.get("tasks.claimed.verified").length
-            );
-        } else {
-            this.tasks.hide();
         }
     },
 

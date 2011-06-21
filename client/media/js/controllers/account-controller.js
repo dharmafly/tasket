@@ -8,7 +8,7 @@ var AccountController = Backbone.Controller.extend({
         "/users/:id/change-password/": "changePassword"
     },
 
-    constructor: function PageController() {
+    constructor: function AccountController() {
         Backbone.Controller.prototype.constructor.apply(this, arguments);
         
         // Display contents in a lightbox if there's a matching plain HTML template for this route
@@ -43,7 +43,7 @@ var AccountController = Backbone.Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification.success("You are now logged in.");
+            app.notification && app.notification.success("You are now logged in.");
         });
     },
     
@@ -65,7 +65,7 @@ var AccountController = Backbone.Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification.success("Your account has been created.");
+            app.notification && app.notification.success("Your account has been created.");
         });
     },
 
@@ -84,8 +84,9 @@ var AccountController = Backbone.Controller.extend({
         form.updateFrame();
 
         form.bind("success", function (user) {
+            app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification.success("Your account has been updated!");
+            app.notification && app.notification.success("Your account has been updated!");
         });
     },
 

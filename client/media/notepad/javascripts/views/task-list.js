@@ -26,11 +26,6 @@ var TaskListView = View.extend({
     initialize: function (options) {
         var view = this;
 
-        this.taskView = new TaskView({model: new Task({
-            hub: notepad.selectedHub.id,
-            owner: notepad.currentUser.id
-        })});
-
         this.elem = jQuery(this.el);
         _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress", "_onSave");
 
@@ -57,8 +52,6 @@ var TaskListView = View.extend({
                }
             });
 
-
-
         //delegate all item action events to the ul.item-list element.
         this.elem
             .delegate(".item-list ul.edit-item li a", "click", view._onControlAction)
@@ -75,8 +68,7 @@ var TaskListView = View.extend({
     */
     render: function () {
         var hub = this.model,
-            listTitle = hub.get('title'),
-            taskView = this.taskView;
+            listTitle = hub.get('title');
 
         return this.elem.html(tim('task-list', {listTitle: listTitle}))[0];
     },
@@ -181,8 +173,8 @@ var TaskListView = View.extend({
     _onNewItemClick: function (event) {
 
         var newTask = new Task({
-            hub: notepad.selectedHub.id,
-            owner: notepad.currentUser.id,
+            hub: app.selectedHub.id,
+            owner: app.currentUser.id,
             estimate: Tasket.settings.TASK_ESTIMATE_MAX
         });
         this.collection.add(newTask);
@@ -246,7 +238,7 @@ var TaskListView = View.extend({
     * Returns nothing.
     */
     _ontick: function (cid, target) {
-        var currentUserId = notepad.currentUser.id,
+        var currentUserId = app.currentUser.id,
             task = this.collection.getByCid(cid),
             forceMode = true,
             newState = task.get("state") === Task.states.DONE ?

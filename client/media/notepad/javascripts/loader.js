@@ -43,7 +43,8 @@ window.O = function(){
             jsCorePath + '/views/login.js',
             jsCorePath + '/views/forgot-details.js',
             jsCorePath + '/views/change-password.js',
-
+            
+            jsClientPath + '/views/authbar.js',
             jsClientPath + '/views/task.js',
             jsClientPath + '/views/task-list.js',
 
@@ -65,7 +66,7 @@ window.O = function(){
                 if (!allLoaded) {
                     throw new Error("Not all scripts have been loaded");
                 } else {
-                    notepad.bootstrap();
+                    app.bootstrap();
                 }
             },
 
