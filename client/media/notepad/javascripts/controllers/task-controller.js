@@ -13,7 +13,9 @@ var TaskController = Backbone.Controller.extend({
         var controller = this;
         Backbone.Controller.prototype.constructor.apply(this, arguments);
         app.bind("change:selectedHub", function () {
-            controller.showTaskList();
+            if (!this.taskListView) {
+                controller.showTaskList();
+            }
         });
     },
 

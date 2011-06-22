@@ -38,6 +38,29 @@ _.extend(app, {
     },
 
 
+    _bindHubEvents: function (user) {
+        var ownedHubs = user.get("hubs.owned"),
+            hub;
+
+        hub = app.selectedHub = ownedHubs.length ?
+            Tasket.getHubs(_.max(ownedHubs)) :
+            new Hub({
+                title: app.lang.NEW_HUBS,
+                owner: user.id
+            });
+
+        hub.bind("change", function (hub) {
+            app.trigger("change:selectedHub", hub);
+        });
+
+        if (hub.isNew()) {
+            hub.save();
+        }
+
+        return this;
+    },
+
+
     /*
     * Creates a placeholder task list ('hub') on user login if the user has not
     * created one already.
@@ -47,29 +70,16 @@ _.extend(app, {
     */
     _setupHub: function () {
         this.bind("change:currentUser", function (user) {
-            user.bind("change", function (user) {
-                var ownedHubs = user.get("hubs.owned"),
-                    hub;
-
-                hub = app.selectedHub = ownedHubs.length ?
-                    Tasket.getHubs(_.max(ownedHubs)) :
-                    new Hub({
-                        title: app.lang.NEW_HUBS,
-                        owner: user.id
-                    });
-
-
-                hub.bind("change:createdTime", function (hub) {
-                    app.trigger("change:selectedHub", hub);
-                });
-
-                if (hub.isNew()) {
-                    hub.save();
-                }
-            });
+            if ("id" in user) {
+               app._bindHubEvents(user);
+            } else {
+               user.bind("change", app._bindHubEvents);
+           }
         });
         return this;
     },
+
+
 
     _setupHistory: function(){
         // If user lands on root update the url to "/#/" for consistency. This
