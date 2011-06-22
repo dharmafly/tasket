@@ -77,10 +77,9 @@ var TaskView = View.extend({
     },
 
    /*
+    * Allows in place editing of the task description.
     *
-    *
-    *
-    *
+    * returns nothing.
     *
     */
     makeEditable: function () {
@@ -98,7 +97,9 @@ var TaskView = View.extend({
     },
 
     /*
+    * Removes newly created items or restore previous descriptions in case an edit operation is aborted.
     *
+    * returns nothing.
     *
     */
     reset: function () {

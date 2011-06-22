@@ -34,6 +34,12 @@ var TaskController = Backbone.Controller.extend({
 
         //event handler for saving new items
         taskListView.bind("update-item", function (task, attrValues) {
+
+            //never accept an empty description
+            if (_.isEmpty(attrValues.description)) {
+                attrValues.description = app.lang.EMPTY_TASK;
+            }
+
             task.set(attrValues);
             task.save();
 

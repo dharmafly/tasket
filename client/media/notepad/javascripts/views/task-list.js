@@ -116,6 +116,10 @@ var TaskListView = View.extend({
 
     _onTitleEditSave: function (event) {
         var newTitle = this.$("header input").val();
+
+        if (_.isEmpty(title)) {
+            newTitle = app.lang.EMPTY_HUB;
+        }
         this._saveTitle(newTitle);
         event.preventDefault();
     },
@@ -134,12 +138,20 @@ var TaskListView = View.extend({
     _onKeypressTitle: function (event) {
         var newTitle = jQuery(event.target).val();
 
+        if (_.isEmpty(newTitle)) {
+            newTitle = app.lang.EMPTY_HUB;
+        }
+
         if (_.include([13, 9], event.which)) {
             this._saveTitle(newTitle);
         }
     },
 
     _resetTitle: function (title) {
+        if (_.isEmpty(title)) {
+            title = app.lang.EMPTY_HUB;
+        }
+
         this.$("header input").replaceWith(
             jQuery('<h1><a href="#">'+title+'</a></h1>')
         );
