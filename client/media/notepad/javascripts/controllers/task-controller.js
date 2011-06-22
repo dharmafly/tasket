@@ -1,7 +1,5 @@
 var TaskController = Backbone.Controller.extend({
     routes: {
-        '/': 'showTasks',
-        '/tasks/new': 'newTask'
     },
 
     taskViewRendered: false,
@@ -12,61 +10,41 @@ var TaskController = Backbone.Controller.extend({
     *
     */
     constructor: function () {
+        var controller = this;
         Backbone.Controller.prototype.constructor.apply(this, arguments);
-        this.showTasks();
-    },
-
-
-    /*
-    * Public: Shows the tasks in a list
-    *
-    *
-    *
-    *
-    *
-    */
-
-    showTasks: function () {
-        if (!this.taskViewRendered) {
-            var controller = this,
-                // TODO TEMP
-                hub = app.selectedHub = Tasket.getHubs(1),
-                currentUser = app.currentUser;
-
-            hub.bind("change", function () {
-                var tasks, taskListView;
-
-                //do not execute the following code block if taskListView has already rendered.
-                if (controller.taskViewRendered) {
-                    return;
-                }
-
-                tasks = Tasket.getTasks(hub.get("tasks.new"));
-                taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
-
-                $('#main aside').after(taskListView.render());
-                controller.taskViewRendered = true;
-
-                //event handler for passing loaded tasks to the view
-                tasks.bind("refresh", function () {
-                    taskListView.renderTasks(tasks);
-                });
-
-                //event handler for saving new items
-                taskListView.bind("update-item", function (task, attrValues) {
-                    task.set(attrValues);
-                    task.save();
-
-                }).bind("remove-item", function (cid) {
-                    var task = Tasket.tasks.getByCid(cid);
-                    task.destroy();
-
-                });
+        app.bind("change:selectedHub", function () {
+            controller.showTaskList();
         });
-      }
     },
 
-    newTask: function () {
+    showTaskList: function () {
+        var controller = this,
+            hub = app.selectedHub,
+            currentUser = app.currentUser,
+            tasks = Tasket.getTasks(hub.get("tasks.new")),
+            taskListView = this.taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
+
+
+        jQuery('#main aside').after(taskListView.render());
+
+        //event handler for passing loaded tasks to the view
+        tasks.bind("refresh", function () {
+            taskListView.renderTasks(tasks);
+        });
+
+        //event handler for saving new items
+        taskListView.bind("update-item", function (task, attrValues) {
+            task.set(attrValues);
+            task.save();
+
+        }).bind("remove-item", function (cid) {
+            var task = Tasket.tasks.getByCid(cid);
+            task.destroy();
+        });
+
     }
+
+
+
 
 });

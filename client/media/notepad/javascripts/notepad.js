@@ -45,20 +45,30 @@ _.extend(app, {
     * Returns nothing.
     *
     */
-    _initHub: function () {
+    _setupHub: function () {
         this.bind("change:currentUser", function (user) {
-            var userHubs = user.get("hubs.owned"),
-                newHub;
+            user.bind("change", function (user) {
+                var ownedHubs = user.get("hubs.owned"),
+                    hub;
 
-            if (!userHubs.length) {
-                newHub = new Hub({
-                    title: app.lang.NEW_HUBS,
-                    owner: user.id
+                hub = app.selectedHub = ownedHubs.length ?
+                    Tasket.getHubs(_.max(ownedHubs)) :
+                    new Hub({
+                        title: app.lang.NEW_HUBS,
+                        owner: user.id
+                    });
+
+
+                hub.bind("change:createdTime", function (hub) {
+                    app.trigger("change:selectedHub", hub);
                 });
-                newHub.save();
-            }
-        });
 
+                if (hub.isNew()) {
+                    hub.save();
+                }
+            });
+        });
+        return this;
     },
 
     _setupHistory: function(){
@@ -77,10 +87,12 @@ _.extend(app, {
         this.accountController = new AccountController();
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
 
-        this._setupLightbox()
+
+
+        this._setupHub()
+            ._setupLightbox()
             ._setupAuth()
-            ._setupHistory()
-            ._initHub();
+            ._setupHistory();
 
     }
 

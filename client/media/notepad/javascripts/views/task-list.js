@@ -134,7 +134,7 @@ var TaskListView = View.extend({
     _onKeypressTitle: function (event) {
         var newTitle = jQuery(event.target).val();
 
-        if (_.include([13, 0], event.which)) {
+        if (_.include([13, 9], event.which)) {
             this._saveTitle(newTitle);
         }
     },
@@ -304,7 +304,7 @@ var TaskListView = View.extend({
     _onKeypress: function (event) {
         var description, taskView;
 
-        if (_.include([0,13], event.which)) {
+        if (_.include([9,13], event.which)) {
             description = jQuery(event.target).val();
             taskView = this._getElementView(event.target);
 
