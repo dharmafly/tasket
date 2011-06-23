@@ -214,6 +214,7 @@ var cache = new Cache(Tasket.namespace),
         },
 
         // Requires User model.
+        // TODO: update cached user in localStorage whenever the user model is changed
         updateCurrentUser: function (user, saveToCache) {
             if (user){
                 if (!Tasket.users.get(user.id)){
