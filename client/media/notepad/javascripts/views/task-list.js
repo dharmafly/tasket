@@ -129,7 +129,7 @@ var TaskListView = View.extend({
         var view = this,
             taskView;
 
-        tasks = tasks instanceof TaskList ? tasks : new TaskList(tasks);
+        tasks = tasks instanceof TaskList ? tasks.toArray() : [tasks];
         tasks = this._orderTasks(tasks);
 
         _.each(tasks, function (task) {
@@ -164,13 +164,16 @@ var TaskListView = View.extend({
             return tasks;
         }
         _.each(orderedIds, function (id) {
-            var task = tasks.get(id);
+            var task = _.detect(tasks, function (aTask){
+                return aTask.id == id;
+            });
+
             if (task) {
                 output.push(task);
             }
         });
 
-        tasks.each(function (task) {
+        _.each(tasks, function (task) {
             if (!_.include(orderedIds, task.id)) {
                 output.push(task);
             }
