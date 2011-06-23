@@ -16,6 +16,7 @@ _.extend(app, {
         Task.prototype.defaults.privacy = true;
         return this;
     },
+
     _setupLightbox: function(){
         var lightbox = app.lightbox = new Lightbox();
 
@@ -55,9 +56,10 @@ _.extend(app, {
             // this will fail if the local storage object is out of sync and the requested hub
             // has been deleted from the server. This edge case can be handled with an onError callback
             // that calls _bindHubEvents again.
+
             Tasket.getHubs(_.max(ownedHubs)) :
             new Hub({
-                title: app.lang.NEW_HUBS,
+                title: app.lang.NEW_HUB,
                 owner: user.id
             });
 
@@ -66,8 +68,10 @@ _.extend(app, {
         });
 
         if (hub.isNew()) {
+            Tasket.hubs.add(hub);
             hub.save();
         }
+
 
         return this;
     },
@@ -115,7 +119,6 @@ _.extend(app, {
         this.controller = new TaskController();
         this.accountController = new AccountController();
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
-        
         // On changes to currentUser, cache the user to localStorage
         app.bind("change:currentUser", this._cacheChangesToCurrentUser);
 

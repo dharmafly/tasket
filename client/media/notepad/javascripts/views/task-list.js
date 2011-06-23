@@ -163,7 +163,6 @@ var TaskListView = View.extend({
         if (!_.isArray(orderedIds)) {
             return tasks;
         }
-        
         _.each(orderedIds, function (id) {
             var task = _.detect(tasks, function (aTask){
                 return aTask.id == id;
