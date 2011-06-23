@@ -91,6 +91,7 @@ var TaskListView = View.extend({
     makeSortable: function () {
         this.itemList.sortable({
             handle: ".move",
+            axis: "y",
             update: this._onSort
         });
 
