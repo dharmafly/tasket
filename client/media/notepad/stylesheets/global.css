@@ -441,7 +441,7 @@ table {
   header#pageheader {
     background: url(../images/bg-header.png) repeat-x left bottom;
     min-height: 110px;
-    margin: 0 30px -26px 30px;
+    margin: 0 5px -28px 5px;
     position: relative;
     z-index: 3;
   }
