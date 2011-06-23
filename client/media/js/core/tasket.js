@@ -238,6 +238,38 @@ _.extend(Tasket, Backbone.Events, {
         var args = _.toArray(arguments);
         args[0] = this.type + ":" + args[0];
         Tasket.trigger.apply(Tasket, args);
+    },
+    
+    addOwnedHubToUser: function(hub){
+        var user = Tasket.users.get(hub.get("owner")),
+            hubsOwned;
+        
+        if (user){
+            // NOTE: we must clone the hubs.owned array so that Backbone successfully triggers a "change" event when it detects a difference in the previous and the changed attribute
+            hubsOwned = _.clone(app.currentUser.get("hubs.owned"));
+            
+            if (hubsOwned){
+                hubsOwned.push(hub.id);
+                user.set({
+                    "hubs.owned": hubsOwned
+                });
+            }
+        }
+    }
+});
+
+/////
+
+// Update user's owned hubs on hub add
+Tasket.bind("hub:add", function(hub){
+    if (hub && hub.id){
+        Tasket.addOwnedHubToUser(hub);
+    }
+    
+    else {
+        hub.bind("change:id", function(){
+            Tasket.addOwnedHubToUser(hub);
+        });
     }
 });
 

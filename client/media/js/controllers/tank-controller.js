@@ -387,15 +387,8 @@ var TankController = Backbone.Controller.extend({
         }));
 
         form.bind("success", _.bind(function (hub) {
-            var hubs = _.clone(app.currentUser.get("hubs.owned"));
-
             // Add hubs to global cache.
             Tasket.hubs.add(hub);
-
-            hubs.push(hub.id);
-            app.currentUser.set({
-                "hubs.owned": hubs
-            });
 
             // Add hub and select it for viewing
             this.addHub(hub).select();
