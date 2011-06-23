@@ -190,4 +190,4 @@ To star any object, `POST` to it with `{'starred' : true}`.  To un-star an objec
 
 NOTE: only objects that exist in the database can be starred, so in order to star 
 a new object it must be saved first.  In other words, it is not possible to star
-in a PUT request.
+in a POST request.

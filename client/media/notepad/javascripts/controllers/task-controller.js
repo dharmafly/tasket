@@ -29,7 +29,7 @@ var TaskController = Backbone.Controller.extend({
 
         jQuery('#main aside').after(taskListView.render());
 
-        //event handler for passing loaded tasks to the view
+        //event handler for rendering loaded tasks into the view
         tasks.bind("refresh", function () {
             taskListView.renderTasks(tasks);
         });
@@ -38,15 +38,14 @@ var TaskController = Backbone.Controller.extend({
         taskListView.bind("update-item", function (task, attrValues) {
 
             //never accept an empty description
-            if (_.isEmpty(attrValues.description)) {
+            if ("description" in attrValues && _.isEmpty(attrValues.description)) {
                 attrValues.description = app.lang.EMPTY_TASK;
             }
 
             task.set(attrValues);
             task.save();
 
-        }).bind("remove-item", function (cid) {
-            var task = Tasket.tasks.getByCid(cid);
+        }).bind("remove-item", function (task) {
             task.destroy();
         });
 

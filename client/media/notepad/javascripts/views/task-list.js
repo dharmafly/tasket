@@ -60,6 +60,7 @@ var TaskListView = View.extend({
             .delegate("li p a.cancel", "click", view._onCancel)
             .delegate("li p a.save", "click", view._onSave)
             .delegate("li p input", "keypress", view._onKeypress);
+
     },
 
     /*
@@ -72,7 +73,14 @@ var TaskListView = View.extend({
         var hub = this.model,
             listTitle = hub.get('title');
 
-        return this.elem.html(tim('task-list', {listTitle: listTitle}))[0];
+        this.elem.html(tim('task-list', {listTitle: listTitle}));
+
+        jQuery(this.$(".item-list")).sortable({
+            handle: ".move",
+            update: O
+        });
+
+        return this.el;
     },
 
     /*
@@ -103,6 +111,7 @@ var TaskListView = View.extend({
                 taskView.makeEditable();
             }
         });
+
     },
 
     _onTitleEdit: function (event) {
@@ -117,7 +126,7 @@ var TaskListView = View.extend({
     _onTitleEditSave: function (event) {
         var newTitle = this.$("header input").val();
 
-        if (_.isEmpty(title)) {
+        if (_.isEmpty(newTitle)) {
             newTitle = app.lang.EMPTY_HUB;
         }
         this._saveTitle(newTitle);
@@ -236,7 +245,8 @@ var TaskListView = View.extend({
     * returns nothing.
     */
     _ondelete: function (cid, target) {
-        this.trigger("remove-item", cid);
+        var taskView = this.taskViews[cid];
+        this.trigger("remove-item", taskView.model);
     },
 
    /**
@@ -264,7 +274,8 @@ var TaskListView = View.extend({
         var currentUserId = app.currentUser.id,
             task = this.collection.getByCid(cid),
             forceMode = true,
-            newState = task.get("state") === Task.states.DONE ?
+            newState = _.include([Task.states.VERIFIED,
+                                 Task.states.DONE ], task.get("state")) ?
               Task.states.NEW :
               Task.states.DONE ;
 

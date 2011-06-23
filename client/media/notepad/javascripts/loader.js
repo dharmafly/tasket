@@ -23,6 +23,7 @@ window.O = function(){
             jsCorePath + '/dependencies/cache.js',
             jsCorePath + '/dependencies/tim.js',
             jsCorePath + '/dependencies/flatten.js',
+            jsClientPath + '/dependencies/jquery-ui.min.js',
 
 
             // models
@@ -43,7 +44,7 @@ window.O = function(){
             jsCorePath + '/views/login.js',
             jsCorePath + '/views/forgot-details.js',
             jsCorePath + '/views/change-password.js',
-            
+
             jsClientPath + '/views/authbar.js',
             jsClientPath + '/views/task.js',
             jsClientPath + '/views/task-list.js',

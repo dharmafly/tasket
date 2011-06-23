@@ -49,7 +49,7 @@ _.extend(app, {
                 owner: user.id
             });
 
-        hub.bind("change", function (hub) {
+        hub.bind("change:createdTime", function (hub) {
             app.trigger("change:selectedHub", hub);
         });
 
