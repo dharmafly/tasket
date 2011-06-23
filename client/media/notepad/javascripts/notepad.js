@@ -100,8 +100,6 @@ _.extend(app, {
         return this;
     },
 
-
-
     _setupHistory: function(){
         // If user lands on root update the url to "/#/" for consistency. This
         // can be removed should the history API be implemented.
@@ -117,8 +115,9 @@ _.extend(app, {
         this.controller = new TaskController();
         this.accountController = new AccountController();
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
-
-
+        
+        // On changes to currentUser, cache the user to localStorage
+        app.bind("change:currentUser", this._cacheChangesToCurrentUser);
 
         this._setupOverrides()
             ._setupHub()

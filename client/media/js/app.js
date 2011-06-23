@@ -3,10 +3,7 @@
 var cache = new Cache(Tasket.namespace),
     app = _.extend({    
         // Sets up the app. Called by init()
-        setup: function () {
-            // Bind app object's methods to the app object
-            _.bindAll(this, "updateAllDoneTasks", "_onChangeUser");
-            
+        setup: function () {            
             // Cache the body element
             this.bodyElem = jQuery("body");
         
@@ -48,12 +45,26 @@ var cache = new Cache(Tasket.namespace),
             Tasket.bind("task:change:state", this.updateTaskStatistics);
             
             // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
-            app.bind("change:currentUser", this._onChangeUser);
+            app.bind("change:currentUser", this._onChangeUser)
+               .bind("change:currentUser", this._cacheChangesToCurrentUser);
             
             return this.trigger("setup", this);
         },
         
-        _onChangeUser: function(){
+        _cacheChangesToCurrentUser: function(user){
+            user.bind("change", function cacheOnChange(user){
+                // Cache currentUser to localStorage
+                if (app.currentUser && app.currentUser.id === user.id){
+                    app.cacheCurrentUser(user);
+                }
+                else {
+                    user.unbind("change", cacheOnChange);
+                }
+            });
+        },
+        
+        _onChangeUser: function(user){
+            // Update all done tasks in system if currentUser is an admin and needs to see that information
             if (app.currentUserIsAdmin()){
                 if (!app.allDoneTasks){
                     Tasket.bind("task:change:state", app.updateAllDoneTasks)
@@ -212,17 +223,21 @@ var cache = new Cache(Tasket.namespace),
                 .remove("authtoken")
                 .remove("csrftoken");
         },
+        
+        cacheCurrentUser: function(user){
+            app.cache.set("currentUser", user.toJSON());
+            return app;
+        },
 
-        // Requires User model.
-        // TODO: update cached user in localStorage whenever the user model is changed
         updateCurrentUser: function (user, saveToCache) {
             if (user){
                 if (!Tasket.users.get(user.id)){
                     Tasket.users.add(user);
                 }
                 app.currentUser = user;
+                
                 if (saveToCache !== false){
-                    app.cache.set("currentUser", app.currentUser.toJSON());
+                    app.cacheCurrentUser(user);
                 }
                 app.trigger("change:currentUser", app.currentUser); // see dashboard.js > Dashboard.setUser()
             }
