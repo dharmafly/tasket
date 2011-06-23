@@ -123,7 +123,7 @@ else {
 
         // Display friendly unsupported message to the user.
         var lightbox = new Lightbox();
-        jQuery("body")
+        app.bodyElem = jQuery("body")
             .find(":not(script)")
             .remove()
             .end()
