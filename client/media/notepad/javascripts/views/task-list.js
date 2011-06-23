@@ -163,6 +163,7 @@ var TaskListView = View.extend({
         if (!_.isArray(orderedIds)) {
             return tasks;
         }
+        
         _.each(orderedIds, function (id) {
             var task = _.detect(tasks, function (aTask){
                 return aTask.id == id;
@@ -184,7 +185,7 @@ var TaskListView = View.extend({
 
     _onTitleEdit: function (event) {
         var listTitle = this.previousTitle =  this.$("header h1 a").text(),
-            html = jQuery(tim("task-edit" ,{placeholder: false}));
+            html = jQuery(tim("task-edit", {placeholder: false}));
 
         this.$("header h1").replaceWith(html);
         this.$("header input").val(listTitle).focus();
@@ -219,6 +220,7 @@ var TaskListView = View.extend({
             newTitle = app.lang.EMPTY_HUB;
         }
 
+        // Return and tab keys
         if (_.include([13, 9], event.which)) {
             this._saveTitle(newTitle);
         }
@@ -343,10 +345,9 @@ var TaskListView = View.extend({
         var currentUserId = app.currentUser.id,
             task = this.collection.getByCid(cid),
             forceMode = true,
-            newState = _.include([Task.states.VERIFIED,
-                                 Task.states.DONE ], task.get("state")) ?
-              Task.states.NEW :
-              Task.states.DONE ;
+            newState = _.include(
+                [Task.states.VERIFIED, Task.states.DONE ], task.get("state")
+            ) ? Task.states.NEW : Task.states.DONE ;
 
         task.state(newState, currentUserId, forceMode)
             .save();
