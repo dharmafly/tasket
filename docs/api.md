@@ -176,17 +176,17 @@ Any object (users, hubs, tasks) can be 'starred'.  Objects a user has starred
 are contained in the `stars` object on the user model, broken down by object 
 type, for example:
 
-> 'stars' : {'hubs': ['3'], 'tasks': ['3', '2'], 'users': ['2', '3']}
+    "stars" : {"hubs": ["3"], "tasks": ["3", "2"], "users": ["2", "3"]}
 
 When an object has been starred by a user, it will have a `starred` property, 
 containing an object, for example:
 
-> 'starred': '{"timestamp": 1307117640, "type": "profile", "id": 2}'
+    "starred": {"timestamp": 1307117640, "type": "profile", "id": 2}
 
 If an object has no stars, the `starred` property wont exist.
 
-To star any object, `POST` to it with `{'starred' : true}`.  To un-star an object,
-`POST` `{'starred' : false}` to it.
+To star any object, `POST` to it with `{"starred" : true}`.  To un-star an object,
+`POST` `{"starred" : false}` to it.
 
 NOTE: only objects that exist in the database can be starred, so in order to star 
 a new object it must be saved first.  In other words, it is not possible to star
