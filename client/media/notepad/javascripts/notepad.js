@@ -9,6 +9,13 @@ _.extend(app, {
     bodyElem: jQuery(document.body),
     cache: cache,
 
+
+    _setupOverrides: function () {
+        // Always set task records as private so that
+        // they can be accessed only by the their owner.
+        Task.prototype.defaults.privacy = true;
+        return this;
+    },
     _setupLightbox: function(){
         var lightbox = app.lightbox = new Lightbox();
 
@@ -113,7 +120,8 @@ _.extend(app, {
 
 
 
-        this._setupHub()
+        this._setupOverrides()
+            ._setupHub()
             ._setupLightbox()
             ._setupAuth()
             ._setupHistory();
