@@ -987,6 +987,7 @@ table {
 .lightbox .content a {
     color: #003663;
     border-bottom: 1px solid;
+    text-decoration:none;
     font-weight: bold;
 }
 
