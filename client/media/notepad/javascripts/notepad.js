@@ -43,13 +43,18 @@ _.extend(app, {
             hub;
 
         hub = app.selectedHub = ownedHubs.length ?
+
+            // TODO:
+            // this will fail if the local storage object is out of sync and the requested hub
+            // has been deleted from the server. This edge case can be handled with an onError callback
+            // that calls _bindHubEvents again.
             Tasket.getHubs(_.max(ownedHubs)) :
             new Hub({
                 title: app.lang.NEW_HUBS,
                 owner: user.id
             });
 
-        hub.bind("change:createdTime", function (hub) {
+        hub.bind("change:id", function (hub) {
             app.trigger("change:selectedHub", hub);
         });
 
@@ -69,12 +74,21 @@ _.extend(app, {
     *
     */
     _setupHub: function () {
-        this.bind("change:currentUser", function (user) {
+      this.bind("change:currentUser", function (user) {
+
+            //no need for a binding if the user record is in local storage
             if ("id" in user) {
                app._bindHubEvents(user);
+
             } else {
-               user.bind("change", app._bindHubEvents);
-           }
+              // this will not get fired when the user record is cached,
+              // as it will be the same than the one returned by the server
+
+               user.bind("change:id", function userBinding() {
+                 user.unbind("change:id", userBinding);
+                 app._bindHubEvents();
+               });
+            }
         });
         return this;
     },

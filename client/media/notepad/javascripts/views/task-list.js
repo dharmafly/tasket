@@ -29,7 +29,13 @@ var TaskListView = View.extend({
         var view = this;
 
         this.elem = jQuery(this.el);
-        _.bindAll(this,"_onControlAction", "_onCancel", "_onKeypress", "_onSave");
+        _.bindAll(this,
+            "_onControlAction",
+            "_onCancel",
+            "_onKeypress",
+            "_onSave",
+            "_onSort"
+        );
 
 
         this.model.bind("change:title", function (task) {
@@ -71,16 +77,39 @@ var TaskListView = View.extend({
     */
     render: function () {
         var hub = this.model,
-            listTitle = hub.get('title');
+            listTitle = hub.get('title'),
+            view = this;
 
         this.elem.html(tim('task-list', {listTitle: listTitle}));
+        this.itemList = this.$("ul.item-list");
+        this.makeSortable();
 
-        jQuery(this.$(".item-list")).sortable({
+        return this;
+    },
+
+
+    makeSortable: function () {
+        this.itemList.sortable({
             handle: ".move",
-            update: O
+            update: this._onSort
         });
 
-        return this.el;
+        return this;
+    },
+
+
+    _onSort: function (event) {
+        var hub = this.model,
+            tasks = this.collection,
+            ids = jQuery.map(this.itemList.children(), function (item) {
+                var cid = item.getAttribute("data-cid"),
+                    task = tasks.getByCid(cid);
+
+                return task && task.id;
+            });
+
+        hub.set({"tasks.order": ids}).save();
+
     },
 
     /*
@@ -100,11 +129,12 @@ var TaskListView = View.extend({
             taskView;
 
         tasks = tasks instanceof TaskList ? tasks : new TaskList(tasks);
+        tasks = this._orderTasks(tasks);
 
-        tasks.each(function (task) {
+        _.each(tasks, function (task) {
             taskView = new TaskView({model: task, collection: view.collection});
             view.taskViews[task.cid] = taskView;
-            view.$('.item-list').append(taskView.render());
+            view.$('.item-list').append(taskView.render().el);
 
             //new item
             if (task.isNew()) {
@@ -112,6 +142,40 @@ var TaskListView = View.extend({
             }
         });
 
+    },
+
+   /*
+   * Orders the task collection according to the sequence made
+   * explicit in the hub "tasks.order" attribute.
+   *
+   *
+   * tasks - a task collection.
+   *
+   * Returns an array of sorted tasks.
+   *
+   */
+
+    _orderTasks: function (tasks) {
+        var orderedIds = this.model.get("tasks.order"),
+            output = [];
+
+        if (!_.isArray(orderedIds)) {
+            return tasks;
+        }
+        _.each(orderedIds, function (id) {
+            var task = tasks.get(id);
+            if (task) {
+                output.push(task);
+            }
+        });
+
+        tasks.each(function (task) {
+            if (!_.include(orderedIds, task.id)) {
+                output.push(task);
+            }
+        });
+
+        return output;
     },
 
     _onTitleEdit: function (event) {
@@ -171,6 +235,7 @@ var TaskListView = View.extend({
         this.$("header").addClass("hover");
         event.preventDefault();
     },
+
     _onTitleMouseout: function (event) {
         this.$("header").removeClass("hover");
         event.preventDefault();

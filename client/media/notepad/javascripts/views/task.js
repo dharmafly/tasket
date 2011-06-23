@@ -73,7 +73,7 @@ var TaskView = View.extend({
             this.elem.addClass("completed");
         }
 
-       return this.el;
+       return this;
     },
 
    /*
