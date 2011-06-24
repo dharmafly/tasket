@@ -12,6 +12,17 @@
     var _saveLocation = Backbone.History.prototype.saveLocation,
         _loadUrl      = Backbone.History.prototype.loadUrl;
 
+    /* Public: Override Backbone.history.start to use Ben Allmans $.hashchange()
+     * plugin to fix hashchange events in IE.
+     * 
+     * See: http://stackoverflow.com/questions/4973936/backbone-js-cause-bug-only-in-ie7
+     *
+     * Returns nothing.
+     */
+    Backbone.History.prototype.start = function () {
+        $(window).hashchange(_.bind(this.checkUrl, this)).hashchange();
+    };
+
     /* Public: Returns the previous hash before the current one (or more).
      * If this does not exist, returns undefined.
      *
