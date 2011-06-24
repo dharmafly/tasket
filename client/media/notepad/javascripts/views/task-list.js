@@ -400,7 +400,7 @@ var TaskListView = View.extend({
             description = jQuery(event.target).val();
             taskView = this._getElementView(event.target);
 
-            this.trigger('update-item', taskView.model, {description: description});
+            this._saveNewItem(taskView.model, description, event.target);
         }
     },
 
@@ -408,8 +408,29 @@ var TaskListView = View.extend({
         var taskView = this._getElementView(event.target),
             description = taskView.$("input").val();
 
-        this.trigger('update-item', taskView.model, {description: description});
-
+        this._saveNewItem(taskView.model, description, event.target);
         event.preventDefault();
+    },
+
+    /*
+    * Triggers the "update-item" event and expands a new insert item input when the task record gets saved.
+    *
+    * task        - An instance of the Task model.
+    * description - The todo item description.
+    *
+    *
+    * Returns nothing.
+    *
+    */
+
+    _saveNewItem: function (task, description) {
+        var view = this;
+        view.trigger('update-item', task, {description: description});
+
+        task.bind("change:id", function expandNewItem (task) {
+            task.unbind("change:id", expandNewItem);
+            view.$("a.new-item").click();
+        });
     }
+
 });
