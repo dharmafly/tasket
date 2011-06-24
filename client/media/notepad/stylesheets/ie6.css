@@ -33,14 +33,28 @@
      padding: 0;
      position: absolute;
   }
-
-  #content .new-item {
-	   cursor: pointer;
+  
+  #content .new-item:hover {
+    cursor: pointer;
   }
   
-  /*
-  footer nav ul,
-  footer nav p {
-    padding-bottom: 10px;
+  aside h1 {
+    margin-right: 6px;
   }
-  */
+  
+  aside h1 a span {
+    background-image: url(../images/ie6-sprite1.png);
+    background-position: right 6px;
+  }
+  
+  .open h1 a span {
+    background-position: right -91px;
+  }
+  
+  footer nav {
+    height: 1.5em;
+  }
+  
+  footer a.df:hover span.df-name {
+    text-decoration: underline;
+  }
