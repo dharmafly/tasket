@@ -319,6 +319,7 @@ var TaskListView = View.extend({
     */
     _ondelete: function (cid, target) {
         var taskView = this.taskViews[cid];
+        taskView.remove();
         this.trigger("remove-item", taskView.model);
     },
 
@@ -388,7 +389,7 @@ var TaskListView = View.extend({
 
     _onCancel: function (event) {
         var taskView = this._getElementView(event.target);
-        taskView.reset();
+        taskView.remove();
         event.preventDefault();
 
     },
@@ -434,12 +435,8 @@ var TaskListView = View.extend({
 
     _saveNewItem: function (task, description) {
         var view = this;
+        view.$("a.new-item").click();
         view.trigger('update-item', task, {description: description});
-
-        task.bind("change:id", function expandNewItem (task) {
-            task.unbind("change:id", expandNewItem);
-            view.$("a.new-item").click();
-        });
     }
 
 });
