@@ -1,12 +1,12 @@
 // UI SETTINGS
 
 var cache = new Cache(Tasket.namespace),
-    app = _.extend({    
+    app = _.extend({
         // Sets up the app. Called by init()
-        setup: function () {            
+        setup: function () {
             // Cache the body element
             this.bodyElem = jQuery("body");
-        
+
             // app properties
             _.extend(this, {
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
@@ -39,18 +39,36 @@ var cache = new Cache(Tasket.namespace),
                 lightbox:       new Lightbox(),
                 dashboard:      new Dashboard()
             });
-            
-            
+
+
             // BIND EVENTS
             Tasket.bind("task:change:state", this.updateTaskStatistics);
-            
+
             // Listen for changes to the app.allDoneTasks collection, and redraw the dashboard tasks accordingly
             app.bind("change:currentUser", this._onChangeUser)
                .bind("change:currentUser", this._cacheChangesToCurrentUser);
-            
+
             return this.trigger("setup", this);
         },
-        
+
+        // Create routes for all templates prefixed with "static-". When this
+        // route is triggered the contents of the template will be loaded into
+        // the lightbox.
+        setupStaticTemplates: function () {
+            var controller = new Backbone.Controller();
+            _.each(tim.templates(), function(template, name) {
+                var route;
+                if (name.indexOf("static-") === 0){
+                    route = name.slice(7);
+
+                    controller.route('/' + route + '/', route, function () {
+                        app.lightbox.content(template).show();
+                    });
+                }
+            });
+            return this;
+        },
+
         _cacheChangesToCurrentUser: function(user){
             user.bind("change", function cacheOnChange(user){
                 // Cache currentUser to localStorage
@@ -62,7 +80,7 @@ var cache = new Cache(Tasket.namespace),
                 }
             });
         },
-        
+
         _onChangeUser: function(user){
             // Update all done tasks in system if currentUser is an admin and needs to see that information
             if (app.currentUserIsAdmin()){
@@ -86,14 +104,14 @@ var cache = new Cache(Tasket.namespace),
                 pageController: new AccountController(), // TODO: rename
                 dashController: new DashboardController()
             });
-            
+
             // TODO temp
             this.accountController = this.pageController;
-            
+            this.setupStaticTemplates();
             /////
-            
+
             // THE TANK
-                        
+
             this.tank
                 .bind("hub:select", function(hubView){
                     app.selectedHubView = hubView;
@@ -107,9 +125,9 @@ var cache = new Cache(Tasket.namespace),
                         app.bodyElem.removeClass("hubSelected");
                     }
                 });
-            
+
             /////
-            
+
             return this.trigger("ready", this);
         },
 
@@ -152,7 +170,7 @@ var cache = new Cache(Tasket.namespace),
                 return app;
             };
         }()),
-        
+
         truncate: function(str, charLimit, continuationStr){
             if (str && str.length > charLimit){
                 continuationStr = continuationStr || "…";
@@ -163,22 +181,22 @@ var cache = new Cache(Tasket.namespace),
             }
             return str;
         },
-        
+
         // Convert between bottom-zeroed and top-zeroed coordinate systems
         invertY: function(y, maxValue){
             maxValue = maxValue || app.tank.viewportHeight;
-        
+
             return maxValue - y;
         },
 
         isCurrentUser: function (id) {
             return !!(app.currentUser && id === app.currentUser.id);
         },
-        
+
         currentUserIsAdmin: function(){
             return !!(app.currentUser && app.currentUser.isAdmin());
         },
-        
+
         isCurrentUserOrAdmin: function(id){
             return app.isCurrentUser(id) || app.currentUserIsAdmin();
         },
@@ -193,10 +211,10 @@ var cache = new Cache(Tasket.namespace),
             if (!this.getCookie("sessionid")) {
                 if (currentUserData) {
                     username = currentUserData.username;
-                    
+
                     // Redirect to login form
                     window.location.hash = "/login/";
-                    
+
                     // Pre-populate the username field
                     setTimeout(function () {
                         jQuery('#field-username').val(username);
@@ -223,7 +241,7 @@ var cache = new Cache(Tasket.namespace),
                 .remove("authtoken")
                 .remove("csrftoken");
         },
-        
+
         cacheCurrentUser: function(user){
             app.cache.set("currentUser", user.toJSON());
             return app;
@@ -235,7 +253,7 @@ var cache = new Cache(Tasket.namespace),
                     Tasket.users.add(user);
                 }
                 app.currentUser = user;
-                
+
                 if (saveToCache !== false){
                     app.cacheCurrentUser(user);
                 }
@@ -243,12 +261,12 @@ var cache = new Cache(Tasket.namespace),
             }
             return app.currentUser;
         },
-        
+
         _triggerAllDoneTasksChange: function(){
             app.trigger("change:allDoneTasks", app.allDoneTasks);
             return app;
         },
-        
+
         fetchAllDoneTasks: function(){
             Tasket.getTasksByState("done", function(allDoneTasks){
                 if (allDoneTasks){
@@ -261,23 +279,23 @@ var cache = new Cache(Tasket.namespace),
                 else {
                     return;
                 }
-                
+
                 // Trigger on app whenever the allDoneTasks collection changes
                 allDoneTasks
                     .bind("change", app._triggerAllDoneTasksChange)
                     .bind("remove", app._triggerAllDoneTasksChange);
-                
+
                 // Trigger now
                 app._triggerAllDoneTasksChange();
             });
-            
+
             return app;
         },
-        
+
         updateAllDoneTasks: function(task){ // based on user.updateTask(); called when task changes state
             var allDoneTasks = app.allDoneTasks,
                 id, isDone, wasDone, wasDeleted, storedTask;
-            
+
             if (allDoneTasks){
                 isDone  = task.get("state") === Task.states.DONE;
                 wasDone = task.previous("state") === Task.states.DONE;
@@ -294,14 +312,14 @@ var cache = new Cache(Tasket.namespace),
                     if (!storedTask && isDone){
                         allDoneTasks.add(task, {silent: true});
                     }
-                    
+
                     // Remove the task, if it is no longer in the DONE state
                     else if (storedTask && !isDone || storedTask && wasDeleted){
                         allDoneTasks.remove(storedTask, {silent: true});
                     }
                 }
             }
-            
+
             return app;
         },
 
@@ -389,16 +407,16 @@ var cache = new Cache(Tasket.namespace),
             // SVG SUPPORT
             // from http://diveintohtml5.org/everything.html#svg
             supportsSVG = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
-        
+
             // LOCAL STORAGE SUPPORT
             // This has already been determined by cache.js, so we'll use that
             supportsLocalStorage = !!cache.localStorage;
-            
+
             return function () {
                 return supportsSVG && supportsLocalStorage;
             };
         }()),
-        
+
         blankTaskStatistics: function(){
             return {
                 "new": 0,
@@ -413,14 +431,14 @@ var cache = new Cache(Tasket.namespace),
         updateTaskStatistics: function (model) {
             var current, previous,
                 wasAlreadyAccountedFor = !model.previous("estimate"); // NOTE: this is a check to see if this task was an empty scaffold, created in Tasket.getModels and the fetched from the server and populated. If it was, then it has already been taken into account by the intial statistics fetch in init.js
-            
+
             if (wasAlreadyAccountedFor){
                 return;
             }
-        
+
             current  = model.get("state");
             previous = model.previous("state");
-            
+
             app.statistics.tasks[current]  += 1;
             app.statistics.tasks[previous] -= 1;
 

@@ -10,26 +10,6 @@ var AccountController = Backbone.Controller.extend({
 
     constructor: function AccountController() {
         Backbone.Controller.prototype.constructor.apply(this, arguments);
-        
-        // Display contents in a lightbox if there's a matching plain HTML template for this route
-        // This makes it easy for new lightbox views to be added, simply by creating a new Tim template in the HTML source
-        this.route(/./, "showContents", function(){
-            var route = Backbone.history.fragment,
-                template;
-            
-            // Already accounted for in the routes hash
-            if (this.routes[route]){
-                return;
-            }
-            
-            route = route.replace(/\//g, "");
-            template = tim.templates()[route];
-            
-            // Check that this template doesn't have any Tim template tags
-            if (template && template.indexOf(tim.settings().start) === -1){
-                this.showContents(template);
-            }
-        });
     },
     
     showContents: function(contents){
