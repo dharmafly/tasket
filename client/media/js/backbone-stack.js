@@ -58,7 +58,7 @@
      */
     Backbone.History.prototype.saveLocation = function(fragment) {
         fragment = (fragment || '').replace(/^#*/, '');
-        if (this.fragment === fragment) {
+        if (this.getHash() === fragment) {
             return;
         }
         this.stack().push(fragment);
@@ -76,7 +76,7 @@
     Backbone.History.prototype.loadUrl = function () {
         var loaded = _loadUrl.call(this);
         if (loaded) {
-            this.stack().push(this.fragment);
+            this.stack().push(this.getHash());
         }
         return loaded;
     };
