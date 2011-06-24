@@ -201,10 +201,8 @@ _.extend(Tasket, Backbone.Events, {
             url: Tasket.endpoint + "login/",
             type: "POST",
             contentType: "application/json",
-            data: JSON.stringify({
-                username: username,
-                password: password
-            }),
+            // TODO: this should use JSON.stringify in case password contains double-quotes
+            data: '{"username":"' + username + '","password":"' + password + '"}',
             dataType: "json",
             success: callback
         });
