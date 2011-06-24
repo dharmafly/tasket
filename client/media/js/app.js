@@ -60,7 +60,6 @@ var cache = new Cache(Tasket.namespace),
                 var route;
                 if (name.indexOf("static-") === 0){
                     route = name.slice(7);
-
                     controller.route('/' + route + '/', route, function () {
                         app.lightbox.content(template).show();
                     });

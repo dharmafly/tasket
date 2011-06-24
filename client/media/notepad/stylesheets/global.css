@@ -34,6 +34,7 @@ footer, header, hgroup, menu, nav, section {
 	display: block;
 }
 body {
+	height: 100%;
 	line-height: 1;
 }
 ol, ul {
@@ -948,23 +949,16 @@ table {
 	display: none;
 	opacity: 0;
 	z-index: 1000000;
-	position: fixed;
+	position: absolute;
 	top: 0;
 	left: 0;
 	width: 100%;
 	height: 100%;
 	background-color: #000;
-	background-color: rgba(0, 0, 0, 0.9);
-	-webkit-transition: opacity 200ms ease-in;
-	-moz-transition: opacity 200ms ease-in;
-	-ms-transition: opacity 200ms ease-in;
-	-o-transition: opacity 200ms ease-in;
-	transition: opacity 200ms ease-in;
 }
 
 .ie .lightbox {
-	background-color: transparent;
-	background-image: url(../images/overlay-90.png);
+	background-color: black;
 }
 
 .lightbox.fade-in {
@@ -977,7 +971,7 @@ table {
 
 .lightbox .lightbox-inner {
 	z-index: 100;
-	position: fixed;
+	position: absolute;
 	top: 100px;
 	left: 50%;
 	width: 35.384em /* 460px */;
@@ -986,25 +980,9 @@ table {
 	overflow: auto;
 	overflow-x: hidden;
 	/* Need to use ems here so the lightbox remains centered */
-	border: 0.308em solid #b4b4b4 /* 4px */;
-	border-color: rgba(180, 180, 180, 1);
+	border: 0.308em solid #aaa /* 4px */;
 	padding: 1.538em /* 20px */;
-	
-	border-color: #aaa;
-	-webkit-border-radius: 0.385em /* 5px */;
-	-moz-border-radius: 0.385em /* 5px */;
-	-ms-border-radius: 0.385em /* 5px */;
-	-o-border-radius: 0.385em /* 5px */;
-	border-radius: 0.385em /* 5px */;
-	
-	background-color: #efefef;
 	background-color: #e6e6e6;
-	background-color: rgba(230, 230, 230, 0.95);
-	
-	-webkit-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-	-moz-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-	-o-box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 1);
 }
 
 .ie .lightbox .lightbox-inner {

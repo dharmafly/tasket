@@ -3,7 +3,7 @@ var Lightbox = View.extend({
         "click": "_onHide"
     },
 
-    tagName: "section",
+    tagName: "div",
 
     className: "lightbox",
 

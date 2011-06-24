@@ -19,7 +19,6 @@ var AccountController = Backbone.Controller.extend({
     login: function () {
         var form = new Login();
         this.showContents(form.render().el);
-
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
