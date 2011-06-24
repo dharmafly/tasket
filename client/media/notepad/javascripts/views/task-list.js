@@ -1,10 +1,13 @@
 var TaskListView = View.extend({
     el: jQuery("section#content"),
-    // collection of taskView instances, organised by task.cid => taskView  
+    // Collection of taskView instances, organised by task.cid => taskView  
     taskViews: {},
 
-    // caches the hub title so it can be restored when cancelling an edit.
+    // Keep a reference to the currently edited task
+    editedTask: null,
 
+
+    // Caches the hub title so it can be restored when cancelling an edit.
     previousTitle: null,
     events: {
         "click header .edit a": "_onTitleEdit",
@@ -330,6 +333,12 @@ var TaskListView = View.extend({
     */
     _onedit: function (cid, target) {
         var taskView = this.taskViews[cid];
+
+        if (this.editedTask) {
+          this.editedTask.$("a.cancel").click();
+        }
+
+        this.editedTask = taskView;
         taskView.makeEditable();
     },
 
