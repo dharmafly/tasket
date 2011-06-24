@@ -14,6 +14,16 @@ _.extend(app, {
         // Always set task records as private so that
         // they can be accessed only by the their owner.
         Task.prototype.defaults.privacy = true;
+
+        // Override the value of Tasket.settings with the
+        // values returned from the server
+
+        jQuery.getJSON("/settings", function (data) {
+            _.each(data, function (value, attribute) {
+                Tasket.settings[attribute] = value;
+            });
+            Tasket.trigger("change:settings", Tasket.settings);
+        });
         return this;
     },
 
