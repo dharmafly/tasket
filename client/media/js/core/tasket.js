@@ -147,7 +147,7 @@ _.extend(Tasket, Backbone.Events, {
         }, this);
 
         if (toLoad.length) {
-            toLoad.fetch().bind("refresh", function () {
+            toLoad.bind("refresh", function () {
                 toLoad.each(function (model) {
                     // Update the model in the subset with the new data.
                     subset.get(model.id).set(model.toJSON());
@@ -167,6 +167,8 @@ _.extend(Tasket, Backbone.Events, {
 
                 subset.trigger("refresh", subset, {});
             });
+            
+            toLoad.fetch();
         }
 
         return subset;
