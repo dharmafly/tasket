@@ -2,7 +2,7 @@
 
 An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.  
 
-Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an Issue](https://github.com/premasagar/tasket/issues).
+Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an Issue](https://github.com/dharmafly/tasket/issues).
 
 
 ## Dependencies
@@ -82,7 +82,7 @@ To enable emailing (see below), you must edit the site 'Domain name' and 'Displa
 
 On Linux, if you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
-For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
+For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/dharmafly/tasket/issues/110).
 
 
 ## Building a single minified JavaScript file
