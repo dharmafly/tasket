@@ -16,6 +16,18 @@
     border-left: 1px solid #e0e0e0;
   }
   
+  #content .item-list > li {
+    padding-top: 0;
+  }
+  
+  #content .item-list p {
+    margin-top: -10px;
+  }
+  
+   #content .item-list .button {
+     top: 0;
+   }
+  
   .lightbox .content form .actions .note {
     left: 0;
   }

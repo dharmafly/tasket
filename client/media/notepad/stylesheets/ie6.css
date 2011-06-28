@@ -28,6 +28,14 @@
     position: relative;
   }
   
+  #content .item-list p {
+    margin-top: 0;
+  }
+  
+  #content .item-list .button {
+    top: -3px;
+  }
+  
   #content .item-list li .edit-item li {
      border: 0;
      padding: 0;

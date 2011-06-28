@@ -170,9 +170,9 @@ table {
 	    top: -3px;
     }
     
-    #content header button, 
-    #content header .button, 
-    #content header .button:visited {
+    #content .header button, 
+    #content .header .button, 
+    #content .header .button:visited {
       font-size: 1.225em;
       line-height: 1.7em;
       margin-right: 2px;
@@ -690,7 +690,7 @@ table {
     border-top: 4px solid #6ab6da;
   }
   
-    #content header {
+    #content .header {
       padding: 40px 0 10px 120px;
       overflow: hidden;
     }
@@ -736,7 +736,7 @@ table {
     }
     
     #content .item-list input.task-edit,
-    #content header input.task-edit {
+    #content .header input.task-edit {
         padding: 0;
         margin: -1px 10px -1px -1px;
         border: 0;
@@ -745,7 +745,7 @@ table {
         font-size: 1em;
         width: 200px;
     }
-    #content header input.task-edit {
+    #content .header input.task-edit {
       font-size: 2em;
       width: 215px;
     }
@@ -834,11 +834,11 @@ table {
             background-position: -55px -2px;
           }
           
-        #content header.editing .edit-item {
+        #content .header.editing .edit-item {
           display: none;
         }
           
-          #content header .edit-item .edit {
+          #content .header .edit-item .edit {
             position: static;
             float: left;
             margin-top: 2px;
@@ -875,7 +875,7 @@ table {
       #content .item-list > li:hover .edit-item .move,
       #content .item-list > li:hover .edit-item .edit,
       #content .item-list > li:hover .edit-item .delete,
-      #content header:hover .edit-item .edit {
+      #content .header:hover .edit-item .edit {
         visibility: visible;
       }
 
