@@ -496,15 +496,22 @@ table {
   footer nav {
     font-family: Arial, Helvetica, serif;
   }
-  #mainnav a, button.link {
+  #mainnav a, 
+  button.link {
     color: #6ab6da;
     text-decoration: none;
     font-weight: bold;
     text-transform: lowercase;
   }
-  #mainnav a:hover, button.link:hover {
+  #mainnav a:hover, 
+  button.link:hover {
     text-decoration: underline;
     cursor:pointer;
+  }
+  
+  button.link {
+    font-size: 0.95em;
+    margin: 2px 0 0 -1px;
   }
   
   #mainnav li,
