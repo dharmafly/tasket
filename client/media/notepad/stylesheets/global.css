@@ -822,11 +822,17 @@ table {
             background-position: -55px -2px;
           }
           
+        #content header.editing .edit-item {
+          display: none;
+        }
+          
           #content header .edit-item .edit {
             position: static;
             float: left;
             margin-top: 2px;
           }
+          
+        
             
 /* delete */
 
