@@ -58,3 +58,7 @@
   footer a.df:hover span.df-name {
     text-decoration: underline;
   }
+  
+  .lightbox .content form .actions {
+    width: 23.07em;
+  }

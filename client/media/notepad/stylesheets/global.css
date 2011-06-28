@@ -510,8 +510,13 @@ table {
   }
   
   button.link {
-    font-size: 0.925em;
-    margin: 3px -25px 0 -1px;
+    margin: 2px -25px 0 -1px;
+    font-family: Arial, Helvetica, serif;
+  }
+  
+  .ie button.link {
+    margin: 3px 0 0 -1px;
+    font-family: Arial, Helvetica, serif;
   }
   
   #mainnav li,
@@ -682,11 +687,11 @@ table {
     clear: both;
     position: relative;
     z-index: 1;
+    border-top: 4px solid #6ab6da;
   }
   
     #content header {
       padding: 40px 0 10px 120px;
-      border-top: 4px solid #6ab6da;
       overflow: hidden;
     }
   
@@ -1074,6 +1079,11 @@ table {
 	max-width: 100%;
 }
 
+.lightbox .content form p {
+  line-height: 1.3em;
+  margin-bottom: 15px;
+}
+
 .lightbox .content form li {
 	margin-bottom: 0.769em /* 10px */;
 }
@@ -1134,7 +1144,6 @@ table {
 	position: absolute;
 	top: 0;
 	margin: 0;
-	line-height: 2.153em /* 28px */;
 }
 
 .lightbox .content form .actions .note a.delete {

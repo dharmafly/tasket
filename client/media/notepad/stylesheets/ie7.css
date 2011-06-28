@@ -15,3 +15,16 @@
   aside {
     border-left: 1px solid #e0e0e0;
   }
+  
+  .lightbox .content form .actions .note {
+    left: 0;
+  }
+  
+  .ie .action.close,
+  .ie .action.delete {
+    background-position: 2px -118px;
+  }
+  
+  .ie button.link {
+    margin-top: 1px;
+  }
