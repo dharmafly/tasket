@@ -82,7 +82,6 @@ _.extend(app, {
             hub.save();
         }
 
-
         return this;
     },
 

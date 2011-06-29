@@ -16,15 +16,16 @@ window.O = function(){
         getScript(
 
             //dependencies
-
+            jsClientPath + '/dependencies/json2.js',
+            jsCorePath + '/dependencies/jquery.js',
+            jsCorePath + '/dependencies/jquery.hashchange.js',
+            jsCorePath + '/dependencies/cache.js',
             jsCorePath + '/dependencies/underscore.js',
+            jsCorePath + '/dependencies/tim.js',
             jsCorePath + '/dependencies/backbone.js',
             jsCorePath + '/backbone-stack.js',
-            jsCorePath + '/dependencies/cache.js',
-            jsCorePath + '/dependencies/tim.js',
             jsCorePath + '/dependencies/flatten.js',
             jsClientPath + '/dependencies/jquery-ui.min.js',
-
 
             // models
             jsCorePath + '/models/models.js',

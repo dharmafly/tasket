@@ -45,6 +45,7 @@
                 "dependencies/tim.js"
             ],
             
+            "dependencies/jquery.hashchange.js",
             "dependencies/vec2.js",
             "dependencies/forcedirector.js",
 

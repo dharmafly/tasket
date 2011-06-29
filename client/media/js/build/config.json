@@ -29,6 +29,7 @@
         "tasket.all": [
             "./header.js",
             "../dependencies/jquery.js",
+            "../dependencies/jquery.hashchange.js",
             "../dependencies/underscore.js",
             "../dependencies/backbone.js",
             "../dependencies/tim.js",
