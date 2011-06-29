@@ -1017,6 +1017,10 @@ svg line {
     -ms-transition: background-color 2s ease-out;
 }
 
+.dashboard .quicklinks.about {
+    padding-top:0;
+}
+
 .dashboard .quicklinks.highlight {
 	background-color: #3db527;
 	
@@ -1241,24 +1245,28 @@ svg line {
 	margin-right: 0.679em /* 10px */;
 }
 
-/* Dharmafly */
-.dashboard footer a.df {
+/* Credits */
+.dashboard footer .credits {
+	padding-top:1.62em;
+}
+.dashboard footer .credits a {
 	text-decoration:none;
 	border:none;
-	padding-top:0.16em;
 	display:block;
+}
+.dashboard footer .credits a span {
+	font-weight:bold;
+}
+.dashboard footer .credits a:hover span {
+	border-bottom-width:1px;
+	border-bottom-style:solid;
 }
 .dashboard footer a.df span.df-name {
 	font-family:Calibri,Helvetica,Arial,sans-serif;
 	text-transform:uppercase;
-	font-weight:bold;
 }
 .dashboard footer a.df:hover {
 	color:#70873f;
-}
-.dashboard footer a.df:hover span.df-name {
-	border-bottom-width:1px;
-	border-bottom-style:solid;
 }
 
 /* @group Dashboard Detail Styles
