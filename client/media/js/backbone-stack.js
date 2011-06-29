@@ -20,7 +20,7 @@
      * Returns nothing.
      */
     Backbone.History.prototype.start = function () {
-        $(window).hashchange(_.bind(this.checkUrl, this)).hashchange();
+        jQuery(window).hashchange(_.bind(this.checkUrl, this)).hashchange();
     };
 
     /* Public: Returns the previous hash before the current one (or more).
