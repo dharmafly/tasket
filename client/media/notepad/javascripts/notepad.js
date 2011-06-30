@@ -123,8 +123,10 @@ _.extend(app, {
         this.controller = new TaskController();
         this.accountController = new AccountController();
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
+        
         // On changes to currentUser, cache the user to localStorage
         app.bind("change:currentUser", this._cacheChangesToCurrentUser);
+        
         app.setupStaticTemplates();
         this._setupOverrides()
             ._setupHub()
