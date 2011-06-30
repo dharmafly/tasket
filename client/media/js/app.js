@@ -48,6 +48,10 @@ var cache = new Cache(Tasket.namespace),
             app.bind("change:currentUser", this._onChangeUser)
                .bind("change:currentUser", this._cacheChangesToCurrentUser);
 
+            // Override the value of Tasket.settings with the
+            // values returned from the server
+            app._cacheServerSettings();
+
             return this.trigger("setup", this);
         },
 
@@ -66,6 +70,27 @@ var cache = new Cache(Tasket.namespace),
                 }
             });
             return this;
+        },
+        
+        // Override the value of Tasket.settings with the
+        // values returned from the server
+        _cacheServerSettings: function(){
+            return Tasket.settings(function (data) {
+                _.each(data.tasks, function (value, attribute) {
+                    Tasket.settings[attribute] = value;
+                });
+                app.trigger("change:settings", Tasket.settings);
+            });
+        },
+        
+        _cacheStatistics: function(){
+            return Tasket.statistics(function (data) {
+                _.each(data.tasks, function (value, key) {
+                    data.tasks[key] = parseInt(value, 10);
+                });
+                app.statistics = data;
+                app.trigger("change:statistics", app.statistics, app);
+            });
         },
 
         _cacheChangesToCurrentUser: function(user){

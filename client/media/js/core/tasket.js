@@ -22,9 +22,12 @@ _.extend(Tasket, Backbone.Events, {
     version: "0.1.0",
     endpoint: "/",
     
-    settings: {
+    defaultSettings: {
+        CLAIMED_TIME_LIMIT: 72,
+        USERS_CAN_CREATE_HUBS: true,
         TASK_ESTIMATE_MAX: 14400, // seconds that a task can take
         TASK_LIMIT: 10, // max number of un-verified tasks on a hub
+        DONE_TIME_LIMIT: 72,
         CLAIMED_LIMIT: 5, // max number of tasks that a user can claim at one time
         AUTOVERIFY_TASKS_DONE_BY_OWNER: true // If this task was "done" by its owner, then automatically verify it - see /models/task.js
     },
@@ -220,6 +223,22 @@ _.extend(Tasket, Backbone.Events, {
             success: callback
         });
     },
+    
+    getData: function(methodName, success){
+        return jQuery.ajax({
+            url: Tasket.endpoint + methodName + "/",
+            dataType: "json",
+            success: success
+        });
+    },
+    
+    statistics: function(callback){
+        return this.getData("statistics", callback);
+    },
+    
+    settings: function(callback){
+        return this.getData("settings", callback);
+    },
 
     media: function (image) {
         return image ? "/media/" + image : "";
@@ -259,6 +278,9 @@ _.extend(Tasket, Backbone.Events, {
 });
 
 /////
+
+// Extend Tasket.settings with defaultSettings
+_.defaults(Tasket.settings, Tasket.defaultSettings);
 
 // Update user's owned hubs on hub add
 Tasket.bind("hub:add", function(hub){

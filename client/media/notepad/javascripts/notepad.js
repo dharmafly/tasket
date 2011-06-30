@@ -17,13 +17,8 @@ _.extend(app, {
 
         // Override the value of Tasket.settings with the
         // values returned from the server
-
-        jQuery.getJSON("/settings", function (data) {
-            _.each(data, function (value, attribute) {
-                Tasket.settings[attribute] = value;
-            });
-            Tasket.trigger("change:settings", Tasket.settings);
-        });
+        this._cacheServerSettings();
+        
         return this;
     },
 

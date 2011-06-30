@@ -95,17 +95,7 @@ if (app.isSupported()) {
     }));
 
     // Load the statistics url.
-    app.init(jQuery.ajax({
-        url: Tasket.endpoint + "statistics/",
-        dataType: "json",
-        success: function (json) {
-            _.each(json.tasks, function (value, key) {
-                json.tasks[key] = parseInt(value, 10);
-            });
-            app.statistics = json;
-            app.trigger("change:statistics", app.statistics, app);
-        }
-    }));
+    app.init(app._cacheStatistics());
 
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){
