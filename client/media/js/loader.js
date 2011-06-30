@@ -18,7 +18,7 @@
         // Load production mode scripts
         
         // http://code.jquery.com/jquery-1.6.1.min.js
-        getScript("media/js/build/pkg/tasket.all.min.js");
+        getScript("media/js/build/pkg/tasket.all.min.js?0.0.2");
     }
 
     // DEVELOPMENT/ DEBUG MODE
