@@ -58,6 +58,7 @@ var Dashboard = View.extend({
     // Sets up bindings to update the dashbaord when the user changes.
     setUser: function (user, options) {
         var dashboard = this,
+            myProjectsElem = this.$("section.quicklinks.my-projects"),
             methodMap;
 
         methodMap = {
@@ -107,7 +108,6 @@ var Dashboard = View.extend({
 
         return this;
     },
-
 
     toggleHub: function(event){
         var hubId = app.dashboard.getHubIdFromAnchor(event.target);
@@ -229,7 +229,7 @@ var Dashboard = View.extend({
     // Updates the "My Projects" box.
     updateUserHubs: function () {
         var hubs = null;
-        if (this.model) {
+        if (this.model && (this.model.isAdmin() || Tasket.settings.USERS_CAN_CREATE_HUBS)) {
             hubs = this._getCollection("getHubs", "hubs.owned", this.updateUserHubs);
         }
         return this.updateList(".my-projects", hubs).hubAnchorSelect();

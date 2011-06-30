@@ -251,7 +251,9 @@ var cache = new Cache(Tasket.namespace),
 
             else if (currentUserData){
                 currentUser = app.updateCurrentUser(new User(currentUserData), false);
-                currentUser.fetch();
+                currentUser.fetch({
+                    success: app.updateCurrentUser
+                }); // Store to cache again
             }
 
             app.authtoken = app.cache.get("authtoken");
