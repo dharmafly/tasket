@@ -970,6 +970,7 @@ svg line {
 }
 
 .dashboard .notifications {
+    margin-top: 1.538em; /* 20px */
 	padding: 1.154em /* 15px */ 1em /* 13px */;
 	background-color: #ececec;
 	background-color: rgba(255, 255, 255, 0.3);
