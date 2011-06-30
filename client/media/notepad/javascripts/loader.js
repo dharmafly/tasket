@@ -17,7 +17,6 @@ window.O = function(){
 
             //dependencies
             jsClientPath + '/dependencies/json2.js',
-            jsCorePath + '/dependencies/jquery.js',
             jsCorePath + '/dependencies/jquery.hashchange.js',
             jsCorePath + '/dependencies/cache.js',
             jsCorePath + '/dependencies/underscore.js',
