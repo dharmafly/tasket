@@ -432,7 +432,7 @@ var cache = new Cache(Tasket.namespace),
 
             // SVG SUPPORT
             // from http://diveintohtml5.org/everything.html#svg
-            supportsSVG = !!(document.createElementNS && document.createElementNS('http://www.w3.org/2000/svg', 'svg').createSVGRect);
+            supportsSVG = !!(document.createElementNS && document.createElementNS("http://www.w3.org/2000/svg", "svg").createSVGRect);
 
             // LOCAL STORAGE SUPPORT
             // This has already been determined by cache.js, so we'll use that
