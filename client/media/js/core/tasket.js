@@ -24,7 +24,7 @@ _.extend(Tasket, Backbone.Events, {
     
     defaultSettings: {
         CLAIMED_TIME_LIMIT: 72,
-        USERS_CAN_CREATE_HUBS: false,
+        USERS_CAN_CREATE_HUBS: true,
         TASK_ESTIMATE_MAX: 14400, // seconds that a task can take
         TASK_LIMIT: 10, // max number of un-verified tasks on a hub
         DONE_TIME_LIMIT: 72,
