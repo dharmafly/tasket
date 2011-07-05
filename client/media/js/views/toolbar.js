@@ -81,7 +81,7 @@ var Toolbar = View.extend({
                     "src", Tasket.thumbnail(user.get("image"), 16, 16, true)
                 );
             }
-            this.userbar.find("a").text(user.fullname());
+            this.userbar.find("a").text(user.get("username"));
         } else {
             this.userbar.hide();
         }
