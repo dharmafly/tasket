@@ -461,7 +461,7 @@ var TankController = Backbone.Controller.extend({
         var hubView = this.getHubView(hubId);
             
         if (hubView){
-            hubView.displayDetails();
+            hubView.select().displayDetails();
         }
         
         return this;
