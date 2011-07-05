@@ -76,9 +76,7 @@ var cache = new Cache(Tasket.namespace),
         // values returned from the server
         _cacheServerSettings: function(){
             return Tasket.settings(function (data) {
-                _.each(data.tasks, function (value, attribute) {
-                    Tasket.settings[attribute] = value;
-                });
+                _.extend(Tasket.settings, data);
                 app.trigger("change:settings", Tasket.settings);
             });
         },
