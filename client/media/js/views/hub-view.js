@@ -113,7 +113,7 @@ var HubView = View.extend({
         if (canEdit && !actions.length) {
             controls.prepend(tim("hub-admin-actions", {id: this.model.id}));
         }
-        else if (canEdit && actions.length) {
+        else if (!canEdit && actions.length) {
             actions.remove();
         }
 
