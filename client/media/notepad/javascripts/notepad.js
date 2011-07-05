@@ -128,12 +128,17 @@ _.extend(app, {
         app.bind("change:currentUser", this._cacheChangesToCurrentUser);
         
         app.setupStaticTemplates();
+        
         this._setupOverrides()
             ._setupHub()
             ._setupLightbox()
             ._setupAuth()
             ._setupHistory();
 
+        // Load the server settings.
+        // Override the value of Tasket.settings with the
+        // values returned from the server
+        app.init(app._cacheServerSettings());
     }
 
 }, app);

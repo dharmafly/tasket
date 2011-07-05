@@ -96,6 +96,11 @@ if (app.isSupported()) {
 
     // Load the statistics url.
     app.init(app._cacheStatistics());
+    
+    // Load the server settings.
+    // Override the value of Tasket.settings with the
+    // values returned from the server
+    app.init(app._cacheServerSettings());
 
     // Timeout required to prevent notification appearing immediately (seen in Chrome)
     window.setTimeout(function(){

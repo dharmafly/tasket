@@ -48,10 +48,6 @@ var cache = new Cache(Tasket.namespace),
             app.bind("change:currentUser", this._onChangeUser)
                .bind("change:currentUser", this._cacheChangesToCurrentUser);
 
-            // Override the value of Tasket.settings with the
-            // values returned from the server
-            app._cacheServerSettings();
-
             return this.trigger("setup", this);
         },
 
