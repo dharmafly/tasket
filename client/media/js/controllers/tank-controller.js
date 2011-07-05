@@ -376,29 +376,31 @@ var TankController = Backbone.Controller.extend({
     },
 
     newHub: function(){
-        var form;
+        var hub;
 
         if (!this._isLoggedIn("You must be logged in to create a hub")) {
             return;
         }
-
-        form = this._createHubForm(new Hub({
+        
+        hub = new Hub({
             owner: app.currentUser.id
-        }));
+        });
 
-        form.bind("success", _.bind(function (hub) {
-            // Add hubs to global cache.
-            Tasket.hubs.add(hub);
+        this._createHubForm(hub)
+            .bind("success", _.bind(function (hub) {
+                // Add hubs to global cache.
+                Tasket.hubs.add(hub);
 
-            // Add hub and select it for viewing
-            this.addHub(hub).select();
-        }, this));
+                // Add hub and select it for viewing
+                this.addHub(hub).select();
+            }, this));
         
         return this;
     },
 
     editHub: function (hubId) {
-        var hub = Tasket.getHubs(hubId);
+        var hub = Tasket.getHubs(hubId),
+            hubView;
             
         if (!hub){
             this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
@@ -411,8 +413,16 @@ var TankController = Backbone.Controller.extend({
         if (!this._hasAdminRights(hub.get("owner"), "You cannot edit this, because you do not own it and you are not an admin.")) {
             return;
         }
-        return this.displayHub(hubId)
-            ._createHubForm(hub);
+
+        this._createHubForm(hub)
+            .bind("success", _.bind(function (hub) {
+                hubView = this.getHubView(hubId);
+                if (hubView){
+                    hubView.render();
+                }
+            }, this));
+        
+        return this.displayHub(hubId);
     },
 
     _isLoggedIn: function (message) {
