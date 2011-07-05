@@ -470,6 +470,14 @@ form ul,
     font-weight: bold;
 }
 
+.content h1 a {
+    border-bottom-style: none;
+}
+
+.content h1 a:hover {
+    border-bottom-style: solid;
+}
+
 .content strong {
 	font-weight: bold;
 }

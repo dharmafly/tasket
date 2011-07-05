@@ -1055,6 +1055,14 @@ table {
     font-weight: bold;
 }
 
+.lightbox .content h1 a {
+    border-bottom-style: none;
+}
+
+.lightbox .content h1 a:hover {
+    border-bottom-style: solid;
+}
+
 .lightbox .content strong {
 	font-weight: bold;
 }
