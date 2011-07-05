@@ -19,7 +19,7 @@ See here for more: http://docs.webfaction.com/software/python.html
 ### 1. Clone Tasket
 From the application directory (`~/webapps/django/`) clone `tasket`:
   
-> git://github.com/dharmafly/tasket.git
+    git clone git://github.com/dharmafly/tasket.git
   
 This will create a folder `tasket` in the application directory.
   
@@ -31,30 +31,30 @@ In `tasket/web/` copy `local_settings.py.example` to `local_settings.py`.  Edit 
 
 ### 4. Setup the python environment
   
-> easy_install pip
-> pip install -r ~/webapps/django/tasket/requirements.txt
+    easy_install pip
+    pip install -r ~/webapps/django/tasket/requirements.txt
   
 ### 5. Sync the database.
 In `tasket/web/` run 
 
-> python manage.py syncdb
+    python manage.py syncdb
   
 following the superuser instructions there, then:
   
-> python2.7 manage.py migrate
+    python2.7 manage.py migrate
 
 
 ### 6. Set up apache/mod_wsgi.
 
 The default mod_wsgi file in the root application folder called `myproject.wsgi` contains everything needed to run tasket, with one simple change to line 6:
 
-> os.environ['DJANGO_SETTINGS_MODULE'] = 'tasket.web.settings'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'tasket.web.settings'
 
 It is possible to change the file name now, but make sure the apache config file knows where to find the wsgi file (`WSGIScriptAlias` directive in `[application]/apache2/conf/httpd.conf`)
 
 Edit `[application]/apache2/conf/httpd.conf` and append the following to the `WSGIPythonPath` directive:
 
-> /home/[username]/webapps/django/tasket/server:/home/[username]/webapps/django/tasket
+    /home/[username]/webapps/django/tasket/server:/home/[username]/webapps/django/tasket
 
 Finally run `[application]/apache2/bin/restart` and test in a browser.  The API should work, so /hubs/ should show an empty array.
 
@@ -67,6 +67,12 @@ If the new application is called `media`, a new directory will be created at `~/
 
 In this folder, create a symlink to everything in the media folder:
 
-> ln -s ../django/tasket/client/media/* .
+    ln -s ../django/tasket/client/media/* .
 
 (note trailing full stop)
+
+### 8. Pull from the Git repository
+
+In future, simply:
+
+    cd ~/webapps/django/tasket && git pull
