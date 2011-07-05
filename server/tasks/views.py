@@ -475,8 +475,8 @@ def statistics(request):
             'verified' : str(Task.objects.filter(state=Task.STATE_VERIFIED).count()),
         }
     }
-    
-    return HttpResponse(json.dumps(stats))
+
+    return HttpResponse(json.dumps(stats), content_type='application/json')
     
 
 
