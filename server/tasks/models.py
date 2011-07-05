@@ -141,7 +141,7 @@ class Task(StarredModel):
         if request_user and request_user.is_authenticated():
             star = self.starred(user=request_user)
             if star:
-                obj_dict["starred"] = star.as_json()
+                obj_dict["starred"] = star.as_dict()
         
         for k,v in obj_dict.items():
             if v == None:
