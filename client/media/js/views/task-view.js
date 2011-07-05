@@ -66,12 +66,19 @@ var TaskView = View.extend({
     },
 
     taskDetailsHTML: function(){
-        var data = this.model.toJSON();
+        var data = this.model.toJSON(),
+            hub;
 
         data.isNew = this.model.isNew();
         data.isNotNew = !this.model.isNew();
 
         data.hubId = data.hub;
+        
+        // Add title of the hub
+        hub = Tasket.hubs.get(data.hub);
+        data.hubTitle = hub ? hub.get("title") : "";
+        data.hasHubTitle = !!data.hubTitle;
+        
         data.canEdit = app.isCurrentUserOrAdmin(data.owner);
         data.isClaimed = !!data.claimedBy;
         data.description = "{description}";
