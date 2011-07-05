@@ -116,7 +116,6 @@ class Task(StarredModel):
         obj_dict = {
             "id": str(self.pk),
             "description": self.description.strip(),
-            "estimate": self.estimate,
             "state" : self.state,
             "owner" : str(self.owner.user.pk),
             "claimedBy" : None,
@@ -125,6 +124,8 @@ class Task(StarredModel):
             "hub" : str(self.hub.pk),
         }
         
+        if self.estimate:
+            obj_dict["estimate"] = self.estimate
         if self.image:
             obj_dict["image"] = self.image.name
         if self.claimedBy:

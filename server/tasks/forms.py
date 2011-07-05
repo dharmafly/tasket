@@ -178,8 +178,6 @@ class TaskForm(StarredForm):
         
         if not cleaned_data.get('estimate'):
             cleaned_data['estimate'] = self.instance.estimate
-            if self.instance.estimate == None:
-                self._errors['estimate'] = self.error_class(['Estimate is required'])
         
         self.cleaned_data = cleaned_data
         cleaned_data = self.state_logic()

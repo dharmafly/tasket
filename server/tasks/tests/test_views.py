@@ -196,7 +196,7 @@ class ViewTests(TestCase):
             )
 
         json_data = json.loads(response.content)
-        self.assertTrue(json_data['estimate'][0].startswith("Estimate is required"))
+        self.assertFalse('estimate' in json_data)
 
     def test_task_post_image(self):
         self.client.login(username='TestUser', password='12345')
