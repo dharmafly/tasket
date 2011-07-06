@@ -71,7 +71,22 @@ In this folder, create a symlink to everything in the media folder:
 
 (note trailing full stop)
 
-### 8. Pull from the Git repository
+### 8. Email and Cron
+
+Email settings in `local_settings.py` should be configured as per:
+http://docs.webfaction.com/software/django/getting-started.html#configuring-django-to-send-email-messages
+
+The `task_states` command should be run on a cron every now and again (every 10 minutes is reasonable).  Add the following line to the crontab by running:
+
+> crontab -e
+
+and inserting:
+
+> 10 * * * * cd ~/webapps/django/tasket/web/ && python2.7 manage.py task_states
+
+on a new line.
+
+### 9. Pull from the Git repository
 
 In future, simply:
 
