@@ -378,7 +378,7 @@ var TankController = Backbone.Controller.extend({
     newHub: function(){
         var hub;
 
-        if (!this._isLoggedIn("You must be logged in to create a hub")) {
+        if (!this._isLoggedIn("You must be logged in to create a " + app.lang.HUB)) {
             return;
         }
         
@@ -449,18 +449,21 @@ var TankController = Backbone.Controller.extend({
 
         // Append our iFrame element for upload.
         form.updateFrame();
-        form.bind("success", _.bind(function () {
-            app.lightbox.hide();
-            HubView.prototype.updateLocation.call({model:hub});
-        }, this));
-
-        form.bind("delete", _.bind(function (hub) {
-            app.currentUser.removeHub(hub);
-            this.removeHub(hub);
-            Tasket.hubs.remove(hub);
-            app.lightbox.hide();
-            window.location.hash = "/";
-        }, this));
+        
+        form.bind("success", function (hub) {
+                app.lightbox.hide();
+                HubView.prototype.updateLocation.call({model:hub});
+            })
+            .bind("delete", _.bind(function (hub) {
+                app.currentUser.removeHub(hub);
+                this.removeHub(hub);
+                Tasket.hubs.remove(hub);
+                app.lightbox.hide();
+                window.location.hash = "/";
+            }, this))
+            .bind("error", _.bind(function(hub, form, status){
+                this.error("Sorry, there was an error creating the " + app.lang.HUB + ". Please try logging out and in again. (error: hub-" + hub.id + ", status " + status + ")");
+            }, this));
 
         return form;
     },
@@ -557,44 +560,46 @@ var TankController = Backbone.Controller.extend({
 
         app.lightbox.content(form.render().el).show();
         form.bind("success", _.bind(function (event) {
-            var hubView = tank.getHubView(hub.id),
-                userTasks;
+                var hubView = tank.getHubView(hub.id),
+                    userTasks;
 
-            app.lightbox.hide({silent: true});
+                app.lightbox.hide({silent: true});
 
-            // Add task to Tasket.tasks collection if not already in there.
-            if (!Tasket.tasks.get(task.id)) {
-                Tasket.tasks.add(task);
-                hub.addTask(task);
-            }
+                // Add task to Tasket.tasks collection if not already in there.
+                if (!Tasket.tasks.get(task.id)) {
+                    Tasket.tasks.add(task);
+                    hub.addTask(task);
+                }
 
-            // Add to current users tasks if not already in there.
-            if (
-              task.get('state') === Task.states.NEW &&
-              task.get('owner') === app.currentUser.id
-            ) {
-                userTasks = _.clone(app.currentUser.get('tasks.owned.new'));
-                userTasks.push(task.id);
-                app.currentUser.set({
-                  'tasks.owned.new': userTasks
-                });
-            }
-                
-            tank.repositionHubViews();
+                // Add to current users tasks if not already in there.
+                if (
+                  task.get('state') === Task.states.NEW &&
+                  task.get('owner') === app.currentUser.id
+                ) {
+                    userTasks = _.clone(app.currentUser.get('tasks.owned.new'));
+                    userTasks.push(task.id);
+                    app.currentUser.set({
+                      'tasks.owned.new': userTasks
+                    });
+                }
+                    
+                tank.repositionHubViews();
 
-            // Go to the hub's URL
-            hubView.updateLocation();
-        }, this));
-        
-        form.bind("delete", _.bind(function (model) { // TODO create removeTask method
-            var hubView = this.getHubView(hub.id);
-            if (hubView) {                
-                hubView.model.removeTask(task);
-            }
-            app.currentUser.removeTask(model);
-            Tasket.tasks.remove(model);
-            app.lightbox.hide();
-        }, this));
+                // Go to the hub's URL
+                hubView.updateLocation();
+            }, this))
+            .bind("delete", _.bind(function (model) { // TODO create removeTask method
+                var hubView = this.getHubView(hub.id);
+                if (hubView) {                
+                    hubView.model.removeTask(task);
+                }
+                app.currentUser.removeTask(model);
+                Tasket.tasks.remove(model);
+                app.lightbox.hide();
+            }, this))
+            .bind("error", _.bind(function(task, form, status){
+                this.error("Sorry, there was an error creating the task. Please try logging out and in again. (error: task-" + task.id + ", status " + status + ")")
+            }));
         
         return this;
     },
