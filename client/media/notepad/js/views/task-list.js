@@ -130,6 +130,7 @@ var TaskListView = View.extend({
     */
     renderTasks: function (tasks) {
         var view = this,
+            itemList = this.itemList,
             taskView;
 
         tasks = tasks instanceof TaskList ? tasks.toArray() : [tasks];
@@ -138,7 +139,7 @@ var TaskListView = View.extend({
         _.each(tasks, function (task) {
             taskView = new TaskView({model: task, collection: view.collection});
             view.taskViews[task.cid] = taskView;
-            view.$('.item-list').append(taskView.render().el);
+            itemList.append(taskView.render().el);
 
             //new item
             if (task.isNew()) {
