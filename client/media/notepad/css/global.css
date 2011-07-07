@@ -563,15 +563,20 @@ table {
     text-transform:none;
   }
   
-/* ASIDE */
+/* LISTS TAB */
 
-  aside,
+  /* TODO: TEMP - hide lists tab */
+  aside#lists {
+    display:none;
+  }
+
+  aside#lists,
   #content,
   footer {
     background: #f8f5f3 url(../images/bg-content.png);
   }
   
-  aside {
+  aside#lists {
     border-bottom: 1px solid #9dcfe7;
     padding-top: 60px;
     position: relative;
@@ -580,7 +585,7 @@ table {
     width: 100%;
   }
   
-    aside h1 {
+    aside#lists h1 {
       background-color: #6ab6da;
       -webkit-border-top-left-radius: 5px;
       -webkit-border-top-right-radius: 5px;
@@ -598,31 +603,31 @@ table {
 
     }
     
-    aside h1,
-    aside h1 a {
+    aside#lists h1,
+    aside#lists h1 a {
       color: #fff;
     }
 
-    aside h1 a {
+    aside#lists h1 a {
         display: block;
         text-decoration: none;
     }
 
-    aside h1 a:hover {
+    aside#lists h1 a:hover {
         text-decoration: underline;
     }
 
-    aside h1 {
+    aside#lists h1 {
        float: right;
     }
 
-    aside h1 a span {
+    aside#lists h1 a span {
       padding: 4px 25px 4px 10px;
       display: block;
       background: url(../images/sprite1.png) no-repeat right -294px;
     }
 
-    aside nav {
+    aside#lists nav {
       position: absolute;
       display: none;
       right: 0;
@@ -631,48 +636,48 @@ table {
       max-width: 25em;
     }
     
-      aside nav ul {
+      aside#lists nav ul {
         padding: 28px 28px 18px 28px;
         font-weight: bolder;
         border-bottom: 1px solid #60a6c6;
       }
       
-      aside nav li {
+      aside#lists nav li {
         margin-bottom: 10px;
         font-size: 1.3em;
         line-height: 1.3em;
       }
       
-      aside nav .star a {
+      aside#lists nav .star a {
         background: url(../images/sprite1.png) no-repeat right -1101px;
         padding: 1px 25px 1px 0;
       }
       
-      aside nav .new-list {
+      aside#lists nav .new-list {
         font-weight: normal;
         font-style: italic;
       }
       
-         aside nav .new-list a {
+         aside#lists nav .new-list a {
            background: url(../images/sprite1.png) no-repeat 0 -799px;
            line-height: 13px;
            padding-left: 17px;
          }
       
-      aside nav a {
+      aside#lists nav a {
         color: #fff;
         text-decoration: none;
       }
-      aside nav a:hover {
+      aside#lists nav a:hover {
         text-decoration: underline;
       }
       
-      aside nav .showing {
+      aside#lists nav .showing {
         border-top: 1px solid #9dcfe7;
         padding: 6px 6px 6px 12px;
       }
       
-      aside nav .showing a {
+      aside#lists nav .showing a {
         padding-left: 30px;
         display: block;
         background: url(../images/sprite1.png) no-repeat 0 -499px;
@@ -680,11 +685,11 @@ table {
         line-height: 17px;
       }
       
-      body.incomplete aside nav .showing a {
+      body.incomplete aside#lists nav .showing a {
         background-position: 5px -599px;
       }
       
-      body.complete aside nav .showing a {
+      body.complete aside#lists nav .showing a {
         background-position: 5px -699px;
       }
     
