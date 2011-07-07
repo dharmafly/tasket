@@ -469,17 +469,34 @@ table {
     z-index: 3;
   }
   
-    header#pageheader h1,
+    /* SITE TITLE */
     header#pageheader h1 a {
-      width: 210px;
-      height: 52px;
+        color: #333;
+        text-decoration: none;
     }
-  
-      header#pageheader h1 a {
+    header#pageheader h1 a:hover {
+	    border-bottom: 1px solid;
+    }
+    
+    
+    /* 1) When site title is text, not a logo image */
+    header#pageheader h1 {
+	    position: absolute;
+	    left: 0;
+	    top: 10px;
+	    font-size: 2em;
+    }
+    
+    /* 2) When site title *is* a logo image */
+    /*
+    header#pageheader h1 a {
         display: block;
+        width: 210px;
+        height: 52px;
         text-indent: -1000em;
         background: url(../images/logo.png) no-repeat;
-      }
+    }
+    */
     
     
 /* MAINNAV */ 
