@@ -52,7 +52,7 @@ var TaskView = View.extend({
     },
 
     render: function () {
-        var starred = !!this.model.get("starred"),
+        var starred = !!this.model.get("starred.id"),
             done = this.model.get("state") == "done",
             description = this.model.get("description");
 
