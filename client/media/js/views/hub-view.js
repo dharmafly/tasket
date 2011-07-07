@@ -225,9 +225,10 @@ var HubView = View.extend({
     },
 
     refreshTasks: function () {
-        var hubView = this;
+        var hubView = this,
+            tasks;
 
-        function redisplay(){
+        function display(){
             if (hubView.tasksVisible()) {
                 hubView
                     .removeForceDirectedTaskNodes()
@@ -238,16 +239,18 @@ var HubView = View.extend({
             }
         }
 
-        this.tasks = Tasket.getTasks(this.getDisplayTasks());
+        tasks = this.tasks = Tasket.getTasks(this.getDisplayTasks());
 
-        if (this.tasks.isComplete()){
-            redisplay();
+        if (tasks.isComplete()){
+            display();
         }
 
-        this.tasks
-            .unbind("refresh", redisplay)
-            .bind("refresh", redisplay);
+        window.t = tasks
+            .unbind("refresh", display)
+            .bind("refresh", display);
             
+            tasks.foo = "bar";
+            O("hubview", tasks.toJSON());
         return this;
     },
 
