@@ -7,7 +7,7 @@ window.O = function(){
 
 (function (document, $, undefined) {
     var jsCorePath = '/media/js',
-        jsClientPath = '/media/notepad/javascripts';
+        jsClientPath = '/media/notepad/js';
 
 
     //use jQuery to load our own script loader
