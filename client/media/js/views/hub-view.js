@@ -245,12 +245,9 @@ var HubView = View.extend({
             display();
         }
 
-        window.t = tasks
-            .unbind("refresh", display)
-            .bind("refresh", display);
+        tasks.unbind("refresh", display)
+             .bind("refresh", display);
             
-            tasks.foo = "bar";
-            O("hubview", tasks.toJSON());
         return this;
     },
 
