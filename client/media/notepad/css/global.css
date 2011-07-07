@@ -566,8 +566,11 @@ table {
 /* LISTS TAB */
 
   /* TODO: TEMP - hide lists tab */
-  aside#lists {
-    display:none;
+  aside#lists h1 {
+    margin-top:22px !important;
+  }
+  aside#lists h1 a {
+    display:none !important;
   }
 
   aside#lists,
