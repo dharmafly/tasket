@@ -20,4 +20,4 @@ rebuild_db.sh
 web/node_modules
 Imaging-*
 client/media/notepad/template.html
-client/media/images/logo.png
+client/media/notepad/images/logo.png
