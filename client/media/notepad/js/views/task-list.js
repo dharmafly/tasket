@@ -10,12 +10,12 @@ var TaskListView = View.extend({
     // Caches the hub title so it can be restored when cancelling an edit.
     previousTitle: null,
     events: {
-        "click header .edit a": "_onTitleEdit",
-        "click header a.cancel": "_onTitleEditCancel",
-        "click header a.save": "_onTitleEditSave",
-        "mouseover header h1 a": "_onTitleMouseover",
-        "mouseout header h1 a": "_onTitleMouseout",
-        "keypress header input": "_onKeypressTitle",
+        "click div.header .edit a": "_onTitleEdit",
+        "click div.header a.cancel": "_onTitleEditCancel",
+        "click div.header a.save": "_onTitleEditSave",
+        "mouseover div.header h1 a": "_onTitleMouseover",
+        "mouseout div.header h1 a": "_onTitleMouseout",
+        "keypress div.header input": "_onKeypressTitle",
         "click a.new-item": "_onNewItemClick"
     },
 
@@ -189,13 +189,13 @@ var TaskListView = View.extend({
         var listTitle = this.previousTitle =  this.$("header h1 a").text(),
             html = jQuery(tim("task-edit", {placeholder: false}));
 
-        this.$("header h1").replaceWith(html);
-        this.$("header input").val(listTitle).focus();
+        this.$("div.header h1").replaceWith(html);
+        this.$("div.header input").val(listTitle).focus();
         event.preventDefault();
     },
 
     _onTitleEditSave: function (event) {
-        var newTitle = this.$("header input").val();
+        var newTitle = this.$("div.header input").val();
 
         if (_.isEmpty(newTitle)) {
             newTitle = app.lang.EMPTY_HUB;
@@ -233,19 +233,19 @@ var TaskListView = View.extend({
             title = app.lang.EMPTY_HUB;
         }
 
-        this.$("header input").replaceWith(
+        this.$("div.header input").replaceWith(
             jQuery('<h1><a href="#">'+title+'</a></h1>')
         );
-        this.$("header .cancel, header .save").remove();
+        this.$("div.header .cancel, div.header .save").remove();
     },
 
     _onTitleMouseover: function (event) {
-        this.$("header").addClass("hover");
+        this.$("div.header").addClass("hover");
         event.preventDefault();
     },
 
     _onTitleMouseout: function (event) {
-        this.$("header").removeClass("hover");
+        this.$("div.header").removeClass("hover");
         event.preventDefault();
     },
 
