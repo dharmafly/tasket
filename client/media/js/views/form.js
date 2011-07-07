@@ -83,7 +83,7 @@ var Form = View.extend({
     
     _onError: function (model, xhr) {
         var errors = jQuery.parseJSON(xhr.responseText);
-        this.errors(errors).trigger("error", this.model, this);
+        this.errors(errors).trigger("error", this.model, this, xhr.status);
     }
 });
 
