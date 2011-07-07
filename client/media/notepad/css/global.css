@@ -741,7 +741,7 @@ table {
       line-height: 1.9em;
     }
     
-    #content .item-list > li:hover {
+    #content .item-list > li:hover, #content .item-list > li.hover {
       background-color: #fff;
       border-bottom: 2px solid #000;
       margin-bottom: -1px;
@@ -900,7 +900,13 @@ table {
       #content .item-list > li:hover .edit-item .move,
       #content .item-list > li:hover .edit-item .edit,
       #content .item-list > li:hover .edit-item .delete,
-      #content .header:hover .edit-item .edit {
+      #content .header:hover .edit-item .edit,
+
+      /* IE6 compatibility */
+      #content .item-list > li.hover .edit-item .move,
+      #content .item-list > li.hover .edit-item .edit,
+      #content .item-list > li.hover .edit-item .delete,
+      #content .header.hover .edit-item .edit {
         visibility: visible;
       }
 
@@ -919,7 +925,7 @@ table {
         font-style: italic;
       }
       
-      #content .new-item:hover {
+      #content .new-item:hover, #content .new-item.hover {
         text-decoration: underline;
         cursor: pointer;
       }
