@@ -105,8 +105,9 @@ var cache = new Cache(Tasket.namespace),
                 if (!app.allDoneTasks){
                     Tasket.bind("task:change:state", app.updateAllDoneTasks)
                           .bind("task:remove", app.updateAllDoneTasks);
+                          
+                    app.fetchAllDoneTasks();
                 }
-                app.fetchAllDoneTasks();
             }
             else {
                 app.allDoneTasks = null;
