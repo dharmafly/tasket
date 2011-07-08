@@ -334,10 +334,17 @@ var TaskListView = View.extend({
     * returns nothing.
     */
     _onedit: function (cid, target) {
+
         var taskView = this.taskViews[cid];
 
         if (this.editedTask) {
-          this.editedTask.$("a.cancel").click();
+          // Do nothing if the user is already editing this same task.
+          if (taskView === this.editedTask) {
+            return false;
+          }
+          else {
+            this.editedTask.$("a.cancel").click();
+          }
         }
 
         this.editedTask = taskView;
@@ -390,7 +397,15 @@ var TaskListView = View.extend({
 
     _onCancel: function (event) {
         var taskView = this._getElementView(event.target);
-        taskView.remove();
+        if (taskView.model.isNew()) {
+          taskView.remove();
+        }
+        else {
+          console.info("Do something else");
+          taskView.reset();
+        }
+
+        this.editedTask = null;
         event.preventDefault();
 
     },
