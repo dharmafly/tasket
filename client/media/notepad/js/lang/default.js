@@ -3,7 +3,7 @@
 
 app.lang = {
     NEW_HUB:                 "New list",
-    EMPTY_HUB:               "An empty list title...",
+    EMPTY_HUB:               "New list",
     NEW_TASK:                "New item",
-    EMPTY_TASK:              "An empty item..."
+    EMPTY_TASK:              "New item"
 };
