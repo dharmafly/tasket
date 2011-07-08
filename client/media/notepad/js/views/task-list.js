@@ -4,7 +4,9 @@ var TaskListView = View.extend({
     taskViews: {},
 
     // Keep a reference to the currently edited task
-    editedTask: null,
+    editedTaskView: null,
+    // Keep a reference to the unsaved task view,
+    newTaskView: null,
 
 
     // Caches the hub title so it can be restored when cancelling an edit.
@@ -143,6 +145,7 @@ var TaskListView = View.extend({
 
             //new item
             if (task.isNew()) {
+                view.newTaskView = taskView;
                 taskView.makeEditable();
             }
         });
@@ -278,6 +281,17 @@ var TaskListView = View.extend({
     */
     _onNewItemClick: function (event) {
 
+        // allow only one unsaved item at the time
+        if (this.newTaskView) {
+          return false;
+        }
+
+        // If an item is being edited, reset it.
+        if (this.editedTaskView) {
+          this.editedTaskView.reset();
+          this.editedTaskView = null;
+        }
+
         var newTask = new Task({
             hub: app.selectedHub.id,
             owner: app.currentUser.id,
@@ -326,7 +340,6 @@ var TaskListView = View.extend({
 
    /**
     * Handles the 'edit' action.
-    * Triggers the 'update-item' event and passes along the cid of the selected task.
     *
     * cid - The cid of a Task instance.
     *
@@ -334,20 +347,17 @@ var TaskListView = View.extend({
     * returns nothing.
     */
     _onedit: function (cid, target) {
-
         var taskView = this.taskViews[cid];
 
-        if (this.editedTask) {
-          // Do nothing if the user is already editing this same task.
-          if (taskView === this.editedTask) {
+        // cancel all active edits
+        this.$("a.cancel").click();
+
+        if (this.editedTaskView && taskViews == this.editedTaskVew ) {
+            // Do nothing if the user is already editing this same task.
             return false;
-          }
-          else {
-            this.editedTask.$("a.cancel").click();
-          }
         }
 
-        this.editedTask = taskView;
+        this.editedTaskVew = taskView;
         taskView.makeEditable();
     },
 
@@ -401,11 +411,10 @@ var TaskListView = View.extend({
           taskView.remove();
         }
         else {
-          console.info("Do something else");
           taskView.reset();
         }
 
-        this.editedTask = null;
+        this.editedTaskView = null;
         event.preventDefault();
 
     },
@@ -439,7 +448,7 @@ var TaskListView = View.extend({
     },
 
     /*
-    * Triggers the "update-item" event and expands a new insert item input when the task record gets saved.
+    * Triggers the "update-item" event and expands a new insert item input if the task is new.
     *
     * task        - An instance of the Task model.
     * description - The todo item description.
@@ -451,7 +460,9 @@ var TaskListView = View.extend({
 
     _saveNewItem: function (task, description) {
         var view = this;
-        view.$("a.new-item").click();
+        if (task.isNew()) {
+          view.$("a.new-item").click();
+        }
         view.trigger('update-item', task, {description: description});
     }
 
