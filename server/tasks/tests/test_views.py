@@ -270,7 +270,24 @@ class ViewTests(TestCase):
         response = self.client.get('/users/6')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['email'], 'foo@example.com')
-        
+
+    def test_user_post_bad_username(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99@bad.com",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "password_confirm" : "12345",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        self.assertEqual(response.status_code, 400)
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['username'], ["This value may contain only letters, numbers and underscores."])
+                
 
     def test_user_post_bad_password(self):
         response = self.client.post(

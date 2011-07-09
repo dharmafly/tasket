@@ -1,8 +1,10 @@
 import datetime
 
 import django.forms
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import forms as userforms
 from django.utils.html import escape
 from django.conf import settings
 
@@ -217,3 +219,18 @@ class ProfileForm(StarredForm):
     class Meta:
         model = Profile
         exclude = ('user', 'createdTime', 'admin',)
+
+
+class UserCreationForm(userforms.UserCreationForm):
+    """
+    Simple subclass of django.contrib.auth.forms.UserCreationForm that further 
+    limits the characters allowed in the username field.
+    
+    Only alphanumeric characters, plus the "_" underscore character are allowed
+    """
+    REGEX = r'^[a-zA-Z0-9_]+$'
+    
+    username = forms.RegexField(label=_("Username"), max_length=30, regex=REGEX,
+        help_text = _("Required. 30 characters or fewer. May contain only letters, numbers and underscores only."),
+        error_messages = {'invalid': _("This value may contain only letters, numbers and underscores.")})
+    

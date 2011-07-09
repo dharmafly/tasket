@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.validators import email_re
 from django.conf import settings
-from django.contrib.auth import forms as userforms
 from django.middleware.csrf import get_token
 
 from utils.decorators import json_login_required as login_required
@@ -347,7 +346,7 @@ class ProfileView(PutView):
         password_confirm = request.JSON.get('password_confirm')
         email = request.JSON.get('email')
         
-        form = userforms.UserCreationForm(
+        form = forms.UserCreationForm(
                 {
                     'username': username,
                     'email' : email,
