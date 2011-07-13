@@ -2,7 +2,7 @@
 
 An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.  
 
-Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an Issue](https://github.com/dharmafly/tasket/issues).
+Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an issue](https://github.com/dharmafly/tasket/issues).
 
 
 ## Dependencies
@@ -49,8 +49,12 @@ Tasket allows its behaviour to be modified, via a number of settings in _local_s
 It is recommended to create a superuser account during this process (follow the instructions in the terminal).
 
     python manage.py syncdb
-    
-    
+
+If you create a superuser account at this point, you may need to run the command above a second time, then the following
+
+    python manage.py migrate
+
+
 ### Optional: Load test data
 
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
