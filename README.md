@@ -50,10 +50,6 @@ It is recommended to create a superuser account during this process (follow the 
 
     python manage.py syncdb
 
-If you create a superuser account at this point, you may need to run the command above a second time, then the following
-
-    python manage.py migrate
-
 
 ### Optional: Load test data
 
