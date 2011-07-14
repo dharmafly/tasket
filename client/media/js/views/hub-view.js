@@ -18,7 +18,7 @@ var HubView = View.extend({
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
 
-        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateAdminActions", "_onTaskRemoved", "setTaskViewOffsetFromForcedNode");
+        _.bindAll(this, "updateWalls", "repositionTasks", "refreshTasks", "updateImage", "updateTitle", "updateDescription", "updateEstimate", "updateName", "updateAdminActions", "_onTaskRemoved", "setTaskViewOffsetFromForcedNode");
         
         // **
         
@@ -101,6 +101,11 @@ var HubView = View.extend({
 
     updateEstimate: function () {
         this.$(".estimate").text("(" + (this.model.humanEstimate() || app.lang.HUB_NO_TASKS) + ")");
+        return this;
+    },
+    
+    updateName: function (user) {
+        this.$(".name").text(" - created by " + user.fullname());
         return this;
     },
 
@@ -404,7 +409,8 @@ var HubView = View.extend({
     },
 
     render: function(){
-        var data = this.model.toJSON();
+        var data = this.model.toJSON(),
+            userModel, updateName, model;
 
         data.estimate   = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
         data.isSelected = this.isSelected();
@@ -412,6 +418,23 @@ var HubView = View.extend({
         data.description = app.truncate(data.description, app.hubDescriptionTruncate);
         data.image = this.imageSrc();
         data.hubId = this.model.id;
+        
+        data.hasName = app.showCreatedByOnProjects;
+        if (!!data.hasName) {
+            if (app.isCurrentUserOrAdmin(data.owner)) {
+                data.name = "you";
+            } else {
+                userModel = Tasket.getUsers(data.owner); 
+                data.name = userModel.fullname();
+                if (!data.name) {
+                    updateName = this.updateName;
+                    model = this;
+                    userModel.bind("change", function(user){
+                        updateName.call(model, user);
+                    });
+                }
+            }
+        }
 
         this.elem.html(tim("hub", data));
         this.nucleusElem = this.elem.children("a.nucleus-wrapper");
@@ -431,11 +454,22 @@ var HubView = View.extend({
     },
 
     hubDetailsHTML: function(){
-        var data = this.model.toJSON();
+        var data = this.model.toJSON(),
+            userModel;
 
         data.description = "{description}";
         data.estimate = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
         data.hubId = this.model.id;
+        
+        data.hasName = app.showCreatedByOnProjects;
+        if (!!data.hasName) {
+            if (app.isCurrentUserOrAdmin(data.owner)) {
+                data.name = "you";
+            } else {
+                userModel = Tasket.getUsers(data.owner); 
+                data.name = userModel.fullname();
+            }
+        }
 
         return tim("hub-detail", data)
           .replace("{description}", nl2br(this.model.escape("description")));
