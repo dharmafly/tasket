@@ -90,7 +90,7 @@ For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not
 ### Build software installation
 
 We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it you
-need [Node](http://nodejs.org) >= 4.0.1 and [npm](http://npmjs.org) installed.
+need [Node](http://nodejs.org) >= 0.4.0.1 and [npm](http://npmjs.org) installed.
 
 For hints on installation, see 
 [joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)). 
