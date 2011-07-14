@@ -106,13 +106,8 @@ var Task = Model.extend({
             switch (newState){
                 case TaskStates.NEW:
                     // If we're not moving directly from "done" -> "verified", then error
-                    if (currentState === TaskStates.DONE){
-                        if (!attr.owner){
-                            toSet.owner = userid;
-                        }
-                    }
-                    else {
-                        error(currentState, newState, userid);
+                    if (!attr.owner){
+                        toSet.owner = userid;
                     }
                 break;
                 

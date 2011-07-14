@@ -37,7 +37,9 @@ var cache = new Cache(Tasket.namespace),
                 toolbar:        new Toolbar({el: jQuery(".header-container")[0]}),
                 notification:   new Notification(),
                 lightbox:       new Lightbox(),
-                dashboard:      new Dashboard()
+                dashboard:      new Dashboard(),
+                showCreatedByOnProjects: true,
+                showCreatedByOnTasks: true
             });
 
 

@@ -46,7 +46,8 @@ var TaskView = View.extend({
     },
 
     render: function(){
-        var data = this.model.toJSON();
+        var data = this.model.toJSON(),
+            userModel, updateName, model;
 
         data.isNew = this.model.isNew();
         data.isNotNew = !this.model.isNew();
@@ -58,6 +59,23 @@ var TaskView = View.extend({
         data.readmore = data.description.length > app.taskDescriptionTruncate;
         data.description = app.truncate(data.description, app.taskDescriptionTruncate);
 
+        data.hasName = app.showCreatedByOnTasks;
+        if (!!data.hasName) {
+            if (app.isCurrentUserOrAdmin(data.owner)) {
+                data.name = "you";
+            } else {
+                userModel = Tasket.getUsers(data.owner); 
+                data.name = userModel.fullname();
+                if (!data.name) {
+                    updateName = this.updateName;
+                    model = this;
+                    userModel.bind("change", function(user){
+                        updateName.call(model, user);
+                    });
+                }
+            }
+        }
+
         this.elem.html(tim("task", data));
 
         this.updateClaimedBy();
@@ -67,7 +85,7 @@ var TaskView = View.extend({
 
     taskDetailsHTML: function(){
         var data = this.model.toJSON(),
-            hub;
+            hub, userModel;
 
         data.isNew = this.model.isNew();
         data.isNotNew = !this.model.isNew();
@@ -83,7 +101,17 @@ var TaskView = View.extend({
         data.isClaimed = !!data.claimedBy;
         data.description = "{description}";
         data.estimate = this.model.humanEstimate();
-
+        
+        data.hasName = app.showCreatedByOnTasks;
+        if (!!data.hasName) {
+            if (app.isCurrentUserOrAdmin(data.owner)) {
+                data.name = "you";
+            } else {
+                userModel = Tasket.getUsers(data.owner); 
+                data.name = userModel.fullname();
+            }
+        }
+        
         return tim("task-detail", data)
           .replace("{description}", nl2br(this.model.escape("description")));
     },
@@ -98,6 +126,10 @@ var TaskView = View.extend({
 
     updateEstimate: function () {
         this.$(".estimate").text(this.model.humanEstimate());
+    },
+    
+    updateName: function (user) {
+        this.$(".name").text("Created by " + user.fullname());
     },
 
     updateControls: function () {
@@ -133,11 +165,10 @@ var TaskView = View.extend({
         else if (state === states.CLAIMED && app.isCurrentUser(claimedById)) {
             data = {
                 id: this.model.id,
-                type: "done",
-                text: "I've done it",
-                state: Task.states.DONE,
-                title: ""
+                cancelTask: app.lang.CANCEL_TASK
             };
+            controls.html(tim("task-control-claimed-by-you", data));
+            return this;
         }
         else if (state === states.DONE && app.isCurrentUserOrAdmin(owner)) {
             data = {

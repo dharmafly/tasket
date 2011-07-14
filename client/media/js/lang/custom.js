@@ -6,5 +6,6 @@ _.extend(app.lang, {
     // etc
     
     HUB:                    "project",
-    MY_HUBS:                "My Projects"
+    MY_HUBS:                "My Projects",
+    CANCEL_TASK:            "Actually, I won't do it"
 });

@@ -862,7 +862,8 @@ article.hub > hgroup h1 {
 	font-size: 1.385em /* 18px */;
 }
 
-article.hub > hgroup .estimate {
+article.hub > hgroup .estimate,
+article.hub > hgroup .name {
 	font-size: 0.8em;
 	font-style:italic;
 }
@@ -900,6 +901,12 @@ article.hub .description .estimate {
 	white-space: nowrap;
 }
 
+article.hub .description .name {
+    display:block;
+    font-size:0.8em;
+    font-style:italic;
+}
+
 article.hub .meta .claimedBy,
 article.hub .meta form {
 	float: left;
@@ -923,8 +930,23 @@ article.hub .meta img {
 }
 
 article.hub .controls {
+    float:right;
+    width:100%;
+}
+
+article.hub .controls .done {
 	float: right;
 }
+
+article.hub .meta .link {
+    float:left;
+    font-weight: bold;
+	color: #C92D2D;
+    font-size:1em;
+    padding-top:0.308em; /* 4px */
+    border-bottom:1px solid #C92D2D;
+}
+
 
 /* SVG lines connecting tasks to hubs */
 svg line {
