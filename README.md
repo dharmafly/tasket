@@ -89,44 +89,19 @@ For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not
 
 ### Build software installation
 
-We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it you
-need [Node](http://nodejs.org) >= 0.4.0.1 and [npm](http://npmjs.org) installed.
-
-For hints on installation, see 
-[joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)). 
-In particular, you may need to add NPM to your system paths, and also to Node's paths.
-
-Add to your shell (e.g. Bash) config file:
-
-    # Make NPM packages available to the terminal - type `npm bin` to get your system's path
-    export PATH=$HOME/node_modules/.bin:$PATH
-    
-    # Make NPM packages available to Node
-    export NODE_PATH="/usr/local/lib/node_modules"
+We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it, you need [Node.js](http://nodejs.org) >= 0.4.0.1 and [npm](http://npmjs.org) installed.
 
 Then install Smoosh:
 
     npm install smoosh
-
-You may need to make the Smoosh program executable:
-
-    # you may need to prefix this command with 'sudo'
-    chmod +x ~/node_modules/.bin/smoosh
     
 
 ## Building the JavaScript file
     
-To package the JavaScript:
+To package the JavaScript, run Smoosh from the build folder:
 
     cd client/media/js/build/
-    
-and either run Smoosh directly:
-
     smoosh -c ./config.json
-    
-or run from Node.js:
-
-    node make.js
 
 This will run [JSHint](http://jshint.com) against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
