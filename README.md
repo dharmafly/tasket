@@ -93,7 +93,7 @@ We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for prod
 
 Then install Smoosh:
 
-    npm install smoosh
+    npm install smoosh -g
     
 
 ## Building the JavaScript file
