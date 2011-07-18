@@ -526,6 +526,10 @@ table {
     cursor:pointer;
   }
   
+  #mainnav button.link {
+      line-height:1.4em;
+  }
+  
   button.link {
     margin: 2px -25px 0 -1px;
     font-family: Arial, Helvetica, serif;
