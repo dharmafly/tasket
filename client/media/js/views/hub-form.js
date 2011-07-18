@@ -22,13 +22,15 @@ var HubForm = FormUpload.extend({
      * Returns itself.
      */
     render: function () {
-        var template = tim("hub-form", {
+        var canDelete = this.model.canDelete(),
+            template = tim("hub-form", {
             title:       this.model.get("title") || "",
             description: this.model.get("description") || "",
             isNew:       this.model.isNew(),
-            isNotNew:   !this.model.isNew()
+            isNotNew:   !this.model.isNew(),
+            canDelete:  canDelete
         });
-
+        
         this.elem.html(template).find(".loading").hide();
         return this;
     },

@@ -59,6 +59,14 @@ var Hub = Model.extend({
             return this.get("tasks." + key);
         }, this).flatten().value();
     },
+    
+    // Check whether hub can be deleted
+    canDelete: function () {
+        var claimed = this.get("tasks.claimed"),
+            done = this.get("tasks.done"),
+            verified = this.get("tasks.verified");
+        return claimed && claimed.length < 1 && done && done.length < 1 && verified && verified.length < 1;
+    },
 
     addTask: function (task) {
         var currentTasks = this.get("tasks.new"),

@@ -511,7 +511,7 @@
         </ul>
         <div class="actions">
             <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Project</button>
-            {{isNotNew}}<p class="note"><a class="delete" href="#">Remove this project</a></p>{{/isNotNew}}
+            {{canDelete}}<p class="note"><a class="delete" href="#">Delete project</a></p>{{/canDelete}}
         </div>
     </script>
 
@@ -550,7 +550,7 @@
         </ul>
         <div class="actions">
             <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Task</button>
-            {{isNotNew}}<p class="note"><a class="delete" href="#">Remove this task</a></p>{{/isNotNew}}
+            {{canDelete}}<p class="note"><a class="delete" href="#">Delete task</a></p>{{/canDelete}}
         </div>
     </script>
 

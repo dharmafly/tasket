@@ -14,13 +14,15 @@ var TaskForm = Form.extend({
     },
     
     render: function () {
-        var template = tim("edit-task", {
+        var canDelete = this.model.canDelete(),
+            template = tim("edit-task", {
             description:  this.model.get("description") || "",
             estimates:    this._estimates(),
             isNew:        this.model.isNew(),
-            isNotNew:    !this.model.isNew()
+            isNotNew:    !this.model.isNew(),
+            canDelete: canDelete 
         });
-
+        
         this.elem.html(template);
 
         return this;

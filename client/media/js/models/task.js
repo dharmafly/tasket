@@ -198,6 +198,11 @@ var Task = Model.extend({
 
     humanEstimate: function () {
         return humanTimespan(this.get("estimate"));
+    },
+    
+    // check whether the task can be deleted
+    canDelete: function() {
+        return this.get("state") == "new";
     }
 }, {
     ESTIMATES: TaskEstimates
