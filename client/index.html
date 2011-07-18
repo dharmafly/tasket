@@ -118,8 +118,10 @@
         </p>
         
         <aside class="meta">
-            {{showCreatedBy}}<p class="createdBy"></p>{{/showCreatedBy}}
-            {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
+            <p>
+                {{showCreatedBy}}<span class="createdBy"></span>{{/showCreatedBy}}
+                {{isClaimed}}<span class="claimedBy"></span>{{/isClaimed}}
+            </p>
             <div class="controls"></div>
         </aside>
     </script>
@@ -129,8 +131,8 @@
             {{hasHubTitle}}<h1 class="hub-title">from <em>'{{hubTitle}}'</em></h1>{{/hasHubTitle}}
             <div class="description">{{description}}</div>
             <aside class="meta">
-                <span class="estimate">({{estimate}})</span>
-                {{hasName}}<span class="name">Created by {{name}}</span>{{/hasName}}
+                <p><span class="estimate">({{estimate}})</span></p>
+                {{hasName}}<p class="name">Created by {{name}}</p>{{/hasName}}
                 {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
             </aside>
         </article>

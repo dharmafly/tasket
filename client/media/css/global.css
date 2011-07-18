@@ -911,7 +911,6 @@ article.hub .meta .claimedBy,
 article.hub .meta .createdBy,
 article.hub .meta form {
 	float: left;
-	clear:left;
 }
 
 article.hub .meta .claimedBy,
@@ -919,7 +918,7 @@ article.hub .meta .createdBy {
 	position: relative;
 	color: #676767;
 	padding: 0.538em /* 7px */ 0.769em /* 10px */ 0 1.538em /* 20px */;
-	margin: 0;
+	margin: 0 0 0.538em /* 7px */ 0;
 }
 
 article.hub .meta a {
