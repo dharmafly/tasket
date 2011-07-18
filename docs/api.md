@@ -88,9 +88,7 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 ### User registration ###
 
 POSTing to /users/ with the following JSON object will create a user and log 
-them in.  The newly created profile object ID will be returned.
-
-POST JSON:
+them in.  The newly created profile object ID will be returned:
 
     {
         'username': 'test99', 
