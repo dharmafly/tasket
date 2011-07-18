@@ -565,7 +565,8 @@ form ul,
 	line-height: 2.153em /* 28px */;
 }
 
-.content form .actions .note a.delete {
+.content form .actions .note a.delete,
+.content form .actions .note a.cancel {
 	font-weight: bold;
 	color: #C92D2D;
 }
