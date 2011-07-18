@@ -425,7 +425,7 @@ var HubView = View.extend({
         data.image = this.imageSrc();
         data.hubId = this.model.id;
         
-        data.hasName = app.showCreatedByOnProjects;
+        data.hasName = app.showCreatedByOnHubs;
         if (!!data.hasName) {
             if (app.isCurrentUserOrAdmin(data.owner)) {
                 data.name = "you";
@@ -467,7 +467,7 @@ var HubView = View.extend({
         data.estimate = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
         data.hubId = this.model.id;
         
-        data.hasName = app.showCreatedByOnProjects;
+        data.hasName = app.showCreatedByOnHubs;
         if (!!data.hasName) {
             if (app.isCurrentUserOrAdmin(data.owner)) {
                 data.name = "you";

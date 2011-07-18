@@ -115,10 +115,10 @@
             <span class="body">{{description}}</span> 
             <span class="estimate">({{estimate}})</span> 
             {{readmore}}<a class="readmore" href="#/hubs/{{hubId}}/tasks/{{id}}/">» Read more</a>{{/readmore}}
-            {{hasName}}<span class="name">Created by {{name}}</span>{{/hasName}}
         </p>
         
         <aside class="meta">
+            {{showCreatedBy}}<p class="createdBy"></p>{{/showCreatedBy}}
             {{isClaimed}}<p class="claimedBy"></p>{{/isClaimed}}
             <div class="controls"></div>
         </aside>
@@ -152,6 +152,14 @@
         <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this. {{additional}}
     </script>
     <script type="text/tim" class="task-claimed-by-user">
+        <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
+        <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a> {{status}} this task. {{additional}}
+    </script>
+    <script type="text/tim" class="task-created-by-you">
+        <img src="{{image}}" width="14" height="14" alt="Your avatar" />
+        <a href="#/users/{{id}}/" title="See your tasks">You</a> {{status}} this. {{additional}}
+    </script>
+    <script type="text/tim" class="task-created-by-user">
         <img src="{{image}}" width="14" height="14" alt="{{name}}’s avatar" />
         <a href="#/users/{{id}}/" title="See {{name}}’s tasks">{{name}}</a> {{status}} this task. {{additional}}
     </script>

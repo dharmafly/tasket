@@ -15,7 +15,7 @@ var TaskView = View.extend({
     initialize: function () {
         View.prototype.initialize.apply(this, arguments);
 
-        _.bindAll(this, "render", "updateClaimedBy", "updateEstimate", "updateControls");
+        _.bindAll(this, "render", "updateClaimedBy", "updateCreatedBy", "updateEstimate", "updateControls");
 
         // Bind change events to a user model so that the task controls will
         // update disabled state when the users claimed tasks change.
@@ -46,8 +46,7 @@ var TaskView = View.extend({
     },
 
     render: function(){
-        var data = this.model.toJSON(),
-            userModel, updateName, model;
+        var data = this.model.toJSON();
 
         data.isNew = this.model.isNew();
         data.isNotNew = !this.model.isNew();
@@ -58,27 +57,12 @@ var TaskView = View.extend({
         data.estimate = this.model.humanEstimate();
         data.readmore = data.description.length > app.taskDescriptionTruncate;
         data.description = app.truncate(data.description, app.taskDescriptionTruncate);
-
-        data.hasName = app.showCreatedByOnTasks;
-        if (!!data.hasName) {
-            if (app.isCurrentUserOrAdmin(data.owner)) {
-                data.name = "you";
-            } else {
-                userModel = Tasket.getUsers(data.owner); 
-                data.name = userModel.fullname();
-                if (!data.name) {
-                    updateName = this.updateName;
-                    model = this;
-                    userModel.bind("change", function(user){
-                        updateName.call(model, user);
-                    });
-                }
-            }
-        }
+        data.showCreatedBy = app.showCreatedByOnTasks;
 
         this.elem.html(tim("task", data));
 
         this.updateClaimedBy();
+        this.updateCreatedBy();
         this.updateControls();
         return this.offsetApply();
     },
@@ -128,10 +112,6 @@ var TaskView = View.extend({
         this.$(".estimate").text(this.model.humanEstimate());
     },
     
-    updateName: function (user) {
-        this.$(".name").text("Created by " + user.fullname());
-    },
-
     updateControls: function () {
         var currentUser = app.currentUser,
             controls    = this.$(".controls"),
@@ -225,6 +205,7 @@ var TaskView = View.extend({
             status = isDone ? "has done" : "is doing";
         }
 
+        
         this.$(".claimedBy").html(tim(templateName, {
             id: model.id,
             name: model.fullname(),
@@ -235,5 +216,38 @@ var TaskView = View.extend({
         }));
 
         return this;
+    },
+    
+    updateCreatedBy: function () {
+        var templateName = "task-created-by-user",
+            createdById = this.model.get("owner"),
+            image,
+            status = "created",
+            additional = "",
+            model;
+            
+        if (!app.showCreatedByOnTasks) {
+            return this;
+        }
+            
+        if (app.isCurrentUser(createdById)) {
+            model = app.currentUser;
+            templateName = "task-created-by-you";
+        } else {
+            model = Tasket.getUsers(createdById);
+            model.bind("change", this.updateCreatedBy);
+        }
+
+        this.$(".createdBy").html(tim(templateName, {
+            id: model.id,
+            name: model.fullname(),
+            image: this.userImageSrc(model),
+            status: status,
+            additional: additional,
+            url: model.url()
+        }));
+
+        return this;
     }
+    
 });
