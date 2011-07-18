@@ -70,10 +70,10 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 
 ### Task State Constants ###
 
-NEW     : "new",  
-CLAIMED : "claimed",  
-DONE    : "done",  
-VERIFIED: "verified"  
+    NEW     : "new",  
+    CLAIMED : "claimed",  
+    DONE    : "done",  
+    VERIFIED: "verified"  
 
 ## Users ##
 
@@ -88,17 +88,15 @@ VERIFIED: "verified"
 ### User registration ###
 
 POSTing to /users/ with the following JSON object will create a user and log 
-them in.  The newly created profile object ID will be returned.
+them in.  The newly created profile object ID will be returned:
 
-POST JSON:
-
-{
-    'username': 'test99', 
-    'email': 'foo@example.com', 
-    'password': '12345', 
-    'description': 'New description!', 
-    'name': 'Test User 99'
-}
+    {
+        'username': 'test99', 
+        'email': 'foo@example.com', 
+        'password': '12345', 
+        'description': 'New description!', 
+        'name': 'Test User 99'
+    }
 
 
 ### User Model Data ###
