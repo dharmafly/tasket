@@ -44,7 +44,7 @@
           <li class="user vcard">You are logged in as 
             <strong><a class="fn" href="#/account/" title="Edit your account details"></a></strong>
           </li>
-					<li><a title="Sign up for an account" href="#/sign-up/">Sign up</a></li>
+          <li><a title="Sign up for an account" href="#/sign-up/">Sign up</a></li>
           <li class="login">
             <a href="#/login/" title="Login">Login</a>
             <form action="/logout/" method="post">
@@ -56,27 +56,27 @@
       
       <div id="main">
         <aside id="lists" class="closed">
-	        <h1><a href="/"><span>Close lists</span></a></h1>
-	        <nav>
-	          <ul>
-	            <li class="star"><a href="/">Starred</a></li>
-	            <li><a href="/">Work list 1</a></li>
-	            <li><a href="/">Work list 2</a></li>
-	            <li><a href="/">Bill's personal list - this is an example of a wrapping item</a></li>
-	            <li><a href="/">Shopping list</a></li>
-	            <li><a href="/">Anne's list</a></li>
-	            <li class="new-list"><a href="/">Add new list</a></li>
-      	      </ul>
-							<ul class="new-item-list">
-							</ul>
+            <h1><a href="/"><span>Close lists</span></a></h1>
+            <nav>
+              <ul>
+                <li class="star"><a href="/">Starred</a></li>
+                <li><a href="/">Work list 1</a></li>
+                <li><a href="/">Work list 2</a></li>
+                <li><a href="/">Bill's personal list - this is an example of a wrapping item</a></li>
+                <li><a href="/">Shopping list</a></li>
+                <li><a href="/">Anne's list</a></li>
+                <li class="new-list"><a href="/">Add new list</a></li>
+              </ul>
+              <ul class="new-item-list">
+              </ul>
 
-      	      <div class="showing">
-      	        <a href="/">Showing all</a>
-      	      </div>
-	        </nav>
-	    </aside>
-	    
-		<section id="content"></section>
+              <div class="showing">
+                <a href="/">Showing all</a>
+              </div>
+            </nav>
+        </aside>
+        
+        <section id="content"></section>
 
         <footer>
           <nav>
@@ -96,23 +96,22 @@
 
 
     <!-- TEMPLATES -->
-		<script type=text/tim class=task-edit>
-			<input class="task-edit" type="text"{{placeholder}} placeholder="{{placeholder}}"{{/placeholder}}><a href="#" class="save button">save</a> <a href="#" class="cancel button">cancel</a>
-		</script>
+    <script type="text/tim" class="task-edit">
+        <input class="task-edit" type="text"{{placeholder}} placeholder="{{placeholder}}"{{/placeholder}}><a href="#" class="save button">save</a> <a href="#" class="cancel button">cancel</a>
+    </script>
 
-    <script type=text/tim class=task-list>
-			  <div class="header">
-			      <h1><a href="#">{{listTitle}}</a></h1>
+    <script type="text/tim" class="task-list">
+        <div class="header">
+            <h1><a href="#">{{listTitle}}</a></h1>
             <ul class="edit-item">
                 <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
             </ul>
-				</div>
-
+        </div>
         <ul class="item-list"></ul>
         <a class="new-item">Add new item</a>
     </script>
 
-    <script type=text/tim class=task>
+    <script type="text/tim" class="task">
         <p>{{itemText}}</p>
         <ul class="edit-item">
             <li class="move"><a href="/" title="Move this item">Move this item</a></li>
