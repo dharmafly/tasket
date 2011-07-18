@@ -720,7 +720,7 @@ table {
   }
   
     #content .header {
-      padding: 40px 0 10px 120px;
+      padding: 40px 20px 10px 120px;
       overflow: hidden;
     }
   
@@ -772,11 +772,37 @@ table {
         outline: 0;
         background: none transparent;
         font-size: 1em;
-        width: 200px;
+        width: 550px;
     }
     #content .header input.task-edit {
       font-size: 2em;
       width: 215px;
+    }
+    
+    #content .item-list a.save,
+    #content .header a.save,
+    #content .item-list a.cancel,
+    #content .header a.cancel {
+        float:right;
+        margin-top:2px;
+    }
+    
+    #content .item-list a.cancel,
+    #content .header a.cancel {
+        margin-right:10px;
+        color: #6ab6da;
+        text-decoration: none;
+        font-size:0.8em;
+        line-height:1.1;
+    }
+
+    #content .item-list a.cancel:hover,
+    #content .header a.cancel:hover {
+        text-decoration:underline;
+    }
+    
+    #content .header a.cancel {
+        font-size:1.2em;
     }
     
     #content .edit-item li {
