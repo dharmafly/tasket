@@ -105,7 +105,13 @@ var HubView = View.extend({
     },
     
     updateName: function (user) {
-        this.$(".name").text(" - created by " + user.fullname());
+        var name;
+        if (app.isCurrentUserOrAdmin(user.id)) {
+            name = "you";
+        } else {
+            name = user.fullname();
+        }
+        this.$(".name").text("Created by " + name);
         return this;
     },
 

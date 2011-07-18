@@ -73,7 +73,6 @@
         <hgroup>
             <h1>{{title}}</h1>
             <span class="estimate">{{estimate}}</span>
-            {{hasName}}<span class="name"> - created by {{name}}</span>{{/hasName}}
             
             <p class="description">
                 {{description}}
@@ -81,6 +80,7 @@
                 <a class="readmore" href="#/hubs/{{hubId}}/detail/">» Read more</a>
                 {{/readmore}}
             </p>
+            {{hasName}}<span class="name">Created by {{name}}</span>{{/hasName}}
         </hgroup>
         
         <div class="tasks">
@@ -93,7 +93,7 @@
             <h1><a href="#/hubs/{{hubId}}/">{{title}}</a></h1>
             <div class="description">{{description}}</div>
             <p class="estimate">({{estimate}})</p>
-            {{hasName}}<p class="name">Created by {{name}}</p>{{/hasName}}
+            {{hasName}}<p class="name"><em>Created by {{name}}</em></p>{{/hasName}}
         </article>
     </script>
 
