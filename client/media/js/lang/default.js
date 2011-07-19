@@ -6,7 +6,8 @@ app.lang = {
     DOWNLOAD_ERROR:         "There was a problem downloading data from the server.",
     INIT_ERROR:             "Sorry. There was a problem loading the app. Please <a href=''>refresh and try again</a>.",
     HUB_NO_TASKS:           "No tasks",
-    DELETE_HUB_CONFIRM:     "This will permanently delete this hub and all tasks. Continue?",
+    DELETE_HUB_CONFIRM:     "Deleting a project will permanently erase it, and all associated tasks. Consider archiving a project before deleting it. Continue?",
+    ARCHIVE_HUB_CONFIRM:    "Archiving a project will hide it from view.  Archived projects can be re-activated by selecting 'show archived projects' in the sidebar. Continue?",
     DELETE_TASK_CONFIRM:    "This will permanently delete this task. Continue?",
     HUB:                    "hub",
     MY_HUBS:                "My Hubs"

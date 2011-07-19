@@ -511,7 +511,10 @@
         </ul>
         <div class="actions">
             <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Project</button>
-            {{isNotNew}}{{canDelete}}<p class="note"><a class="delete" data-lightbox="open" href="#">Delete project</a></p>{{/canDelete}}{{/isNotNew}}
+            {{isNotNew}}<p class="note archive-delete">
+                <a class="archive" data-lightbox="open" href="#">Archive project</a>
+                {{canDelete}}<a class="delete" data-lightbox="open" href="#">Delete project</a>{{/canDelete}}
+            </p>{{/isNotNew}}
         </div>
     </script>
 

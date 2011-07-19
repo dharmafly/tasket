@@ -565,11 +565,24 @@ form ul,
 	line-height: 2.153em /* 28px */;
 }
 
+.content form .actions .note a.archive,
 .content form .actions .note a.delete,
 .content form .actions .note a.cancel {
 	font-weight: bold;
 	color: #C92D2D;
 }
+
+/* where an archive link exists, position delete link below */
+.archive-delete a.delete,
+.archive-delete a.archive {
+    line-height:1em;
+}
+
+.archive-delete a.delete {
+    font-size:0.85em;
+    float:left;
+}
+
 
 /* @end */
 
