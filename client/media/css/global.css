@@ -951,6 +951,11 @@ article.hub .meta .link {
     border-bottom:1px solid #C92D2D;
 }
 
+article.hub .meta .link.decline { /* e.g. cancel claimed task */
+    color: #676767;
+    border-bottom:1px solid #676767;
+}
+
 
 /* SVG lines connecting tasks to hubs */
 svg line {

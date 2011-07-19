@@ -85,6 +85,11 @@ On Linux, if you find that images in the app are not successfully processed afte
 For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/dharmafly/tasket/issues/110).
 
 
+## Deploying Tasket to a public server on WebFaction
+
+Step-by-step instructions for deploying to [WebFaction](http://webfaction.com) have been included here: https://github.com/dharmafly/tasket/blob/master/docs/INSTALL-WebFaction.md
+
+
 ## Building a single minified JavaScript file
 
 ### Build software installation
@@ -201,3 +206,6 @@ A superuser should have been created when the site was installed. If no superuse
 
 To enter debug mode, add `?debug` to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/
 
+### The Tasket API
+
+The Tasket server runs as a simple JSON API, allowing innovation in the client apps that consume it. API documentation can be found at: https://github.com/dharmafly/tasket/blob/master/docs/api.md
