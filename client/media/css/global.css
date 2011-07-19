@@ -208,6 +208,9 @@ button.link {
 	-o-box-shadow: none;
 	box-shadow: none;
 }
+button.link:hover, button.link:focus, button.link:active {
+    background:none;
+}
 
 .action, a:link.action {
 	color: #484848;
@@ -920,10 +923,6 @@ article.hub .meta .createdBy {
 	color: #676767;
 	padding: 0.538em /* 7px */ 0.769em /* 10px */ 0 1.538em /* 20px */;
 	margin: 0 0 0.538em /* 7px */ 0;
-}
-
-article.hub .meta a {
-		
 }
 
 article.hub .meta img {
