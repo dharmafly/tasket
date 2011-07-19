@@ -61,7 +61,7 @@ var HubForm = FormUpload.extend({
     _onArchive: function (event) {
         if (window.confirm(app.lang.ARCHIVE_HUB_CONFIRM)) {
             //this.model.archive();
-            //this.trigger("archive", this.model, this);
+            this.trigger("archive", this.model, this);
         }
         event.preventDefault();
     }

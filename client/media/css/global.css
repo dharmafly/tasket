@@ -504,6 +504,13 @@ form ul,
 
 .content form li {
 	margin-bottom: 0.769em /* 10px */;
+	overflow:auto;
+}
+
+.content form li p {
+    float:left;
+    margin:0 1.923em /* 25px */ 0 0;
+    width: 15.385em /* 200px */;
 }
 
 .content form .error strong, .content form strong.warning {
@@ -1100,6 +1107,13 @@ svg line {
 .dashboard .quicklinks p {
 	margin: 0;
 	padding: 0;
+}
+
+.dashboard .quicklinks p a.button {
+    margin-bottom:10px;
+}
+
+.dashboard .quicklinks p a.link {
 }
 
 .dashboard .quicklinks ul {

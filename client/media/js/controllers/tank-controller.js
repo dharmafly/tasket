@@ -1,6 +1,7 @@
 var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
+        "/hubs/archived/": "archivedHubs",
         "/hubs/:id/": "displayHub",
         "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask",
@@ -397,6 +398,52 @@ var TankController = Backbone.Controller.extend({
         
         return this;
     },
+    
+    archivedHubs: function() {
+        var form, hub, tasks,
+            hubs = [],
+            archivedHubIds = [1,2,3,4,5], //TODO: Get Archived hubs only
+            archivedHubs = Tasket.getHubs(archivedHubIds);
+        
+        _.each(archivedHubs.models, function(hub){
+            hubs.push({
+               id: hub.id,
+               title: hub.get("title"),
+               date: "[date archived]",
+               taskCount: function() { 
+                   tasks = hub.get("tasks.new").length + hub.get("tasks.claimed").length + hub.get("tasks.done").length + hub.get("tasks.verified").length;
+                   return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + hub.get("tasks.verified").length + " completed)";
+               }
+            });
+        });
+            
+        form = new ArchiveForm();
+
+        app.lightbox.content(form.render(hubs).el).show();
+
+        form.bind("restore", _.bind(function (hubId) {
+                hub = Tasket.getHubs(hubId);
+                if (!hub){
+                    this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
+                    return;
+                }
+                
+                //TODO: unarchive/restore project
+                //hub.set({ archived: false }).save();
+                
+                //TODO: Add hub to global cache.
+                //Tasket.hubs.add(hub);
+
+                //TODO: Add hub and select it for viewing
+                //this.addHub(hub).select();
+            }, this))
+            .bind("close", _.bind(function(){
+                app.lightbox.hide();
+                window.location.hash = "/";
+            }, this));
+
+        return form;
+    },
 
     editHub: function (hubId) {
         var hub = Tasket.getHubs(hubId),
@@ -454,6 +501,18 @@ var TankController = Backbone.Controller.extend({
                 app.lightbox.hide();
                 HubView.prototype.updateLocation.call({model:hub});
             })
+            .bind("archive", _.bind(function (hub) {
+                //TODO: archive project
+                //hub.set({ archived: true }).save();
+                
+                //TODO: remove from view
+                //app.currentUser.removeHub(hub);
+                //this.removeHub(hub);
+                //Tasket.hubs.remove(hub);
+                
+                app.lightbox.hide();
+                window.location.hash = "/";
+            }, this))
             .bind("delete", _.bind(function (hub) {
                 app.currentUser.removeHub(hub);
                 this.removeHub(hub);

@@ -535,6 +535,21 @@
         </body>
     </script>
 
+    <script type="text/tim" class="archive-form">
+        <h1>Archived Projects</h1>
+        {{noArchivedProjects}}<p>You currently have no archived projects</p>{{/noArchivedProjects}}
+        <ul>
+        {{archivedProjects}}
+            <li class="archived-project-{{id}}">
+                <p><strong>{{title}}</strong></p>
+                <p>Archived on {{date}}</p>
+                <p><em>{{taskCount}}</em></p>
+                <button type="submit" class="restore" data-hub-id="{{id}}">Restore</button>
+            </li>
+        {{/archivedProjects}}
+        </ul>
+    </script>
+    
     <script type="text/tim" class="edit-task">
         <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}Edit task{{/isNotNew}}</h1>
         <ul>
@@ -594,6 +609,9 @@
             <ul class="listing"></ul>
             <p>
                 <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
+            </p>
+            <p>
+                <a class="link" href="#/hubs/archived/">View archived projects</a>
             </p>
         </section>
         
