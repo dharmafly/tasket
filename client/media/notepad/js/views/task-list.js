@@ -193,6 +193,7 @@ var TaskListView = View.extend({
         var listTitle = this.previousTitle =  this.$("div.header h1 a").text(),
             html = jQuery(tim("title-edit", {placeholder: false}));
 
+        this.$("div.header").addClass("edit-mode");
         this.$("div.header h1").replaceWith(html);
         this.$("div.header input").val(listTitle).focus();
         event.preventDefault();
@@ -217,6 +218,7 @@ var TaskListView = View.extend({
     _saveTitle: function (title) {
         this.model.set({title: title});
         this.model.save();
+        this.$("div.header").removeClass("edit-mode");        
     },
 
     _onKeypressTitle: function (event) {
@@ -241,6 +243,7 @@ var TaskListView = View.extend({
             jQuery('<h1><a href="#">'+title+'</a></h1>')
         );
         this.$("div.header .cancel, div.header .save").remove();
+        this.$("div.header").removeClass("edit-mode");        
     },
 
     _onTitleMouseover: function (event) {

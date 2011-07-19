@@ -815,6 +815,11 @@ table {
         margin-right:35px;
     }
     
+    /* hide edit icon in the header when we are in edit mode already */
+    #content .header.edit-mode .edit-item {
+        display:none;
+    }
+    
     #content .edit-item li {
        position: absolute;
     }
