@@ -190,8 +190,8 @@ var TaskListView = View.extend({
     },
 
     _onTitleEdit: function (event) {
-        var listTitle = this.previousTitle =  this.$("header h1 a").text(),
-            html = jQuery(tim("task-edit", {placeholder: false}));
+        var listTitle = this.previousTitle =  this.$("div.header h1 a").text(),
+            html = jQuery(tim("title-edit", {placeholder: false}));
 
         this.$("div.header h1").replaceWith(html);
         this.$("div.header input").val(listTitle).focus();

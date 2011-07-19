@@ -775,16 +775,22 @@ table {
         width: 550px;
     }
     #content .header input.task-edit {
+      float:left;
       font-size: 2em;
-      width: 215px;
+      width: 500px;
+      margin:-2px 93px -2px -1px;
+      padding-bottom:1px;
     }
     
     #content .item-list a.save,
-    #content .header a.save,
-    #content .item-list a.cancel,
-    #content .header a.cancel {
+    #content .item-list a.cancel {
         float:right;
         margin-top:2px;
+    }
+    
+    #content .header a.save,
+    #content .header a.cancel {
+        float:left;
     }
     
     #content .item-list a.cancel,
@@ -803,6 +809,10 @@ table {
     
     #content .header a.cancel {
         font-size:1.2em;
+    }
+    
+    #content .header a.save {
+        margin-right:35px;
     }
     
     #content .edit-item li {
