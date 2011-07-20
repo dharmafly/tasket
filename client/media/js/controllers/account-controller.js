@@ -13,7 +13,7 @@ var AccountController = Backbone.Controller.extend({
     },
     
     showContents: function(contents){
-        app.lightbox.content(contents).show();
+        app.lightbox.content(contents, "account").show();
     },
 
     login: function () {

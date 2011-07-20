@@ -1,7 +1,7 @@
 var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
-        "/hubs/archived/": "archivedHubs",
+        "/hubs/archived/": "displayArchivedHubs",
         "/hubs/:id/": "displayHub",
         "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask",
@@ -362,6 +362,12 @@ var TankController = Backbone.Controller.extend({
                 .forcedirectHubs();
         }
         
+        app.currentUser.removeHub(hub);
+        Tasket.hubs.remove(hub);
+        app.lightbox.hide();
+        window.location.hash = "/";
+        // TODO: re-render dashboard 
+        
         return this;
     },
 
@@ -399,27 +405,27 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
     
-    archivedHubs: function() {
+    displayArchivedHubs: function() {
         var form, hub, tasks,
-            hubs = [],
-            archivedHubIds = [1,2,3,4,5], //TODO: Get Archived hubs only
+            archivedHubData = [],
+            archivedHubIds = ["2","3","4","5"], //TODO: Get Archived hubs only
             archivedHubs = Tasket.getHubs(archivedHubIds);
         
         _.each(archivedHubs.models, function(hub){
-            hubs.push({
+            archivedHubData.push({
                id: hub.id,
                title: hub.get("title"),
                date: "[date archived]",
                taskCount: function() { 
                    tasks = hub.get("tasks.new").length + hub.get("tasks.claimed").length + hub.get("tasks.done").length + hub.get("tasks.verified").length;
-                   return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + hub.get("tasks.verified").length + " completed)";
+                   return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + (hub.get("tasks.done").length + hub.get("tasks.verified").length) + " completed)";
                }
             });
         });
             
         form = new ArchiveForm();
 
-        app.lightbox.content(form.render(hubs).el).show();
+        app.lightbox.content(form.render(archivedHubData).el, "archived-hubs").show();
 
         form.bind("restore", _.bind(function (hubId) {
                 hub = Tasket.getHubs(hubId);
@@ -427,15 +433,9 @@ var TankController = Backbone.Controller.extend({
                     this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
                     return;
                 }
-                
-                //TODO: unarchive/restore project
-                //hub.set({ archived: false }).save();
-                
-                //TODO: Add hub to global cache.
-                //Tasket.hubs.add(hub);
-
-                //TODO: Add hub and select it for viewing
-                //this.addHub(hub).select();
+                hub.unarchive();
+                Tasket.hubs.add(hub);
+                this.addHub(hub).select();
             }, this))
             .bind("close", _.bind(function(){
                 app.lightbox.hide();
@@ -492,7 +492,7 @@ var TankController = Backbone.Controller.extend({
             model: hub
         });
 
-        app.lightbox.content(form.render().el).show();
+        app.lightbox.content(form.render().el, "create-hub-form").show();
 
         // Append our iFrame element for upload.
         form.updateFrame();
@@ -502,23 +502,10 @@ var TankController = Backbone.Controller.extend({
                 HubView.prototype.updateLocation.call({model:hub});
             })
             .bind("archive", _.bind(function (hub) {
-                //TODO: archive project
-                //hub.set({ archived: true }).save();
-                
-                //TODO: remove from view
-                //app.currentUser.removeHub(hub);
-                //this.removeHub(hub);
-                //Tasket.hubs.remove(hub);
-                
-                app.lightbox.hide();
-                window.location.hash = "/";
+                this.removeHub(hub);
             }, this))
             .bind("delete", _.bind(function (hub) {
-                app.currentUser.removeHub(hub);
                 this.removeHub(hub);
-                Tasket.hubs.remove(hub);
-                app.lightbox.hide();
-                window.location.hash = "/";
             }, this))
             .bind("error", _.bind(function(hub, form, status){
                 this.error("Sorry, there was an error creating the " + app.lang.HUB + ". Please try logging out and in again. (error: hub-" + hub.id + ", status " + status + ")");
@@ -617,7 +604,7 @@ var TankController = Backbone.Controller.extend({
         var form = new TaskForm({model: task}),
             tank = this;
 
-        app.lightbox.content(form.render().el).show();
+        app.lightbox.content(form.render().el, "create-task-form").show();
         form.bind("success", _.bind(function (event) {
                 var hubView = tank.getHubView(hub.id),
                     userTasks;

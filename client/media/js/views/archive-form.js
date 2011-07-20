@@ -7,15 +7,22 @@ var ArchiveForm = Form.extend({
         Form.prototype.constructor.apply(this, arguments);
     },
     
-    render: function (archivedProjects) {
-        var noArchivedProjects = archivedProjects.length < 1 ? true : false,
+    render: function (archivedHubData) {
+        var noArchivedProjects = archivedHubData.length < 1 ? true : false,
             template = tim("archive-form", { 
                 noArchivedProjects:noArchivedProjects, 
-                archivedProjects:archivedProjects
+                archivedProjects:archivedHubData
             });
         
         this.elem.html(template);
+        
+        return this;
+    },
+    
 
+    // overwrite default form method
+    submit: function(event) {
+        event.preventDefault();
         return this;
     },
     
@@ -36,7 +43,7 @@ var ArchiveForm = Form.extend({
             // restore hub
             this.trigger("restore", hubId);
         }
-        event.preventDefault();
+        event.preventDefault();        
     }
 });
 
