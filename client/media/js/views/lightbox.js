@@ -61,8 +61,10 @@ var Lightbox = View.extend({
         return this;
     },
     
-    content: function (content) {
-        var element = this.$(".content");
+    content: function (content, contentClass) {
+        var element = this.$(".content"),
+            lightbox = this.elem.attr("class", "lightbox");
+        if (contentClass) { lightbox.addClass(contentClass); }
         if (typeof content === "string") {
             element.html(content);
         } else {
