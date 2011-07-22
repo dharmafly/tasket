@@ -284,8 +284,8 @@ var TaskListView = View.extend({
     */
     _onNewItemClick: function (event) {
 
-        // allow only one unsaved item at the time
         if (this.newTaskView) {
+          this.$('a.save').click();
           return false;
         }
 
@@ -300,6 +300,7 @@ var TaskListView = View.extend({
             owner: app.currentUser.id,
             estimate: Tasket.settings.TASK_ESTIMATE_MAX
         });
+
         this.collection.add(newTask);
         event.preventDefault();
     },
@@ -355,12 +356,13 @@ var TaskListView = View.extend({
         // cancel all active edits
         this.$("a.cancel").click();
 
+        // Do nothing if the user is already editing this same task.
         if (this.editedTaskView && taskViews == this.editedTaskVew ) {
-            // Do nothing if the user is already editing this same task.
             return false;
         }
 
-        this.editedTaskVew = taskView;
+
+        this.editedTaskView = taskView;
         taskView.makeEditable();
     },
 
@@ -409,7 +411,11 @@ var TaskListView = View.extend({
     */
 
     _onCancel: function (event) {
-        var taskView = this._getElementView(event.target);
+        var taskView = this._getElementView(event.target),
+            view = this;
+
+        this.newTaskView = null;
+
         if (taskView.model.isNew()) {
           taskView.remove();
         }
@@ -463,6 +469,7 @@ var TaskListView = View.extend({
 
     _saveNewItem: function (task, description) {
         var view = this;
+        view.newTaskView = null;
         if (task.isNew()) {
           view.$("a.new-item").click();
         }
