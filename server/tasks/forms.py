@@ -198,6 +198,19 @@ class HubForm(StarredForm):
             task_order_raw = []
         return task_order_raw
 
+    def clean(self):
+        super(HubForm, self).clean()
+
+        cleaned_data = dict(self.cleaned_data)
+
+        if not cleaned_data.get('title'):
+            cleaned_data['title'] = self.instance.title
+
+        self.cleaned_data = cleaned_data
+        return cleaned_data
+
+
+
 
 class ProfileForm(StarredForm):
     

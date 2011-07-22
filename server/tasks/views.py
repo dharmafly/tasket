@@ -104,7 +104,7 @@ class HubView(PutView):
             H = form.save(commit=False)
             H.owner = request.user.profile
             H.save()
-        
+
             response_json =  {
                 "id": str(H.pk), 
                 "createdTime": H.created_timestamp()
@@ -140,6 +140,7 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def put(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
+        request.PUT['title'] = request.JSON.get('title', hub.title)
         form = forms.HubForm(request.PUT, instance=hub, request=request)
         if form.is_valid():
             H = form.save()

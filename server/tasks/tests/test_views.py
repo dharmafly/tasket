@@ -18,7 +18,7 @@ class ViewTests(TestCase):
     def test_hubs_get(self):
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
-        self.assertEqual(json_list[0]['title'], "Example Hub 2")
+        self.assertEqual(json_list[0]['title'], "Example Hub 3")
     
     def test_hubs_get_by_id(self):
         response = self.client.get('/hubs/?ids=2')
@@ -150,7 +150,7 @@ class ViewTests(TestCase):
     def test_task_get(self):
         response = self.client.get('/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 6)
+        self.assertEqual(len(json_data), 7)
     
     def test_task_get_single(self):
         response = self.client.get('/tasks/3')
@@ -165,7 +165,7 @@ class ViewTests(TestCase):
     def test_task_get_by_state(self):
         response = self.client.get('/tasks/?state=done')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 1)
+        self.assertEqual(len(json_data), 2)
     
     def test_task_create(self):
         self.client.login(username='TestUser', password='12345')
@@ -441,7 +441,7 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['tasks']['new'], "1")
         self.assertEqual(json_data['tasks']['claimed'], "2")
-        self.assertEqual(json_data['tasks']['done'], "1")
+        self.assertEqual(json_data['tasks']['done'], "2")
         self.assertEqual(json_data['tasks']['verified'], "2")
 
     def test_thumb(self):
@@ -465,4 +465,15 @@ class ViewTests(TestCase):
 
         response = self.client.get('/thumb/30x30/images/users/foo.jpg?crop')
         self.assertEqual(response.status_code, 404)
+    
+    def test_toggle_archived(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.put('/hubs/4', 
+            json.dumps({'archived' : False}),
+            content_type="application/json",
+            )
+        print response
+
+
+
 
