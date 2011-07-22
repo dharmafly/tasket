@@ -7,11 +7,17 @@ var ArchiveForm = Form.extend({
         Form.prototype.constructor.apply(this, arguments);
     },
     
+    renderLoading: function(){
+        var template = tim("archive-form-loading");
+        this.elem.html(template);
+        
+        return this;
+    },
+    
     render: function (archivedHubData) {
-        var noArchivedProjects = archivedHubData.length < 1 ? true : false,
-            template = tim("archive-form", { 
-                noArchivedProjects:noArchivedProjects, 
-                archivedProjects:archivedHubData
+        var template = tim("archive-form", { 
+                noArchivedProjects: !archivedHubData.length, 
+                archivedProjects: archivedHubData
             });
         
         this.elem.html(template);
@@ -41,7 +47,7 @@ var ArchiveForm = Form.extend({
             // hide hub in archive form
             this.$(".archived-project-"+hubId).slideUp();
             // restore hub
-            this.trigger("restore", hubId);
+            this.trigger("restoreHub", hubId);
         }
         event.preventDefault();        
     }

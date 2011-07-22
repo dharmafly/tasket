@@ -61,14 +61,30 @@ var Lightbox = View.extend({
         return this;
     },
     
-    content: function (content, contentClass) {
-        var element = this.$(".content"),
-            lightbox = this.elem.attr("class", "lightbox");
-        if (contentClass) { lightbox.addClass(contentClass); }
+    // Custom lightbox types - a type can be passed to the content() method below
+    _lightboxTypes: {},
+    
+    // Insert content into lightbox
+    content: function (content, lightboxType) { // content = html, text or element; lightboxType = className to add to lightbox elem
+        var elem = this.elem,
+            contentElem = this.$(".content");
+        
+        _.each(this._lightboxTypes, function(value, lightboxType){
+            elem.removeClass(lightboxType);
+        });
+        
+        if (lightboxType) {
+            this._lightboxTypes[lightboxType] = true;
+            elem.addClass(lightboxType);
+        }
+        
+        // Plain text or HTML
         if (typeof content === "string") {
-            element.html(content);
-        } else {
-            element.empty().append(content);
+            contentElem.html(content);
+        }
+        // Element or jQuery wrapped element
+        else {
+            contentElem.empty().append(content);
         }
         return this._updateMargin();
     },
