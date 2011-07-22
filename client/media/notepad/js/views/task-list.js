@@ -284,15 +284,13 @@ var TaskListView = View.extend({
     */
     _onNewItemClick: function (event) {
 
-        // allow only one unsaved item at the time
         if (this.newTaskView) {
+          this.$('a.save').click();
           return false;
         }
 
-
         // If an item is being edited, reset it.
         if (this.editedTaskView) {
-          debugger;
           this.editedTaskView.reset();
           this.editedTaskView = null;
         }
@@ -302,6 +300,7 @@ var TaskListView = View.extend({
             owner: app.currentUser.id,
             estimate: Tasket.settings.TASK_ESTIMATE_MAX
         });
+
         this.collection.add(newTask);
         event.preventDefault();
     },
