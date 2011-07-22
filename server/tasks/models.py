@@ -182,6 +182,7 @@ class Hub(StarredModel):
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
     createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     task_order = TaskListField(blank=True, null=True)
+    archived = models.BooleanField(default=False)
     
     # objects = managers.HubManager()
     objects = managers.HubManager()
