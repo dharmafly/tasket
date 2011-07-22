@@ -409,7 +409,11 @@ var TaskListView = View.extend({
     */
 
     _onCancel: function (event) {
-        var taskView = this._getElementView(event.target);
+        var taskView = this._getElementView(event.target),
+            view = this;
+
+        this.newTaskView = null;
+
         if (taskView.model.isNew()) {
           taskView.remove();
         }
@@ -463,6 +467,7 @@ var TaskListView = View.extend({
 
     _saveNewItem: function (task, description) {
         var view = this;
+        view.newTaskView = null;
         if (task.isNew()) {
           view.$("a.new-item").click();
         }
