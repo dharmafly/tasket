@@ -21,11 +21,10 @@ var TaskController = Backbone.Controller.extend({
 
     showTaskList: function () {
         var controller = this,
-            hub = app.selectedHub,
-            currentUser = app.currentUser,
-            tasks = Tasket.getTasks(hub.get("tasks.new")),
+            hub = app.selectedHub,        
+            currentUser = app.currentUser,        
+            tasks = Tasket.getTasks(hub.get("tasks.new").concat(hub.get("tasks.claimed"))),
             taskListView = this.taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
-
 
         jQuery('#main aside').after(taskListView.render());
 
