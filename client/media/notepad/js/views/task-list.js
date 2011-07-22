@@ -289,8 +289,10 @@ var TaskListView = View.extend({
           return false;
         }
 
+
         // If an item is being edited, reset it.
         if (this.editedTaskView) {
+          debugger;
           this.editedTaskView.reset();
           this.editedTaskView = null;
         }
@@ -355,12 +357,13 @@ var TaskListView = View.extend({
         // cancel all active edits
         this.$("a.cancel").click();
 
+        // Do nothing if the user is already editing this same task.
         if (this.editedTaskView && taskViews == this.editedTaskVew ) {
-            // Do nothing if the user is already editing this same task.
             return false;
         }
 
-        this.editedTaskVew = taskView;
+
+        this.editedTaskView = taskView;
         taskView.makeEditable();
     },
 
