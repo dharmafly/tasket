@@ -467,13 +467,20 @@ class ViewTests(TestCase):
         self.assertEqual(response.status_code, 404)
     
     def test_toggle_archived(self):
-        self.client.login(username='TestUser', password='12345')
+        self.client.login(username='TestUser3', password='12345')
         response = self.client.put('/hubs/4', 
             json.dumps({'archived' : False}),
             content_type="application/json",
             )
-        print response
 
+        self.assertFalse('archived' in json.loads(response.content)['hub'])
 
-
-
+        response = self.client.put('/hubs/4', 
+            json.dumps({'archived' : True}),
+            content_type="application/json",
+            )
+        self.assertTrue('archived' in json.loads(response.content)['hub'])
+        
+        
+        
+        

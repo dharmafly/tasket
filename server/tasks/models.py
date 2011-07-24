@@ -265,7 +265,7 @@ class Hub(StarredModel):
             if star:
                 obj_dict["starred"] = star.as_json()
         
-        if self.archived_time:
+        if self.archived_time and self.archived_by:
             obj_dict['archived'] = {
                 "timestamp" : self.archived_timestamp(),
                 "archivedBy" : str(self.archived_by.pk),
