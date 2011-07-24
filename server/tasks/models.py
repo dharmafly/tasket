@@ -331,6 +331,7 @@ class Profile(StarredModel):
             "location": self.location.strip(),
             "hubs": {
                 "owned": [str(h.pk) for h in self.owned_hubs.all()],
+                "archived" : [str(h.pk) for h in self.owned_hubs.exclude(archived_by=None)]
                 },
             "tasks" : {
                 "owned": {

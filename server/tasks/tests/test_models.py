@@ -72,6 +72,7 @@ class ModelTest(TestCase):
         self.assertTrue('estimates' in json_data)
         self.assertTrue('tasks' in json_data)
         self.assertEqual(json_data['username'], 'TestUser')
+        self.assertEqual(json_data['hubs']['archived'], ['4'])
 
     def test_profile_starred(self):
         self.assertEqual(self.P.starred().count(), 1)
