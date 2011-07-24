@@ -443,6 +443,7 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['tasks']['claimed'], "2")
         self.assertEqual(json_data['tasks']['done'], "2")
         self.assertEqual(json_data['tasks']['verified'], "2")
+        self.assertEqual(json_data['hubs']['archived'], "1")
 
     def test_thumb(self):
         self.client.login(username='TestUser', password='12345')

@@ -459,11 +459,14 @@ def statistics(request):
     
     Something like:
     
-    { 
-        'new': 23, # Total tasks with "new" status
-        'claimed': 123, # Total tasks with "claimed" status etc.
-        'done': 23,
-        'verified': 345,
+    'tasks' : { 
+        'new': '23', # Total tasks with "new" status
+        'claimed': '123', # Total tasks with "claimed" status etc.
+        'done': '23',
+        'verified': '345',
+    },
+    'hubs' : {
+        archived: '42'
     }
     """
 
@@ -473,6 +476,9 @@ def statistics(request):
             'claimed' : str(Task.objects.filter(state=Task.STATE_CLAIMED).count()),
             'done' : str(Task.objects.filter(state=Task.STATE_DONE).count()),
             'verified' : str(Task.objects.filter(state=Task.STATE_VERIFIED).count()),
+        }, 
+        'hubs' : {
+            'archived' : str(Hub.objects.exclude(archived_by=None).count())
         }
     }
 
