@@ -147,6 +147,14 @@ var Hub = Model.extend({
     humanEstimate: function () {
         return humanTimespan(this.estimate());
     },
+    
+    archive: function() {
+        this.save({ archived: true });
+    },
+    
+    unarchive: function() {
+        this.save({ archived: false });
+    },
 
     // Updates the estimates on a task when changed.
     updateEstimates: function (task) {

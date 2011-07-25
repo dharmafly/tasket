@@ -10,7 +10,7 @@
         "predef": [
             "window", "jQuery", "Backbone", "_", "tim", "getScript", "Tasket",
             "Cache", "app",
-            "Account", "CollectionModel", "Dashboard", "DashboardController",
+            "Account", "ArchiveForm", "CollectionModel", "Dashboard", "DashboardController",
             "DashboardDetail", "DashboardDetailHub", "Form", "FormUpload",
             "Hub", "HubForm", "HubList", "HubView", "Lightbox", "Login",
             "ForgotDetails", "ChangePassword",
@@ -57,6 +57,7 @@
             "../views/form-upload.js",
             "../views/login.js",
             "../views/signup.js",
+            "../views/archive-form.js",
             "../views/task-form.js",
             "../views/hub-form.js",
             "../views/dashboard-detail.js",

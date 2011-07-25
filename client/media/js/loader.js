@@ -79,6 +79,7 @@
                 "views/change-password.js",
                 "views/forgot-details.js",
                 "views/signup.js",
+                "views/archive-form.js",
                 "views/task-form.js",
                 "views/hub-form.js",
                 "views/dashboard-detail.js"

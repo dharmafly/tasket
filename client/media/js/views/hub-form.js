@@ -1,7 +1,8 @@
 var HubForm = FormUpload.extend({
 
     events: _.extend({}, FormUpload.prototype.events, {
-        "click .delete": "_onDelete"
+        "click .delete": "_onDelete",
+        "click .archive": "_onArchive"
     }),
 
     /* Pretty output in Webkit Inspector */
@@ -46,6 +47,21 @@ var HubForm = FormUpload.extend({
         if (window.confirm(app.lang.DELETE_HUB_CONFIRM)) {
             this.model.destroy();
             this.trigger("delete", this.model, this);
+        }
+        event.preventDefault();
+    },
+    
+    /* DOM Event callback. Archives the current hub on the server and broadcasts
+     * the "archive" event passing in the model and view to all listeners. 
+     *
+     * event - A click browser Event object.
+     *
+     * Returns nothing.
+     */
+    _onArchive: function (event) {
+        if (window.confirm(app.lang.ARCHIVE_HUB_CONFIRM)) {
+            this.model.archive();
+            this.trigger("archive", this.model, this);
         }
         event.preventDefault();
     }

@@ -65,11 +65,6 @@ var User = Model.extend({
                 previousIds = this.get(previousKey),
                 currentKey  = "tasks." + group + "." + current,
                 currentIds;
-            
-            // When a task is rejected, it moves back to a "new" state. Since there is no "claimed.new" collection, then return.
-            if (currentKey === "tasks.claimed." + Task.states.NEW){
-                return;
-            }
 
             // If the task is in the array of previous ids or we're iterating
             // through the claimed tasks and this is a new one (in which case
@@ -81,10 +76,13 @@ var User = Model.extend({
                 if (_.indexOf(currentIds, id) < 0) {
                     currentIds.push(id);
                 }
-                data[currentKey] = currentIds;
+                // When a task is rejected, it moves back to a "new" state. There is no "claimed.new" collection, so skip
+                if (currentKey !== "tasks.claimed." + Task.states.NEW) {
+                    data[currentKey] = currentIds;
+                }
             }
         }, this);
-
+        
         return this.set(data);
     },
 

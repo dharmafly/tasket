@@ -99,15 +99,15 @@
 
     <script type="text/tim" class="hub-admin-actions">
         <span class="admin-actions">
-            <a class="add" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
-            <a class="edit" href="#/hubs/{{id}}/edit/">Edit</a>
+            <a class="add" title="Add a new task" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
+            <a class="edit" title="Edit project" href="#/hubs/{{id}}/edit/">Edit</a>
         </span>
     </script>
 
     <script type="text/tim" class="task">
         {{canEdit}}
         <span class="admin-actions">
-            <a class="edit" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
+            <a class="edit" title="Edit task" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
         </span>
         {{/canEdit}}
         
@@ -511,7 +511,10 @@
         </ul>
         <div class="actions">
             <button type="submit">{{isNew}}Create{{/isNew}}{{isNotNew}}Update{{/isNotNew}} Project</button>
-            {{isNotNew}}{{canDelete}}<p class="note"><a class="delete" data-lightbox="open" href="#">Delete project</a></p>{{/canDelete}}{{/isNotNew}}
+            {{isNotNew}}<p class="note archive-delete">
+                <a class="archive" data-lightbox="open" href="#">Archive project</a>
+                {{canDelete}}<a class="delete" data-lightbox="open" href="#">Delete project</a>{{/canDelete}}
+            </p>{{/isNotNew}}
         </div>
     </script>
 
@@ -532,6 +535,25 @@
         </body>
     </script>
 
+    <script type="text/tim" class="archive-form-loading">
+        <h1>Archived Projects</h1>
+        <p>Loading…</p>
+    </script>
+
+    <script type="text/tim" class="archive-form">
+        <h1>Archived Projects</h1>
+        {{noArchivedProjects}}<p>You currently have no archived projects</p>{{/noArchivedProjects}}
+        <ul>
+        {{archivedProjects}}
+            <li class="archived-project-{{id}}">
+                <p><strong>{{title}}</strong></p>
+                <p>{{taskCount}}. <em>Archived on {{date}}</em></p>
+                <button type="submit" class="restore" data-hub-id="{{id}}">Restore</button>
+            </li>
+        {{/archivedProjects}}
+        </ul>
+    </script>
+    
     <script type="text/tim" class="edit-task">
         <h1>{{isNew}}Create a new task{{/isNew}}{{isNotNew}}Edit task{{/isNotNew}}</h1>
         <ul>
@@ -591,6 +613,9 @@
             <ul class="listing"></ul>
             <p>
                 <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
+            </p>
+            <p>
+                <a class="link" href="#/hubs/archived/">View archived projects</a>
             </p>
         </section>
         

@@ -256,8 +256,7 @@ var HubView = View.extend({
             display();
         }
 
-        tasks.unbind("refresh", display)
-             .bind("refresh", display);
+        tasks.bind("refresh", display);
             
         return this;
     },

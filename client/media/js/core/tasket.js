@@ -120,17 +120,18 @@ _.extend(Tasket, Backbone.Events, {
      *
      */
     getModels: function (collection, ids) {
-        var wrapped    = _(ids),
-            type       = collection.model.prototype.type,
-            subset     = new collection.constructor(),
-            toLoad     = new collection.constructor(),
-            toLoadCopy = new collection.constructor(),
-            silent     = {silent:true};
-            
         // If a specific model has been requested, rather than a collection
         if (!_.isArray(ids)){
             return this.getModels(collection, [ids]).at(0);
         }
+        
+        var wrapped    = _(ids),
+            type       = collection.model.prototype.type,
+            ctor       = collection.constructor,
+            subset     = new ctor(),
+            toLoad     = new ctor(),
+            toLoadCopy = new ctor(),
+            silent     = {silent:true};
 
         // Removed previously failed ids.
         ids = wrapped.without.apply(wrapped, Tasket.failed[type]);
@@ -190,6 +191,7 @@ _.extend(Tasket, Backbone.Events, {
             }
           });
         }
+        // Else, there is nothing to load at all
 
         return subset;
     },

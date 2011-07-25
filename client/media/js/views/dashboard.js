@@ -60,7 +60,7 @@ var Dashboard = View.extend({
         var dashboard = this,
             myProjectsElem = this.$("section.quicklinks.my-projects"),
             methodMap;
-
+            
         methodMap = {
             "UserHubs":      ["hubs.owned"],
             "UserTasks":     ["tasks.claimed.claimed"],

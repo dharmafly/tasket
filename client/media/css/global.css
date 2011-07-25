@@ -446,7 +446,7 @@ form ul,
 	font-weight: bold;
 	font-size: 1.384em /* 18px */;
 	/* Line up the right-hand side of the bottom border with the lightbox's close button */
-	margin: 1.538em /* 20px */ -0.679em /* 10px */ 1.538em /* 20px */ 0;
+	margin: 1.538em /* 20px */ 0 1.538em /* 20px */ 0;
 	padding-bottom: 0.679em /* 10px */;
 	border-bottom: 1px solid #ccc;
 }
@@ -501,12 +501,21 @@ form ul,
 }
 
 .content form {
-	width: 23.077em /* 300px */;
 	max-width: 100%;
 }
 
 .content form li {
 	margin-bottom: 0.769em /* 10px */;
+}
+
+.content form li p {
+    float:left;
+    margin:0 1.923em /* 25px */ 0 0;
+    width: 27.692em /* 360px */;
+}
+
+.content form li button.restore {
+    margin:0.461em /* 4px */ 0;
 }
 
 .content form .error strong, .content form strong.warning {
@@ -568,11 +577,24 @@ form ul,
 	line-height: 2.153em /* 28px */;
 }
 
+.content form .actions .note a.archive,
 .content form .actions .note a.delete,
 .content form .actions .note a.cancel {
 	font-weight: bold;
 	color: #C92D2D;
 }
+
+/* where an archive link exists, position delete link below */
+.archive-delete a.delete,
+.archive-delete a.archive {
+    line-height:1em;
+}
+
+.archive-delete a.delete {
+    font-size:0.85em;
+    float:left;
+}
+
 
 /* @end */
 
@@ -1088,6 +1110,13 @@ svg line {
 	padding: 0;
 }
 
+.dashboard .quicklinks p a.button {
+    margin-bottom:10px;
+}
+
+.dashboard .quicklinks p a.link {
+}
+
 .dashboard .quicklinks ul {
 	margin: 0.769em /* 10px */ 0;
 }
@@ -1545,13 +1574,24 @@ svg line {
 
 .lightbox .close {
 	position: absolute;
-	top: 10px;
-	right: 10px;
+	top: 15px;
+	right: 20px;
 }
 
 .lightbox .lightbox-inner .content .description {
     margin-top: 10px; /* make space for close button */
 }
+
+/* narrower lightbox windows for certain forms */
+    .lightbox.account .lightbox-inner,
+    .lightbox.create-hub-form .lightbox-inner,
+    .lightbox.create-task-form .lightbox-inner {
+        width:23.462em; /* 305px */
+        margin-left:-14.23em; /* 185px */
+    }
+    
+    
+
 
 /* @end */
 
