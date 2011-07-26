@@ -49,6 +49,7 @@ Tasket allows its behaviour to be modified, via a number of settings in _local_s
 It is recommended to create a superuser account during this process (follow the instructions in the terminal).
 
     python manage.py syncdb
+    python manage.py migrate
 
 
 ### Optional: Load test data
@@ -112,7 +113,7 @@ Then install Smoosh:
     
 To package the JavaScript, run Smoosh from the build folder:
 
-    cd client/media/js/build/
+    cd client/media/tank/build/
     smoosh -c ./config.json
 
 This will run [JSHint](http://jshint.com) against the codebase and write _tasket.js_ and
@@ -121,9 +122,15 @@ _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
 NOTE: Ignore any JSHint warnings for header.js and footer.js, as these are partial
 JavaScript files used to enclose the Tasket application in a function closure.
 
+# Debugging and developing the JavaScript
 
-## Debug mode
-In /web/localsettings.py, the `DEBUG` flag is set to `True` by default, for ease of development with the local Django server. This should be set to `False` on deploy.
+By default, the _minified, packaged JavaScript_ will be served when the app is viewed in a browser. To enter debug mode, and to immediately see any changes you make to the JavaScript files, add `?debug` to the URL in the browser address bar (add it before the #hash), e.g. http://localhost:8000/?debug#/hubs/
+
+_[TODO: add notes to the doc about loader.js and re-Smooshing when adding a new file to loader.js]_
+
+## Debug mode in the web server
+
+The `DEBUG` flag in [/web/localsettings.py](https://github.com/dharmafly/tasket/blob/master/web/local_settings.py.example#L28) is set to `True` by default, for ease of local development. This flag should be set to `False` on deploy.
 
 
 ## Cron
@@ -208,10 +215,6 @@ Log in to Django and go to http://yourdomain.com/admin/auth/user/ (or click thro
 A superuser should have been created when the site was installed. If no superuser exists, running the following will create a one: 
 
     python manage.py createsuperuser
-
-### JavaScript debug mode
-
-To enter debug mode, add `?debug` to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/
 
 ### The Tasket API
 
