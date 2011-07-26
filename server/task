@@ -4,7 +4,7 @@
     "owner": {
         "name": 'Another User',
         "url": '#/user/another-user/',
-        "image": 'images/placeholder.png'
+        "image": 'images/placeholder-user.png'
     },
     "hasUser": true,
     "isOwner": false,
