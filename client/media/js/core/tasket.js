@@ -99,6 +99,18 @@ _.extend(Tasket, Backbone.Events, {
     getHubs: function (ids) {
         return Tasket.getModels(Tasket.hubs, ids);
     },
+    
+    /* Fetch all archived hubs from the global cache
+     * Returns a Hublist of all archived hubs
+     */
+    getArchivedHubs: function () {
+        var archivedHubs = Tasket.hubs.select(function(hub){
+            if (!!hub.get("archived.timestamp")) {
+                return hub;
+            }
+        });
+        return new HubList(archivedHubs);
+    },
 
     /* Fetch models from the global cache provided. If the model is not cached
      * an empty promise is created with just an id. Once the collection has

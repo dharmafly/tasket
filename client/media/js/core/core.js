@@ -94,3 +94,20 @@ function randomInt(length){
 function nl2br(value) {
     return value.replace(/\n/g, '<br />');
 }
+
+// converts a timestamp to a presentable date string
+function timestampToDate(timestamp) {
+    var jsDate = new Date([timestamp] * 1000), // convert seconds to milliseconds
+        months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
+        year = jsDate.getFullYear(),
+        month = months[jsDate.getMonth()],
+        date = twosf(jsDate.getDate()),
+        hour = twosf(jsDate.getHours()),
+        min = twosf(jsDate.getMinutes()),
+        sec = twosf(jsDate.getSeconds());
+
+    // ensure all values have two s.f.
+    function twosf(val) { return (val < 10) ? "0"+val : val; }
+        
+    return date+' '+month+' '+year+', '+hour+':'+min+':'+sec;
+}

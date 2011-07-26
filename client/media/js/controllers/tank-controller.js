@@ -304,7 +304,9 @@ var TankController = Backbone.Controller.extend({
             hubViewOptions;
     
         _(hubs).each(function(hub){
-            this.addHub(hub, {dontDraw:true});
+            if (!hub.get("archived.timestamp")) { //TODO: remove when archived projects aren't passed through default API /hubs/ call
+                this.addHub(hub, {dontDraw:true});
+            }
         }, this);
 
         if (!options || !options.dontDraw){
@@ -408,22 +410,28 @@ var TankController = Backbone.Controller.extend({
     displayArchivedHubs: function() {
         var hub, tasks,
             archivedHubData = [],
-            archivedHubIds = ["5","14","15","16"], //TODO: Get Archived hubs only
-            archivedHubs = Tasket.getHubs(archivedHubIds),
+            archivedHubs,
             form = new ArchiveForm();
             
         app.lightbox.content(form.renderLoading().el, "archived-hubs").show();
         
+        // When server responds with latest data, then render
+        archivedHubs = Tasket.getArchivedHubs();
+        if (archivedHubs.isComplete()){
+            archivedHubs.fetch();
+        }
+        archivedHubs.bind("refresh", renderArchivedHubs);
+        
+        
         // open view in lightbox
         // display loading (hard-coded in the template)
         // bind to refresh event on collection -> re-render contents
-        
         function renderArchivedHubs(){
             _.each(archivedHubs.models, function(hub){
                 archivedHubData.push({
                    id: hub.id,
                    title: hub.get("title"),
-                   date: "[date archived]",
+                   date: timestampToDate(hub.get("archived.timestamp")),
                    taskCount: function() { 
                        tasks = hub.get("tasks.new").length + hub.get("tasks.claimed").length + hub.get("tasks.done").length + hub.get("tasks.verified").length;
                        return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + (hub.get("tasks.done").length + hub.get("tasks.verified").length) + " completed)";
@@ -450,13 +458,6 @@ var TankController = Backbone.Controller.extend({
                 }, this));
         }
         
-        // When server responds with latest data, then render
-        archivedHubs.bind("refresh", renderArchivedHubs);
-        
-        if (archivedHubs.isComplete()){
-            archivedHubs.fetch();
-        }
-
         return form;
     },
 
