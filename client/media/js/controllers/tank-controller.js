@@ -416,18 +416,13 @@ var TankController = Backbone.Controller.extend({
         app.lightbox.content(form.renderLoading().el, "archived-hubs").show();
         
         // When server responds with latest data, then render
-        archivedHubs = Tasket.getArchivedHubs();
-        if (archivedHubs.isComplete()){
-            archivedHubs.fetch();
-        }
-        archivedHubs.bind("refresh", renderArchivedHubs);
-        
+        Tasket.getArchivedHubs(renderArchivedHubs);
         
         // open view in lightbox
         // display loading (hard-coded in the template)
         // bind to refresh event on collection -> re-render contents
-        function renderArchivedHubs(){
-            _.each(archivedHubs.models, function(hub){
+        function renderArchivedHubs(hubs){
+            _.each(hubs.models, function(hub){
                 archivedHubData.push({
                    id: hub.id,
                    title: hub.get("title"),

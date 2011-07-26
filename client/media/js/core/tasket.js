@@ -100,16 +100,31 @@ _.extend(Tasket, Backbone.Events, {
         return Tasket.getModels(Tasket.hubs, ids);
     },
     
-    /* Fetch all archived hubs from the global cache
-     * Returns a Hublist of all archived hubs
+    /* Fetch all archived hubs from the server
+     * On complete, call the callback function, 
+     * passing through a HubList of archived hub models
      */
-    getArchivedHubs: function () {
-        var archivedHubs = Tasket.hubs.select(function(hub){
-            if (!!hub.get("archived.timestamp")) {
-                return hub;
+    getArchivedHubs: function (callback) {
+        return jQuery.ajax({
+            url: Tasket.endpoint + "hubs/?archived=true",
+            contentType: "application/json",
+            dataType: "json",
+            success: function(response){
+                var ids = [],
+                    archivedHubs;
+            
+                _(response).each(function(model){
+                    if (!!model.archived) {
+                        ids.push(model.id);
+                    }
+                });
+                
+                callback(Tasket.getHubs(ids));
+            },
+            error: function(){
+                callback(null);
             }
         });
-        return new HubList(archivedHubs);
     },
 
     /* Fetch models from the global cache provided. If the model is not cached
