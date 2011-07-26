@@ -5,19 +5,25 @@ web/local_settings.py
 web/build/
 .Python
 bin/
-client/media/js/build/pkg/html5.js
-client/media/js/build/pkg/tasket.all.js
-client/media/js/build/pkg/tasket.loader.js
 include/
 lib/
 man/
+web/pip-log.txt
+Imaging-*
+
+# local db
 tasket.db
 web/tasket
-web/pip-log.txt
-client/media/cache
-client/media/images/*/*
-rebuild_db.sh
+
+# npm modules
 web/node_modules
-Imaging-*
-client/media/notepad/template.html
-client/media/notepad/images/logo.png
+
+# PIL-generated images
+client/media/cache
+client/media/*/images/hubs
+client/media/*/images/users
+
+# Unminified built files
+client/media/tank/build/pkg/html5.js
+client/media/tank/build/pkg/tasket.tank.js
+client/media/tank/build/pkg/tasket.tank.loader.js

@@ -57,6 +57,5 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
 
-
-INDEX_PATHS = ['notepad.html',]
-# DEFAULT_INDEX_FILE = 'index.html'
+INDEX_PATHS = ["tank.html", "notepad.html",]
+# DEFAULT_INDEX_FILE = "tank.html"

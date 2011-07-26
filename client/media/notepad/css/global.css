@@ -282,24 +282,24 @@ table {
 	    background-color: #ececec;
 	    background-repeat: no-repeat;
 	    background-position: 30px 30px, 0 0;
-	    background-image: url(../../images/sprites.png);
+	    background-image: url(../../tank/images/sprites.png);
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -webkit-gradient(
 		    linear, left bottom, left top, from(#e2e5e5), to(#fefefe)
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -moz-linear-gradient(
 		    90deg, #e2e5e5, #fefefe
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -webkit-linear-gradient(
 		    90deg, #e2e5e5, #fefefe
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    linear-gradient(
 		    90deg, #e2e5e5, #fefefe
 	    );
@@ -319,29 +319,29 @@ table {
     .ie a:focus.action,
     .ie .action:active,
     .ie a:active.action {
-	    background-image: url(../../images/sprites.png);
+	    background-image: url(../../tank/images/sprites.png);
     }
 
     .action:hover, a:hover.action,
     .action:focus, a:focus.action {
 	    background-color: #ececec;
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -webkit-gradient(
 		    linear, left bottom, left top, from(#ececec), to(#fff)
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -moz-linear-gradient(
 		    90deg, #fefefe, #fff
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -webkit-linear-gradient(
 		    90deg, #fefefe, #fff
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    linear-gradient(
 		    90deg, #fafafa, #fff
 	    );
@@ -363,22 +363,22 @@ table {
 	    background-color: #ccc;
 	    text-shadow: none;
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -webkit-gradient(
 		    linear, left bottom, left top, from(#bbb), to(#ccc)
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	     -moz-linear-gradient(
 		    90deg, #fefefe, #fff
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    -webkit-linear-gradient(
 		    90deg, #fefefe, #fff
 	    );
 	    background-image:
-	    url(../../images/sprites.png),
+	    url(../../tank/images/sprites.png),
 	    linear-gradient(
 		    90deg, #fafafa, #fff
 	    );
