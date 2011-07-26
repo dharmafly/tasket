@@ -387,7 +387,10 @@ class Profile(StarredModel):
         return json.dumps(self.as_dict(**kwargs))
 
 def user_post_save(sender, instance, signal, *args, **kwargs):
-    profile, new = Profile.objects.get_or_create(user=instance)
+    try:
+        profile, new = Profile.objects.get_or_create(user=instance)
+    except:
+        pass
 models.signals.post_save.connect(user_post_save, sender=User)
 
 
