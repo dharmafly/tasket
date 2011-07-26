@@ -52,12 +52,22 @@ var Hub = Model.extend({
         return tasks < Tasket.settings.TASK_LIMIT;
     },
 
-    // Returns all tasks.
-    getTasks: function () {
-        var keys = ["new", "claimed", "done", "verified"];
-        return _(keys).chain().map(function (key) {
-            return this.get("tasks." + key);
+    // Returns tasks of different states (default: all states)
+    getTasks: function (states) {
+        states = states || ["new", "claimed", "done", "verified"];
+        return _(states).chain().map(function (state) {
+            return this.get("tasks." + state);
         }, this).flatten().value();
+    },
+    
+    // Count tasks of different states (default: all states)
+    countTasks: function (states){
+        return this.getTasks(states).length;
+    },
+    
+    // Count "done" and "verified" tasks
+    countCompletedTasks: function(){
+        return this.countTasks(["done", "verified"]);
     },
     
     // Check whether hub can be deleted

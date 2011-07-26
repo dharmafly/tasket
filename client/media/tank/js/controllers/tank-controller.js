@@ -1,7 +1,7 @@
 var TankController = Backbone.Controller.extend({
     routes: {
         "/hubs/new/": "newHub",
-        "/hubs/archived/": "displayArchivedHubs",
+        "/hubs/archived/": "listArchivedHubs",
         "/hubs/:id/": "displayHub",
         "/hubs/:id/edit/": "editHub",
         "/hubs/:id/tasks/new/": "newTask",
@@ -407,25 +407,26 @@ var TankController = Backbone.Controller.extend({
         return this;
     },
     
-    displayArchivedHubs: function() {
-        var hub, tasks,
-            archivedHubData = [],
-            archivedHubs,
-            form = new ArchiveForm();
+    listArchivedHubs: function() {
+        var form = new ArchiveForm();
             
         Tasket.getArchivedHubs(_.bind(renderArchivedHubs, this));
         
         // open view in lightbox
         function renderArchivedHubs(hubs){
+            var archivedHubData = [];
+        
             _.each(hubs.models, function(hub){
+                var taskCount = hub.countTasks(),
+                    completedTaskCount = hub.countCompletedTasks();
+
                 archivedHubData.push({
                     id: hub.id,
                     title: hub.get("title"),
                     date: timestampToDate(hub.get("archived.timestamp")),
-                    taskCount: function() { 
-                        tasks = hub.get("tasks.new").length + hub.get("tasks.claimed").length + hub.get("tasks.done").length + hub.get("tasks.verified").length;
-                        return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + (hub.get("tasks.done").length + hub.get("tasks.verified").length) + " completed)";
-                    }
+                    taskCount: taskCount +
+                        " task" + ((taskCount !== 1) ? "s" : "") +
+                        " (" + completedTaskCount + " completed)"
                 });
             });
             
@@ -439,7 +440,6 @@ var TankController = Backbone.Controller.extend({
                     return;
                 }
                 hub.unarchive();
-                //Tasket.hubs.add(hub);
                 this.addHub(hub).select();
             }, this))
             .bind("close", _.bind(function(){

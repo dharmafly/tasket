@@ -110,19 +110,15 @@ _.extend(Tasket, Backbone.Events, {
             contentType: "application/json",
             dataType: "json",
             success: function(response){
-                var ids = [],
-                    archivedHubs, hubs;
+                var ids = [];
             
                 _(response).each(function(hubData){
-                    if (!!hubData.archived) {
-                        ids.push(hubData.id);
-                        
-                        if (!Tasket.hubs.get(hubData.id)){
-                            Tasket.hubs.add(hubData);
-                        }
+                    ids.push(hubData.id);
+                    
+                    if (!Tasket.hubs.get(hubData.id)){
+                        Tasket.hubs.add(hubData);
                     }
                 });
-                
                 callback(Tasket.getHubs(ids));
             },
             error: function(){

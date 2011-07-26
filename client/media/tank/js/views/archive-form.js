@@ -16,12 +16,11 @@ var ArchiveForm = Form.extend({
     
     render: function (archivedHubData) {
         var template = tim("archive-form", { 
-                noArchivedProjects: !archivedHubData.length, 
-                archivedProjects: archivedHubData
-            });
+            noArchivedProjects: !archivedHubData.length, 
+            archivedProjects: archivedHubData
+        });
         
         this.elem.html(template);
-        
         return this;
     },
     
