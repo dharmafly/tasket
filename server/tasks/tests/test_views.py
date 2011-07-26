@@ -49,6 +49,12 @@ class ViewTests(TestCase):
             )
         json_list = json.loads(response.content)
         self.assertEqual(set(json_list.keys()), set(['id', 'createdTime']))
+        
+        response = self.client.get('/hubs/')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 3)
+
+        
 
     def test_hubs_post_admin_restrict(self):
         # TestUser is not an admin, this test should not create a hub
@@ -476,11 +482,10 @@ class ViewTests(TestCase):
     
     def test_toggle_archived(self):
         self.client.login(username='TestUser3', password='12345')
-        response = self.client.put('/hubs/4', 
+        response = self.client.put('/hubs/4',
             json.dumps({'archived' : False}),
             content_type="application/json",
             )
-
         self.assertFalse('archived' in json.loads(response.content)['hub'])
 
         response = self.client.put('/hubs/4', 
