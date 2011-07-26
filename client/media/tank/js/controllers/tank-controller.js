@@ -413,7 +413,7 @@ var TankController = Backbone.Controller.extend({
             archivedHubs,
             form = new ArchiveForm();
             
-        Tasket.getArchivedHubs(renderArchivedHubs);
+        Tasket.getArchivedHubs(_.bind(renderArchivedHubs, this));
         
         // open view in lightbox
         function renderArchivedHubs(hubs){
@@ -439,7 +439,7 @@ var TankController = Backbone.Controller.extend({
                     return;
                 }
                 hub.unarchive();
-                Tasket.hubs.add(hub);
+                //Tasket.hubs.add(hub);
                 this.addHub(hub).select();
             }, this))
             .bind("close", _.bind(function(){

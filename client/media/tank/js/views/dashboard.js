@@ -232,6 +232,7 @@ var Dashboard = View.extend({
         if (this.model && (this.model.isAdmin() || Tasket.settings.USERS_CAN_CREATE_HUBS)) {
             hubs = this._getCollection("getHubs", "hubs.owned", this.updateUserHubs);
         }
+        this.updateArchivedProjectsLink();
         return this.updateList(".my-projects", hubs).hubAnchorSelect();
     },
 
@@ -263,6 +264,17 @@ var Dashboard = View.extend({
             this.$(selector).hide();
         }
 
+        return this;
+    },
+    
+    // show/hide the archived projects link depending on whether there are any
+    updateArchivedProjectsLink: function() {
+        //app.bind("statistics:change", function(){O(app.statistics);});
+        if(app.statistics.hubs && parseInt(app.statistics.hubs.archived, 10) > 0) {
+            this.$(".archived-projects").html(tim("archived-projects-link"));
+        } else {
+            this.$(".archived-projects").empty();
+        }
         return this;
     },
 

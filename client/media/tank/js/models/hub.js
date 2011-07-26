@@ -2,7 +2,7 @@
 var Hub = Model.extend({
     type: "hub",
 
-    required: ["owner"],
+    required: ["owner", "title"],
 
     defaults: {
         title: "",
@@ -150,10 +150,14 @@ var Hub = Model.extend({
     
     archive: function() {
         this.save({ archived: true });
+        return this;
     },
     
     unarchive: function() {
-        this.save({ archived: false });
+        var hubData = this.toJSON();
+        hubData.archived = false;
+        new Hub(hubData).save();
+        return this;
     },
 
     // Updates the estimates on a task when changed.
