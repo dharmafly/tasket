@@ -20,8 +20,7 @@ web/node_modules
 
 # PIL-generated images
 client/media/cache
-client/media/*/images/hubs
-client/media/*/images/users
+client/media/images
 
 # Unminified built files
 client/media/tank/build/pkg/html5.js
