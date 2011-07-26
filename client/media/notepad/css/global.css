@@ -488,15 +488,14 @@ table {
     }
     
     /* 2) When site title *is* a logo image */
-    /*
-    header#pageheader h1 a {
+    header#pageheader.hasLogo h1 a {
+        position:static;
         display: block;
         width: 210px;
         height: 52px;
         text-indent: -1000em;
-        background: url(../images/logo.png) no-repeat;
+        background: url(../custom/images/logo.png) no-repeat;
     }
-    */
     
     
 /* MAINNAV */ 
