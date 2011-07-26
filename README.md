@@ -70,6 +70,13 @@ It is recommended to create a superuser account during this process (follow the 
 
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
+## Updating Tasket
+
+When pulling in new changes, there may have been new models added, or changes made to the existing models.  After a git pull run the following:
+
+    python manage.py syncdb
+    python manage.py migrate
+
 
 ### Django admin
 
