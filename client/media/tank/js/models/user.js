@@ -72,12 +72,12 @@ var User = Model.extend({
             if (_.indexOf(previousIds, id) >= 0 || (group === "claimed" && newlyClaimed)) {
                 data[previousKey] = _.without(previousIds, id);
 
-                currentIds = _.clone(this.get(currentKey));
-                if (_.indexOf(currentIds, id) < 0) {
-                    currentIds.push(id);
-                }
                 // When a task is rejected, it moves back to a "new" state. There is no "claimed.new" collection, so skip
                 if (currentKey !== "tasks.claimed." + Task.states.NEW) {
+                    currentIds = _.clone(this.get(currentKey));
+                    if (_.indexOf(currentIds, id) < 0) {
+                        currentIds.push(id);
+                    }
                     data[currentKey] = currentIds;
                 }
             }
