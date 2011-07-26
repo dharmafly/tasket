@@ -87,7 +87,6 @@ var TaskView = View.extend({
             paragraph = this.$("p"),
             description = this.previousDescription = this.model.get("description");
 
-
         paragraph.empty().append(html);
 
         if (description) {

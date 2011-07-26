@@ -191,7 +191,7 @@ var TaskListView = View.extend({
 
     _onTitleEdit: function (event) {
         var listTitle = this.previousTitle =  this.$("div.header h1 a").text(),
-            html = jQuery(tim("title-edit", {placeholder: false}));
+            html = jQuery(tim("title-edit", {placeholder: app.lang.NEW_HUB}));
 
         this.$("div.header").addClass("edit-mode");
         this.$("div.header h1").replaceWith(html);
@@ -357,7 +357,7 @@ var TaskListView = View.extend({
         this.$("a.cancel").click();
 
         // Do nothing if the user is already editing this same task.
-        if (this.editedTaskView && taskViews == this.editedTaskVew ) {
+        if (this.editedTaskView && taskView === this.editedTaskVew ) {
             return false;
         }
 
