@@ -109,5 +109,5 @@ function timestampToDate(timestamp) {
     // ensure all values have two s.f.
     function twosf(val) { return (val < 10) ? "0"+val : val; }
         
-    return date+' '+month+' '+year+', '+hour+':'+min+':'+sec;
+    return date+' '+month+' '+year;
 }
