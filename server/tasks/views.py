@@ -69,9 +69,11 @@ class HubView(PutView):
             ids = request.GET['ids']
             ids = [i.strip() for i in ids.split(',') if i]
             hubs = hubs.filter(pk__in=ids)
-        if not request.GET.get('archived', False) == 'true':
+        if request.GET.get('archived', False) == 'true':
+          hubs = hubs.exclude(archived_by=None)
+        else:
           hubs = hubs.filter(archived_by=None)
-        
+          
         res = self.res
         res.write(hubs.as_json(request_user=request.user))
         return res
