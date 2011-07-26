@@ -62,6 +62,9 @@ var HubForm = FormUpload.extend({
         if (window.confirm(app.lang.ARCHIVE_HUB_CONFIRM)) {
             this.model.archive();
             this.trigger("archive", this.model, this);
+            
+            // show archived project link on dashboard
+            app.dashboard.updateArchivedProjectsLink(true);
         }
         event.preventDefault();
     }
