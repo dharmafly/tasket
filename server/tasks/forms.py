@@ -208,8 +208,8 @@ class HubForm(StarredForm):
                     if self.request.user.profile != self.instance.archived_by and not self.request.user.profile.admin:
                         self._errors['archived'] = self.error_class(['Only an admin or the user who archived this hub can unarchive it'])
                         return False
-            else:
-                return self.request.user.profile
+                else:
+                    return self.request.user.profile
         return self.instance.archived_by
      
     def clean_archived_time(self):
