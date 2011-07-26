@@ -413,44 +413,39 @@ var TankController = Backbone.Controller.extend({
             archivedHubs,
             form = new ArchiveForm();
             
-        app.lightbox.content(form.renderLoading().el, "archived-hubs").show();
-        
-        // When server responds with latest data, then render
         Tasket.getArchivedHubs(renderArchivedHubs);
         
         // open view in lightbox
-        // display loading (hard-coded in the template)
-        // bind to refresh event on collection -> re-render contents
         function renderArchivedHubs(hubs){
             _.each(hubs.models, function(hub){
                 archivedHubData.push({
-                   id: hub.id,
-                   title: hub.get("title"),
-                   date: timestampToDate(hub.get("archived.timestamp")),
-                   taskCount: function() { 
-                       tasks = hub.get("tasks.new").length + hub.get("tasks.claimed").length + hub.get("tasks.done").length + hub.get("tasks.verified").length;
-                       return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + (hub.get("tasks.done").length + hub.get("tasks.verified").length) + " completed)";
-                   }
+                    id: hub.id,
+                    title: hub.get("title"),
+                    date: timestampToDate(hub.get("archived.timestamp")),
+                    taskCount: function() { 
+                        tasks = hub.get("tasks.new").length + hub.get("tasks.claimed").length + hub.get("tasks.done").length + hub.get("tasks.verified").length;
+                        return tasks + " task" + ((tasks !== 1) ? "s" : "") + " (" + (hub.get("tasks.done").length + hub.get("tasks.verified").length) + " completed)";
+                    }
                 });
             });
             
-            app.lightbox.content(form.render(archivedHubData).el, "archived-hubs");
+            app.lightbox.content(form.render(archivedHubData).el, "archived-hubs").show();
 
             // When user clicks on "Restore" to un-archive a hub
             form.bind("restoreHub", _.bind(function (hubId) {
-                    hub = Tasket.getHubs(hubId);
-                    if (!hub){
-                        this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
-                        return;
-                    }
-                    hub.unarchive();
-                    Tasket.hubs.add(hub);
-                    this.addHub(hub).select();
-                }, this))
-                .bind("close", _.bind(function(){
-                    app.lightbox.hide();
-                    window.location.hash = "/";
-                }, this));
+                hub = Tasket.getHubs(hubId);
+                if (!hub){
+                    this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
+                    return;
+                }
+                hub.unarchive();
+                Tasket.hubs.add(hub);
+                this.addHub(hub).select();
+            }, this))
+            .bind("close", _.bind(function(){
+                app.lightbox.hide();
+                window.location.hash = "/";
+            }, this));
         }
         
         return form;

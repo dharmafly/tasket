@@ -28,7 +28,9 @@ var ArchiveForm = Form.extend({
 
     // overwrite default form method
     submit: function(event) {
-        event.preventDefault();
+        if (event) {
+            event.preventDefault();
+        }
         return this;
     },
     
