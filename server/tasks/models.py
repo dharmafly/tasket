@@ -182,6 +182,8 @@ class Hub(StarredModel):
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
     createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     task_order = TaskListField(blank=True, null=True)
+    archived_time = UnixTimestampField(blank=True, null=True)
+    archived_by = models.ForeignKey('Profile', related_name="archived_hubs", null=True, blank=True)
     
     # objects = managers.HubManager()
     objects = managers.HubManager()
@@ -208,6 +210,9 @@ class Hub(StarredModel):
     
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
+
+    def archived_timestamp(self):
+        return int(time.mktime(self.archived_time.timetuple()))
     
     
     def as_dict(self, request_user=None):
@@ -260,7 +265,12 @@ class Hub(StarredModel):
             if star:
                 obj_dict["starred"] = star.as_json()
         
-
+        if self.archived_time and self.archived_by:
+            obj_dict['archived'] = {
+                "timestamp" : self.archived_timestamp(),
+                "archivedBy" : str(self.archived_by.pk),
+            }
+        
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
@@ -321,6 +331,7 @@ class Profile(StarredModel):
             "location": self.location.strip(),
             "hubs": {
                 "owned": [str(h.pk) for h in self.owned_hubs.all()],
+                "archived" : [str(h.pk) for h in self.owned_hubs.exclude(archived_by=None)]
                 },
             "tasks" : {
                 "owned": {

@@ -197,6 +197,29 @@ class HubForm(StarredForm):
         except KeyError:
             task_order_raw = []
         return task_order_raw
+    
+    def clean_archived_by(self):
+        if 'archived' in getattr(self.request, 'JSON', []):
+            archived = self.request.JSON['archived']
+            if archived:
+                if self.instance.archived_by:
+                    # This hub is already archived, so no one apart from an admin or
+                    # the user who archived it can unarchive it.
+                    if self.request.user.profile != self.instance.archived_by and not self.request.user.profile.admin:
+                        self._errors['archived'] = self.error_class(['Only an admin or the user who archived this hub can unarchive it'])
+                        return False
+            else:
+                return None
+        return self.request.user.profile
+     
+    def clean_archived_time(self):
+        if 'archived' in getattr(self.request, 'JSON', []):
+            archived = self.request.JSON['archived']
+            if archived:
+                return datetime.datetime.now()
+            else:
+                return None
+    
 
 
 class ProfileForm(StarredForm):

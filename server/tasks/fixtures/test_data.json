@@ -136,6 +136,18 @@
     }
 },
 {
+    "pk": 4, 
+    "model": "tasks.hub", 
+    "fields": {
+        "owner": 2, 
+        "image": "images/placeholder.png", 
+        "description": "This hub is archived",
+        "title": "Example Hub 3",
+        "archived_time" : "2011-02-25 09:25:03",
+        "archived_by" : 4
+    }
+},
+{
     "pk": 2, 
     "model": "tasks.task",
     "fields": {
@@ -220,6 +232,21 @@
         "claimedTime": "2011-01-25 09:25:03",
         "owner": 2,
         "state": "claimed",
+        "estimate": 900
+    }
+},
+{
+    "pk": 8, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "Locked, due to hub archive", 
+        "hub": 4, 
+        "image": "images/placeholder.png", 
+        "createdTime": "2010-01-25 09:15:03", 
+        "claimedBy": 3,
+        "claimedTime": "2011-01-25 09:25:03",
+        "owner": 2,
+        "state": "done",
         "estimate": 900
     }
 },
