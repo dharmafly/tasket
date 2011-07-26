@@ -105,7 +105,7 @@ _.extend(Tasket, Backbone.Events, {
      * passing through a HubList of archived hub models
      */
     getArchivedHubs: function (callback) {
-        return jQuery.ajax({
+        jQuery.ajax({
             url: Tasket.endpoint + "hubs/?archived=true",
             contentType: "application/json",
             dataType: "json",
@@ -118,8 +118,11 @@ _.extend(Tasket, Backbone.Events, {
                         ids.push(model.id);
                     }
                 });
-                
-                callback(Tasket.getHubs(ids));
+                var getHubs = Tasket.getHubs(ids);
+                if (getHubs.isComplete()){
+                    callback(getHubs);
+                }
+                getHubs.bind("refresh", callback);
             },
             error: function(){
                 callback(null);
