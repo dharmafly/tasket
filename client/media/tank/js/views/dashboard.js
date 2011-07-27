@@ -270,7 +270,7 @@ var Dashboard = View.extend({
     // show/hide the archived projects link depending on whether there are any
     updateArchivedProjectsLink: function(forceShow) {
         //app.bind("statistics:change", function(){O(app.statistics);});
-        if(forceShow || (app.statistics.hubs && parseInt(app.statistics.hubs.archived, 10) > 0)) {
+        if (forceShow || (app.statistics.hubs && parseInt(app.statistics.hubs.archived, 10) > 0)) {
             this.$(".archived-projects").html(tim("archived-projects-link"));
         } else {
             this.$(".archived-projects").empty();
