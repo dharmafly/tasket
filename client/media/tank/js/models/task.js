@@ -116,7 +116,7 @@ var Task = Model.extend({
                         toSet.claimedBy = userid;
                         toSet.claimedTime = timestamp;
                     }
-                    else if (!this.attr.claimedBy){
+                    else if (!attr.claimedBy){
                         error(currentState, newState, userid);
                     }
                 break;
@@ -126,7 +126,7 @@ var Task = Model.extend({
                         toSet.doneBy = userid;
                         toSet.doneTime = timestamp;
                     }
-                    else if (!this.attr.doneBy){
+                    else if (!attr.doneBy){
                         error(currentState, newState, userid);
                     }
                 break;
