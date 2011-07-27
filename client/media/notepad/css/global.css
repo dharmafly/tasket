@@ -488,6 +488,10 @@ table {
     }
     
     /* 2) When site title *is* a logo image */
+    header#pageheader.hasLogo h1 {
+        top:0;
+    }
+    
     header#pageheader.hasLogo h1 a {
         display: block;
         width: 210px;
