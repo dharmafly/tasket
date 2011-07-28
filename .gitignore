@@ -15,7 +15,7 @@ Imaging-*
 server/tasks/migrations/
 
 # Backups
-web/tasks-backup-
+web/tasks-backup-*
 
 # local db
 tasket.db
