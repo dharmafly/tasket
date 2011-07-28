@@ -181,7 +181,7 @@ _.extend(Tasket, Backbone.Events, {
             toLoad.bind("refresh", function () {
                 toLoad.each(function (model) {
                     // Update the model in the subset with the new data.
-                    subset.get(model.id).set(model.toJSON());
+                    subset.get(model.id).set(model.toJSON(), silent);
                 });
 
                 // Remove all models from subset that appear in toLoadCopy
