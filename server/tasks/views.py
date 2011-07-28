@@ -69,9 +69,12 @@ class HubView(PutView):
             ids = request.GET['ids']
             ids = [i.strip() for i in ids.split(',') if i]
             hubs = hubs.filter(pk__in=ids)
-
-        if request.GET.get('archived', False) == 'true':
+        
+        archived = request.GET.get('archived', False)
+        if archived == 'true':
           hubs = hubs.exclude(archived_by=None)
+        elif archived == "all":
+             hubs = hubs
         else:
           hubs = hubs.filter(archived_by=None)
           
