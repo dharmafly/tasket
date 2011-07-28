@@ -11,6 +11,12 @@ man/
 web/pip-log.txt
 Imaging-*
 
+# South migrations
+server/tasks/migrations/
+
+# Backups
+web/tasks-backup-
+
 # local db
 tasket.db
 web/tasket
@@ -19,8 +25,8 @@ web/tasket
 web/node_modules
 
 # PIL-generated images
-client/media/cache
-client/media/images
+client/media/cache/
+client/media/images/
 
 # Unminified built files
 client/media/tank/build/pkg/html5.js
