@@ -202,21 +202,17 @@ _.extend(Tasket, Backbone.Events, {
             toLoad.fetch();
         }
         else if (!subset.isComplete()) {
-          // It's possible that a subset could contain models that are
-          // currently being loaded in another request. In this case the
-          // "refresh" event will not fire. So we must watch each unloaded
-          // model in the collection until they are all completed then manually
-          // fire the "refresh" event.
-          subset.each(function (model) {
-            if (!model.isComplete()) {
-              model.bind('change', function onChange() {
-                model.unbind('change', onChange);
+            // It's possible that a subset could contain models that are
+            // currently being loaded in another request. In this case the
+            // "refresh" event will not fire. So we must watch each unloaded
+            // model in the collection until they are all completed then
+            // manually fire the "refresh" event.
+            subset.bind("change", function onChange() {
                 if (subset.isComplete()) {
-                  subset.trigger("refresh", subset, {});
+                    subset.unbind("change", onChange);
+                    subset.trigger("refresh", subset, {});
                 }
-              });
-            }
-          });
+            });
         }
         // Else, there is nothing to load at all
 
