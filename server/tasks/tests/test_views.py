@@ -21,6 +21,11 @@ class ViewTests(TestCase):
         self.assertEqual(json_list[0]['title'], "Example Hub 2")
         self.assertEqual(len(json_list), 2)
 
+    def test_hubs_get_by_id_not_archived(self):
+        response = self.client.get('/hubs/?ids=2,3,4')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 3)
+
     def test_hubs_get_archived(self):
         response = self.client.get('/hubs/?archived=true')
         json_list = json.loads(response.content)
