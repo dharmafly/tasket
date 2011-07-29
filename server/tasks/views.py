@@ -167,6 +167,11 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def delete(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
+        if hub.task_set.exclude(state__in=[Task.STATE_NEW]).count() > 0:
+            self.res.write(json.dumps({'error' : 'Cannot delete hub'}))
+            self.res.status_code = 400
+            return self.res
+
         hub_id = hub.pk
         hub.delete()
         self.res.write(json.dumps(

@@ -159,9 +159,18 @@ class ViewTests(TestCase):
         self.assertEqual(json_list['hub']['tasks']['order'], ['2', '3', '7'])
 
 
-    def test_hub_delete(self):
+    def test_hub_delete_with_not_new(self):
         self.client.login(username='TestUser', password='12345')
         response = self.client.delete('/hubs/2')
+        hubs = Hub.objects.all()
+        self.assertEqual(len(hubs), 3)
+        self.assertEqual(response.status_code, 400)
+
+    def test_hub_delete(self):
+        self.client.login(username='TestUser', password='12345')
+        for t in Task.objects.exclude(state=Task.STATE_NEW):
+            t.delete()
+        response = self.client.delete('/hubs/4')
         hubs = Hub.objects.all()
         self.assertEqual(len(hubs), 2)
     
