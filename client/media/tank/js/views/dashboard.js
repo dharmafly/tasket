@@ -296,7 +296,7 @@ var Dashboard = View.extend({
         // Currently only display the title/description so only re-render
         // if this changes.
         collection.bind("change", function(model) {
-            var watch = ["owner", "title", "description"];
+            var watch = ["owner", "title", "description", "archived.timestamp"];
             do {
                 if (model.hasChanged(watch.pop())) {
                     callback();
