@@ -1,14 +1,14 @@
-screenshot.png
+/screenshot.png
 .DS_Store
 *.pyc
-web/local_settings.py
-web/build/
+/web/local_settings.py
+/web/build/
+/web/pip-log.txt
 .Python
-bin/
-include/
-lib/
-man/
-web/pip-log.txt
+/bin/
+/include/
+/lib/
+/man/
 Imaging-*
 
 # South migrations
