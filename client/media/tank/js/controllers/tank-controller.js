@@ -322,10 +322,11 @@ var TankController = Backbone.Controller.extend({
     },
 
     addHub: function(hub, options){
-        var hubView, offset;
+        var hubView = this.getHubView(hub.id),
+            offset;
 
-        if (this.getHubView(hub.id)) {
-            return this;
+        if (hubView) {
+            return hubView;
         }
 
         options = options || {};
