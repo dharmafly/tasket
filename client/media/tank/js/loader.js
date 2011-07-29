@@ -17,7 +17,7 @@
     // PRODUCTION MODE
     if (!debug){
         // Load production mode scripts
-        getScript("/media/tank/build/pkg/tasket.tank.min.js?0.0.2");
+        getScript("/media/tank/build/pkg/tasket.tank.min.js?0.0.3");
     }
 
     // DEVELOPMENT/ DEBUG MODE
