@@ -228,9 +228,12 @@ var Dashboard = View.extend({
 
     // Updates the "My Projects" box.
     updateUserHubs: function () {
-        var hubs = null;
+        var hubs = null,
+            nonArchivedHubs;
+        
         if (this.model && (this.model.isAdmin() || Tasket.settings.USERS_CAN_CREATE_HUBS)) {
-            hubs = this._getCollection("getHubs", "hubs.owned", this.updateUserHubs);
+            nonArchivedHubs = _.difference(this.model.get("hubs.owned"), this.model.get("hubs.archived"));
+            hubs = this._processCollection(Tasket.getHubs(nonArchivedHubs), this.updateUserHubs);
         }
         this.updateArchivedProjectsLink();
         return this.updateList(".my-projects", hubs).hubAnchorSelect();
@@ -284,11 +287,15 @@ var Dashboard = View.extend({
     // callback - a function to call when the collection or models change
     _getCollection: function (method, key, callback) {
         var collection = Tasket[method](this.model.get(key));
+        return this._processCollection(collection, callback);
+    },        
+        
+    _processCollection: function (collection, callback){
         collection.bind("refresh", callback);
 
         // Currently only display the title/description so only re-render
         // if this changes.
-        collection.invoke("bind", "change", function (model) {
+        collection.bind("change", function(model) {
             var watch = ["owner", "title", "description"];
             do {
                 if (model.hasChanged(watch.pop())) {
