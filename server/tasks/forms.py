@@ -210,6 +210,8 @@ class HubForm(StarredForm):
                         return False
                 else:
                     return self.request.user.profile
+            else:
+                return None
         return self.instance.archived_by
      
     def clean_archived_time(self):
@@ -219,7 +221,7 @@ class HubForm(StarredForm):
                 return datetime.datetime.now()
             else:
                 return None
-    
+        return self.instance.archived_time
 
 
 class ProfileForm(StarredForm):
