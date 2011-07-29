@@ -265,6 +265,12 @@ class TasksView(PutView):
     @method_decorator(AllowJSONPCallback)
     def delete(self, request, task_id=None):
         task = get_object_or_404(Task, pk=task_id)
+        
+        if task.state not in [Task.STATE_NEW,]:
+            self.res.write(json.dumps({'error' : 'Cannot delete task'}))
+            self.res.status_code = 400
+            return self.res
+        
         task_id = task.pk
         task.delete()
         self.res.write(json.dumps(
