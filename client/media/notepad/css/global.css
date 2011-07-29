@@ -850,6 +850,7 @@ table {
 /* star */
 
     #content .edit-item .star {
+      display:none; /* TODO TEMP - see #395 */
       top: 8px;
       left: 30px;
     }
