@@ -9,15 +9,10 @@ _.extend(app, {
     bodyElem: jQuery(document.body),
     cache: cache,
 
-
     _setupOverrides: function () {
         // Always set task records as private so that
         // they can be accessed only by the their owner.
         Task.prototype.defaults.privacy = true;
-
-        // Override the value of Tasket.settings with the
-        // values returned from the server
-        this._cacheServerSettings();
         
         return this;
     },
@@ -140,5 +135,4 @@ _.extend(app, {
         // values returned from the server
         app.init(app._cacheServerSettings());
     }
-
 }, app);
