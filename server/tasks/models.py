@@ -144,6 +144,9 @@ class Task(StarredModel):
             if star:
                 obj_dict["starred"] = star.as_dict()
         
+        if self.hub.archived_by:
+            obj_dict['archived'] = True
+        
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""

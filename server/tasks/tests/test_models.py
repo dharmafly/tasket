@@ -112,5 +112,7 @@ class ModelTest(TestCase):
         self.assertEqual(H.archived_by.pk, 4)
 
 
-
+    def test_task_as_json(self):
+        T = Task.objects.get(pk=8)
+        self.assertTrue('archived' in T.as_dict())
 
