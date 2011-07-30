@@ -495,6 +495,7 @@ def statistics(request):
             'claimed' : str(Task.objects.filter(state=Task.STATE_CLAIMED).count()),
             'done' : str(Task.objects.filter(state=Task.STATE_DONE).count()),
             'verified' : str(Task.objects.filter(state=Task.STATE_VERIFIED).count()),
+            'archived' : str(Task.objects.exclude(hub__archived_by=None).count()),
         }, 
         'hubs' : {
             'archived' : str(Hub.objects.exclude(archived_by=None).count())
