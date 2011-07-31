@@ -37,69 +37,73 @@ _.extend(app, {
         // Destroy the cached user details when the logout button is clicked.
         // This block can be removed once Ticket #84 has been resolved and the
         // server deletes the "sessionid" cookie on logout:
-        // https://github.com/premasagar/tasket/issues/84
+        // https://github.com/dharmafly/tasket/issues/84
         jQuery("form[action='/logout/']").submit(function (event) {
             app.destroyCache();
         });
 
         return this;
     },
-
+    
+    getLatestOpenHub: function(user){
+        return _.max(user.getNonArchivedHubs());
+    },
 
     _bindHubEvents: function (user) {
-        var ownedHubs = user.get("hubs.owned"),
+        var hubId = this.getLatestOpenHub(user),
             hub;
-
-        hub = app.selectedHub = ownedHubs.length ?
-
-            // TODO:
-            // this will fail if the local storage object is out of sync and the requested hub
-            // has been deleted from the server. This edge case can be handled with an onError callback
-            // that calls _bindHubEvents again.
-
-            Tasket.getHubs(_.max(ownedHubs)) :
-            new Hub({
+        
+        // There is already a hub we can load
+        if (hubId){
+            hub = app.selectedHub = Tasket.getHubs(hubId);
+            
+            // If the hub data is complete
+            if (hub.isComplete()){
+                app.trigger("change:selectedHub", hub);
+            }
+            // Otherwise data load from the server
+            else {
+                hub.bind("change", function onLoad(){
+                    hub.unbind("change", onLoad);
+                    app.trigger("change:selectedHub", hub);
+                });
+            }
+            // TODO: handle errors - e.g. hub was already deleted since user record last cached in localStorage
+        }
+        
+        // No existing hubs. Create a new one
+        else {
+            hub = app.selectedHub = new Hub({
                 title: app.lang.NEW_HUB,
                 owner: user.id
             });
-
-        hub.bind("change:id", function (hub) {
-            app.trigger("change:selectedHub", hub);
-        });
-
-        if (hub.isNew()) {
-            Tasket.hubs.add(hub);
-            hub.save();
+            
+            hub.bind("change:id", function (hub) {
+                app.trigger("change:selectedHub", hub);
+            });
         }
-
+        
         return this;
     },
-
 
     /*
     * Creates a placeholder task list ('hub') on user login if the user has not
     * created one already.
     *
-    * Returns nothing.
-    *
     */
     _setupHub: function () {
-      this.bind("change:currentUser", function (user) {
-
-            //no need for a binding if the user record is in local storage
-            if ("id" in user) {
-               app._bindHubEvents(user);
-
-            } else {
-              // this will not get fired when the user record is cached,
-              // as it will be the same than the one returned by the server
-
-               user.bind("change:id", function userBinding() {
-                 user.unbind("change:id", userBinding);
-                 app._bindHubEvents();
-               });
+        this.bind("change:currentUser", function (user) {
+            // user record is in localStorage
+            if (user.id) {
+                this._bindHubEvents(user);
+            }
+            else {
+                // this will not be triggered when the user record is cached,
+                // as the user id will be unchanged when the server responds
+                user.bind("change:id", this._bindHubEvents);
             }
         });
+        
         return this;
     },
 
@@ -119,20 +123,18 @@ _.extend(app, {
         this.accountController = new AccountController();
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
         
-        // On changes to currentUser, cache the user to localStorage
-        app.bind("change:currentUser", this._cacheChangesToCurrentUser);
-        
-        app.setupStaticTemplates();
+        this.setupStaticTemplates()
+            .bind("change:currentUser", this._cacheChangesToCurrentUser); // NOTE: "change:currentUser" fires once on retrieval from localStorage, and once again on retrieval from the server, to refresh the localStorage cache
         
         this._setupOverrides()
-            ._setupHub()
             ._setupLightbox()
             ._setupAuth()
+            ._setupHub() // NOTE: hub setup after auth, to prevent double-load of view
             ._setupHistory();
 
         // Load the server settings.
         // Override the value of Tasket.settings with the
         // values returned from the server
-        app.init(app._cacheServerSettings());
+        this.init(app._cacheServerSettings());
     }
-}, app);
+});
