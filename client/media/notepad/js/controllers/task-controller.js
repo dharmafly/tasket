@@ -12,6 +12,7 @@ var TaskController = Backbone.Controller.extend({
     constructor: function () {
         var controller = this;
         Backbone.Controller.prototype.constructor.apply(this, arguments);
+        
         app.bind("change:selectedHub", function () {
             if (!this.taskListView) {
                 controller.showTaskList();
@@ -24,9 +25,13 @@ var TaskController = Backbone.Controller.extend({
             hub = app.selectedHub,        
             currentUser = app.currentUser,        
             tasks = Tasket.getTasks(hub.get("tasks.new").concat(hub.get("tasks.claimed"))),
-            taskListView = this.taskListView = new TaskListView({model: hub, collection: Tasket.tasks});
-
-        jQuery('#main aside').after(taskListView.render());
+            taskListView = this.taskListView = new TaskListView({
+                model: hub,
+                collection: Tasket.tasks
+            });
+        
+        // Render the list view. Because the view has an id of "content", it will replace the existing #content element
+        taskListView.render();
 
         //event handler for rendering loaded tasks into the view
         tasks.bind("refresh", function () {
@@ -34,23 +39,18 @@ var TaskController = Backbone.Controller.extend({
         });
 
         //event handler for saving new items
-        taskListView.bind("update-item", function (task, attrValues) {
+        taskListView
+            .bind("update-item", function (task, attrValues) {
+                // Set a default description
+                if (attrValues.description && _.isEmpty(attrValues.description)) {
+                    attrValues.description = app.lang.EMPTY_TASK;
+                }
 
-            //never accept an empty description
-            if ("description" in attrValues && _.isEmpty(attrValues.description)) {
-                attrValues.description = app.lang.EMPTY_TASK;
-            }
-
-            task.set(attrValues);
-            task.save();
-
-        }).bind("remove-item", function (task) {
-            task.destroy();
-        });
-
+                task.set(attrValues)
+                    .save();
+            })
+            .bind("remove-item", function (task) {
+                task.destroy();
+            });
     }
-
-
-
-
 });

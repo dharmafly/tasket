@@ -1,4 +1,5 @@
-// A subset of the Tasket Toolbar.js
+// A subset of the Tasket Tank Toolbar.js
+
 // Setup the toolbar.
 var Toolbar = View.extend({
     constructor: function Toolbar() {

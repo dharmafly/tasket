@@ -20,7 +20,7 @@ var TaskView = View.extend({
         this.elem = jQuery(this.el);
         _.bindAll(this, "remove", "showActionControls", "render");
 
-        this.elem.attr('data-cid', this.model.cid);
+        this.elem.attr("data-cid", this.model.cid);
 
         this.model
             .bind("remove", view.remove)
@@ -83,7 +83,7 @@ var TaskView = View.extend({
     *
     */
     makeEditable: function () {
-        var html  = jQuery(tim('task-edit', {placeholder: app.lang.NEW_TASK})),
+        var html  = jQuery(tim("task-edit", {placeholder: app.lang.NEW_TASK})),
             paragraph = this.$("p"),
             description = this.previousDescription = this.model.get("description");
 
