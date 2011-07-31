@@ -105,7 +105,9 @@ var User = Model.extend({
     // Removes the hub from the current users hubs.
     removeHub: function (hub) {
         return this.set({
-            "hubs.owned": _.without(this.get("hubs.owned"), hub.id)
+            "hubs.owned": _.without(this.get("hubs.owned"), hub.id),
+            "hubs.archived": _.without(this.get("hubs.archived"), hub.id)
+            // TODO: also change "tasks.archived" property
         });
     }
 });
