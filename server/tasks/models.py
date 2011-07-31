@@ -183,7 +183,7 @@ class Hub(StarredModel):
     description = models.TextField(blank=True, null=True)
     image = ImageField(upload_to='images/hubs/', null=True, blank=True)
     owner = models.ForeignKey('Profile', related_name="owned_hubs")
-    private = models.BooleanField(default=False)
+    private_to = models.ForeignKey('Profile', related_name="private_hubs", null=True, blank=True, default=0)
     createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     task_order = TaskListField(blank=True, null=True)
     archived_time = UnixTimestampField(blank=True, null=True)
@@ -202,7 +202,7 @@ class Hub(StarredModel):
     def update_task_list(self):
         task_order = []
         task_order_raw = self.task_order or []
-        hub_task_ids = [str(o.pk) for o in self.task_set.all()]
+        hub_task_ids = [str(o.pk) for o in self.task_set.private()]
         for t in task_order_raw:
             if t in hub_task_ids:
                 task_order.append(t)

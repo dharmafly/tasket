@@ -148,6 +148,17 @@
     }
 },
 {
+    "pk": 5, 
+    "model": "tasks.hub", 
+    "fields": {
+        "owner": 2, 
+        "image": "images/placeholder.png", 
+        "description": "This hub is private",
+        "title": "Private Hub",
+        "private_to" : 2
+    }
+},
+{
     "pk": 2, 
     "model": "tasks.task",
     "fields": {
@@ -250,7 +261,21 @@
         "estimate": 900
     }
 },
-
+{
+    "pk": 9, 
+    "model": "tasks.task", 
+    "fields": {
+        "description": "On a private hub", 
+        "hub": 5,
+        "image": "images/placeholder.png", 
+        "createdTime": "2010-01-25 09:15:03", 
+        "claimedBy": 3,
+        "claimedTime": "2011-01-25 09:25:03",
+        "owner": 2,
+        "state": "done",
+        "estimate": 900
+    }
+},
 {
     "pk": 1, 
     "model": "tasks.star", 

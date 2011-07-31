@@ -1,4 +1,11 @@
 # -*- coding: utf-8 -*-
+"""
+Model tests.
+
+Note that with the privicy feature we normally wouldn't call the standard 
+queryset methods like .all() or .filter() directly.
+"""
+
 import json
 
 from django.test import TestCase
@@ -56,11 +63,14 @@ class ModelTest(TestCase):
     
     def test_hub_all_hubs(self):
         """
-        Make sure there is exactly one hub.  Mainly to make sure fixtures are 
+        Make sure there is exactly 5 hubs.  Mainly to make sure fixtures are 
         working properly.
+        
+        NOTE: .all() should never be called, due to the privecy stuff.  This is 
+        for a test only.
         """
         
-        self.assertEqual(len(Hub.objects.all()), 4)
+        self.assertEqual(len(Hub.objects.all()), 5)
     
     def test_hub_as_json(self):
         json_data = json.loads(self.H.as_json())
@@ -87,7 +97,7 @@ class ModelTest(TestCase):
 
     def test_verified(self):
         H = Hub.unverified.all()
-        self.assertEqual(len(H), 2)
+        self.assertEqual(len(H), 3)
 
 
     def test_timestamp_field(self):
@@ -103,9 +113,9 @@ class ModelTest(TestCase):
         self.assertEqual(profiles_before+1, profiles_after)
 
     def test_order_field(self):
-        self.H.task_order = ["1","2","3","9"]
+        self.H.task_order = ["1","2","3","10"]
         self.H.save()
-        self.assertEqual(self.H.task_order, ["9"])
+        self.assertEqual(self.H.task_order, ["10"])
         
     def test_archived(self):
         H = Hub.objects.get(pk=4)
@@ -115,4 +125,12 @@ class ModelTest(TestCase):
     def test_task_as_json(self):
         T = Task.objects.get(pk=8)
         self.assertTrue('archived' in T.as_dict())
+    
+    def test_hub_private_manager(self):
+        self.assertEqual(Hub.objects.private(self.U).count(), 5) 
+
+
+
+
+
 

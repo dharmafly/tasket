@@ -63,7 +63,8 @@ class HubView(PutView):
         if hub_id and tasks:
             return self.get_hub_tasks(request, hub_id, tasks)
 
-        hubs = Hub.objects.all()
+        hubs = Hub.objects.private(request.user)
+        
         
         if 'ids' in request.GET:
             ids = request.GET['ids']
@@ -195,7 +196,7 @@ class TasksView(PutView):
         if task_id:
             return self.get_single(request, task_id)
         
-        tasks = Task.objects.all()
+        tasks = Task.objects.private(request.user)
         
         if 'ids' in request.GET:
             ids = request.GET['ids']
@@ -487,14 +488,14 @@ def statistics(request):
 
     stats = {
         'tasks' : {
-            'new' : str(Task.objects.filter(state=Task.STATE_NEW).count()),
-            'claimed' : str(Task.objects.filter(state=Task.STATE_CLAIMED).count()),
-            'done' : str(Task.objects.filter(state=Task.STATE_DONE).count()),
-            'verified' : str(Task.objects.filter(state=Task.STATE_VERIFIED).count()),
-            'archived' : str(Task.objects.exclude(hub__archived_by=None).count()),
+            'new' : str(Task.objects.private(request.user).filter(state=Task.STATE_NEW).count()),
+            'claimed' : str(Task.objects.private(request.user).filter(state=Task.STATE_CLAIMED).count()),
+            'done' : str(Task.objects.private(request.user).filter(state=Task.STATE_DONE).count()),
+            'verified' : str(Task.objects.private(request.user).filter(state=Task.STATE_VERIFIED).count()),
+            'archived' : str(Task.objects.private(request.user).exclude(hub__archived_by=None).count()),
         }, 
         'hubs' : {
-            'archived' : str(Hub.objects.exclude(archived_by=None).count())
+            'archived' : str(Hub.objects.private(request.user).exclude(archived_by=None).count())
         }
     }
 
