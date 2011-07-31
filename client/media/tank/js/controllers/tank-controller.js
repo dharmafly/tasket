@@ -415,7 +415,8 @@ var TankController = Backbone.Controller.extend({
         
         // open view in lightbox
         function renderArchivedHubs(hubs){
-            var archivedHubData = [];
+            var archivedHubData = [],
+                hubsLength = hubs.models.length;
         
             _.each(hubs.models, function(hub){
                 var taskCount = hub.countTasks(),
@@ -442,6 +443,13 @@ var TankController = Backbone.Controller.extend({
                 }
                 hub.unarchive();
                 this.addHub(hub).select();
+                // TODO: re-render dashboard list of projects
+                
+                hubsLength --;
+                
+                if (!hubsLength){
+                    form.trigger("close");
+                }
             }, this))
             .bind("close", _.bind(function(){
                 app.lightbox.hide();
