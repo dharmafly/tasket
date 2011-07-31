@@ -40,8 +40,13 @@ class JsonManager(models.Manager):
             return getattr(self.get_query_set(), attr, *args)
 
 
-class HubManager(JsonManager): pass
-
+class HubManager(JsonManager): 
+    def private(self, user=None):
+        in_list = [0,]
+        if user and user.is_authenticated():
+            in_list.append(user.profile)
+        return self.filter(private_to__in=in_list)
+        
 class UnVerifiedHubManager(JsonManager):
     """
     Returns only hubs that have unverfied tasks.
@@ -54,7 +59,13 @@ class UnVerifiedHubManager(JsonManager):
         qs = qs.exclude(task__state=task_models.Task.STATE_VERIFIED) 
         return qs
 
-class TaskManager(JsonManager): pass
+class TaskManager(JsonManager):
+    def private(self, user=None):
+        in_list = [0,]
+        if user and user.is_authenticated():
+            in_list.append(user.profile)
+        return self.filter(hub__private_to__in=in_list)
+    
 
 class UnverifiedTaskManager(JsonManager):
     use_for_related_fields = True

@@ -49,7 +49,7 @@ class ViewTests(TestCase):
         self.assertEqual(len(json_list), 0)
     
     def test_hubs_post_loggedin(self):
-        self.client.login(username='TestUser', password='12345')
+        self.client.login(username='TestUser2', password='12345')
     
         response = self.client.post(
             '/hubs/', 
@@ -63,7 +63,7 @@ class ViewTests(TestCase):
         
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
-        self.assertEqual(len(json_list), 3)
+        self.assertEqual(len(json_list), 2)
 
         
 
@@ -163,7 +163,7 @@ class ViewTests(TestCase):
         self.client.login(username='TestUser', password='12345')
         response = self.client.delete('/hubs/2')
         hubs = Hub.objects.all()
-        self.assertEqual(len(hubs), 3)
+        self.assertEqual(len(hubs), 4)
         self.assertEqual(response.status_code, 400)
 
     def test_hub_delete(self):
@@ -171,8 +171,9 @@ class ViewTests(TestCase):
         for t in Task.objects.exclude(state=Task.STATE_NEW):
             t.delete()
         response = self.client.delete('/hubs/4')
-        hubs = Hub.objects.all()
-        self.assertEqual(len(hubs), 2)
+        response = self.client.get('/hubs/')
+        json_data = json.loads(response.content)
+        self.assertEqual(len(json_data), 3)
     
     def test_hub_task_list(self):
         response = self.client.get('/hubs/2/tasks/')
