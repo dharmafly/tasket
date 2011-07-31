@@ -1,0 +1,42 @@
+/*
+----------------------------------------------
+ Toodledoo IE7 Styles
+ Developed by Ollie Bettany / Dharmafly
+ Created: 13/06/2011
+----------------------------------------------
+*/
+
+  #content {
+    width: 100%;
+    float: left;
+    clear: none;
+  }
+  
+  aside {
+    border-left: 1px solid #e0e0e0;
+  }
+  
+  #content .item-list > li {
+    padding-top: 0;
+  }
+  
+  #content .item-list p {
+    margin-top: -10px;
+  }
+  
+   #content .item-list .button {
+     top: 0;
+   }
+  
+  .lightbox .content form .actions .note {
+    left: 0;
+  }
+  
+  .ie .action.close,
+  .ie .action.delete {
+    background-position: 2px -118px;
+  }
+  
+  .ie button.link {
+    margin-top: 1px;
+  }

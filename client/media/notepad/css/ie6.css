@@ -1,0 +1,72 @@
+/*
+----------------------------------------------
+ Toodledoo IE6 Styles
+ Developed by Ollie Bettany / Dharmafly
+ Created: 13/06/2011
+----------------------------------------------
+*/
+
+  header {
+    height: 110px;
+  }
+  
+  aside nav {
+    width: 25em;
+  }
+
+  #mainnav li.first, 
+  footer nav li.first {
+    background: none;
+    margin: 0;
+    padding: 0;
+  } 
+  
+  #content .item-list li {
+    border-bottom: 1px solid #CCCCCC;
+    line-height: 1.8em;
+    padding: 10px 0 10px 120px;
+    position: relative;
+  }
+  
+  #content .item-list p {
+    margin-top: 0;
+  }
+  
+  #content .item-list .button {
+    top: -3px;
+  }
+  
+  #content .item-list li .edit-item li {
+     border: 0;
+     padding: 0;
+     position: absolute;
+  }
+  
+  #content .new-item:hover {
+    cursor: pointer;
+  }
+  
+  aside h1 {
+    margin-right: 6px;
+  }
+  
+  aside h1 a span {
+    background-image: url(../images/ie6-sprite1.png);
+    background-position: right 6px;
+  }
+  
+  .open h1 a span {
+    background-position: right -91px;
+  }
+  
+  footer nav {
+    height: 1.5em;
+  }
+  
+  footer a.df:hover span.df-name {
+    text-decoration: underline;
+  }
+  
+  .lightbox .content form .actions {
+    width: 23.07em;
+  }

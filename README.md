@@ -2,7 +2,7 @@
 
 An open source micro-volunteering app, allowing individuals and groups to create and keep track of small tasks.  
 
-Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an Issue](https://github.com/premasagar/tasket/issues).
+Improvements and pull requests are welcome. If you have problems with these instructions, please [raise an issue](https://github.com/dharmafly/tasket/issues).
 
 
 ## Dependencies
@@ -49,8 +49,9 @@ Tasket allows its behaviour to be modified, via a number of settings in _local_s
 It is recommended to create a superuser account during this process (follow the instructions in the terminal).
 
     python manage.py syncdb
-    
-    
+    python manage.py migrate
+
+
 ### Optional: Load test data
 
     python manage.py loaddata ../server/tasks/fixtures/test_data.json
@@ -70,6 +71,13 @@ It is recommended to create a superuser account during this process (follow the 
 
 Go to [http://localhost:8000](http://localhost:8000) to see the running app.
 
+## Updating Tasket
+
+When pulling in new changes, there may have been new models added, or changes made to the existing models.  After a git pull run the following:
+
+    python manage.py syncdb
+    python manage.py migrate
+
 
 ### Django admin
 
@@ -82,51 +90,31 @@ To enable emailing (see below), you must edit the site 'Domain name' and 'Displa
 
 On Linux, if you find that images in the app are not successfully processed after upload (with a 500 Server Error for each image request), there may be a problem where the [Python Image Library (PIL)](http://effbot.org/zone/pil-index.htm) cannot find the correct path to JPEG and other image libraries. To resolve it, [follow the steps in this article](http://www.eddiewelker.com/2010/03/31/installing-pil-virtualenv-ubuntu/).
 
-For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/premasagar/tasket/issues/110).
+For further info, [see this article](http://effbot.org/zone/pil-decoder-jpeg-not-available.htm) and [Issue #110](https://github.com/dharmafly/tasket/issues/110).
+
+
+## Deploying Tasket to a public server on WebFaction
+
+Step-by-step instructions for deploying to [WebFaction](http://webfaction.com) have been included here: https://github.com/dharmafly/tasket/blob/master/docs/INSTALL-WebFaction.md
 
 
 ## Building a single minified JavaScript file
 
 ### Build software installation
 
-We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it you
-need [Node](http://nodejs.org) >= 4.0.1 and [npm](http://npmjs.org) installed.
-
-For hints on installation, see 
-[joyeur.com/2010/12/10/installing-node-and-npm/](http://joyeur.com/2010/12/10/installing-node-and-npm/)). 
-In particular, you may need to add NPM to your system paths, and also to Node's paths.
-
-Add to your shell (e.g. Bash) config file:
-
-    # Make NPM packages available to the terminal - type `npm bin` to get your system's path
-    export PATH=$HOME/node_modules/.bin:$PATH
-    
-    # Make NPM packages available to Node
-    export NODE_PATH="/usr/local/lib/node_modules"
+We use [smoosh](http://github.com/fat/smoosh) to package the JavaScript for production. To get it, you need [Node.js](http://nodejs.org) >= 0.4.0.1 and [npm](http://npmjs.org) installed.
 
 Then install Smoosh:
 
-    npm install smoosh
-
-You may need to make the Smoosh program executable:
-
-    # you may need to prefix this command with 'sudo'
-    chmod +x ~/node_modules/.bin/smoosh
+    npm install smoosh -g
     
 
 ## Building the JavaScript file
     
-To package the JavaScript:
+To package the JavaScript, run Smoosh from the build folder:
 
-    cd client/media/js/build/
-    
-and either run Smoosh directly:
-
+    cd client/media/tank/build/
     smoosh -c ./config.json
-    
-or run from Node.js:
-
-    node make.js
 
 This will run [JSHint](http://jshint.com) against the codebase and write _tasket.js_ and
 _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
@@ -134,9 +122,15 @@ _tasket.min.js_ in to the _client/media/js/build/pkg/_ directory.
 NOTE: Ignore any JSHint warnings for header.js and footer.js, as these are partial
 JavaScript files used to enclose the Tasket application in a function closure.
 
+# Debugging and developing the JavaScript
 
-## Debug mode
-In /web/localsettings.py, the `DEBUG` flag is set to `True` by default, for ease of development with the local Django server. This should be set to `False` on deploy.
+By default, the _minified, packaged JavaScript_ will be served when the app is viewed in a browser. To enter debug mode, and to immediately see any changes you make to the JavaScript files, add `?debug` to the URL in the browser address bar (add it before the #hash), e.g. http://localhost:8000/?debug#/hubs/
+
+_[TODO: add notes to the doc about loader.js and re-Smooshing when adding a new file to loader.js]_
+
+## Debug mode in the web server
+
+The `DEBUG` flag in [/web/localsettings.py](https://github.com/dharmafly/tasket/blob/master/web/local_settings.py.example#L28) is set to `True` by default, for ease of local development. This flag should be set to `False` on deploy.
 
 
 ## Cron
@@ -222,7 +216,6 @@ A superuser should have been created when the site was installed. If no superuse
 
     python manage.py createsuperuser
 
-### JavaScript debug mode
+### The Tasket API
 
-To enter debug mode, add `?debug` to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/
-
+The Tasket server runs as a simple JSON API, allowing innovation in the client apps that consume it. API documentation can be found at: https://github.com/dharmafly/tasket/blob/master/docs/api.md

@@ -10,7 +10,6 @@ from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.core.validators import email_re
 from django.conf import settings
-from django.contrib.auth import forms as userforms
 from django.middleware.csrf import get_token
 
 from utils.decorators import json_login_required as login_required
@@ -32,7 +31,7 @@ def home(request, file_name=None):
             return HttpResponse(f.read())
         except:
             raise Http404
-    index_file = getattr(settings, 'DEFAULT_INDEX_FILE', 'index.html')
+    index_file = getattr(settings, 'DEFAULT_INDEX_FILE', 'tank.html')
     f = open("%s/client/%s" % (settings.ROOT_PATH, index_file), "r")
     return HttpResponse(f.read())
 
@@ -70,7 +69,15 @@ class HubView(PutView):
             ids = request.GET['ids']
             ids = [i.strip() for i in ids.split(',') if i]
             hubs = hubs.filter(pk__in=ids)
-        
+
+        archived = request.GET.get('archived', False)
+        if archived == 'true':
+          hubs = hubs.exclude(archived_by=None)
+        elif archived == "all":
+             hubs = hubs
+        elif 'ids' not in request.GET:
+          hubs = hubs.filter(archived_by=None)
+          
         res = self.res
         res.write(hubs.as_json(request_user=request.user))
         return res
@@ -105,7 +112,7 @@ class HubView(PutView):
             H = form.save(commit=False)
             H.owner = request.user.profile
             H.save()
-        
+
             response_json =  {
                 "id": str(H.pk), 
                 "createdTime": H.created_timestamp()
@@ -141,6 +148,7 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def put(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
+        request.PUT['title'] = request.JSON.get('title', hub.title)
         form = forms.HubForm(request.PUT, instance=hub, request=request)
         if form.is_valid():
             H = form.save()
@@ -159,6 +167,11 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def delete(self, request, hub_id):
         hub = get_object_or_404(Hub, pk=hub_id)
+        if hub.task_set.exclude(state__in=[Task.STATE_NEW]).count() > 0:
+            self.res.write(json.dumps({'error' : 'Cannot delete hub'}))
+            self.res.status_code = 400
+            return self.res
+
         hub_id = hub.pk
         hub.delete()
         self.res.write(json.dumps(
@@ -257,6 +270,12 @@ class TasksView(PutView):
     @method_decorator(AllowJSONPCallback)
     def delete(self, request, task_id=None):
         task = get_object_or_404(Task, pk=task_id)
+        
+        if task.state not in [Task.STATE_NEW,]:
+            self.res.write(json.dumps({'error' : 'Cannot delete task'}))
+            self.res.status_code = 400
+            return self.res
+        
         task_id = task.pk
         task.delete()
         self.res.write(json.dumps(
@@ -347,7 +366,7 @@ class ProfileView(PutView):
         password_confirm = request.JSON.get('password_confirm')
         email = request.JSON.get('email')
         
-        form = userforms.UserCreationForm(
+        form = forms.UserCreationForm(
                 {
                     'username': username,
                     'email' : email,
@@ -459,11 +478,14 @@ def statistics(request):
     
     Something like:
     
-    { 
-        'new': 23, # Total tasks with "new" status
-        'claimed': 123, # Total tasks with "claimed" status etc.
-        'done': 23,
-        'verified': 345,
+    'tasks' : { 
+        'new': '23', # Total tasks with "new" status
+        'claimed': '123', # Total tasks with "claimed" status etc.
+        'done': '23',
+        'verified': '345',
+    },
+    'hubs' : {
+        archived: '42'
     }
     """
 
@@ -473,10 +495,14 @@ def statistics(request):
             'claimed' : str(Task.objects.filter(state=Task.STATE_CLAIMED).count()),
             'done' : str(Task.objects.filter(state=Task.STATE_DONE).count()),
             'verified' : str(Task.objects.filter(state=Task.STATE_VERIFIED).count()),
+            'archived' : str(Task.objects.exclude(hub__archived_by=None).count()),
+        }, 
+        'hubs' : {
+            'archived' : str(Hub.objects.exclude(archived_by=None).count())
         }
     }
-    
-    return HttpResponse(json.dumps(stats))
+
+    return HttpResponse(json.dumps(stats), content_type='application/json')
     
 
 

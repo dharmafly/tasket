@@ -116,7 +116,6 @@ class Task(StarredModel):
         obj_dict = {
             "id": str(self.pk),
             "description": self.description.strip(),
-            "estimate": self.estimate,
             "state" : self.state,
             "owner" : str(self.owner.user.pk),
             "claimedBy" : None,
@@ -125,6 +124,8 @@ class Task(StarredModel):
             "hub" : str(self.hub.pk),
         }
         
+        if self.estimate:
+            obj_dict["estimate"] = self.estimate
         if self.image:
             obj_dict["image"] = self.image.name
         if self.claimedBy:
@@ -141,7 +142,10 @@ class Task(StarredModel):
         if request_user and request_user.is_authenticated():
             star = self.starred(user=request_user)
             if star:
-                obj_dict["starred"] = star.as_json()
+                obj_dict["starred"] = star.as_dict()
+        
+        if self.hub.archived_by:
+            obj_dict['archived'] = True
         
         for k,v in obj_dict.items():
             if v == None:
@@ -182,6 +186,8 @@ class Hub(StarredModel):
     private = models.BooleanField(default=False)
     createdTime = UnixTimestampField(blank=True, default=datetime.datetime.now)
     task_order = TaskListField(blank=True, null=True)
+    archived_time = UnixTimestampField(blank=True, null=True)
+    archived_by = models.ForeignKey('Profile', related_name="archived_hubs", null=True, blank=True)
     
     # objects = managers.HubManager()
     objects = managers.HubManager()
@@ -208,6 +214,9 @@ class Hub(StarredModel):
     
     def created_timestamp(self):
         return int(time.mktime(self.createdTime.timetuple()))
+
+    def archived_timestamp(self):
+        return int(time.mktime(self.archived_time.timetuple()))
     
     
     def as_dict(self, request_user=None):
@@ -260,7 +269,12 @@ class Hub(StarredModel):
             if star:
                 obj_dict["starred"] = star.as_json()
         
-
+        if self.archived_time and self.archived_by:
+            obj_dict['archived'] = {
+                "timestamp" : self.archived_timestamp(),
+                "archivedBy" : str(self.archived_by.pk),
+            }
+        
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""
@@ -304,56 +318,61 @@ class Profile(StarredModel):
         owned_claimed_qs  = self.tasks_owned.filter(state=Task.STATE_CLAIMED)
         owned_done_qs     = self.tasks_owned.filter(state=Task.STATE_DONE)
         owned_verified_qs = self.tasks_owned.filter(state=Task.STATE_VERIFIED)
+        owned_archived_qs = self.tasks_owned.exclude(hub__archived_by=None)
         claimed_new_qs      = self.tasks_claimed.filter(state=Task.STATE_NEW)
         claimed_claimed_qs  = self.tasks_claimed.filter(state=Task.STATE_CLAIMED)
         claimed_done_qs     = self.tasks_claimed.filter(state=Task.STATE_DONE)
         claimed_verified_qs = self.tasks_claimed.filter(state=Task.STATE_VERIFIED)
+        claimed_archived_qs = self.tasks_claimed.exclude(hub__archived_by=None)
         starred_tasks_qs    = self.star_set.filter(star_type='task')
         starred_hubs_qs    = self.star_set.filter(star_type='hub')
         starred_users_qs    = self.star_set.filter(star_type='profile')
         
         obj_dict = {
-            "id": str(self.user.pk),
-            "name": self.name.strip(),
-            "username": self.user.username,
-            "admin": self.admin,
-            "description": self.description.strip(),
-            "location": self.location.strip(),
-            "hubs": {
-                "owned": [str(h.pk) for h in self.owned_hubs.all()],
+            "id" : str(self.user.pk),
+            "name" : self.name.strip(),
+            "username" : self.user.username,
+            "admin" : self.admin,
+            "description" : self.description.strip(),
+            "location" : self.location.strip(),
+            "hubs" : {
+                "owned" : [str(h.pk) for h in self.owned_hubs.all()],
+                "archived" : [str(h.pk) for h in self.owned_hubs.exclude(archived_by=None)]
                 },
             "tasks" : {
-                "owned": {
-                    "new": format_id_list(owned_new_qs),
-                    "claimed": format_id_list(owned_claimed_qs),
-                    "done": format_id_list(owned_done_qs),
-                    "verified": format_id_list(owned_verified_qs),
+                "owned" : {
+                    "new" : format_id_list(owned_new_qs),
+                    "claimed" : format_id_list(owned_claimed_qs),
+                    "done" : format_id_list(owned_done_qs),
+                    "verified" : format_id_list(owned_verified_qs),
+                    "archived" : format_id_list(owned_archived_qs),
                 },
-                "claimed": {
-                    "claimed": format_id_list(claimed_claimed_qs),
-                    "done": format_id_list(claimed_done_qs),
-                    "verified": format_id_list(claimed_verified_qs),
+                "claimed" : {
+                    "claimed" : format_id_list(claimed_claimed_qs),
+                    "done" : format_id_list(claimed_done_qs),
+                    "verified" : format_id_list(claimed_verified_qs),
+                    "archived" : format_id_list(claimed_archived_qs),
                 },
             },
-            "stars": {
+            "stars" : {
                 'tasks' : format_id_list(starred_tasks_qs, id_attr='object_id'),
                 'hubs' : format_id_list(starred_hubs_qs, id_attr='object_id'),
                 'users' : format_id_list(starred_users_qs, id_attr='object_id'),
             },
             "estimates" : {
-                "owned": {
-                    "new": format_estimate_list(owned_new_qs),
-                    "claimed": format_estimate_list(owned_claimed_qs),
-                    "done": format_estimate_list(owned_done_qs),
-                    "verified": format_estimate_list(owned_verified_qs),
+                "owned" : {
+                    "new" : format_estimate_list(owned_new_qs),
+                    "claimed" : format_estimate_list(owned_claimed_qs),
+                    "done" : format_estimate_list(owned_done_qs),
+                    "verified" : format_estimate_list(owned_verified_qs),
                 },
-                "claimed": {
-                    "claimed": format_estimate_list(claimed_claimed_qs),
-                    "done": format_estimate_list(claimed_done_qs),
-                    "verified": format_estimate_list(claimed_done_qs),
+                "claimed" : {
+                    "claimed" : format_estimate_list(claimed_claimed_qs),
+                    "done" : format_estimate_list(claimed_done_qs),
+                    "verified" : format_estimate_list(claimed_done_qs),
                 },
             },
-            "createdTime": self.created_timestamp(),
+            "createdTime" : self.created_timestamp(),
         }
         
         if self.user == request_user:
@@ -376,7 +395,10 @@ class Profile(StarredModel):
         return json.dumps(self.as_dict(**kwargs))
 
 def user_post_save(sender, instance, signal, *args, **kwargs):
-    profile, new = Profile.objects.get_or_create(user=instance)
+    try:
+        profile, new = Profile.objects.get_or_create(user=instance)
+    except:
+        pass
 models.signals.post_save.connect(user_post_save, sender=User)
 
 

@@ -1,112 +1,299 @@
 <!doctype html>
-<html lang="en">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <meta name="author" content="Dharmafly">
-        <meta name="description" content="Micro-volunteering app for crowd-managed tasks">
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <title>Tasket Notepad</title>
+<!--[if IE]><html lang="en" class="ie"><![endif]--><!--[if !(IE)]><!-->
+<html lang="en"><!--<![endif]-->
+<head>
+    <meta charset="utf-8">
+    <title>Tasket Notepad</title>
+    <meta name="author" content="Dharmafly">
+    <meta name="description" content="Micro-volunteering app for crowd-managed tasks">
+    
+    <!-- ChromeFrame for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    
+    <!-- HTML5 ELEMENT RECOGNITION FOR OLD IEs -->
+    <!--[if lte IE 8]><script src="/media/js/dependencies/html5.js"></script><![endif]-->
 
-        <link rel="shortcut icon" href="/favicon.ico">
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-        <!-- HTML5 ELEMENT RECOGNITION FOR OLD IEs -->
-        <!--[if lte IE 8]><script src="/media/notepad/javascripts/dependencies/html5.js"></script><![endif]-->
-        <link rel="stylesheet" href="/media/notepad/stylesheets/global.css?v0.1">
-        <!-- IE CSS FIXES -->
-        <!--[if lte IE 8]><link href="/media/notepad/stylesheets/ie8.css" rel=stylesheet><![endif]-->
-        <!--[if lte IE 7]><link href="/media/notepad/stylesheets/ie7.css" rel=stylesheet><![endif]-->
-        <!--[if lte IE 6]><link href="/media/notepad/stylesheets/ie6.css" rel=stylesheet><![endif]-->
-  </head>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="shortcut icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+    
+    <script>document.documentElement.className += ' js';</script>
+    <link rel="stylesheet" href="/media/notepad/css/global.css?v0.1">
+    
+    <!-- IE CSS FIXES -->
+    <!--[if lte IE 8]><link href="/media/notepad/css/ie8.css" rel=stylesheet><![endif]-->
+    <!--[if lte IE 7]><link href="/media/notepad/css/ie7.css" rel=stylesheet><![endif]-->
+    <!--[if lte IE 6]><link href="/media/notepad/css/ie6.css" rel=stylesheet><![endif]-->
+</head>
 
-  <body>
-  <!--<![endif]-->
+<body>
     <div id="pagetop">
       <p><a id="skiplink" class="hiddenlink" href="#content">Skip to content</a></p>
     </div>
-  	<div id="wrapper">
-  	  <header>
-  	    <h1><a href="/">Tasket Notepad</a></h1>
-  	  </header>
-  	  <!-- end header //-->
-  	  <nav id="mainnav">
-  	    <ul>
-  	      <li class="first"><a href="/" title="Find out more">About</a></li>
-  	      <li><a href="/" title="Find out more">Info</a></li>
-  	      <li><a href="/" title="Some general info">Help</a></li>
-  	      <li class="message">You are logged in as <strong>Pat Simian</strong></li>
-  	      <li><a href="/" title="Log out">Log out</a></li>
-  	    </ul>
-  	  </nav>
-  	  <!-- end mainnav //-->
-  	  
-  	  <div id="main">
-  	    <aside class="open">
-    	    <h1><a href="/"><span>Close lists</span></a></h1>
-    	    <nav>
-    	      <ul>
-    	        <li class="star"><a href="/">Starred</a></li>
-    	        <li><a href="/">Work list 1</a></li>
-    	        <li><a href="/">Work list 2</a></li>
-    	        <li><a href="/">Bill's personal list - this is an example of a wrapping item</a></li>
-    	        <li><a href="/">Shopping list</a></li>
-    	        <li><a href="/">Anne's list</a></li>
-    	        <li class="new-list"><a href="/">Add new list</a></li>
-      	      </ul>
-      	      <div class="showing">
-      	        <a href="/">Showing all</a>
-      	      </div>
-    	    </nav>
-    	  </aside>
-    	  <!-- end aside //-->
-  	  
-    	  <section id="content">
-    	  </section>
-    	  <!-- end content //-->
+
+    <div id="wrapper">
+      <header id="pageheader">
+        <h1><a href="#/">Tasket Notepad</a></h1>
+      </header>
+      
+      <nav id="mainnav">
+        <ul>
+          <!--
+          <li class="first"><a href="/" title="Find out more">About</a></li>
+          <li><a href="/" title="Find out more">Info</a></li>
+          <li><a href="/" title="Some general info">Help</a></li>
+          -->
+          <li><a title="Sign up for an account" href="#/sign-up/">Sign up</a></li>
+          <li class="user vcard">You are logged in as 
+            <strong><a class="fn" href="#/account/" title="Edit your account details"></a></strong>
+          </li>
+          <li class="login">
+            <a href="#/login/" title="Login">Login</a>
+            <form action="/logout/" method="post">
+                <button title="Logout" class="link" type="submit">Logout</button>
+            </form>
+          </li>
+        </ul>
+      </nav>
+      
+      <div id="main">
+        <aside id="lists" class="closed">
+            <h1><a href="/"><span>Close lists</span></a></h1>
+            <!--
+            <nav>
+              <ul>
+                <li class="star"><a href="/">Starred</a></li>
+                <li><a href="/">Work list 1</a></li>
+                <li><a href="/">Work list 2</a></li>
+                <li><a href="/">Bill's personal list - this is an example of a wrapping item</a></li>
+                <li><a href="/">Shopping list</a></li>
+                <li><a href="/">Anne's list</a></li>
+                <li class="new-list"><a href="/">Add new list</a></li>
+              </ul>
+              <ul class="new-item-list">
+              </ul>
+
+              <div class="showing">
+                <a href="/">Showing all</a>
+              </div>
+            </nav>
+            -->
+        </aside>
+        
+        <section id="content">
+            <p class="welcome-message">Please <a href="#/sign-up/">sign up</a> or <a href="#/login/">login</a> to start creating items.</p>
+        </section>
 
         <footer>
           <nav>
+            <!--
             <ul>
-              <li class="first"><a href="/" title="Find out more about Toodledoo">About</a></li>
-              <li><a href="/" title="Tell us what you think of Toodledoo">Contact Us</a></li>
+              <li class="first"><a href="/" title="Find out more">About</a></li>
+              <li><a href="/" title="Tell us what you think">Contact Us</a></li>
             </ul>
+            -->
             <p>
               <a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">App by <span class="df-name">Dharmafly</span>
               </a>
             </p>
           </nav>
         </footer>
-        <!-- end footer //-->
       </div>
     </div>
     <!-- end wrapper //-->
 
-  	<!-- TEMPLATES -->
-		<script type=text/tim class=task-form>
-			<input type=text placeholder="my todo item">
-			<a href="#" class=cancel-add-item>Cancel</a>
-		</script>
-    <script type=text/tim class=task-list>
-			<h1>{{listTitle}}</h1>
-        <ul class="item-list">
-        </ul>
-        <a class="new-item">Add new item</a>
-		</script>
 
-    <script type=text/tim class=task>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+    <!-- TEMPLATES -->
+    <script type="text/tim" class="title-edit">
+        <input class="task-edit" type="text" placeholder="{{placeholder}}"> <a href="#" class="cancel link">cancel</a> <a href="#" class="save button">save</a>
+    </script>
+    
+    <script type="text/tim" class="task-edit">
+        <input class="task-edit" type="text" placeholder="{{placeholder}}"> <a href="#" class="save button">save</a> <a href="#" class="cancel link">cancel</a>
+    </script>
+
+    <script type="text/tim" class="task-list">
+        <div class="header">
+            <h1><a href="#">{{listTitle}}</a></h1>
+            <ul class="edit-item">
+                <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
+            </ul>
+        </div>
+        <ul class="item-list"></ul>
+        <a class="new-item">Add new item</a>
+    </script>
+
+    <script type="text/tim" class="task">
+        <p>{{itemText}}</p>
         <ul class="edit-item">
-          <li class="move"><a href="/" title="Move this item">Move this item</a></li>
-          <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
-          <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
-          <li class="star"><a href="/" title="Star this item">Star this item</a></li>
-          <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
+            <li class="move"><a href="/" title="Move this item">Move this item</a></li>
+            <li class="edit"><a href="/" title="Edit this item">Edit this item</a></li>
+            <li class="delete"><a href="/" title="Delete this item">Delete this item</a></li>
+            <li class="star"><a href="/" title="Star this item">Star this item</a></li>
+            <li class="tick"><a href="/" title="Mark this item as completed">Mark this item as completed</a></li>
         </ul>
-	  </script>
+    </script>
+
+    <script type="text/tim" class="lightbox">
+        <div class="lightbox-inner">
+            <div class="content"></div>
+            <button class="action close">Close</button>
+        </div>
+    </script>
+
+    <script type="text/tim" class="login">
+        <h1>Login</h1>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-password">Password</label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Login</button>
+            <p class="note"><a href="#/forgot-details/" data-lightbox="open" title="Retrieve your login details">Forgotten your details?</a></p>
+        </div>
+    </script>
+
+    <script type="text/tim" class="forgot-details">
+        <h1>Forgotten your details?</h1>
+        
+        <p>Please enter your username <em>OR</em> registered email address:</p>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="" />
+            </li>
+        </ul>
+        
+        <p><strong>You'll receive an email</strong> giving you a unique link. Follow the link to reset your password.</p>
+        
+        <div class="actions">
+            <button type="submit">Reset password</button>
+            <p class="note"><a href="#/login/" data-lightbox="open" title="Return to login form">Return to login</a></p>
+        </div>
+    </script>
+
+    <script type="text/tim" class="signup">
+        <h1>Register for an Account</h1>
+        <p>Please provide the following details and we’ll create an account for you.</p>
+        <ul>
+            <li>
+                <label for="field-username">Username</label>
+                <input type="text" id="field-username" name="username" placeholder="joebloggs" value="" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="" />
+            </li>
+            <li>
+                <label for="field-name">Your Name</label>
+                <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="" />
+            </li>
+            <li>
+                <label for="field-password">Password</label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password_confirm">Confirm Password</label>
+                <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
+            </li>
+            <li class="upload-image">
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Sign Up</button>
+        </div>
+    </script>
+
+    <script type="text/tim" class="account">
+        <h1>Update your Account Details</h1>
+        <ul>
+            <li>
+                <label for="field-name">Your Name</label>
+                <input type="text" id="field-name" name="name" placeholder="Joe Bloggs" value="{{name}}" />
+            </li>
+            <li>
+                <label for="field-email">Email Address</label>
+                <input type="email" id="field-email" name="email" placeholder="joebloggs@example.com" value="{{email}}" />
+            </li>
+            <li>
+                <label for="field-password">Password <span class="note">(Keep blank to leave unchanged)</span></label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password_confirm">Confirm Password</label>
+                <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
+            </li>
+            <li class="upload-image">
+                <label for="field-image">Image</label>
+                <input id="field-image" type="file" name="image" />
+                <p class="loading">Uploading image</p>
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Update</button>
+        </div>
+    </script>
+
+    <script type="text/tim" class="change-password">
+        <h1>Change your Password</h1>
+        <ul>
+            <li>
+                <label for="field-password">Password</label>
+                <input type="password" id="field-password" name="password" placeholder="password" value="" />
+            </li>
+            <li>
+                <label for="field-password_confirm">Confirm Password</label>
+                <input type="password" id="field-password_confirm" name="password_confirm" placeholder="password again" value="" />
+            </li>
+        </ul>
+        <div class="actions">
+            <button type="submit">Change password</button>
+        </div>
+    </script>
+    
+    <script type="text/tim" class="iframe-upload">
+        <!doctype html>
+        <head>
+            <link rel="stylesheet" href="{{stylesheet}}" />
+            <style>
+                html, body, form, form input[type=file] {
+                    background: none; border: none; margin: 0;
+                }
+            </style>
+        </head>
+        <body class="content">
+            <form action="" method="post" enctype="multipart/form-data">
+                <input type="file" name="{{name}}" />
+            </form>
+        </body>
+    </script>
+    
     <!-- end TEMPLATES //-->
 
+
+
     <!-- Scripts-->
-    <script src="/media/js/dependencies/jquery.js"></script>
-    <script src="/media/notepad/javascripts/loader.js"></script>
-  </body>
+    <script src="/media/lib/js/jquery.js"></script>
+    <script src="/media/notepad/js/loader.js"></script>
+    
+    <!--[if lte IE 6]>
+        <script src='/media/notepad/js/lib/DD_belatedPNG_0.0.8a-min.js'></script>
+        <script>
+          DD_belatedPNG.fix('header h1 a, #mainnav li, footer nav li, #content .new-item, #content .edit-item li a, aside nav .star a, aside nav .new-list a, aside nav .showing a, aside.open, aside.closed, #content .item-list p, .lightbox .close');
+        </script>
+    <![endif]-->
+</body>
 </html>

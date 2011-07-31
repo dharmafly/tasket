@@ -51,6 +51,7 @@ class StarredTests(TestCase):
         response = self.client.get('/tasks/2')
         json_data = json.loads(response.content)
         self.assertTrue('starred' in json_data)
+        self.assertTrue('timestamp' in json_data['starred'])
     
     def test_stars_object(self):
         self.test_star_task()

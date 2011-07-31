@@ -1,8 +1,10 @@
 import datetime
 
 import django.forms
+from django.utils.translation import ugettext_lazy as _
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth import forms as userforms
 from django.utils.html import escape
 from django.conf import settings
 
@@ -167,7 +169,7 @@ class TaskForm(StarredForm):
     def clean_estimate(self):
         estimate = self.cleaned_data['estimate']
         TASK_ESTIMATE_MAX = getattr(settings, "TASK_ESTIMATE_MAX", 14400)
-        if estimate > TASK_ESTIMATE_MAX:
+        if TASK_ESTIMATE_MAX >= 0 and estimate > TASK_ESTIMATE_MAX:
             self._errors['estimate'] = self.error_class(['Estimate is too high, enter a value less than %s' % TASK_ESTIMATE_MAX])
         return estimate
     
@@ -178,8 +180,6 @@ class TaskForm(StarredForm):
         
         if not cleaned_data.get('estimate'):
             cleaned_data['estimate'] = self.instance.estimate
-            if self.instance.estimate == None:
-                self._errors['estimate'] = self.error_class(['Estimate is required'])
         
         self.cleaned_data = cleaned_data
         cleaned_data = self.state_logic()
@@ -197,6 +197,31 @@ class HubForm(StarredForm):
         except KeyError:
             task_order_raw = []
         return task_order_raw
+    
+    def clean_archived_by(self):
+        if 'archived' in getattr(self.request, 'JSON', []):
+            archived = self.request.JSON['archived']
+            if archived:
+                if self.instance.archived_by:
+                    # This hub is already archived, so no one apart from an admin or
+                    # the user who archived it can unarchive it.
+                    if self.request.user.profile != self.instance.archived_by and not self.request.user.profile.admin:
+                        self._errors['archived'] = self.error_class(['Only an admin or the user who archived this hub can unarchive it'])
+                        return False
+                else:
+                    return self.request.user.profile
+            else:
+                return None
+        return self.instance.archived_by
+     
+    def clean_archived_time(self):
+        if 'archived' in getattr(self.request, 'JSON', []):
+            archived = self.request.JSON['archived']
+            if archived:
+                return datetime.datetime.now()
+            else:
+                return None
+        return self.instance.archived_time
 
 
 class ProfileForm(StarredForm):
@@ -219,3 +244,18 @@ class ProfileForm(StarredForm):
     class Meta:
         model = Profile
         exclude = ('user', 'createdTime', 'admin',)
+
+
+class UserCreationForm(userforms.UserCreationForm):
+    """
+    Simple subclass of django.contrib.auth.forms.UserCreationForm that further 
+    limits the characters allowed in the username field.
+    
+    Only alphanumeric characters, plus the "_" underscore character are allowed
+    """
+    REGEX = r'^[a-zA-Z0-9_]+$'
+    
+    username = forms.RegexField(label=_("Username"), max_length=30, regex=REGEX,
+        help_text = _("Required. 30 characters or fewer. May contain only letters, numbers and underscores only."),
+        error_messages = {'invalid': _("This value may contain only letters, numbers and underscores.")})
+    

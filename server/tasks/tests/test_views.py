@@ -19,6 +19,24 @@ class ViewTests(TestCase):
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
         self.assertEqual(json_list[0]['title'], "Example Hub 2")
+        self.assertEqual(len(json_list), 2)
+
+    def test_hubs_get_by_id_not_archived(self):
+        response = self.client.get('/hubs/?ids=2,3,4')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 3)
+
+    def test_hubs_get_archived(self):
+        response = self.client.get('/hubs/?archived=true')
+        json_list = json.loads(response.content)
+        self.assertEqual(json_list[0]['title'], "Example Hub 3")
+        self.assertEqual(len(json_list), 1)
+
+    def test_hubs_get_all(self):
+        response = self.client.get('/hubs/?archived=all')
+        json_list = json.loads(response.content)
+        self.assertEqual(json_list[0]['title'], "Example Hub 3")
+        self.assertEqual(len(json_list), 3)
     
     def test_hubs_get_by_id(self):
         response = self.client.get('/hubs/?ids=2')
@@ -42,6 +60,12 @@ class ViewTests(TestCase):
             )
         json_list = json.loads(response.content)
         self.assertEqual(set(json_list.keys()), set(['id', 'createdTime']))
+        
+        response = self.client.get('/hubs/')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 3)
+
+        
 
     def test_hubs_post_admin_restrict(self):
         # TestUser is not an admin, this test should not create a hub
@@ -135,12 +159,20 @@ class ViewTests(TestCase):
         self.assertEqual(json_list['hub']['tasks']['order'], ['2', '3', '7'])
 
 
-    def test_hub_delete(self):
+    def test_hub_delete_with_not_new(self):
         self.client.login(username='TestUser', password='12345')
-        hubs = Hub.objects.all()
         response = self.client.delete('/hubs/2')
         hubs = Hub.objects.all()
-        self.assertEqual(len(hubs), 1)
+        self.assertEqual(len(hubs), 3)
+        self.assertEqual(response.status_code, 400)
+
+    def test_hub_delete(self):
+        self.client.login(username='TestUser', password='12345')
+        for t in Task.objects.exclude(state=Task.STATE_NEW):
+            t.delete()
+        response = self.client.delete('/hubs/4')
+        hubs = Hub.objects.all()
+        self.assertEqual(len(hubs), 2)
     
     def test_hub_task_list(self):
         response = self.client.get('/hubs/2/tasks/')
@@ -150,7 +182,7 @@ class ViewTests(TestCase):
     def test_task_get(self):
         response = self.client.get('/tasks/')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 6)
+        self.assertEqual(len(json_data), 7)
     
     def test_task_get_single(self):
         response = self.client.get('/tasks/3')
@@ -165,7 +197,7 @@ class ViewTests(TestCase):
     def test_task_get_by_state(self):
         response = self.client.get('/tasks/?state=done')
         json_data = json.loads(response.content)
-        self.assertEqual(len(json_data), 1)
+        self.assertEqual(len(json_data), 2)
     
     def test_task_create(self):
         self.client.login(username='TestUser', password='12345')
@@ -196,7 +228,7 @@ class ViewTests(TestCase):
             )
 
         json_data = json.loads(response.content)
-        self.assertTrue(json_data['estimate'][0].startswith("Estimate is required"))
+        self.assertFalse('estimate' in json_data)
 
     def test_task_post_image(self):
         self.client.login(username='TestUser', password='12345')
@@ -220,12 +252,20 @@ class ViewTests(TestCase):
         self.assertEqual(json_data['description'].startswith("New"), True)
     
     
-    def test_hub_delete(self):
+    def test_task_delete(self):
         self.client.login(username='TestUser', password='12345')
         old_tasks = len(Task.objects.all())
-        response = self.client.delete('/tasks/3')
+        response = self.client.delete('/tasks/6')
         tasks = len(Task.objects.all())
         self.assertEqual(old_tasks-1, tasks)
+
+    def test_task_delete_not_new(self):
+        self.client.login(username='TestUser', password='12345')
+        old_tasks = len(Task.objects.all())
+        response = self.client.delete('/tasks/2')
+        tasks = len(Task.objects.all())
+        self.assertEqual(old_tasks, tasks)
+        self.assertEqual(response.status_code, 400)
 
     def test_user_get(self):
         response = self.client.get('/users/')
@@ -237,6 +277,7 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
         self.assertFalse("email" in json_data)
+        self.assertEqual(json_data['tasks']['owned']['archived'], ["8"])
 
     def test_user_get_single_has_email(self):
         self.client.login(username='TestUser', password='12345')
@@ -270,7 +311,24 @@ class ViewTests(TestCase):
         response = self.client.get('/users/6')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['email'], 'foo@example.com')
-        
+
+    def test_user_post_bad_username(self):
+        response = self.client.post(
+                '/users/',
+                data=json.dumps({
+                    "description" : "New <b>description!</b>",
+                    "username" : "test99@bad.com",
+                    "email" : "foo@example.com",
+                    "password" : "12345",
+                    "password_confirm" : "12345",
+                    "name" : "Test User 99",
+                    }),
+                content_type='application/json',
+            )
+        self.assertEqual(response.status_code, 400)
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['username'], ["This value may contain only letters, numbers and underscores."])
+                
 
     def test_user_post_bad_password(self):
         response = self.client.post(
@@ -424,8 +482,10 @@ class ViewTests(TestCase):
         json_data = json.loads(response.content)
         self.assertEqual(json_data['tasks']['new'], "1")
         self.assertEqual(json_data['tasks']['claimed'], "2")
-        self.assertEqual(json_data['tasks']['done'], "1")
+        self.assertEqual(json_data['tasks']['done'], "2")
         self.assertEqual(json_data['tasks']['verified'], "2")
+        self.assertEqual(json_data['hubs']['archived'], "1")
+        self.assertEqual(json_data['tasks']['archived'], "1")
 
     def test_thumb(self):
         self.client.login(username='TestUser', password='12345')
@@ -448,4 +508,32 @@ class ViewTests(TestCase):
 
         response = self.client.get('/thumb/30x30/images/users/foo.jpg?crop')
         self.assertEqual(response.status_code, 404)
+    
+    def test_toggle_archived(self):
+        self.client.login(username='TestUser3', password='12345')
 
+        response = self.client.get('/hubs/?archived=true')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 1)
+        
+        response = self.client.put('/hubs/4',
+            json.dumps({'archived' : False}),
+            content_type="application/json",
+            )
+        self.assertFalse('archived' in json.loads(response.content)['hub'])
+
+        response = self.client.get('/hubs/?archived=true')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 0)
+
+
+
+        response = self.client.put('/hubs/4', 
+            json.dumps({'archived' : True}),
+            content_type="application/json",
+            )
+        self.assertTrue('archived' in json.loads(response.content)['hub'])
+        
+        
+        
+        

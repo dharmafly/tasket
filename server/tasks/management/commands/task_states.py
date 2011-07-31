@@ -27,5 +27,7 @@ class Command(BaseCommand):
         
     
     def handle(self, **options):
-        self.mark_claimed()
-        self.mark_done()
+        if self.CLAIMED_TIME_LIMIT >= 0:
+            self.mark_claimed()
+        if self.DONE_TIME_LIMIT >= 0:
+            self.mark_done()

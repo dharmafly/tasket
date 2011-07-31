@@ -60,7 +60,7 @@ class ModelTest(TestCase):
         working properly.
         """
         
-        self.assertEqual(len(Hub.objects.all()), 3)
+        self.assertEqual(len(Hub.objects.all()), 4)
     
     def test_hub_as_json(self):
         json_data = json.loads(self.H.as_json())
@@ -72,6 +72,7 @@ class ModelTest(TestCase):
         self.assertTrue('estimates' in json_data)
         self.assertTrue('tasks' in json_data)
         self.assertEqual(json_data['username'], 'TestUser')
+        self.assertEqual(json_data['hubs']['archived'], ['4'])
 
     def test_profile_starred(self):
         self.assertEqual(self.P.starred().count(), 1)
@@ -86,7 +87,7 @@ class ModelTest(TestCase):
 
     def test_verified(self):
         H = Hub.unverified.all()
-        self.assertEqual(len(H), 1)
+        self.assertEqual(len(H), 2)
 
 
     def test_timestamp_field(self):
@@ -102,7 +103,16 @@ class ModelTest(TestCase):
         self.assertEqual(profiles_before+1, profiles_after)
 
     def test_order_field(self):
-        self.H.task_order = ["1","2","3","8"]
+        self.H.task_order = ["1","2","3","9"]
         self.H.save()
-        self.assertEqual(self.H.task_order, ["8"])
+        self.assertEqual(self.H.task_order, ["9"])
         
+    def test_archived(self):
+        H = Hub.objects.get(pk=4)
+        self.assertEqual(H.archived_by.pk, 4)
+
+
+    def test_task_as_json(self):
+        T = Task.objects.get(pk=8)
+        self.assertTrue('archived' in T.as_dict())
+

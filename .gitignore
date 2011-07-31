@@ -1,23 +1,34 @@
-screenshot.png
+/screenshot.png
 .DS_Store
 *.pyc
-web/local_settings.py
-web/build/
+/web/local_settings.py
+/web/build/
+/web/pip-log.txt
 .Python
-bin/
-client/media/js/build/pkg/html5.js
-client/media/js/build/pkg/tasket.all.js
-client/media/js/build/pkg/tasket.loader.js
-include/
-lib/
-man/
+/bin/
+/include/
+/lib/
+/man/
+Imaging-*
+
+# South migrations
+server/tasks/migrations/
+
+# Backups
+web/tasks-backup-*
+
+# local db
 tasket.db
 web/tasket
-web/pip-log.txt
-client/media/cache
-client/media/images/*/*
-rebuild_db.sh
+
+# npm modules
 web/node_modules
-Imaging-*
-client/media/notepad/template.html
-client/media/images/logo.png
+
+# PIL-generated images
+client/media/cache/
+client/media/images/
+
+# Unminified built files
+client/media/tank/build/pkg/html5.js
+client/media/tank/build/pkg/tasket.tank.js
+client/media/tank/build/pkg/tasket.tank.loader.js

@@ -44,6 +44,9 @@ DONE_TIME_LIMIT = 72
 # Whether or not normal users can create hubs (admins can always create them)
 USERS_CAN_CREATE_HUBS = True
 
+# If a task is set to state "done" by its owner, then automatically verify it (see js/models/task.js)
+AUTOVERIFY_TASKS_DONE_BY_OWNER = True
+
 # Email messages from
 DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 
@@ -54,6 +57,5 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
 
-
-INDEX_PATHS = ['notepad.html',]
-# DEFAULT_INDEX_FILE = 'index.html'
+INDEX_PATHS = ["tank.html", "notepad.html",]
+# DEFAULT_INDEX_FILE = "tank.html"

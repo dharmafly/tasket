@@ -166,6 +166,6 @@ def settings_view(request):
         if hasattr(settings, setting):
             settings_dict[setting] = getattr(settings, setting)
     
-    return HttpResponse(json.dumps(settings_dict))
+    return HttpResponse(json.dumps(settings_dict), content_type='application/json')
 
 

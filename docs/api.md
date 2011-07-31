@@ -70,10 +70,10 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 
 ### Task State Constants ###
 
-NEW     : "new",  
-CLAIMED : "claimed",  
-DONE    : "done",  
-VERIFIED: "verified"  
+    NEW     : "new",  
+    CLAIMED : "claimed",  
+    DONE    : "done",  
+    VERIFIED: "verified"  
 
 ## Users ##
 
@@ -88,17 +88,15 @@ VERIFIED: "verified"
 ### User registration ###
 
 POSTing to /users/ with the following JSON object will create a user and log 
-them in.  The newly created profile object ID will be returned.
+them in.  The newly created profile object ID will be returned:
 
-POST JSON:
-
-{
-    'username': 'test99', 
-    'email': 'foo@example.com', 
-    'password': '12345', 
-    'description': 'New description!', 
-    'name': 'Test User 99'
-}
+    {
+        'username': 'test99', 
+        'email': 'foo@example.com', 
+        'password': '12345', 
+        'description': 'New description!', 
+        'name': 'Test User 99'
+    }
 
 
 ### User Model Data ###
@@ -176,18 +174,18 @@ Any object (users, hubs, tasks) can be 'starred'.  Objects a user has starred
 are contained in the `stars` object on the user model, broken down by object 
 type, for example:
 
-> 'stars' : {'hubs': ['3'], 'tasks': ['3', '2'], 'users': ['2', '3']}
+    "stars" : {"hubs": ["3"], "tasks": ["3", "2"], "users": ["2", "3"]}
 
 When an object has been starred by a user, it will have a `starred` property, 
 containing an object, for example:
 
-> 'starred': '{"timestamp": 1307117640, "type": "profile", "id": 2}'
+    "starred": {"timestamp": 1307117640, "type": "profile", "id": 2}
 
 If an object has no stars, the `starred` property wont exist.
 
-To star any object, `POST` to it with `{'starred' : true}`.  To un-star an object,
-`POST` `{'starred' : false}` to it.
+To star any object, `POST` to it with `{"starred" : true}`.  To un-star an object,
+`POST` `{"starred" : false}` to it.
 
 NOTE: only objects that exist in the database can be starred, so in order to star 
 a new object it must be saved first.  In other words, it is not possible to star
-in a PUT request.
+in a POST request.
