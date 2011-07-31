@@ -109,6 +109,10 @@ var User = Model.extend({
             "hubs.archived": _.without(this.get("hubs.archived"), hub.id)
             // TODO: also change "tasks.archived" property
         });
+    },
+    
+    getNonArchivedHubs: function(){
+        return _.difference(this.get("hubs.owned"), this.get("hubs.archived"));
     }
 });
 
