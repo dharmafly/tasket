@@ -536,13 +536,12 @@ table {
   }
   
   button.link {
-    margin: 2px -25px 0 -1px;
+    margin: 2px 0 0 -1px;
     font-family: Arial, Helvetica, serif;
   }
   
   .ie button.link {
     margin: 3px 0 0 -1px;
-    font-family: Arial, Helvetica, serif;
   }
   
   #mainnav li,
@@ -743,6 +742,10 @@ table {
     font-size:2.6em;
     padding:10px 0;
     text-align:center;
+  }
+  
+  #content .welcome-message a {
+    color:#3092C0;
   }
   
   #content .item-list {

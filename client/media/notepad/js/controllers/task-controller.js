@@ -6,8 +6,6 @@ var TaskController = Backbone.Controller.extend({
 
    /*
     * Display object name in webkit console.
-    *
-    *
     */
     constructor: function () {
         var controller = this;

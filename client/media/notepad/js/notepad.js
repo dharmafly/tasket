@@ -132,6 +132,10 @@ _.extend(app, {
             ._setupHub() // NOTE: hub setup after auth, to prevent double-load of view
             ._setupHistory();
 
+        if (!app.currentUser){
+            jQuery("section#content").html(tim("welcome-msg"));
+        }
+
         // Load the server settings.
         // Override the value of Tasket.settings with the
         // values returned from the server
