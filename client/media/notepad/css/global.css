@@ -123,6 +123,7 @@ table {
   
   a {
     outline: 0;
+    cursor: pointer;
   }
   
   /* @group Buttons */
