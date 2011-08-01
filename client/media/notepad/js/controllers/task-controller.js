@@ -42,12 +42,10 @@ var TaskController = Backbone.Controller.extend({
         taskListView
             .bind("update-item", function (task, attrValues) {
                 // Set a default description
-                if (attrValues.description && _.isEmpty(attrValues.description)) {
+                if ("description" in attrValues && _.isEmpty(attrValues.description)) {
                     attrValues.description = app.lang.EMPTY_TASK;
                 }
-
-                task.set(attrValues)
-                    .save();
+                task.save(attrValues);
             })
             .bind("remove-item", function (task) {
                 task.destroy();

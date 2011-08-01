@@ -147,7 +147,6 @@ var TaskListView = View.extend({
                 taskView.makeEditable();
             }
         });
-
     },
 
    /*
@@ -167,6 +166,7 @@ var TaskListView = View.extend({
         if (!_.isArray(orderedIds)) {
             return tasks;
         }
+        
         _.each(orderedIds, function (id) {
             var task = _.detect(tasks, function (aTask){
                 return aTask.id == id;
@@ -210,7 +210,6 @@ var TaskListView = View.extend({
         this._saveTitle(newTitle);
         event.preventDefault();
     },
-
 
     _onTitleEditCancel: function (event) {
         this._resetTitle(this.previousTitle);
@@ -257,38 +256,22 @@ var TaskListView = View.extend({
         this.$("div.header").removeClass("hover");
         event.preventDefault();
     },
-
-    /*
-    *
-    * Returns the taskView instance associated to an event target element.
-    *
-    * element - An event target element.
-    *
-    * returns an instance of TaskView.
-    *
-    *
-    */
-    _getElementView: function (element) {
-        var li = jQuery(element).parents("li[data-cid]");
-        return this.taskViews[ jQuery(li).attr("data-cid") ];
-    },
     
     /*
     * Handles the click event fired by the new item link
     */
-    _onNewItemClick: function (event) { O("new item click");
+    _onNewItemClick: function (event) {
         // If there is already a new item that's been created, then save it
         if (this.newTaskView) {
-          this.$('a.save').click();
-          return false;
+            this.$("a.save").click();
+            return false;
         }
 
         // If another item is being edited, then reset it.
         if (this.editedTaskView) {
-          this.editedTaskView.reset();
-          this.editedTaskView = null;
+            this.editedTaskView.reset();
+            this.editedTaskView = null;
         }
-        
         this.createTask();
         
         event.preventDefault();
@@ -303,13 +286,12 @@ var TaskListView = View.extend({
     * description - The todo item description.
     */
     _saveNewItem: function (task, description) {
-        var view = this;
-        view.newTaskView = null;
+        this.newTaskView = null;
         
         if (task.isNew()) {
-          // view.$("a.new-item").click();
+            this.$("a.new-item").click();
         }
-        view.trigger("update-item", task, {description: description});
+        this.trigger("update-item", task, {description: description});
     },
     
     createTask: function(){
@@ -329,6 +311,15 @@ var TaskListView = View.extend({
             cid = elem.data("cid") || elem.parents("li[data-cid]").data("cid");
 
         return cid;
+    },
+
+    /*
+    *
+    * Returns the taskView instance associated to an event target element
+    * element - An event target element
+    */
+    _getElementView: function (el) {
+        return this.taskViews[this.getCidFromElement(el)];
     },
 
     /*
@@ -401,19 +392,20 @@ var TaskListView = View.extend({
 
         task.state(newState, currentUserId, forceMode)
             .save();
-
     },
 
    /*
     * Handles the _onStar action and triggers the 'update-item' event passing along 'starred:!starred' as update values.
     */
     _onStar: function (cid, target) {
-        var task = this.collection.getByCid(cid),
-            starred = !task.get("starred");
-
-        this.trigger("update-item", task, {
-            starred: starred
-        });
+        var task = this.collection.getByCid(cid);
+        
+        if (task.get("starred.id")){
+            task.unstar();
+        }
+        else {
+            task.star();
+        }
     },
 
     /*
@@ -421,9 +413,7 @@ var TaskListView = View.extend({
     *
     */
     _onCancel: function (event) {
-        var taskView = this._getElementView(event.target),
-            view = this;
-
+        var taskView = this._getElementView(event.target);
         this.newTaskView = null;
 
         if (taskView.model.isNew()) {
@@ -435,28 +425,29 @@ var TaskListView = View.extend({
 
         this.editedTaskView = null;
         event.preventDefault();
-
     },
 
     /*
     * Handles the onChange event on the editing input field.
     */
-    _onKeypress: function (event) {
-        var description, taskView;
-
+    _onKeypress: function (event) {    
         if (_.include([9,13], event.which)) {
-            description = jQuery(event.target).val();
-            taskView = this._getElementView(event.target);
-
-            this._saveNewItem(taskView.model, description, event.target);
+            this._onSave(event);
+            // TODO: on edit, and press RETURN -> go on to edit next item down
         }
     },
 
     _onSave: function (event) {
         var taskView = this._getElementView(event.target),
-            description = taskView.$("input").val();
-
-        this._saveNewItem(taskView.model, description, event.target);
+            description = taskView.$("input").val(),
+            task = taskView.model;
+            
+        if (description !== task.get("description")){
+            this._saveNewItem(task, description, event.target);
+        }
+        else {
+            this._onCancel(event);
+        }
         event.preventDefault();
     }
 });
