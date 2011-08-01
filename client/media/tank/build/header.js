@@ -1,6 +1,6 @@
 /*!
 * Tasket
-*   github.com/premasagar/tasket
+*   github.com/dharmafly/tasket
 *
 *//*
     An open-source, HTML5, data visualised, micro-volunteering app.
