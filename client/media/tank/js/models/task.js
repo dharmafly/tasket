@@ -202,7 +202,7 @@ var Task = Model.extend({
     
     // check whether the task can be deleted
     canDelete: function() {
-        return this.get("state") == "new";
+        return this.get("state") === "new";
     },
     
     star: function() {

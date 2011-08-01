@@ -97,6 +97,9 @@ function nl2br(value) {
 
 // converts a timestamp to a presentable date string
 function timestampToDate(timestamp) {
+    // ensure all values have two s.f.
+    function twosf(val) { return (val < 10) ? "0"+val : val; }
+
     var jsDate = new Date([timestamp] * 1000), // convert seconds to milliseconds
         months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],
         year = jsDate.getFullYear(),
@@ -105,9 +108,6 @@ function timestampToDate(timestamp) {
         hour = twosf(jsDate.getHours()),
         min = twosf(jsDate.getMinutes()),
         sec = twosf(jsDate.getSeconds());
-
-    // ensure all values have two s.f.
-    function twosf(val) { return (val < 10) ? "0"+val : val; }
         
     return date+' '+month+' '+year;
 }
