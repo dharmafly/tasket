@@ -1,5 +1,6 @@
 var TaskView = View.extend({
-    tagName: 'li',
+    tagName: "li",
+    
     /* keep track of the previous value of the Task's description*/
     previousDescription: null,
     events: {
@@ -7,14 +8,10 @@ var TaskView = View.extend({
         "mouseout": "_onMouseout"
     },
 
-   /*
-    * Display object name in browser console.
-    *
-    *
-    */
     constructor: function TaskView () {
         Backbone.View.prototype.constructor.apply(this, arguments);
     },
+    
     initialize: function (options) {
         var view = this;
         this.elem = jQuery(this.el);
@@ -36,19 +33,14 @@ var TaskView = View.extend({
                     view.elem.removeClass("completed");
                 }
             })
-            .bind("change:starred", function (task) {
-                var starred = !!task.get("starred");
-
-                if (starred && !view.elem.hasClass("star")) {
+            .bind("change:starred.id", function (task) {
+                if (task.get("starred.id")){
                     view.elem.addClass("star");
-                 }
-
-                if (!starred) {
+                }
+                else {
                     view.elem.removeClass("star");
                 }
-
             });
-
     },
 
     render: function () {
@@ -77,10 +69,7 @@ var TaskView = View.extend({
     },
 
    /*
-    * Allows in place editing of the task description.
-    *
-    * returns nothing.
-    *
+    * Allows in place editing of the task description
     */
     makeEditable: function () {
         var html  = jQuery(tim("task-edit", {placeholder: app.lang.NEW_TASK})),
@@ -93,30 +82,29 @@ var TaskView = View.extend({
             paragraph.find("input").val(description);
         }
         paragraph.find("input").focus();
+        return this;
     },
 
     /*
     * Removes newly created items or restore previous descriptions in case an edit operation is aborted.
     *
-    * returns nothing.
-    *
     */
     reset: function () {
         if (this.model.isNew()) {
             this.collection.remove(this.model);
-        } else {
+        }
+        else {
             this.$("p").text(this.previousDescription);
         }
+        return this;
     },
 
    /*
-    * Handles the 'change:id' event emitted by the view's model.
-    *
-    * returns nothing.
-    *
+    * Handles the "change:id" event emitted by the view's model
     */
     showActionControls: function () {
         this.elem.removeClass("unsaved");
+        return this;
     },
 
     _onMouseover: function () {

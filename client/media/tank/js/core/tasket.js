@@ -349,6 +349,8 @@ Tasket.bind("hub:add", function(hub){
             Tasket.addOwnedHubToUser(hub);
         });
     }
+    
+    // TODO: change user.stars on task.star or task.unstar
 });
 
 // TODO: widgetised to do app. browser extension, Sqwidget
