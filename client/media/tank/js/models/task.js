@@ -203,6 +203,22 @@ var Task = Model.extend({
     // check whether the task can be deleted
     canDelete: function() {
         return this.get("state") == "new";
+    },
+    
+    star: function() {
+        return this.save({starred: true});
+    },
+    
+    unstar: function() {
+        var task = this;
+        
+        _.each(this.attributes, function(val, key){
+            if (key.indexOf("starred.") === 0){
+                task.unset(key);
+            }
+        });
+        
+        return this.save({starred:false});
     }
 }, {
     ESTIMATES: TaskEstimates
