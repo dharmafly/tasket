@@ -57,16 +57,21 @@ var cache = new Cache(Tasket.namespace),
         // route is triggered the contents of the template will be loaded into
         // the lightbox.
         setupStaticTemplates: function () {
-            var controller = new Backbone.Controller();
+            var staticPrefix = "static-",
+                prefixLength = staticPrefix.length,
+                controller = new Backbone.Controller();
+            
             _.each(tim.templates(), function(template, name) {
                 var route;
-                if (name.indexOf("static-") === 0){
-                    route = name.slice(7);
-                    controller.route('/' + route + '/', route, function () {
+                
+                if (name.indexOf(staticPrefix) === 0){
+                    route = name.slice(prefixLength);
+                    controller.route("/" + route + "/", route, function () {
                         app.lightbox.content(template).show();
                     });
                 }
             });
+            
             return this;
         },
         
@@ -255,6 +260,7 @@ var cache = new Cache(Tasket.namespace),
 
             app.authtoken = app.cache.get("authtoken");
             app.csrftoken = app.cache.get("csrftoken");
+            
             return app;
         },
 
