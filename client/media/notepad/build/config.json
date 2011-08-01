@@ -1,0 +1,76 @@
+{
+    "JSHINT_OPTS": {
+        "onevar":  true,
+        "newcap":  true,
+        "undef":   true,
+        "browser": true,
+        "devel":   true,
+        "maxerr":  1000,
+        "indent":  4,
+        "predef": [
+            "window", "jQuery", "Backbone", "_", "tim", "getScript", "Tasket",
+            "Cache", "app", "Account", "Form", "FormUpload",
+            "Hub", "HubForm", "HubList", "HubView", "Lightbox", "Login",
+            "ForgotDetails", "ChangePassword", "CollectionModel",
+            "Model", "AccountController", "SignUp", "Toolbar",
+            "Task", "TaskEstimates", "TaskList", "TaskController",
+            "TaskStates", "TaskView", "TaskListView", "User", "UserList", "View",
+            "cache", "now", "randomInt", "truncate", 
+            "escapeHTML", "humanTimespan", "throttle", "hasChanged", "nl2br", 
+            "timestampToDate"
+        ]
+    },
+    "JAVASCRIPT": {
+        "DIST_DIR": "pkg",
+        "html5": [
+            "../../lib/js/html5.js"
+        ],
+        "tasket.notepad": [
+            "./header.js",
+            "../../lib/js/jquery.js",
+            "../../lib/js/jquery.hashchange.js",
+            "../js/lib/jquery-ui.min.js",
+            "../../lib/js/underscore.js",
+            "../../lib/js/backbone.js",
+            "../../lib/js/tim.js",
+            "../../lib/js/cache.js",
+            "../../lib/js/flatten.js",
+            "../../tank/js/backbone-stack.js",
+            "../../tank/js/core/utils.js",
+            "../../tank/js/models/models.js",
+            "../../tank/js/models/hub.js",
+            "../../tank/js/models/task.js",
+            "../../tank/js/models/user.js",
+            "../../tank/js/views/views.js",
+            "../../tank/js/views/lightbox.js",
+            "../../tank/js/views/form.js",
+            "../../tank/js/views/form-upload.js",
+            "../../tank/js/views/login.js",
+            "../../tank/js/views/signup.js",
+            "../../tank/js/views/account.js",
+            "../../tank/js/views/change-password.js",
+            "../../tank/js/views/forgot-details.js",
+            "../../tank/js/controllers/account-controller.js",
+            
+            "../js/views/authbar.js",
+            "../js/views/task.js",
+            "../js/views/task-list.js",
+            "../js/controllers/task-controller.js",
+            
+            "../../tank/js/core/tasket.js",
+            "../../tank/js/app.js",
+            
+            "../js/notepad.js",
+            "../js/lang/default.js",
+            "../js/init.js",
+            
+            "./footer.js"
+        ],
+        "tasket.notepad.loader": [
+            "./blank-header.js",
+            "../../lib/js/getscript.js",
+            "../js/loader.js",
+            "./blank-footer.js"
+        ]
+    }
+}

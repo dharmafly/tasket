@@ -62,14 +62,14 @@ var TaskListView = View.extend({
             .bind("change:id", function (task, collection) {
                 var taskView;
 
-                if (task.get("hub") == view.model.id) {
+                if (task.get("hub") === view.model.id) {
                     taskView = view.taskViews[task.cid];
                     taskView.showActionControls();
                 }
             })
             // Append new items to the list
             .bind("add", function (task, collection) {
-                if (task.get("hub") == view.model.id) {
+                if (task.get("hub") === view.model.id) {
                     view.renderTasks(task);
                 }
             });
@@ -169,7 +169,7 @@ var TaskListView = View.extend({
         
         _.each(orderedIds, function (id) {
             var task = _.detect(tasks, function (aTask){
-                return aTask.id == id;
+                return aTask.id === id;
             });
 
             if (task) {

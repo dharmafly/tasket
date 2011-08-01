@@ -1,24 +1,43 @@
-(function(window, jQuery){
+/* TASKET LOADER
+    In development, you can skip the loader by loading the minified, built app directly.
+    
+    The advantage of the loader is that it allows you to add `?debug` to the URL in the browser address bar, to load each full JS file separately, for development and debugging.
+
+    To enter debug mode, add ?debug to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/13/
+*/
+(function(window, getScript){
     "use strict";
     
-    var jsLibPath = "/media/lib/js/",
-        jsCorePath = "/media/tank/js/",
-        jsAppPath = "/media/notepad/js/";
+    var windowSearch = window.location.search,
+        // Detect debug mode
+        debug = /^\?debug[\W\/]?/.test(windowSearch),
+        jsLibPath   = "lib/js/",
+        jsCorePath  = "tank/js/",
+        jsAppPath   = "notepad/js/";
     
-    // Console logging for development
-    window.O = function(){
-        if (window.console){
-            window.console.log.apply(window.console, arguments);
-        }
-    };
+    // PRODUCTION MODE
+    if (!debug){
+        // Load production mode scripts
+        getScript("/media/notepad/build/pkg/tasket.notepad.min.js?0.0.1");
+    }
 
-    // Use jQuery to load our own script loader
-    jQuery.getScript( jsLibPath + "getscript.js", function () {
-        // then load the app libraries
-        window.getScript(
-
+    // DEVELOPMENT/ DEBUG MODE
+    else {
+        window.tasketDebug = true;
+        
+        // Console logging
+        window.O = function(){
+            if (window.console){
+                window.console.log.apply(window.console, arguments);
+            }
+        };
+            
+        // **
+        
+        // Development/debugging mode scripts
+        getScript(
             // dependencies
-            jsAppPath + "lib/json2.js",
+            jsLibPath + "jquery.js",
             jsLibPath + "jquery.hashchange.js",
             jsLibPath + "cache.js",
             jsLibPath + "underscore.js",
@@ -54,25 +73,23 @@
             jsAppPath + "controllers/task-controller.js",
             jsCorePath + "controllers/account-controller.js",
 
-
             // core
             jsCorePath + "core/utils.js",
             jsCorePath + "core/tasket.js",
             jsCorePath + "app.js",
             jsAppPath + "notepad.js",
             jsAppPath + "lang/default.js",
+            jsAppPath + "init.js",
 
-            // Callback when all loaded
-            function done(allLoaded) {
-                if (!allLoaded) {
-                    throw new Error("Not all scripts have been loaded");
-                } else {
-                    window.app.bootstrap();
+            // Callback function once all are loaded
+            function(allLoaded){
+                if (!allLoaded){
+                    throw "Scripts not fully loaded";
                 }
             },
-
-            // Don't allow browser caching of files during development
-            {noCache: true}
+            
+            // Options (path is relative to the calling HTML file)
+            {path:"/media/", noCache:true}
         );
-    });
-}(this, this.jQuery));
+    }
+}(this, getScript));
