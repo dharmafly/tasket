@@ -147,18 +147,32 @@ _.extend(Tasket, Backbone.Events, {
      *
      */
     getModels: function (collection, ids) {
-        // If a specific model has been requested, rather than a collection
+        var wrappedModel, model,
+            wrapped, type, ctor, subset, toLoad, toLoadCopy, silent;
+    
+        // SINGLE MODEL
         if (!_.isArray(ids)){
-            return this.getModels(collection, [ids]).at(0);
+            wrappedModel = this.getModels(collection, [ids]);
+            model = wrappedModel.at(0);
+            
+            if (!model.isComplete()){
+                wrappedModel.bind("refresh", function onRefresh(){
+                    wrappedModel.unbind("refresh", onRefresh);
+                    model.trigger("change", model, {});
+                });
+            }
+            
+            return model;
         }
         
-        var wrapped    = _(ids),
-            type       = collection.model.prototype.type,
-            ctor       = collection.constructor,
-            subset     = new ctor(),
-            toLoad     = new ctor(),
-            toLoadCopy = new ctor(),
-            silent     = {silent:true};
+        // COLLECTION OF MODELS
+        wrapped    = _(ids);
+        type       = collection.model.prototype.type;
+        ctor       = collection.constructor;
+        subset     = new ctor();
+        toLoad     = new ctor();
+        toLoadCopy = new ctor();
+        silent     = {silent:true};
 
         // Removed previously failed ids.
         ids = wrapped.without.apply(wrapped, Tasket.failed[type]);
