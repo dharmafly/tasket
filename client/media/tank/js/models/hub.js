@@ -159,15 +159,19 @@ var Hub = Model.extend({
     },
     
     archive: function() {
-        this.save({ archived: true });
-        return this;
+        return this.save({archived: true});
     },
     
     unarchive: function() {
-        var hubData = this.toJSON();
-        hubData.archived = false;
-        new Hub(hubData).save();
-        return this;
+        var hub = this;
+        
+        _.each(this.attributes, function(val, key){
+            if (key.indexOf("archived.") === 0){
+                hub.unset(key);
+            }
+        });
+        
+        return this.save({archived:false});
     },
 
     // Updates the estimates on a task when changed.
