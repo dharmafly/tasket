@@ -1,16 +1,15 @@
-// TASKET LOADER
-// In development, you can skip the loader by loading the minified, built app directly.
-// The advantage of the loader is that it allows you to add `?debug` to the URL in the browser address bar, to load each full JS file separately, for development and debugging.
+/* TASKET LOADER
+    In development, you can skip the loader by loading the minified, built app directly.
+    
+    The advantage of the loader is that it allows you to add `?debug` to the URL in the browser address bar, to load each full JS file separately, for development and debugging.
 
-// **
-
-// Detect debug mode
-// To enter debug mode, add ?debug to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/13/
-
+    To enter debug mode, add ?debug to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/13/
+*/
 (function(window, getScript){
     "use strict";
     
     var windowSearch = window.location.search,
+        // Detect debug mode
         debug = /^\?debug[\W\/]?/.test(windowSearch),
         debugForceDirector = debug && /debugForceDirector/i.test(windowSearch); // case-insensitive match of "debugforcedirector"
     
@@ -99,14 +98,14 @@
             ],
             
             // Callback function once all are loaded
-            function(loaded){
-                if (!loaded){
+            function(allLoaded){
+                if (!allLoaded){
                     throw "Scripts not fully loaded";
                 }
             },
             
             // Options (path is relative to the calling HTML file)
-            {path:"media/", noCache:true}
+            {path:"/media/", noCache:true}
         );
     }
 }(this, getScript));
