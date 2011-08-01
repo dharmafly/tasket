@@ -22,7 +22,7 @@ app.bind("ready", function onReady () {
     // Destroy the cached user details when the logout button is clicked.
     // This block can be removed once Ticket #84 has been resolved and the
     // server deletes the "sessionid" cookie on logout:
-    // https://github.com/premasagar/tasket/issues/84
+    // https://github.com/dharmafly/tasket/issues/84
     jQuery("form[action='/logout/']").submit(function (event) {
         app.destroyCache();
     });
