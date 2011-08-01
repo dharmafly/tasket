@@ -45,7 +45,7 @@ var TaskView = View.extend({
 
     render: function () {
         var starred = !!this.model.get("starred.id"),
-            done = this.model.get("state") == "done",
+            done = this.model.get("state") === "done",
             description = this.model.get("description");
 
         jQuery(this.el).html(tim("task", {
