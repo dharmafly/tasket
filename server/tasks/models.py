@@ -233,10 +233,10 @@ class Hub(StarredModel):
             return [str(o.pk) for o in qs]
         
         # Querysets for 'Tasks' and 'Estimates' properties.
-        new_qs      = self.task_set.filter(state=Task.STATE_NEW)
-        claimed_qs  = self.task_set.filter(state=Task.STATE_CLAIMED)
-        done_qs     = self.task_set.filter(state=Task.STATE_DONE)
-        verified_qs = self.task_set.filter(state=Task.STATE_VERIFIED)
+        new_qs      = self.task_set.private(request_user).filter(state=Task.STATE_NEW)
+        claimed_qs  = self.task_set.private(request_user).filter(state=Task.STATE_CLAIMED)
+        done_qs     = self.task_set.private(request_user).filter(state=Task.STATE_DONE)
+        verified_qs = self.task_set.private(request_user).filter(state=Task.STATE_VERIFIED)
         
         obj_dict = {
             "id": str(self.pk),

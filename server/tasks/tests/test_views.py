@@ -189,6 +189,16 @@ class ViewTests(TestCase):
         response = self.client.get('/tasks/3')
         json_data = json.loads(response.content)
         self.assertEqual(json_data['description'].startswith("This is"), True)
+
+    def test_task_get_single_private_logged_in(self):
+        self.client.login(username='TestUser', password='12345')
+        response = self.client.get('/tasks/9')
+        json_data = json.loads(response.content)
+        self.assertEqual(json_data['description'].startswith("On a private hub"), True)
+
+    def test_task_get_single_private_not_logged_in(self):
+        response = self.client.get('/tasks/9')
+        self.assertEqual(response.status_code, 404)
     
     def test_task_get_by_id(self):
         response = self.client.get('/tasks/?ids=4,5')
