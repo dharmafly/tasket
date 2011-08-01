@@ -767,6 +767,7 @@ table {
       background: url(../images/sprite1.png) no-repeat 0 -93px;
       padding-left: 15px;
       margin-right: 150px;
+      min-height: 1.3em;
     }
     
     #content .item-list .completed p {
