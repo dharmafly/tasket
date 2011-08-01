@@ -46,11 +46,11 @@ class HubView(PutView):
     @method_decorator(AllowJSONPCallback)
     def get_hub_tasks(self, request, hub_id, tasks=None):
         hub = get_object_or_404(Hub, pk=hub_id)
-        self.res.write(hub.task_set.all().as_json(request_user=request.user))
+        self.res.write(hub.task_set.private(request.user).as_json(request_user=request.user))
         return self.res
         
     def get_single(self, request, hub_id=None, tasks=None):
-        hub = get_object_or_404(Hub, pk=hub_id)        
+        hub = get_object_or_404(Hub.objects.private(request.user), pk=hub_id)        
         self.res.write(hub.as_json(request_user=request.user))
         return self.res
     
@@ -187,7 +187,7 @@ class TasksView(PutView):
         self.res = HttpResponse(content_type='application/json')
     
     def get_single(self, request, task_id):
-        task = get_object_or_404(Task, pk=task_id)
+        task = get_object_or_404(Task.objects.private(request.user), pk=task_id)
         self.res.write(task.as_json(request_user=request.user))
         return self.res
         
