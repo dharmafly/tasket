@@ -52,6 +52,31 @@
         </header>
     </div>
     
+    <div class="static">
+        <section class="about">
+            <strong>Tasket</strong> is for managing tiny tasks in a group. It lets you create tasks, allows others to claim them and helps track the community's progress. <a class="box" href="#/about/">Read more…</a>
+        </section>
+    
+        <footer class="meta">
+            <nav>
+                <ul>
+                    <li><a class="box" href="#/about/" title="Find out more">Tasket</a></li>
+                    <li><a href="http://dharmafly.com/blog" title="Read the blog">Blog</a></li>
+                    <li><a href="http://dharmafly.com/contact" title="Tell us what you think">Contact Us</a></li>
+                </ul>
+            </nav>
+        
+            <p class="credits">
+                <a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
+                    App by <span class="df-name">Dharmafly</span>
+                </a>
+                <a class="software" href="http://dharmafly.com/tasket" title="Open-source, micro-volunteering web app">
+                    Powered by <span class="software-name">Tasket</span>
+                </a>
+            </p>
+        </footer>
+    </div>
+    
     <div id="vector"></div>
 
     <!-- TEMPLATES -->
@@ -504,10 +529,7 @@
     </script>
 
     <script type="text/tim" class="dashboard">
-        <section class="quicklinks about">
-            <strong>Tasket</strong> is for managing tiny tasks in a group. It lets you create tasks, allows others to claim them and helps track the community's progress. <a href="#/about/">Read more…</a>
-        </section>
-    
+        <section class="about"></section>
         <ul class="listing notifications">
             <li>
                 <!-- <a data-type="ownedClaimed" href="#my-tasks" title="View these claimed tasks"> -->
@@ -555,28 +577,10 @@
             <ul class="listing"></ul>
         </section>
         
-        <footer>
-            <p class="statistics">
-                <em>{{verified}}</em> completed tasks
-            </p>
-            
-            <nav>
-                <ul>
-                    <li><a href="#/about/" title="Find out more">Tasket</a></li>
-                    <li><a href="http://dharmafly.com/blog" title="Read the blog">Blog</a></li>
-                    <li><a href="http://dharmafly.com/contact" title="Tell us what you think">Contact Us</a></li>
-                </ul>
-            </nav>
-            
-            <p class="credits">
-                <a class="df" href="http://dharmafly.com" title="Dharmafly - apps for change">
-                    App by <span class="df-name">Dharmafly</span>
-                </a>
-                <a class="software" href="http://dharmafly.com/tasket" title="Open-source, micro-volunteering web app">
-                    Powered by <span class="software-name">Tasket</span>
-                </a>
-            </p>
-        </footer>
+        <p class="statistics">
+            <em>{{verified}}</em> completed tasks
+        </p>
+        <footer class="meta"></footer>
     </script>
     
     <script type="text/tim" class="archived-projects-link">

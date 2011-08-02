@@ -95,9 +95,17 @@ var Dashboard = View.extend({
     },
 
     render: function () {
+        // place the footer within the dashboard
+        var stat = $(".static"),
+            footer = stat.find("footer.meta"),
+            about = stat.find("section.about");
+        
         this.elem.html(tim("dashboard", {
             verified: app.statistics.tasks.verified
         }));
+        
+        this.$("footer.meta").html(footer.html());
+        this.$("section.about").html(about.html());
 
         // Update each of the task lists.
         _.each(["Notifications", "UserTasks", "UserHubs", "ManagedTasks"], function (method) {
