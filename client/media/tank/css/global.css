@@ -1253,10 +1253,6 @@ svg line {
 	display: block;
 }
 
-.dashboard footer {
-	padding-top: 0.769em /* 10px */;
-}
-
 .dashboard footer p {
 	margin: 0;
 }
@@ -1274,14 +1270,14 @@ svg line {
 	color: #000;
 }
 
-.dashboard footer .statistics {
+.dashboard .statistics {
 	position: relative;
 	
 	/* TODO: TEMPORARY chart image padding */
 	/* padding-left: 60px; */
 }
 
-.dashboard footer .statistics img {
+.dashboard .statistics img {
 	position: absolute;
 	left: 0;
 	top: 0;
@@ -1290,7 +1286,7 @@ svg line {
 	display:none;
 }
 
-.dashboard footer .statistics em {
+.dashboard .statistics em {
 	display: block;
 	font-size: 3.692em /* 48px */;
 	font-style: normal;
@@ -1309,26 +1305,26 @@ svg line {
 }
 
 /* Credits */
-.dashboard footer .credits {
+footer .credits {
 	padding-top:1.62em;
 }
-.dashboard footer .credits a {
+footer .credits a {
 	text-decoration:none;
 	border:none;
 	display:block;
 }
-.dashboard footer .credits a span {
+footer .credits a span {
 	font-weight:bold;
 }
-.dashboard footer .credits a:hover span {
+footer .credits a:hover span {
 	border-bottom-width:1px;
 	border-bottom-style:solid;
 }
-.dashboard footer a.df span.df-name {
+footer a.df span.df-name {
 	font-family:Calibri,Helvetica,Arial,sans-serif;
 	text-transform:uppercase;
 }
-.dashboard footer a.df:hover {
+footer a.df:hover {
 	color:#70873f;
 }
 
@@ -1755,6 +1751,30 @@ svg line {
 
 .show-notification .dashboard {
 	top: 6em /* 72px */;
+}
+
+/* @end*/
+
+/* @group Static content (non-JS styles)
+-----------------------------------------------------------------------------*/
+
+.static {
+    position:absolute; /* remove scrollbars */
+    left:20px;
+    top:5em;
+    width:20em;
+}
+
+.js .static {
+    display:none;
+}
+
+.static section {
+    margin:0.923em /* 12px */ 0;
+}
+
+.static a.box {
+    display:none; /* hide links to lightbox window content */
 }
 
 /* @end*/
