@@ -219,3 +219,24 @@ A superuser should have been created when the site was installed. If no superuse
 ### The Tasket API
 
 The Tasket server runs as a simple JSON API, allowing innovation in the client apps that consume it. API documentation can be found at: https://github.com/dharmafly/tasket/blob/master/docs/api.md
+
+
+# Branches and workflow
+
+The Tasket repository on Github uses two branches, '*master*' and '*release*'.  The release branch always contains a production-ready version of Tasket, ready to be deployed to a live server. The master branch is the latest development version of Tasket, containing any recent stable updates.  
+
+When developing new functionality for Tasket, consider creating local development branches for each feature.  When complete, these changes should be committed and merged into the '*master*' branch.  Once these updates have been tested and verified as ready for release, they should be merged into the remote '*release*' branch.
+
+This approach allows new features to be added to Tasket while maintaining a version of the app in a deployable state at all times.
+
+To set up the master/release branches via the command line:
+
+    # setup new branches so that git-pull(1) will appropriately merge from the remote branch
+    git config branch.autosetupmerge true
+    
+    # setup a local release branch to track the remote release branch
+    git branch --track release origin/release
+    
+    # merge changes from master into the release branch
+    git checkout release
+    git merge master
