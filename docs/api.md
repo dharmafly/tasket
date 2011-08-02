@@ -5,8 +5,10 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
 
 ## Hubs ##
 
-    /hubs/                  # GET:   Gets all active hubs (ie. hubs that have unverified tasks remaining)
+    /hubs/                  # GET:   Gets all active hubs (ie. unarchived hubs that have unverified tasks remaining)
     /hubs/?ids=ids          # GET:   Gets array of hubs matching :ids (comma-delimited list of ids)
+    /hubs/?archived=:state  # GET:   Gets hubs based on their archived state
+                                         (possible states: "true", "false", "all")
     /hubs/                  # POST:  Creates a hub (responds with new id & createdTime eg.
                                          {"id": "hub_id", "createdTime": 1298567873})
     /hubs/:id               # GET:   Gets a single hub for :id
@@ -60,6 +62,7 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
         "description": "",
         "image": "",
         "state": "new",
+        "archived": true,
         "createdTime": 1298567873
         "claimedBy": "user_id",
         "claimedTime": 1231214214,
@@ -109,19 +112,22 @@ them in.  The newly created profile object ID will be returned:
         "image": "",
         "admin": false,
         "hubs": {
-            "owned": [/* hubs created by this user   */]
+            "owned": [/* active hubs created by this user   */],
+            "archived": [/* archived hubs created by this user */]
         },
         "tasks": {
             "owned": {
                 "new":      [/* tasks owned by this user that have not been claimed */]
                 "claimed":  [/* tasks owned by this user that have been claimed but not done */],
                 "done":     [/* tasks owned by this user that have been done but not verified */],
-                "verified": [/* tasks owned by this user that have been verified */]
+                "verified": [/* tasks owned by this user that have been verified */],
+                "archived": [/* archived tasks owned by this user */]
             },
             "claimed": {
                 "claimed":  [/* tasks claimed by this user that have not yet been done */],
                 "done":     [/* tasks claimed by this user that have been done but not verified */],
-                "verified": [/* tasks claimed by this user that have been verified */]
+                "verified": [/* tasks claimed by this user that have been verified */],
+                "archived": [/* archived tasks claimed by this user */]
             }
         },
         "estimates": {
@@ -156,10 +162,16 @@ them in.  The newly created profile object ID will be returned:
 
 ### Statistics data ###
     {
-        new: 23      // Total tasks with "new" status
-        claimed: 123 // Total tasks with "claimed" status etc.
-        done: 23
-        verified: 345
+        "hubs": {
+            "archived": 3  // Total archived hubs
+        }, 
+        "tasks": {
+            "archived": 12 // Total archived tasks
+            "new": 23      // Total tasks with "new" status
+            "claimed": 123 // Total tasks with "claimed" status etc.
+            "done": 23
+            "verified": 345
+        }
     }
 
 
@@ -181,7 +193,7 @@ containing an object, for example:
 
     "starred": {"timestamp": 1307117640, "type": "profile", "id": 2}
 
-If an object has no stars, the `starred` property wont exist.
+If an object has no stars, the `starred` property won't exist.
 
 To star any object, `POST` to it with `{"starred" : true}`.  To un-star an object,
 `POST` `{"starred" : false}` to it.
@@ -189,3 +201,26 @@ To star any object, `POST` to it with `{"starred" : true}`.  To un-star an objec
 NOTE: only objects that exist in the database can be starred, so in order to star 
 a new object it must be saved first.  In other words, it is not possible to star
 in a POST request.
+
+
+## Archiving ##
+
+Hubs can be archived and restored.  By default only active (non-archived) hubs 
+are returned and displayed.  
+
+When a hub has been archived, it will have an `archived` property, containing 
+an object. This archived property on a hub contains the server timestamp of 
+when the hub was archived, and the id of the user who archived it:
+
+    "archived": { timestamp: 1312278392, archivedBy: "6" }
+    
+If a hub hasn't been archived, this property won't exist.
+
+The `archived` flag is global - it applies to the hub for all users, rather 
+than being a personal setting different for each user.
+
+Tasks may not be individually archived. An "archived" task is a task that 
+belongs to an archived hub.
+
+To archive a hub, `POST` to it with `{"archived" : true}`.  To restore a hub,
+unset any archived parameters and `POST` `{"archived" : false}` to it.
