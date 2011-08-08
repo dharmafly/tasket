@@ -37,7 +37,11 @@ Note: in future, arrays may be further filtered by ?page=n&per_page=m - e.g. /hu
             "done":     44554,
             "verified": 4534
         },
-        "createdTime": 1298567873
+        "createdTime": 1298567873,
+        "archived": {   // exists if the hub is archived
+            "timestamp": 1312278392,
+            "archivedBy": "6" // id of the user who archived the hub
+        }
     }
 
 ## Tasks ##
@@ -94,11 +98,11 @@ POSTing to /users/ with the following JSON object will create a user and log
 them in.  The newly created profile object ID will be returned:
 
     {
-        'username': 'test99', 
-        'email': 'foo@example.com', 
-        'password': '12345', 
-        'description': 'New description!', 
-        'name': 'Test User 99'
+        "username": "test99",
+        "email": "foo@example.com",
+        "password": "12345",
+        "description": "New description!",
+        "name": "Test User 99"
     }
 
 
@@ -212,7 +216,7 @@ When a hub has been archived, it will have an `archived` property, containing
 an object. This archived property on a hub contains the server timestamp of 
 when the hub was archived, and the id of the user who archived it:
 
-    "archived": { timestamp: 1312278392, archivedBy: "6" }
+    "archived": { "timestamp": 1312278392, "archivedBy": "6" }
     
 If a hub hasn't been archived, this property won't exist.
 
@@ -222,5 +226,5 @@ than being a personal setting different for each user.
 Tasks may not be individually archived. An "archived" task is a task that 
 belongs to an archived hub.
 
-To archive a hub, `POST` to it with `{"archived" : true}`.  To restore a hub,
+To archive a hub, POST` to it with `{"archived" : true}`.  To restore a hub,
 unset any archived parameters and `POST` `{"archived" : false}` to it.
