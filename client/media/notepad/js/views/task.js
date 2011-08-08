@@ -19,13 +19,13 @@ var TaskView = View.extend({
 
         this.elem.attr("data-cid", this.model.cid);
 
+        // TODO: delegate model bindings to Tasket.tasks collection, to reduce the number of event bindings
         this.model
             .bind("remove", view.remove)
-            .bind("change:description", function (task) {
-                view.$("p").text(task.get("description"));
+            .bind("change:description", function (task, description) {
+                view.$("p").text(description);
             })
-            .bind("change:state", function (task) {
-                var state = task.get("state");
+            .bind("change:state", function (task, state) {
                 if (_.include(["verified", "done"], state)) {
                     view.elem.addClass("completed");
                 }
@@ -33,8 +33,8 @@ var TaskView = View.extend({
                     view.elem.removeClass("completed");
                 }
             })
-            .bind("change:starred.id", function (task) {
-                if (task.get("starred.id")){
+            .bind("change:starred", function (task, isStarred) {
+                if (isStarred){
                     view.elem.addClass("star");
                 }
                 else {
@@ -52,7 +52,7 @@ var TaskView = View.extend({
             itemText: description
         }));
 
-        //make action controllers invisible if the task has not been saved yet.
+        // Make action controllers invisible if the task has not been saved yet.
         if (!this.model.id) {
             this.elem.addClass("unsaved");
         }

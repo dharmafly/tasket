@@ -395,7 +395,7 @@ var TaskListView = View.extend({
     },
 
    /*
-    * Handles the _onStar action and triggers the 'update-item' event passing along 'starred:!starred' as update values.
+    * Handles the _onStar action
     */
     _onStar: function (cid, target) {
         var task = this.collection.getByCid(cid);
