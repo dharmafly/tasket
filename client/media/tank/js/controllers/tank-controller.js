@@ -353,7 +353,7 @@ var TankController = Backbone.Controller.extend({
     },
 
     // Remove a hub from the tank.
-    removeHub: function (hub) {
+    removeHubView: function (hub) {
         var hubView = this.getHubView(hub.id);
         
         if (hubView) {
@@ -364,12 +364,6 @@ var TankController = Backbone.Controller.extend({
                 .calculateHubWeights()
                 .forcedirectHubs();
         }
-        
-        app.currentUser.removeHub(hub);
-        Tasket.hubs.remove(hub);
-        app.lightbox.hide();
-        window.location.hash = "/";
-        // TODO: re-render dashboard 
         
         return this;
     },
@@ -436,7 +430,8 @@ var TankController = Backbone.Controller.extend({
 
             // When user clicks on "Restore" to un-archive a hub
             form.bind("restoreHub", _.bind(function (hubId) {
-                hub = Tasket.getHubs(hubId);
+                var hub = Tasket.getHubs(hubId);
+                
                 if (!hub){
                     this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
                     return;
@@ -448,12 +443,8 @@ var TankController = Backbone.Controller.extend({
                 hubsLength --;
                 
                 if (!hubsLength){
-                    form.trigger("close");
+                    app.lightbox.hide();
                 }
-            }, this))
-            .bind("close", _.bind(function(){
-                app.lightbox.hide();
-                window.location.hash = "/";
             }, this));
         }
         
@@ -517,10 +508,15 @@ var TankController = Backbone.Controller.extend({
                 HubView.prototype.updateLocation.call({model:hub});
             })
             .bind("archive", _.bind(function (hub) {
-                this.removeHub(hub);
+                this.removeHubView(hub);
+                app.lightbox.hide();
+                window.location.hash = "/";
             }, this))
             .bind("delete", _.bind(function (hub) {
-                this.removeHub(hub);
+                this.removeHubView(hub);
+                Tasket.hubs.remove(hub);
+                app.lightbox.hide();
+                window.location.hash = "/";
             }, this))
             .bind("error", _.bind(function(hub, form, status){
                 this.error("Sorry, there was an error creating the " + app.lang.HUB + ". Please try logging out and in again. (error: hub-" + hub.id + ", status " + status + ")");

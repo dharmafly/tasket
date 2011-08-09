@@ -63,7 +63,7 @@ var HubForm = FormUpload.extend({
             this.model.archive();
             this.trigger("archive", this.model, this);
             
-            // show archived project link on dashboard
+            // show "View archived projects" link on dashboard
             app.dashboard.updateArchivedProjectsLink(true);
         }
         event.preventDefault();

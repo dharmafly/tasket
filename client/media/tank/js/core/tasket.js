@@ -367,7 +367,6 @@ Tasket.users.bind("all", Tasket._republishModelEvent);
 // Update user's owned hubs on hub add
 Tasket.bind("hub:add", Tasket._onHubAdded)
       .bind("hub:remove", Tasket._onHubRemoved)
-      .bind("hub:change:archived", Tasket._onHubChangeArchived)
-      .bind("all", O);
+      .bind("hub:change:archived", Tasket._onHubChangeArchived);
         
 // TODO: change user.stars on task.star or task.unstar
