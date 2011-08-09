@@ -56,7 +56,13 @@ Edit `[application]/apache2/conf/httpd.conf` and append the following to the `WS
 
     /home/[username]/webapps/django/tasket/server:/home/[username]/webapps/django/tasket
 
-Finally run `[application]/apache2/bin/restart` and test in a browser.  The API should work, so /hubs/ should show an empty array.
+Further apache configuration may go here. E.g. to redirect requests for "www.example.com" to the non-www URL, add:
+
+    RewriteEngine On
+    RewriteCond %{HTTP_HOST} ^www\.(.*) [NC]
+    RewriteRule ^(.*) http://%1/$1 [R=301,L]
+
+Finally, run `[application]/apache2/bin/restart` and test in a browser.  The API should work, so /hubs/ should show an empty array.
 
 ### 7. Static Media
 To server the media (images, css, js) a new 'application' should be set up in the control panel as per http://docs.webfaction.com/software/django/getting-started.html#serving-static-media
