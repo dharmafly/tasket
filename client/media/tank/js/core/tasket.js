@@ -316,7 +316,7 @@ _.extend(Tasket, Backbone.Events, {
         if (!_.isUndefined(ids.length)){
             // Add
             if (shouldBeAdded){
-                if (!_.include(ids, hubId)){
+                if (!_.include(ids, childId)){
                     ids.push(childId);
                 }
             }
