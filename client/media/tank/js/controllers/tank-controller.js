@@ -414,12 +414,15 @@ var TankController = Backbone.Controller.extend({
         
             _.each(hubs.models, function(hub){
                 var taskCount = hub.countTasks(),
-                    completedTaskCount = hub.countCompletedTasks();
+                    completedTaskCount = hub.countCompletedTasks(),
+                    date = timestampToRelativeDate(hub.get("archived.timestamp")),
+                    hasDate = !!date;
 
                 archivedHubData.push({
                     id: hub.id,
                     title: hub.get("title"),
-                    date: timestampToDate(hub.get("archived.timestamp")),
+                    hasDate: hasDate,
+                    date: date,
                     taskCount: taskCount +
                         " task" + ((taskCount !== 1) ? "s" : "") +
                         " (" + completedTaskCount + " completed)"

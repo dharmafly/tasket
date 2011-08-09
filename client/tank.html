@@ -499,7 +499,7 @@
         {{archivedProjects}}
             <li class="archived-project-{{id}}">
                 <p><strong>{{title}}</strong></p>
-                <p>{{taskCount}}. <em>Archived on {{date}}</em></p>
+                <p>{{taskCount}}. {{hasDate}}<em>Archived {{date}}</em>{{/hasDate}}</p>
                 <button type="submit" class="restore" data-hub-id="{{id}}">Restore</button>
             </li>
         {{/archivedProjects}}
