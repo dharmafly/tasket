@@ -174,8 +174,8 @@ To complete the email settings, edit the site 'Domain name' and 'Display name' i
 
 ## Email template
 
-An email template can be created in web/templates/password_reset_email.html
-It's best to copy the template from [server/frontend/templates/password_reset_email.html](https://github.com/dharmafly/tasket/blob/master/server/frontend/templates/password_reset_email.html) and edit it to fit your needs.
+An email template can be created in _web/templates/password_reset_email.html_
+It's best to copy the template from _[server/frontend/templates/password_reset_email.html](https://github.com/dharmafly/tasket/blob/master/server/frontend/templates/password_reset_email.html)_ and edit it to fit your needs.
 
 
 ## Admin users
