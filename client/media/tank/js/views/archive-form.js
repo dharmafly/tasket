@@ -23,7 +23,6 @@ var ArchiveForm = Form.extend({
         this.elem.html(template);
         return this;
     },
-    
 
     // overwrite default form method
     submit: function(event) {
@@ -32,7 +31,6 @@ var ArchiveForm = Form.extend({
         }
         return this;
     },
-    
 
     /* DOM Event callback. Restores the current hub on the server and broadcasts
      * the "restore" event passing in the model and view to all listeners. 
