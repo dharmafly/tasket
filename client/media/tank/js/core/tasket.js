@@ -297,46 +297,59 @@ _.extend(Tasket, Backbone.Events, {
         Tasket.trigger.apply(Tasket, args);
     },
     
-    _addRemoveHubOnUser: function(hub, shouldBeAdded, collectionsToUpdate){
+    // e.g. Tasket._addRemoveFromModelCollection(user, "16", "hubs.owned", {silent:true});
+    _addRemoveFromModelCollection: function(model, childId, shouldBeAdded, collectionName, setOptions){
+        // NOTE: we must clone the array so that Backbone successfully triggers a "change" event when it detects a difference in the previous and the changed attribute
+        var ids, toSet;
+        
+        // Handle array of collections
+        if (_.isArray(collectionName)){
+            _.each(collectionName, function(collectionName){
+                Tasket._addRemoveFromModelCollection(model, childId, shouldBeAdded, collectionName, setOptions);
+            });
+            return this;
+        }
+        
+        ids = _.clone(model.get(collectionName));
+        toSet = {};
+        
+        if (!_.isUndefined(ids.length)){
+            // Add
+            if (shouldBeAdded){
+                if (!_.include(ids, hubId)){
+                    ids.push(childId);
+                }
+            }
+            // Remove
+            else {
+                ids = _.without(ids, childId);
+            }
+            toSet[collectionName] = ids;
+            model.set(toSet, setOptions);
+        }
+        
+        return this;
+    },
+    
+    _addRemoveHubOnUser: function(hub, isArchived, collectionsToUpdate){
         var hubId = hub.id,
-            user, hub, toSet;
+            owner, hub;
 
         if (!hubId){
             hub.bind("change:id", function(){
-                Tasket._addRemoveHubOnUser(hub, shouldBeAdded, collectionsToUpdate);
+                Tasket._addRemoveHubOnUser(hub, isArchived, collectionsToUpdate);
             });
             return;
         }
     
-        user = Tasket.users.get(hub.get("owner"));
+        owner = Tasket.users.get(hub.get("owner"));
         
-        if (user){
+        if (owner){
             if (!collectionsToUpdate){
-                collectionsToUpdate = hub.isArchived() ?
-                    ["hubs.owned", "hubs.archived"] : ["hubs.owned"];
+                collectionsToUpdate = hub.isArchived() ? ["hubs.owned", "hubs.archived"] : "hubs.owned";
             }
-            toSet = {};
         
-            _.each(collectionsToUpdate, function(collectionName){
-                // NOTE: we must clone the array so that Backbone successfully triggers a "change" event when it detects a difference in the previous and the changed attribute
-                var ids = _.clone(app.currentUser.get(collectionName));
-                
-                if (!_.isUndefined(ids.length)){
-                    // Add
-                    if (shouldBeAdded){
-                        if (!_.include(ids, hubId)){
-                            ids.push(hubId);
-                        }
-                    }
-                    // Remove
-                    else {
-                        ids = _.without(ids, hubId);
-                    }
-                    toSet[collectionName] = ids;
-                }
-            });
-            
-            user.set(toSet);
+            Tasket._addRemoveFromModelCollection(owner, hubId, isArchived, collectionsToUpdate);
         }
     },
     
@@ -350,12 +363,28 @@ _.extend(Tasket, Backbone.Events, {
     
     _onHubChangeArchived: function(hub){
         var isArchived = hub.isArchived(),
-            tasks = _.each(hub.getTasks(), function(taskId){
-                var task = Tasket.tasks.get(taskId);
+            taskIds = hub.getTasks(),
+            tasks = _.each(taskIds, function(taskId){
+                var task = Tasket.tasks.get(taskId),
+                    toSet, owner, claimedBy;
+                    
                 if (task){
                     task.set({archived:isArchived});
+                    
+                    owner = Tasket.users.get(task.get("owner"));
+                    
+                    if (owner){
+                        this._addRemoveFromModelCollection(owner, taskId, isArchived, "tasks.owned.archived");
+                    }
+                    
+                    claimedBy = Tasket.users.get(task.get("claimedBy"));
+                    if (claimedBy){
+                        this._addRemoveFromModelCollection(claimedBy, taskId, isArchived, "tasks.claimed.archived");
+                    }
                 }
             });
+        
+        // TODO: change statistics.hubs and statistics.tasks (probably should cache statistics at Tasket.statistics)
         
         return Tasket._addRemoveHubOnUser(hub, isArchived, ["hubs.archived"]);
     },
@@ -374,7 +403,8 @@ _.extend(Tasket, Backbone.Events, {
             .bind("hub:remove", this._onHubRemoved)
             .bind("hub:change:archived", this._onHubChangeArchived);
                 
-        // TODO: change user.stars on task.star or task.unstar
+        // TODO: change user.stars on task:change:starred
+        // TODO: move user.task states here
     }
 });
 
