@@ -62,12 +62,10 @@ var Dashboard = View.extend({
             methodMap;
             
         methodMap = {
-            "UserHubs":      ["hubs.owned"],
+            "UserHubs":      ["hubs.owned", "hubs.archived"],
             "UserTasks":     ["tasks.claimed.claimed"],
             "ManagedTasks":  ["tasks.owned.done"],
-            "Notifications": [
-              "tasks.owned.claimed", "tasks.owned.done", "tasks.claimed.verified"
-            ]
+            "Notifications": ["tasks.owned.claimed", "tasks.owned.done", "tasks.claimed.verified"]
         };
 
         // Update the user object if nessecary.
@@ -250,9 +248,19 @@ var Dashboard = View.extend({
     // Updates a list of tasks/hubs based on the selector & collection.
     updateList: function(selector, models){
         var mapped;
+        
         if (models && (models.length || models.type === "hub")) {
             mapped = models.map(function (model) {
-                var title = model.get("title") || model.get("description");
+                var title = model.get("title") || model.get("description"),
+                    href;
+                    
+                if (model.type === "task"){
+                    href = "#/hubs/" + model.get("hub") + "/tasks/" + model.id + "/";
+                }
+                else {
+                    href = "#/hubs/" + model.id + "/";
+                }
+                    
                 return {
                     id:          model.id,
                     title:       app.truncate(title, 24),
@@ -260,18 +268,15 @@ var Dashboard = View.extend({
                     isTask:      model.type === "task",
                     showDone:    app.isCurrentUserOrAdmin(model.get("claimedBy")) && model.get("state") === Task.states.CLAIMED,
                     showVerify:  app.isCurrentUserOrAdmin(model.get("owner")) && model.get("state") === Task.states.DONE,
-                    href:        (function () {
-                        if (model.type === "task") {
-                            return "#/hubs/" + model.get("hub") + "/tasks/" + model.id + "/";
-                        }
-                        return "#/hubs/" + model.id + "/";
-                    })()
+                    href:        href
                 };
             });
+            
             this.$(selector).show().find("ul").html(tim("dashboard-link", {
                 links: mapped
             }));
-        } else {
+        }
+        else {
             this.$(selector).hide();
         }
 
@@ -280,10 +285,10 @@ var Dashboard = View.extend({
     
     // show/hide the archived projects link depending on whether there are any
     updateArchivedProjectsLink: function(forceShow) {
-        //app.bind("statistics:change", function(){O(app.statistics);});
         if (forceShow || (app.statistics.hubs && parseInt(app.statistics.hubs.archived, 10) > 0)) {
             this.$(".archived-projects").html(tim("archived-projects-link"));
-        } else {
+        }
+        else {
             this.$(".archived-projects").empty();
         }
         return this;
