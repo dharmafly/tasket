@@ -658,7 +658,7 @@ var TankController = Backbone.Controller.extend({
                 app.lightbox.hide();
             }, this))
             .bind("error", _.bind(function(task, form, status){
-                this.error("Sorry, there was an error creating the task. Please try logging out and in again. (error: task-" + task.id + ", status " + status + ")")
+                this.error("Sorry, there was an error creating the task. Please try logging out and in again. (error: task-" + task.id + ", status " + status + ")");
             }));
         
         return this;
