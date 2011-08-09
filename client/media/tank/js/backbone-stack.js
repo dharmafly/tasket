@@ -37,7 +37,10 @@
      * Returns a hash String.
      */
     Backbone.History.prototype.getPrevious = function (historyCount) {
-        return this.stack()[this.stack().length - 1 - (historyCount || 1)];
+        if (!_.isNumber(historyCount)){
+            historyCount = 1;
+        }
+        return this.stack()[this.stack().length - 1 - historyCount];
     };
 
     /* Public: Returns the full stack of hashes since the application
