@@ -374,12 +374,12 @@ _.extend(Tasket, Backbone.Events, {
                     owner = Tasket.users.get(task.get("owner"));
                     
                     if (owner){
-                        this._addRemoveFromModelCollection(owner, taskId, isArchived, "tasks.owned.archived");
+                        Tasket._addRemoveFromModelCollection(owner, taskId, isArchived, "tasks.owned.archived");
                     }
                     
                     claimedBy = Tasket.users.get(task.get("claimedBy"));
                     if (claimedBy){
-                        this._addRemoveFromModelCollection(claimedBy, taskId, isArchived, "tasks.claimed.archived");
+                        Tasket._addRemoveFromModelCollection(claimedBy, taskId, isArchived, "tasks.claimed.archived");
                     }
                 }
             });
