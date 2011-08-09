@@ -111,3 +111,35 @@ function timestampToDate(timestamp) {
         
     return date+' '+month+' '+year;
 }
+
+// converts a timestamp to a presentable relative date
+function timestampToRelativeDate(timestamp) {
+    
+    // condition : if a project has just been archived, 
+    // it won't have a timestamp, so don't return a date
+    if (!timestamp) { return false; }
+    
+    var now = new Date(),
+        difference = now - (timestamp*1000),
+        seconds = difference / 1000,
+        minutes = seconds / 60,
+        hours = minutes / 60,
+        days = hours / 24,
+        years = days / 365,
+        relativeDate;
+        
+    relativeDate = seconds < 2 && "1 second ago" ||
+		seconds < 60 && Math.round(seconds) + " seconds ago" ||
+        seconds < 90 && "1 minute ago" ||
+        minutes < 60 && Math.round(minutes) + " minutes ago" ||
+        minutes < 90 && "1 hour ago" ||
+        hours < 24 && Math.round(hours) + " hours ago" ||
+        hours < 48 && "1 day ago" ||
+        days < 30 && Math.floor(days) + " days ago" ||
+        days < 60 && "1 month ago" ||
+        days < 365 && Math.floor(days / 30) + " months ago" ||
+        years < 2 && "1 year ago" ||
+        "on " + timestampToDate(timestamp);    
+        
+    return relativeDate;
+}
