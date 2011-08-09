@@ -81,33 +81,6 @@ _.extend(Tasket, Backbone.Events, {
     getHubs: function (ids) {
         return Tasket.getModels(Tasket.hubs, ids);
     },
-    
-    /* Fetch all archived hubs from the server
-     * On complete, call the callback function, 
-     * passing through a HubList of archived hub models
-     */
-    getArchivedHubs: function (callback) {
-        jQuery.ajax({
-            url: Tasket.endpoint + "hubs/?archived=true",
-            contentType: "application/json",
-            dataType: "json",
-            success: function(response){
-                var ids = [];
-            
-                _(response).each(function(hubData){
-                    ids.push(hubData.id);
-                    
-                    if (!Tasket.hubs.get(hubData.id)){
-                        Tasket.hubs.add(hubData);
-                    }
-                });
-                callback(Tasket.getHubs(ids));
-            },
-            error: function(){
-                callback(null);
-            }
-        });
-    },
 
     /* Fetch models from the global cache provided. If the model is not cached
      * an empty promise is created with just an id. Once the collection has
@@ -213,6 +186,33 @@ _.extend(Tasket, Backbone.Events, {
         // Else, there is nothing to load at all
 
         return subset;
+    },
+    
+    /* Fetch all archived hubs from the server
+     * On complete, call the callback function, 
+     * passing through a HubList of archived hub models
+     */
+    getArchivedHubs: function (callback) {
+        jQuery.ajax({
+            url: Tasket.endpoint + "hubs/?archived=true",
+            contentType: "application/json",
+            dataType: "json",
+            success: function(response){
+                var ids = [];
+            
+                _(response).each(function(hubData){
+                    ids.push(hubData.id);
+                    
+                    if (!Tasket.hubs.get(hubData.id)){
+                        Tasket.hubs.add(hubData);
+                    }
+                });
+                callback(Tasket.getHubs(ids));
+            },
+            error: function(){
+                callback(null);
+            }
+        });
     },
     
     getTasksByState: function (state, callback) {
@@ -349,24 +349,35 @@ _.extend(Tasket, Backbone.Events, {
     },
     
     _onHubChangeArchived: function(hub){
-        var addOrRemove = hub.isArchived();
-        return Tasket._addRemoveHubOnUser(hub, addOrRemove, ["hubs.archived"]);
+        var isArchived = hub.isArchived(),
+            tasks = _.each(hub.getTasks(), function(taskId){
+                var task = Tasket.tasks.get(taskId);
+                if (task){
+                    task.set({archived:isArchived});
+                }
+            });
+        
+        return Tasket._addRemoveHubOnUser(hub, isArchived, ["hubs.archived"]);
+    },
+    
+    initialize: function(){
+        // Extend Tasket.settings with defaultSettings
+        _.defaults(this.settings, this.defaultSettings);
+
+        // Re-publish events from models on to Tasket object
+        this.hubs.bind("all", this._republishModelEvent);
+        this.tasks.bind("all", this._republishModelEvent);
+        this.users.bind("all", this._republishModelEvent);
+
+        // Update user's owned hubs on hub add
+        this.bind("hub:add", this._onHubAdded)
+            .bind("hub:remove", this._onHubRemoved)
+            .bind("hub:change:archived", this._onHubChangeArchived);
+                
+        // TODO: change user.stars on task.star or task.unstar
     }
 });
 
 /////
 
-// Extend Tasket.settings with defaultSettings
-_.defaults(Tasket.settings, Tasket.defaultSettings);
-
-// Re-publish events from models on to Tasket object
-Tasket.hubs.bind("all", Tasket._republishModelEvent);
-Tasket.tasks.bind("all", Tasket._republishModelEvent);
-Tasket.users.bind("all", Tasket._republishModelEvent);
-
-// Update user's owned hubs on hub add
-Tasket.bind("hub:add", Tasket._onHubAdded)
-      .bind("hub:remove", Tasket._onHubRemoved)
-      .bind("hub:change:archived", Tasket._onHubChangeArchived);
-        
-// TODO: change user.stars on task.star or task.unstar
+Tasket.initialize();
