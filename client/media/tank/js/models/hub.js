@@ -158,6 +158,18 @@ var Hub = Model.extend({
         return humanTimespan(this.estimate());
     },
     
+    isArchived: function(){
+        // Check presence of boolean property
+        // NOTE: this will be correct, even if the server has not yet responded with a timestamp after a request to archive() or unarchive()
+        var isArchived = this.get("archived");
+
+        // If temporary flag does not exist, then check if details of the property are present on the model
+        if (!_.isBoolean(isArchived)){
+            isArchived = !!this.get("archived.timestamp");
+        }
+        return isArchived;
+    },
+    
     archive: function() {
         return this.save({archived: true});
     },
