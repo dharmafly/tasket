@@ -1,21 +1,3 @@
-// Decorates the .add() method of all Tasket cache collections to re-broadcast
-// all events. This allows other objects to register interest in any model
-// within the Tasket application.
-function decorateAddMethod(models) {
-    if (!_.isArray(models)) {
-        models = [models];
-    }
-
-    _.each(models, function (model) {
-        if (!(model instanceof Backbone.Model)) {
-            model = new this.model(model, {collection: this});
-        }
-        model.bind("all", Tasket.republishModelEvent);
-    }, this);
-
-    return this.constructor.prototype.add.apply(this, arguments);
-}
-
 // PUBLIC API
 _.extend(Tasket, Backbone.Events, {
     namespace: "tasket", // used for settings such as localStorage namespacing
@@ -34,9 +16,9 @@ _.extend(Tasket, Backbone.Events, {
 
     lang: {},
 
-    hubs:  _.extend(new HubList(),  {add: decorateAddMethod}),
-    tasks: _.extend(new TaskList(), {add: decorateAddMethod}),
-    users: _.extend(new UserList(), {add: decorateAddMethod}),
+    hubs:  new HubList(),
+    tasks: new TaskList(),
+    users: new UserList(),
 
     failed: {
         hub:  [],
@@ -309,27 +291,66 @@ _.extend(Tasket, Backbone.Events, {
     // the model type. eg.
     //
     // Tasket.bind("hub:change:owner", updateHubOwner);
-    republishModelEvent: function () {
+    _republishModelEvent: function () {
         var args = _.toArray(arguments);
         args[0] = this.type + ":" + args[0];
         Tasket.trigger.apply(Tasket, args);
     },
     
-    addOwnedHubToUser: function(hub){
-        var user = Tasket.users.get(hub.get("owner")),
-            hubsOwned;
+    _addRemoveHubOnUser: function(hub, shouldBeAdded, collectionsToUpdate){
+        var hubId = hub.id,
+            user, hub, toSet;
+
+        if (!hubId){
+            hub.bind("change:id", function(){
+                Tasket._addRemoveHubOnUser(hub, shouldBeAdded, collectionsToUpdate);
+            });
+            return;
+        }
+    
+        user = Tasket.users.get(hub.get("owner"));
         
         if (user){
-            // NOTE: we must clone the hubs.owned array so that Backbone successfully triggers a "change" event when it detects a difference in the previous and the changed attribute
-            hubsOwned = _.clone(app.currentUser.get("hubs.owned"));
-            
-            if (hubsOwned){
-                hubsOwned.push(hub.id);
-                user.set({
-                    "hubs.owned": hubsOwned
-                });
+            if (!collectionsToUpdate){
+                collectionsToUpdate = hub.isArchived() ?
+                    ["hubs.owned", "hubs.archived"] : ["hubs.owned"];
             }
+            toSet = {};
+        
+            _.each(collectionsToUpdate, function(collectionName){
+                // NOTE: we must clone the array so that Backbone successfully triggers a "change" event when it detects a difference in the previous and the changed attribute
+                var ids = _.clone(app.currentUser.get(collectionName));
+                
+                if (!_.isUndefined(ids.length)){
+                    // Add
+                    if (shouldBeAdded){
+                        if (!_.include(ids, hubId)){
+                            ids.push(hubId);
+                        }
+                    }
+                    // Remove
+                    else {
+                        ids = _.without(ids, hubId);
+                    }
+                    toSet[collectionName] = ids;
+                }
+            });
+            
+            user.set(toSet);
         }
+    },
+    
+    _onHubAdded: function(hub){
+        return Tasket._addRemoveHubOnUser(hub, true);
+    },
+    
+    _onHubRemoved: function(hub){
+        return Tasket._addRemoveHubOnUser(hub, false);
+    },
+    
+    _onHubChangeArchived: function(hub){
+        var addOrRemove = hub.isArchived();
+        return Tasket._addRemoveHubOnUser(hub, addOrRemove, ["hubs.archived"]);
     }
 });
 
@@ -338,20 +359,15 @@ _.extend(Tasket, Backbone.Events, {
 // Extend Tasket.settings with defaultSettings
 _.defaults(Tasket.settings, Tasket.defaultSettings);
 
-// Update user's owned hubs on hub add
-Tasket.bind("hub:add", function(hub){
-    if (hub && hub.id){
-        Tasket.addOwnedHubToUser(hub);
-    }
-    
-    else {
-        hub.bind("change:id", function(){
-            Tasket.addOwnedHubToUser(hub);
-        });
-    }
-    
-    // TODO: change user.stars on task.star or task.unstar
-});
+// Re-publish events from models on to Tasket object
+Tasket.hubs.bind("all", Tasket._republishModelEvent);
+Tasket.tasks.bind("all", Tasket._republishModelEvent);
+Tasket.users.bind("all", Tasket._republishModelEvent);
 
-// TODO: widgetised to do app. browser extension, Sqwidget
-// iPad improvements: scrollable lightbox content (e.g. faq), svg lines
+// Update user's owned hubs on hub add
+Tasket.bind("hub:add", Tasket._onHubAdded)
+      .bind("hub:remove", Tasket._onHubRemoved)
+      .bind("hub:change:archived", Tasket._onHubChangeArchived)
+      .bind("all", O);
+        
+// TODO: change user.stars on task.star or task.unstar
