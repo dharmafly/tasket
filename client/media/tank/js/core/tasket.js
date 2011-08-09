@@ -103,7 +103,7 @@ _.extend(Tasket, Backbone.Events, {
      */
     getModels: function (collection, ids) {
         var wrappedModel, model,
-            wrapped, type, ctor, subset, toLoad, toLoadCopy, silent;
+            wrapped, type, Ctor, subset, toLoad, toLoadCopy, silent;
     
         // SINGLE MODEL
         if (!_.isArray(ids)){
@@ -123,10 +123,10 @@ _.extend(Tasket, Backbone.Events, {
         // COLLECTION OF MODELS
         wrapped    = _(ids);
         type       = collection.model.prototype.type;
-        ctor       = collection.constructor;
-        subset     = new ctor();
-        toLoad     = new ctor();
-        toLoadCopy = new ctor();
+        Ctor       = collection.constructor;
+        subset     = new Ctor();
+        toLoad     = new Ctor();
+        toLoadCopy = new Ctor();
         silent     = {silent:true};
 
         // Removed previously failed ids.
@@ -333,7 +333,7 @@ _.extend(Tasket, Backbone.Events, {
     
     _addRemoveHubOnUser: function(hub, isArchived, collectionsToUpdate){
         var hubId = hub.id,
-            owner, hub;
+            owner;
 
         if (!hubId){
             hub.bind("change:id", function(){

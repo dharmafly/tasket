@@ -94,7 +94,7 @@ var Dashboard = View.extend({
 
     render: function () {
         // place the footer within the dashboard
-        var stat = $(".static"),
+        var stat = jQuery(".static"),
             footer = stat.find("footer.meta"),
             about = stat.find("section.about");
         

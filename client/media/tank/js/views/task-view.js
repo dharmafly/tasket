@@ -139,7 +139,7 @@ var TaskView = View.extend({
                         return "You cannot claim this task just now. Please complete one of the " + Tasket.settings.CLAIMED_LIMIT + " tasks that you've claimed first.";
                     }
                     return "";
-                })()
+                }())
             };
         }
         else if (state === states.CLAIMED && app.isCurrentUser(claimedById)) {

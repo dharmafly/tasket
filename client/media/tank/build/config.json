@@ -19,7 +19,7 @@
             "TaskStates", "TaskView", "User", "UserList", "View",
             "cache", "now", "randomInt", "truncate", "ForceDirector", "Toolbar",
             "escapeHTML", "humanTimespan", "throttle", "hasChanged", "nl2br", 
-            "timestampToDate"
+            "timestampToDate", "timestampToRelativeDate", "renderArchivedHubs"
         ]
     },
     "JAVASCRIPT": {
