@@ -46,7 +46,8 @@ _.extend(app, {
     },
     
     getLatestOpenHub: function(user){
-        return _.max(user.getNonArchivedHubs());
+        var hubs = user.getNonArchivedHubs();
+        return hubs.length ? _.max(hubs) : null;
     },
 
     _bindHubEvents: function (user) {
@@ -81,7 +82,9 @@ _.extend(app, {
             hub.bind("change:id", function (hub) {
                 app.trigger("change:selectedHub", hub);
             });
+            hub.save();
         }
+        
         
         return this;
     },
@@ -124,13 +127,14 @@ _.extend(app, {
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
         
         this.setupStaticTemplates()
-            .bind("change:currentUser", this._cacheChangesToCurrentUser); // NOTE: "change:currentUser" fires once on retrieval from localStorage, and once again on retrieval from the server, to refresh the localStorage cache
-        
-        this._setupOverrides()
+            ._setupOverrides()
             ._setupLightbox()
             ._setupAuth()
-            ._setupHub() // NOTE: hub setup after auth, to prevent double-load of view
-            ._setupHistory();
+            // NOTE: _setupHub after _setupAuth, to prevent double-load of view
+            ._setupHub()
+            ._setupHistory()
+            // NOTE: "change:currentUser" fires once on retrieval from localStorage, and once again on retrieval from the server, to refresh the localStorage cache
+            .bind("change:currentUser", this._cacheChangesToCurrentUser);
 
         if (!app.currentUser){
             jQuery("section#content").html(tim("welcome-msg"));
