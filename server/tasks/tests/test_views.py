@@ -140,7 +140,7 @@ class ViewTests(TestCase):
                 data=json.dumps({'title' : 'Updated Title',}),
                 content_type='application/json',
             )
-        self.assertEqual(json.loads(response.content)['updated'], True)
+        self.assertEqual(response.status_code, 200)
 
     def test_hubs_put_task_order(self):
         self.client.login(username='TestUser', password='12345')
@@ -156,7 +156,7 @@ class ViewTests(TestCase):
             content_type="application/json",
             )
         json_list = json.loads(response.content)
-        self.assertEqual(json_list['hub']['tasks']['order'], ['2', '3', '7'])
+        self.assertEqual(json_list['tasks']['order'], ['2', '3', '7'])
 
 
     def test_hub_delete_with_not_new(self):
@@ -531,7 +531,7 @@ class ViewTests(TestCase):
             json.dumps({'archived' : False}),
             content_type="application/json",
             )
-        self.assertFalse('archived' in json.loads(response.content)['hub'])
+        self.assertFalse('archived' in json.loads(response.content))
 
         response = self.client.get('/hubs/?archived=true')
         json_list = json.loads(response.content)
@@ -543,7 +543,7 @@ class ViewTests(TestCase):
             json.dumps({'archived' : True}),
             content_type="application/json",
             )
-        self.assertTrue('archived' in json.loads(response.content)['hub'])
+        self.assertTrue('archived' in json.loads(response.content))
         
         
         
