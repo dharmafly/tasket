@@ -152,11 +152,7 @@ class HubView(PutView):
         form = forms.HubForm(request.PUT, instance=hub, request=request)
         if form.is_valid():
             H = form.save()
-            response_json =  {
-                "id": str(H.pk),
-                "updated" : True,
-                "hub" : H.as_dict()
-                }
+            response_json =  H.as_dict()
             self.res.write(json.dumps(response_json))
         else:
             self.res.write(json.dumps(form.errors))
