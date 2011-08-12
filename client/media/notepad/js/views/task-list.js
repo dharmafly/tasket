@@ -193,12 +193,16 @@ var TaskListView = View.extend({
 
     _onTitleEdit: function (event) {
         var listTitle = this.previousTitle =  this.$("div.header h1 a").text(),
-            html = jQuery(tim("title-edit", {placeholder: app.lang.NEW_HUB}));
+            html = jQuery(tim("title-edit", {placeholder: app.lang.NEW_HUB})),
+            headingWidth = this.$("div.header h1 a").width();
 
         this.$("div.header").addClass("edit-mode");
         this.$("div.header h1").replaceWith(html);
         this.$("div.header input").val(listTitle).focus();
         event.preventDefault();
+        
+        // adjust title width based on input
+        this.$("div.header input").css("width", headingWidth+10+"px");
     },
 
     _onTitleEditSave: function (event) {
@@ -223,10 +227,20 @@ var TaskListView = View.extend({
     },
 
     _onKeypressTitle: function (event) {
-        var newTitle = jQuery(event.target).val();
+        var newTitle = jQuery(event.target).val(),
+            newCharCount = newTitle.length,
+            previousCharCount = jQuery(event.target).data("charCount"),
+            width = jQuery(event.target).width();
 
         if (_.isEmpty(newTitle)) {
             newTitle = app.lang.EMPTY_HUB;
+        }
+        
+        // adjust width of input box if we've got a new character, 
+        // and if the string length is longer now than it has been previously 
+        if (!previousCharCount || newCharCount > previousCharCount) {
+            this.$("div.header input").css("width", width+10+"px");
+            jQuery(event.target).data("charCount", newCharCount);
         }
 
         // Return and tab keys
