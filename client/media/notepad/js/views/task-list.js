@@ -400,9 +400,9 @@ var TaskListView = View.extend({
         var currentUserId = app.currentUser.id,
             task = this.collection.getByCid(cid),
             forceMode = true,
-            newState = _.include(
-                [Task.states.VERIFIED, Task.states.DONE ], task.get("state")
-            ) ? Task.states.NEW : Task.states.DONE ;
+            state = task.get("state"),
+            newState = state === Task.states.VERIFIED || state ===  Task.states.DONE ?
+                Task.states.NEW : Task.states.DONE;
 
         task.state(newState, currentUserId, forceMode)
             .save();
