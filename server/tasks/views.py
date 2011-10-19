@@ -2,8 +2,8 @@
 import json
 import mimetypes
 
-from django.shortcuts import render_to_response, get_object_or_404
-from django.http import HttpResponse, HttpResponseRedirect, HttpResponseNotAllowed, Http404
+from django.shortcuts import get_object_or_404
+from django.http import HttpResponse, Http404
 from django.template import RequestContext
 from django.utils.decorators import method_decorator
 from django.contrib.auth.models import User
@@ -48,13 +48,13 @@ class HubView(PutView):
         hub = get_object_or_404(Hub, pk=hub_id)
         self.res.write(hub.task_set.private(request.user).as_json(request_user=request.user))
         return self.res
-        
+
     def get_single(self, request, hub_id=None, tasks=None):
-        hub = get_object_or_404(Hub.objects.private(request.user), pk=hub_id)        
+        hub = get_object_or_404(Hub.objects.private(request.user), pk=hub_id)
         self.res.write(hub.as_json(request_user=request.user))
         return self.res
-    
-    
+
+ 
     @method_decorator(AllowJSONPCallback)
     def get(self, request, hub_id=None, tasks=None, image=None):
 
@@ -64,7 +64,6 @@ class HubView(PutView):
             return self.get_hub_tasks(request, hub_id, tasks)
 
         hubs = Hub.objects.private(request.user)
-        
         
         if 'ids' in request.GET:
             ids = request.GET['ids']
