@@ -42,7 +42,7 @@ class JsonManager(models.Manager):
 
 class HubManager(JsonManager): 
     def private(self, user=None):
-        in_list = [0,]
+        in_list = [0,None,]
         if user and user.is_authenticated():
             in_list.append(user.profile)
         return self.filter(private_to__in=in_list)
