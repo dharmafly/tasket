@@ -54,6 +54,7 @@
             "tank/js/models/models.js",
             "tank/js/viz/forcedirector.js",
             "tank/js/views/views.js",
+            "tank/js/controllers/controllers.js",
             "tank/js/controllers/tank-controller.js",
             "tank/js/controllers/account-controller.js",
             "tank/js/controllers/dashboard-controller.js",
