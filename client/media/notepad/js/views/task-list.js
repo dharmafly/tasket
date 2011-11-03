@@ -35,7 +35,7 @@ var TaskListView = View.extend({
 
     initialize: function (options) {
         this.elem = jQuery(this.el);
-    
+
         _.bindAll(this,
             "_onModelChangeTitle",
             "_onControlAction",
@@ -45,9 +45,9 @@ var TaskListView = View.extend({
             "_onSort"
         );
 
-        this._setupModelBindings();
+        this.showHub(this.model);
     },
-    
+
     _setupModelBindings: function(){
         var view = this;
     
