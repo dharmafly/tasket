@@ -113,7 +113,7 @@ _.extend(Tasket, Backbone.Events, {
             if (!model.isComplete()){
                 wrappedModel.bind("refresh", function onRefresh(){
                     wrappedModel.unbind("refresh", onRefresh);
-                    model.trigger("change", model, {});
+                    model.change();
                 });
             }
             
@@ -150,7 +150,7 @@ _.extend(Tasket, Backbone.Events, {
             toLoad.bind("refresh", function () {
                 toLoad.each(function (model) {
                     // Update the model in the subset with the new data.
-                    subset.get(model.id).set(model.toJSON(), silent);
+                    subset.get(model.id).set(model.toJSON());
                 });
 
                 // Remove all models from subset that appear in toLoadCopy
