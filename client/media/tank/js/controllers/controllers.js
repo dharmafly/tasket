@@ -44,7 +44,9 @@ function Controller(options) {
 
         // Register the controllers routes with the router.
         _.each(routes, function (name, route) {
-            this.router.route(route, name, _.bind(this[name], this));
+            if (_.isFunction(this[name])) {
+                this.router.route(route, name, _.bind(this[name], this));
+            }
         }, this);
     }
 
@@ -54,7 +56,7 @@ function Controller(options) {
 // Create the controller prototype. All a Controller has is a routes object
 // and an initialize method. Otherwise it can be used in any fashion the
 // required.
-_.extend(Controller.prototype, Backbone.Event, {
+_.extend(Controller.prototype, Backbone.Events, {
     /* An array of route/method pairs or a function returning one. */
     routes: {},
 
@@ -66,7 +68,7 @@ _.extend(Controller.prototype, Backbone.Event, {
      *
      * Returns nothing.
      */
-    initialize : function(){},
+    initialize : function () {},
 
     /* Public: An alias to Backbone.History#navigate().
      *
