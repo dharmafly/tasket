@@ -66,6 +66,7 @@
             "../js/views/change-password.js",
             "../js/views/forgot-details.js",
             "../js/views/toolbar.js",
+            "../js/controllers/controllers.js",
             "../js/controllers/tank-controller.js",
             "../js/controllers/account-controller.js",
             "../js/controllers/dashboard-controller.js",
