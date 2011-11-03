@@ -1,4 +1,4 @@
-var TaskController = Backbone.Controller.extend({
+var TaskController = Backbone.Router.extend({
     routes: {
     },
 
@@ -9,8 +9,8 @@ var TaskController = Backbone.Controller.extend({
     */
     constructor: function () {
         var controller = this;
-        Backbone.Controller.prototype.constructor.apply(this, arguments);
-        
+
+        Backbone.Router.apply(this, arguments);
         app.bind("change:selectedHub", function () {
             if (!this.taskListView) {
                 controller.showTaskList();
@@ -32,7 +32,7 @@ var TaskController = Backbone.Controller.extend({
         taskListView.render();
 
         //event handler for rendering loaded tasks into the view
-        tasks.bind("refresh", function () {
+        tasks.bind("reset", function () {
             taskListView.renderTasks(tasks);
         });
 
