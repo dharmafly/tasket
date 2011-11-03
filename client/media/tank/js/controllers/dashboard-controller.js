@@ -1,4 +1,4 @@
-var DashboardController = Backbone.Controller.extend({
+var DashboardController = Backbone.Router.extend({
     routes: {
         "/dashboard/user/:id": "showUser",
         "/dashboard/tasks/":   "showCurrentUserTasks",
@@ -6,7 +6,7 @@ var DashboardController = Backbone.Controller.extend({
     },
 
     constructor: function DashboardController() {
-        Backbone.Controller.prototype.constructor.apply(this, arguments);
+        Backbone.Router.apply(this, arguments);
     },
 
     showCurrentUserTasks: function () {
