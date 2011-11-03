@@ -59,7 +59,7 @@ var TaskController = Controller.extend({
 		taskListView.bind('create-hub', function(hub){
 			if (hub.isNew()) {
 				hub.bind('change:id', function changeId() {
-					controller.saveLocation("/hubs/" + hub.id + '/');
+					controller.navigate("/hubs/" + hub.id + '/');
                     controller.hubListView.collection.add(hub);
                     hub.unbind('change:id', changeId);
 				});

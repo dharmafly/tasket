@@ -75,7 +75,7 @@ var TaskListView = View.extend({
             })
 
 	        //event handler for rendering loaded tasks into the view
-	        .bind("refresh", function () {
+	        .bind("reset", function () {
 	            view.renderTasks();
 	        });
 

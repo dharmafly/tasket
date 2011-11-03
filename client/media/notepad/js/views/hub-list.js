@@ -18,7 +18,7 @@ var HubListView = View.extend({
 
 		var view = this;
 		this.collection
-		    .bind("refresh", function () {
+		    .bind("reset", function () {
                 view.renderHubs();
             })
             .bind('add', function(hub){
