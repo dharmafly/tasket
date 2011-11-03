@@ -47,6 +47,9 @@
             jsLibPath + "flatten.js",
             jsAppPath + "lib/jquery-ui.min.js",
 
+            // controllers
+            jsCorePath + "controllers/controllers.js",
+
             // models
             jsCorePath + "models/models.js",
             jsCorePath + "models/task.js",
