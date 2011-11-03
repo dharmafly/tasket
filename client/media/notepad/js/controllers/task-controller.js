@@ -1,4 +1,4 @@
-var TaskController = Backbone.Router.extend({
+var TaskController = Controller.extend({
     routes: {
     },
 
@@ -10,7 +10,7 @@ var TaskController = Backbone.Router.extend({
     constructor: function () {
         var controller = this;
 
-        Backbone.Router.apply(this, arguments);
+        Controller.apply(this, arguments);
         app.bind("change:selectedHub", function () {
             if (!this.taskListView) {
                 controller.showTaskList();
