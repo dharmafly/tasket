@@ -1,4 +1,4 @@
-var TankController = Backbone.Controller.extend({
+var TankController = Backbone.Router.extend({
     routes: {
         "/hubs/new/": "newHub",
         "/hubs/archived/": "listArchivedHubs",
@@ -11,7 +11,7 @@ var TankController = Backbone.Controller.extend({
     },
 
     constructor: function TankController() {
-        Backbone.Controller.prototype.constructor.apply(this, arguments);
+        Backbone.Router.apply(this, arguments);
     },
 
     // Get the dimensions of the tank    
