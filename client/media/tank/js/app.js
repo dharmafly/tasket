@@ -58,15 +58,14 @@ var cache = new Cache(Tasket.namespace),
         // the lightbox.
         setupStaticTemplates: function () {
             var staticPrefix = "static-",
-                prefixLength = staticPrefix.length,
-                controller = new Backbone.Router();
+                prefixLength = staticPrefix.length;
 
             _.each(tim.templates(), function(template, name) {
                 var route;
 
                 if (name.indexOf(staticPrefix) === 0){
                     route = name.slice(prefixLength);
-                    controller.route("/" + route + "/", route, function () {
+                    app.router.route("/" + route + "/", route, function () {
                         app.lightbox.content(template).show();
                     });
                 }
@@ -124,11 +123,14 @@ var cache = new Cache(Tasket.namespace),
 
         // Sets up the app. Called by init() on app "ready".
         ready: function () {
+            this.router = new Backbone.Router();
+
+            var options = {router: this.router};
             _.extend(this, {
                 // The controllers will make Ajax calls on their init, so are created after app init
-                tank: new TankController(),
-                pageController: new AccountController(), // TODO: rename
-                dashController: new DashboardController()
+                tank: new TankController(options),
+                pageController: new AccountController(options), // TODO: rename
+                dashController: new DashboardController(options)
             });
 
             // TODO temp
