@@ -9,12 +9,12 @@
 (function (Backbone, undefined) {
 
     // Store a reference to the original prototype methods.
-    var _saveLocation = Backbone.History.prototype.saveLocation,
-        _loadUrl      = Backbone.History.prototype.loadUrl;
+    var _navigate = Backbone.History.prototype.navigate,
+        _loadUrl  = Backbone.History.prototype.loadUrl;
 
     /* Public: Override Backbone.history.start to use Ben Allmans $.hashchange()
      * plugin to fix hashchange events in IE.
-     * 
+     *
      * See: http://stackoverflow.com/questions/4973936/backbone-js-cause-bug-only-in-ie7
      *
      * Returns nothing.
@@ -70,13 +70,13 @@
      *
      * Returns nothing.
      */
-    Backbone.History.prototype.saveLocation = function(fragment) {
+    Backbone.History.prototype.navigate = function(fragment) {
         fragment = (fragment || '').replace(/^#*/, '');
         if (this.getHash() === fragment) {
             return;
         }
         this.stack().push(fragment);
-        _saveLocation.call(this, fragment);
+        _navigate.call(this, fragment);
     };
 
     /* Public: Attempt to load the current URL fragment. If a route succeeds
