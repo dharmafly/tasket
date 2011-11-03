@@ -87,7 +87,7 @@ if (app.isSupported()) {
     app.init(jQuery.ajax({
         url: "/hubs/",
         success: function (json) {
-            Tasket.hubs.refresh(json);
+            Tasket.hubs.reset(json);
         },
         error: function () {
             app.notification.error(app.lang.DOWNLOAD_ERROR);

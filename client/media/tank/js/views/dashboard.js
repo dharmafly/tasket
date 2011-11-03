@@ -302,9 +302,9 @@ var Dashboard = View.extend({
         var collection = Tasket[method](this.model.get(key));
         return this._processCollection(collection, callback);
     },        
-        
+
     _processCollection: function (collection, callback){
-        collection.bind("refresh", callback);
+        collection.bind("reset", callback);
 
         // Currently only display the title/description so only re-render
         // if this changes.

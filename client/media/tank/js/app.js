@@ -59,11 +59,11 @@ var cache = new Cache(Tasket.namespace),
         setupStaticTemplates: function () {
             var staticPrefix = "static-",
                 prefixLength = staticPrefix.length,
-                controller = new Backbone.Controller();
-            
+                controller = new Backbone.Router();
+
             _.each(tim.templates(), function(template, name) {
                 var route;
-                
+
                 if (name.indexOf(staticPrefix) === 0){
                     route = name.slice(prefixLength);
                     controller.route("/" + route + "/", route, function () {
@@ -71,7 +71,7 @@ var cache = new Cache(Tasket.namespace),
                     });
                 }
             });
-            
+
             return this;
         },
         
@@ -364,7 +364,7 @@ var cache = new Cache(Tasket.namespace),
             if (!prev) {
                 prev = "/";
             }
-            Backbone.history.saveLocation(prev);
+            Backbone.history.navigate(prev);
             return app;
         },
 

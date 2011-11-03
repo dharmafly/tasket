@@ -30,7 +30,7 @@ _.extend(Tasket, Backbone.Events, {
 
     /* Fetch users by id from the global cache. Returns a UserList of promise
      * models which may not all be loaded. If not all loaded the caller
-     * can then listen to the "refresh" event on the collection to be notified
+     * can then listen to the "reset" event on the collection to be notified
      * when it changes.
      *
      * ids - An array of ids to fetch. (or single id of a model to fetch)
@@ -38,7 +38,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var users = Tasket.getUsers([1, 2, 3, 4]);
-     *   users.bind("refresh", updateUserDisplay);
+     *   users.bind("reset", updateUserDisplay);
      *
      * Returns a UserList object.
      */
@@ -48,7 +48,7 @@ _.extend(Tasket, Backbone.Events, {
 
     /* Fetch tasks by id from the global cache. Returns a TaskList of promise
      * models which may not all be loaded. If not all loaded the caller
-     * can then listen to the "refresh" event on the collection to be notified
+     * can then listen to the "reset" event on the collection to be notified
      * when it changes.
      *
      * ids - An array of ids to fetch. (or single id of a model to fetch)
@@ -56,7 +56,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var tasks = Tasket.getTasks([1, 2, 3, 4]);
-     *   tasks.bind("refresh", updateTaskDisplay);
+     *   tasks.bind("reset", updateTaskDisplay);
      *
      * Returns a TaskList object.
      */
@@ -66,7 +66,7 @@ _.extend(Tasket, Backbone.Events, {
 
     /* Fetch hubs by id from the global cache. Returns a HubList of promise
      * models which may not all be loaded. If not all loaded the caller
-     * can then listen to the "refresh" event on the collection to be notified
+     * can then listen to the "reset" event on the collection to be notified
      * when it changes.
      *
      * ids - An array of ids to fetch. (or single id of a model to fetch)
@@ -74,7 +74,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var hubs = Tasket.getHubs([1, 2, 3, 4]);
-     *   hubs.bind("refresh", updateHubDisplay);
+     *   hubs.bind("reset", updateHubDisplay);
      *
      * Returns a HubList object.
      */
@@ -86,7 +86,7 @@ _.extend(Tasket, Backbone.Events, {
      * an empty promise is created with just an id. Once the collection has
      * refreshed any ids that do not exist on the server will be removed from
      * the collection. So in order to display the correct data it"s best to
-     * listen to the "refresh" event to be notified when the fetch completes.
+     * listen to the "reset" event to be notified when the fetch completes.
      *
      * collection - One of the Tasket Collection caches.
      * ids        - An array of ids to fetch. (or single id of a model to fetch)
@@ -94,7 +94,7 @@ _.extend(Tasket, Backbone.Events, {
      * Examples
      *
      *   var hubs = Tasket.getModels(Tasket.hubs, [1, 2, 3, 4]);
-     *   hubs.bind("refresh", updateHubDisplay);
+     *   hubs.bind("reset", updateHubDisplay);
      *   Returns a Collection object.
      *
      *   var hub = Tasket.getModels(Tasket.hubs, 5);
@@ -147,7 +147,7 @@ _.extend(Tasket, Backbone.Events, {
         }, this);
 
         if (toLoad.length) {
-            toLoad.bind("refresh", function () {
+            toLoad.bind("reset", function () {
                 toLoad.each(function (model) {
                     // Update the model in the subset with the new data.
                     subset.get(model.id).set(model.toJSON());
@@ -165,7 +165,7 @@ _.extend(Tasket, Backbone.Events, {
                     }
                 });
 
-                subset.trigger("refresh", subset, {});
+                subset.trigger("reset", subset, {});
             });
             
             toLoad.fetch();
@@ -173,13 +173,13 @@ _.extend(Tasket, Backbone.Events, {
         else if (!subset.isComplete()) {
             // It's possible that a subset could contain models that are
             // currently being loaded in another request. In this case the
-            // "refresh" event will not fire. So we must watch each unloaded
-            // model in the collection until they are all completed then
-            // manually fire the "refresh" event.
+            // "reset" event will not fire. So we must watch each unloaded
+            // model in the collection until they are all completed then manually
+            // fire the "reset" event.
             subset.bind("change", function onChange() {
                 if (subset.isComplete()) {
                     subset.unbind("change", onChange);
-                    subset.trigger("refresh", subset, {});
+                    subset.trigger("reset", subset, {});
                 }
             });
         }
