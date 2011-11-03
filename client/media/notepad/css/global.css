@@ -575,10 +575,10 @@ table {
 
   /* TODO: TEMP - hide lists tab */
   aside#lists h1 {
-    margin-top:22px !important;
+/*    margin-top:22px !important;*/
   }
   aside#lists h1 a {
-    display:none !important;
+/*    display:none !important;*/
   }
 
   aside#lists,
@@ -637,19 +637,20 @@ table {
       display: block;
       background: url(../images/sprite1.png) no-repeat right -294px;
     }
-
     aside#lists nav {
       position: absolute;
-      display: none;
+	  display: none;
       right: 0;
       top: 85px;
       background-color: #6ab6da;
       max-width: 25em;
     }
+    aside#lists.open nav {
+    	display: block;
+	}
     
       aside#lists nav ul {
         padding: 28px 28px 18px 28px;
-        font-weight: bolder;
         border-bottom: 1px solid #60a6c6;
       }
       
@@ -659,6 +660,10 @@ table {
         line-height: 1.3em;
       }
       
+	  aside#lists nav .active {
+		font-weight: bold;
+	  }
+	
       aside#lists nav .star a {
         background: url(../images/sprite1.png) no-repeat right -1101px;
         padding: 1px 25px 1px 0;
@@ -721,10 +726,11 @@ table {
     position: relative;
     z-index: 1;
     border-top: 4px solid #6ab6da;
+    padding-left: 115px;
   }
   
     #content .header {
-      padding: 40px 20px 10px 120px;
+      padding: 40px 20px 10px 5px;
       overflow: hidden;
     }
   
@@ -750,6 +756,7 @@ table {
   
   #content .item-list {
     clear: left;
+    margin-left: -115px;
   }
   
     #content .item-list > li {
@@ -977,8 +984,8 @@ table {
 
 /* add new item */
 
-      #content .new-item {
-        margin: 10px 0 0 114px;
+      .new-item {
+        margin: 10px 0 0 0;
         line-height: 19px;
         padding: 0 0 10px 29px;
         background: url(../images/sprite1.png) no-repeat left top;
@@ -987,7 +994,7 @@ table {
         font-style: italic;
       }
       
-      #content .new-item:hover, #content .new-item.hover {
+      .new-item:hover, .new-item.hover {
         text-decoration: underline;
         cursor: pointer;
       }

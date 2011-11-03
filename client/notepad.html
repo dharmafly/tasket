@@ -55,11 +55,11 @@
       </nav>
       
       <div id="main">
-        <aside id="lists" class="closed">
-            <h1><a><span>Close lists</span></a></h1>
-            <!--
+        <aside id="lists" class="close">
+            <h1><a><span>Open lists</span></a></h1>
+			
             <nav>
-              <ul>
+              <!-- <ul>
                 <li class="star"><a href="/">Starred</a></li>
                 <li><a href="/">Work list 1</a></li>
                 <li><a href="/">Work list 2</a></li>
@@ -73,9 +73,9 @@
 
               <div class="showing">
                 <a href="/">Showing all</a>
-              </div>
+              </div> -->
             </nav>
-            -->
+
         </aside>
         
         <section id="content"></section>
@@ -134,6 +134,23 @@
         </ul>
     </script>
 
+	<script type="text/tim" class="hub-list">
+   		<ul class="item-list">
+        	<li class="star"><a href="/tasks/starred/">Starred</a></li>
+
+		</ul>
+
+		<p><a href="#/hubs/new/" class="new-item">Add new list</a></p>
+		
+		<div class="showing">
+			<a href="/">Showing all</a>
+		</div>
+	</script>
+
+	<script type="text/tim" class="hub">
+    	<a href="#/hubs/{{id}}/">{{title}}</a>
+	</script>
+	
     <script type="text/tim" class="lightbox">
         <div class="lightbox-inner">
             <div class="content"></div>
