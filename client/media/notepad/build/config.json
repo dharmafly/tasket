@@ -50,6 +50,7 @@
             "../../tank/js/views/account.js",
             "../../tank/js/views/change-password.js",
             "../../tank/js/views/forgot-details.js",
+            "../../tank/js/controllers/controllers.js",
             "../../tank/js/controllers/account-controller.js",
             
             "../js/views/authbar.js",
