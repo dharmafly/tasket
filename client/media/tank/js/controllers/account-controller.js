@@ -1,5 +1,5 @@
 // Handles signup/about/login etc.
-var AccountController = Backbone.Router.extend({
+var AccountController = Controller.extend({
     routes: {
         "/login/":          "login",
         "/forgot-details/": "forgotDetails",
@@ -9,7 +9,7 @@ var AccountController = Backbone.Router.extend({
     },
 
     constructor: function AccountController() {
-        Backbone.Router.apply(this, arguments);
+        Controller.apply(this, arguments);
     },
     
     showContents: function(contents){
