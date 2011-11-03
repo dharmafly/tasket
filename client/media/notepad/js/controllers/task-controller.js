@@ -1,7 +1,7 @@
 var TaskController = Controller.extend({
     routes: {
-		"/hubs/new/": "newHub",
-		"/hubs/:hub/": 'showHub'
+        "/hubs/:hub/": 'showHub',
+		"/hubs/new/": "newHub"
     },
 
     taskViewRendered: false,
@@ -13,31 +13,26 @@ var TaskController = Controller.extend({
         var controller = this;
 
         Controller.apply(this, arguments);
-        
-        app.bind("change:selectedHub", function (hub) {
-            if (!controller.taskListView) {
-                controller.createTaskList();
-            }
-			if (!controller.hubListView) {
-				controller.createHubList();
-			}
-			
+
+        // Set up views on login.
+        app.bind("change:currentUser", function onLogin() {
+			controller.createHubList();
+			controller.createTaskList();
+			app.unbind("change:currentUser", onLogin);
+        });
+
+        app.bind("change:selectedHub", function (hub) {			
 			controller.hubListView.selectHub(hub);
 			controller.taskListView.showHub(hub);
         });
-
     },
 
     createTaskList: function () {
-        var controller = this,
-            hub = app.selectedHub,        
-            currentUser = app.currentUser,        
-            tasks = Tasket.getTasks(hub.get("tasks.new").concat(hub.get("tasks.claimed"))),
+        var controller   = this,
             taskListView = this.taskListView = new TaskListView({
-                model: hub,
-                collection: tasks
+                model: new Hub({owner: app.currentUser.id})
             });
-        
+
         // Render the list view. Because the view has an id of "content", it will replace the existing #content element
         taskListView.render();
 		taskListView.renderTasks();
