@@ -72,7 +72,7 @@
      */
     Backbone.History.prototype.navigate = function(fragment) {
         fragment = (fragment || '').replace(/^#*/, '');
-        if (this.getHash() === fragment) {
+        if (this.getFragment() === fragment) {
             return;
         }
         this.stack().push(fragment);
@@ -90,7 +90,7 @@
     Backbone.History.prototype.loadUrl = function () {
         var loaded = _loadUrl.call(this);
         if (loaded) {
-            this.stack().push(this.getHash());
+            this.stack().push(this.getFragment());
         }
         return loaded;
     };
