@@ -122,8 +122,9 @@ _.extend(app, {
     },
 
     bootstrap: function () {
-        this.controller = new TaskController();
-        this.accountController = new AccountController();
+        this.router = new Backbone.Router();
+        this.controller = new TaskController({router: this.router});
+        this.accountController = new AccountController({router: this.router});
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
         
         this.setupStaticTemplates()
