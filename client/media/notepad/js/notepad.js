@@ -52,10 +52,11 @@ _.extend(app, {
 
     _bindHubEvents: function (user) {
         var hubId = this.getLatestOpenHub(user),
+            hash = window.location.hash.slice(1),
             hub;
-        
+
         // There is already a hub we can load
-        if (hubId){
+        if (hubId && hash === '/'){
             hub = app.selectedHub = Tasket.getHubs(hubId);
             
             // If the hub data is complete
@@ -73,7 +74,7 @@ _.extend(app, {
         }
         
         // No existing hubs. Create a new one
-        else {
+        else if (hash === '/') {
             hub = app.selectedHub = new Hub({
                 title: app.lang.NEW_HUB,
                 owner: user.id
