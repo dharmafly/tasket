@@ -72,7 +72,13 @@ var TaskListView = View.extend({
                 if (task.get("hub") === view.model.id) {
                     view.renderTasks(task);
                 }
-            });
+            })
+
+	        //event handler for rendering loaded tasks into the view
+	        .bind("refresh", function () {
+	            view.renderTasks();
+	        });
+
             
         return this;
     },
@@ -95,6 +101,18 @@ var TaskListView = View.extend({
         return this;
     },
 
+	showHub: function(hub){
+		this.model = hub;
+		this.collection = Tasket.getTasks(hub.get("tasks.new").concat(hub.get("tasks.claimed")));
+		this._setupModelBindings();
+		this.render();
+		this.renderTasks();
+		return this;
+	},
+
+	toggleEdit: function(){
+		this._onTitleEdit();
+	},
 
     makeSortable: function () {
         this.itemList.sortable({
@@ -128,15 +146,13 @@ var TaskListView = View.extend({
     *
     * tasks - a single or an array of task model instances.
     */
-    renderTasks: function (tasks) {
+    renderTasks: function () {
         var view = this,
             itemList = this.itemList,
             taskView;
 
-        tasks = tasks instanceof TaskList ? tasks.toArray() : [tasks];
-        tasks = this._orderTasks(tasks);
-
-        _.each(tasks, function (task) {
+		this.itemList.empty();
+        this.collection.each(function (task) {
             taskView = new TaskView({model: task, collection: view.collection});
             view.taskViews[task.cid] = taskView;
             itemList.append(taskView.render().el);
@@ -190,7 +206,7 @@ var TaskListView = View.extend({
     _onModelChangeTitle: function(task){
         this._resetTitle(task.get("title"));
     },
-
+	
     _onTitleEdit: function (event) {
         var listTitle = this.previousTitle =  this.$("div.header h1 a").text(),
             html = jQuery(tim("title-edit", {placeholder: app.lang.NEW_HUB})),
@@ -199,7 +215,9 @@ var TaskListView = View.extend({
         this.$("div.header").addClass("edit-mode");
         this.$("div.header h1").replaceWith(html);
         this.$("div.header input").val(listTitle).focus();
-        event.preventDefault();
+		if (event) {
+			event.preventDefault();
+		}
         
         // adjust title width based on input
         this.$("div.header input").css("width", headingWidth+10+"px");
@@ -223,6 +241,11 @@ var TaskListView = View.extend({
     _saveTitle: function (title) {
         this.model.set({title: title});
         this.model.save();
+		if (this.model.isNew()) {
+			this.trigger('create-hub', this.model);
+		} else {
+			this.trigger('update-hub', this.model);
+		}
         this.$("div.header").removeClass("edit-mode");        
     },
 
