@@ -56,6 +56,8 @@
             "../js/views/authbar.js",
             "../js/views/task.js",
             "../js/views/task-list.js",
+            "../js/views/hub-list.js",
+            "../js/views/hub.js",
             "../js/controllers/task-controller.js",
             
             "../../tank/js/core/tasket.js",
