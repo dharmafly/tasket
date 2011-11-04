@@ -17,6 +17,7 @@ var Lightbox = View.extend({
 
     constructor: function Lightbox() {
         View.prototype.constructor.apply(this, arguments);
+        _.bindAll(this, '_onKeypress');
     },
     
     show: function (options) {
@@ -31,6 +32,9 @@ var Lightbox = View.extend({
         
         // If contents is a form, then focus its first control
         this.$(":input:first").focus();
+
+        // Listen for escape key to close.
+        $(document).one('keydown', this._onKeypress);
 
         return this.trigger("show", options, this);
     },
@@ -55,6 +59,8 @@ var Lightbox = View.extend({
         else {
             this.elem.removeClass(this.classes.display);
         }
+        
+        $(document).unbind('keydown', this._onKeypress);
         
         this._trigger(options, "hide", this);
         this.historyCount = 1;
@@ -133,6 +139,12 @@ var Lightbox = View.extend({
             else {
                 this.hide({silent:true});
             }
+        }
+    },
+
+    _onKeypress: function (event) {
+        if (event.which === 27 /* escape key*/) {
+            this.hide();
         }
     }
 });
