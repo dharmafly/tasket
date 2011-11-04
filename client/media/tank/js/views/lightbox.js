@@ -115,8 +115,16 @@ var Lightbox = View.extend({
     },
     
     _onHide: function (event) {
+        var target = jQuery(event.target),
+            hash   = (target.prop("hash") || '').slice(1);
+
+        // A normal close lightbox click
+        if (event.target === this.el || target.hasClass("close") || hash === "close") {
+            event.preventDefault();
+            this.hide();
+        }
         // Links from the lightbox contents shouldn't trigger an auto rewind of history when clicked on
-        if (event.target.nodeName === "A"){
+        else if (event.target.nodeName === "A"){
             // A link to a new lightbox, from within a lightbox. Use the HTML attribute `data-lightbox="open` to prevent history rewind
             if (event.target.getAttribute("data-lightbox") === "open"){
                 app.lightbox.historyCount ++;
@@ -125,12 +133,6 @@ var Lightbox = View.extend({
             else {
                 this.hide({silent:true});
             }
-        }
-    
-        // A normal close lightbox click
-        else if (event.target === this.el || jQuery(event.target).hasClass("close")) {
-            event.preventDefault();
-            this.hide();
         }
     }
 });
