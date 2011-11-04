@@ -2,7 +2,8 @@ var Form = View.extend({
     tagName: "form",
     
     events: {
-        "submit": "submit"
+        "submit": "submit",
+        "keydown textarea": "_onKeydown"
     },
     
     constructor: function Form() {
@@ -84,6 +85,14 @@ var Form = View.extend({
     _onError: function (model, xhr) {
         var errors = jQuery.parseJSON(xhr.responseText);
         this.errors(errors).trigger("error", this.model, this, xhr.status);
+    },
+    
+    _onKeydown: function (event) {
+        var hasMeta = event.metaKey || event.ctrlKey;
+        if (event.which === 13 /* return key */ && hasMeta) {
+            event.preventDefault();
+            this.submit();
+        }
     }
 });
 
