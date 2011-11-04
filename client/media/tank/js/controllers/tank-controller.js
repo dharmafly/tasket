@@ -54,10 +54,9 @@ var TankController = Controller.extend({
                 .repositionHubViews();
         });
 
-        jQuery(window).bind("resize", throttle(function(){
+        jQuery(window).bind("resize", _.debounce(function(){
             tank.trigger("resize", tank);
-        }, app.tankResizeThrottle, true));
-
+        }, app.tankResizeThrottle));
 
         Tasket.hubs
             // Watch for new hubs and add them to the tank.

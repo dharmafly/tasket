@@ -3,38 +3,8 @@ var Tasket = {};
 
 
 // **
-
-
 function now(){
     return (new Date()).getTime();
-}
-
-// Throttle: http://github.com/premasagar/mishmash/tree/master/throttle/
-function throttle(handler, interval, defer){
-    var context = this,
-        limitOn; // falsey
-
-    interval = interval || 250; // milliseconds
-    // defer is falsey by default
-
-    return function(){
-        var args = arguments;
-
-        if (!limitOn){
-            limitOn = true;
-
-            window.setTimeout(function(){
-                if (defer){
-                    handler.apply(context, args);
-                }
-                limitOn = false;
-            }, interval);
-
-            if (!defer){
-                return handler.apply(context, args);
-            }
-        }
-    };
 }
 
 // Checks to see if any attributes in an array have changed when a Model fires
