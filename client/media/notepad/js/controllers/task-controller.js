@@ -1,7 +1,8 @@
 var TaskController = Controller.extend({
     routes: {
         "/hubs/:hub/": 'showHub',
-		"/hubs/new/": "newHub"
+		"/hubs/new/": "newHub",
+		"/tasks/starred/": "showStarred"
     },
 
     taskViewRendered: false,
@@ -15,15 +16,14 @@ var TaskController = Controller.extend({
         Controller.apply(this, arguments);
 
         // Set up views on login.
-        app.bind("change:currentUser", function onLogin() {
+        app.bind("change:currentUser", _.once(function () {
 			controller.createHubList();
 			controller.createTaskList();
-			app.unbind("change:currentUser", onLogin);
-        });
+        }));
 
         app.bind("change:selectedHub", function (hub) {			
 			controller.hubListView.selectHub(hub);
-			controller.taskListView.showHub(hub);
+            controller.taskListView.showHub(hub);
         });
     },
 
@@ -53,11 +53,10 @@ var TaskController = Controller.extend({
 
 		taskListView.bind('create-hub', function(hub){
 			if (hub.isNew()) {
-				hub.bind('change:id', function changeId() {
+				hub.bind('change:id', _.once(function () {
 					controller.navigate("/hubs/" + hub.id + '/');
                     controller.hubListView.collection.add(hub);
-                    hub.unbind('change:id', changeId);
-				});
+				}));
 			}
 			app.selectedHub = hub;
 		});
@@ -106,6 +105,33 @@ var TaskController = Controller.extend({
             });
         
 		hubListView.render();        
+	},
+	
+	showStarred: function () {
+	    var controller = this,
+	        user = app.currentUser,
+	        tasks = Tasket.getTasks(user.get("stars.tasks")),
+	        taskListView = this.taskListView,
+			hub = app.selectedHub = new Hub({
+			    id: 'starred',
+	            title: 'Starred items',
+                owner: user.id,
+                tasks: tasks.toHubTasks()
+        	});
+
+        function complete() {
+            app.trigger("change:selectedHub", hub);
+		    controller.taskListView.hideAddEditControls();
+        }
+
+
+		if (!tasks.isComplete()) {
+			tasks.bind("reset", _.once(function (tasks) {
+			    complete();
+			}));
+		} else {
+            complete();
+		}
 	}
 
 	
