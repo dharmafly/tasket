@@ -14,56 +14,20 @@ var TankController = Controller.extend({
         Controller.apply(this, arguments);
     },
 
-    // Get the dimensions of the tank    
-    updateWalls: function(){
-        var wallBuffer = app.wallBuffer,
-            viewportWidth = document.documentElement.clientWidth - this.scrollbarWidth,
-            viewportHeight = document.documentElement.clientHeight - this.scrollbarWidth,
-            dimensions;
-
-        if (viewportWidth < 0){
-            viewportWidth = 0;
-        }
-        if (viewportHeight < 0){
-            viewportHeight = 0;
-        }
-        this.viewportWidth = viewportWidth;
-        this.viewportHeight = viewportHeight;
-        this.wallBuffer = wallBuffer;
-        this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
-        this.wallLeft = wallBuffer;
-        this.width = this.wallRight - this.wallLeft;
-
-         // NOTE: this is zero-bottom y
-        this.wallTop = viewportHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
-        this.wallBottom = wallBuffer;
-        this.height = this.wallTop - this.wallBottom;
-        this.marginTop = viewportHeight - this.wallTop;
-        
-        dimensions = {
-            top: this.wallTop,
-            bottom: this.wallBottom,
-            left: this.wallLeft,
-            right: this.wallRight
-        };
-
-        return this.trigger("change:walls", this, dimensions);
-    },
-
     initialize: function(options){
         var tank = this;
         this.hubViews = {};
-        
+
         _.bindAll(this, "_onSelectHubs", "_onDeselectHubs", "repositionHubs");
-        
+
         this.scrollbarWidth = this.getScrollbarWidth();
         this.svg = this.createSVGRoot(jQuery("#vector")[0]);
-        
+
         // Force director
         this.forceDirector = ForceDirector.create({
             animate: app.animateHubs
         });
-        
+
         this.forceDirector
             .bind("loop", this.repositionHubs)
             .bind("end", this.repositionHubs)
@@ -74,17 +38,17 @@ var TankController = Controller.extend({
                     app.selectedHubView.redrawTasks();
                 }
             });
-        
+
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
-        
+
             if (!_.isEqual(currentWalls, dimensions)){
                 this.updateSVGDimensions();
                 this.forceDirector.setWalls(dimensions);
                 this.calculateHubWeights();
             }
         });
-        
+
         this.bind("resize", function(){
             this.updateWalls()
                 .repositionHubViews();
@@ -93,7 +57,7 @@ var TankController = Controller.extend({
         jQuery(window).bind("resize", throttle(function(){
             tank.trigger("resize", tank);
         }, app.tankResizeThrottle, true));
-        
+
 
         Tasket.hubs
             // Watch for new hubs and add them to the tank.
@@ -109,7 +73,7 @@ var TankController = Controller.extend({
                     Tasket.tasks.remove(taskId);
                 });
             }, this));
-        
+
 /*
         Tasket.tasks
             // When a task is removed from the global collection, clean up by removing task from its hub model, and the associated users.
@@ -121,111 +85,42 @@ var TankController = Controller.extend({
                     claimedBy = users.get(task.get("claimedBy")),
                     doneBy = users.get(task.get("doneBy")),
                     verifiedBy = users.get(task.get("verifiedBy"));
-                
+
                 if (hub){
                     hub.removeTask(task); // NOTE: currently this causes the hub total estimate to be adjusted twice when removing a task
                 }
-                
+
                 if (owner){
                     owner.removeTask(task);
                 }
-                
+
                 if (claimedBy){
                     claimedBy.removeTask(task);
                 }
-                
+
                 if (doneBy){
                     doneBy.removeTask(task);
                 }
-                
+
                 if (verifiedBy){
                     verifiedBy.removeTask(task);
                 }
             }, this));
-   */     
+   */
         this.updateWalls();
-        
+
         // Add hubs
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
     },
-    
-    // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
-    getScrollbarWidth: function(){
-        var // Outer scrolling div
-            outer = jQuery("<div/>").css({
-                position: "absolute",
-                top: "-1000px",
-                left: "-1000px",
-                width: "100px",
-                height: "50px",
-                overflow: "hidden"
-            }).appendTo("body"),
-            
-            // Inner content div
-            inner = jQuery("<div/>").css({
-                width: "100%",
-                height: "200px"
-            }).appendTo(outer),
-            
-            // Width of the inner div without scrollbar
-            width1 = inner[0].offsetWidth,
-            width2;
-        
-        // Width of the inner div with scrollbar
-        outer.css({overflow: "auto"});
-        width2 = inner[0].offsetWidth;
 
-        // Remove the scrolling div from the doc
-        outer.remove();
+    error: function (message) {
+        app.notification.error(
+            message || "You do not have permission to access this."
+        );
+        app.back();
 
-        // Pixel width of the scroller
-        return width1 - width2;
-    },
-    
-    emptyElement: function(elem){
-        if (elem){
-            while (elem.firstChild) {
-                elem.removeChild(elem.firstChild);
-            }
-        }
-        return this;
-    },
-    
-    clearSVG: function(){
-        return this.emptyElement(this.svg);
-    },
-    
-    createSVGElement: function(nodeName){
-        return document.createElementNS("http://www.w3.org/2000/svg", nodeName);
-    },
-    
-    // NOTE: Creating the <svg> element this way allows it to render on iPad et al, whereas including the <svg> element directly in the HTML document does not. Inspired by http://keith-wood.name/svg.html
-    createSVGRoot: function(container){
-        var svg = this.createSVGElement("svg");
-	    svg.setAttribute("version", "1.1");
-	
-	    container.appendChild(svg);
-	    return svg;
-    },
-    
-    updateSVGDimensions: function(){
-        this.svg.setAttribute("width", this.viewportWidth);
-        this.svg.setAttribute("height", this.viewportHeight);
-        return this;
-    },
-    
-    addSVGLine: function(x1, x2, y1, y2){
-        var line = this.svg && this.createSVGElement("line");
-
-        if (line){
-            line.setAttribute("x1", x1);
-            line.setAttribute("x2", x2);
-            line.setAttribute("y1", y1);
-            line.setAttribute("y2", y2);
-            this.svg.appendChild(line);
-        }
         return this;
     },
 
@@ -240,7 +135,7 @@ var TankController = Controller.extend({
     /*
     getTaskView: function(id){
         id = String(id); // allow argument to be a String or a Number
-        
+
         var task = Tasket.getTasks(id),
             hubId = task && task.get("hub"),
             hubView = hubId && this.getHubView(hubId);
@@ -259,19 +154,19 @@ var TankController = Controller.extend({
                 return hubView.model.id === selectedHubView.model.id;
             })
             .invoke("deselect");
-            
+
         return this.trigger("hub:select", selectedHubView, this);
     },
-    
+
     _onDeselectHubs: function(hubView){
         return this.trigger("hub:deselect", hubView, this);
     },
-    
+
     drawHubView: function(hubView, options){
         var offset;
-    
+
         options = options || {};
-    
+
         if (_.isNumber(options.left) && _.isNumber(options.top)){
             offset = {
                 left: options.left,
@@ -285,7 +180,7 @@ var TankController = Controller.extend({
         hubView.offsetValues(offset);
         app.bodyElem.append(hubView.elem);
         hubView.render();
-        
+
         // Add the hub to the forcedirector engine (not a task, even though the method is `addTask`)
         hubView.forcedNodeHubToHub = this.forceDirector.createNode({
             key: "hub-" + hubView.model.id,
@@ -295,14 +190,14 @@ var TankController = Controller.extend({
             height: hubView.height + app.hubBuffer * 2,
             title: hubView.model.get("title")
         });
-        
+
         return this;
     },
 
     addHubs: function(hubs, options){
         var tank = this,
             hubViewOptions;
-    
+
         _(hubs).each(function(hub){
             if (!hub.get("archived.timestamp")) { //TODO: remove when archived projects aren't passed through default API /hubs/ call
                 this.addHub(hub, {dontDraw:true});
@@ -311,13 +206,13 @@ var TankController = Controller.extend({
 
         if (!options || !options.dontDraw){
             this.calculateHubWeights();
-        
+
             _.each(this.hubViews, function(hubView){
                 tank.drawHubView(hubView);
             });
             this.forcedirectHubs();
         }
-        
+
         return this;
     },
 
@@ -330,7 +225,7 @@ var TankController = Controller.extend({
         }
 
         options = options || {};
-        
+
         hubView = this.hubViews[hub.cid] = new HubView({
             model: hub
         });
@@ -355,27 +250,27 @@ var TankController = Controller.extend({
     // Remove a hub from the tank.
     removeHubView: function (hub) {
         var hubView = this.getHubView(hub.id);
-        
+
         if (hubView) {
             delete this.hubViews[hub.cid];
             hubView.deselect().remove();
-            
+
             this.removeForceDirectorNode("hub-" + hub.id)
                 .calculateHubWeights()
                 .forcedirectHubs();
         }
-        
+
         return this;
     },
 
     displayHub: function(hubId){
         var controller = this,
             hubView = this.getHubView(hubId);
-        
+
         if (hubView){
             hubView.sendToFront().showTasks();
         }
-        
+
         return this;
     },
 
@@ -385,7 +280,7 @@ var TankController = Controller.extend({
         if (!this._isLoggedIn("You must be logged in to create a " + app.lang.HUB)) {
             return;
         }
-        
+
         hub = new Hub({
             owner: app.currentUser.id
         });
@@ -398,18 +293,18 @@ var TankController = Controller.extend({
                 // Add hub and select it for viewing
                 this.addHub(hub).select();
             }, this));
-        
+
         return this;
     },
-    
+
     listArchivedHubs: function() {
         var form = new ArchiveForm();
-        
+
         // open view in lightbox
         function renderArchivedHubs(hubs){
             var archivedHubData = [],
                 hubsLength = hubs.models.length;
-        
+
             _.each(hubs.models, function(hub){
                 var taskCount = hub.countTasks(),
                     completedTaskCount = hub.countCompletedTasks(),
@@ -426,13 +321,13 @@ var TankController = Controller.extend({
                         " (" + completedTaskCount + " completed)"
                 });
             });
-            
+
             app.lightbox.content(form.render(archivedHubData).el, "archived-hubs").show();
 
             // When user clicks on "Restore" to un-archive a hub
             form.bind("restoreHub", _.bind(function (hubId) {
                 var hub = Tasket.getHubs(hubId);
-                
+
                 if (!hub){
                     this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
                     return;
@@ -440,15 +335,15 @@ var TankController = Controller.extend({
                 hub.unarchive();
                 this.addHub(hub).select();
                 // TODO: re-render dashboard list of projects
-                
+
                 hubsLength --;
-                
+
                 if (!hubsLength){
                     app.lightbox.hide();
                 }
             }, this));
         }
-        
+
         Tasket.getArchivedHubs(_.bind(renderArchivedHubs, this));
         return form;
     },
@@ -456,12 +351,12 @@ var TankController = Controller.extend({
     editHub: function (hubId) {
         var hub = Tasket.getHubs(hubId),
             hubView;
-            
+
         if (!hub){
             this.error("Sorry. There was a problem editing the " + app.lang.HUB + ". Please refresh the page and try again. (error: hub-" + hubId + " not found)");
             return;
         }
-            
+
         if (!this._isLoggedIn("You must be logged in to edit this.")) {
             return;
         }
@@ -476,7 +371,7 @@ var TankController = Controller.extend({
                     hubView.render();
                 }
             }, this));
-        
+
         return this.displayHub(hubId);
     },
 
@@ -504,7 +399,7 @@ var TankController = Controller.extend({
 
         // Append our iFrame element for upload.
         form.updateFrame();
-        
+
         form.bind("success", function (hub) {
                 app.lightbox.hide();
                 HubView.prototype.updateLocation.call({model:hub});
@@ -526,29 +421,29 @@ var TankController = Controller.extend({
 
         return form;
     },
-    
+
     // TODO: this should work even when the task view isn't yet available - i.e. via an async request to API
     // TODO: lightbox should close if a link from within the task description is clicked
     displayHubDetails: function(hubId){
         var hubView = this.getHubView(hubId);
-            
+
         if (hubView){
             hubView.select().displayDetails();
         }
-        
+
         return this;
     },
-    
+
     // TODO: this should work even when the task view isn't yet available - i.e. via an async request to API
     // TODO: lightbox should close if a link from within the task description is clicked
     displayTaskDetails: function(hubId, taskId){
         taskId = String(taskId); // allow argument to be a String or a Number
-        
+
         var hubView = this.getHubView(hubId),
             taskView = hubView && hubView.taskViews && hubView.taskViews.detect(function(taskView){
                 return taskView.model.id === taskId;
             });
-            
+
         if (taskView){
             this.displayHub(hubId);
             taskView.displayDetails();
@@ -556,14 +451,14 @@ var TankController = Controller.extend({
         else if (hubView){
             hubView.updateLocation();
         }
-        
+
         return this;
     },
 
     newTask: function(hubId){
         var hub = Tasket.getHubs(hubId),
             form;
-            
+
         if (!hub){
             this.error("Sorry. There was a problem creating the task. Please refresh the page and try again. (error: hub-" + hubId + " not found)");
             return;
@@ -581,7 +476,7 @@ var TankController = Controller.extend({
             this.error("A " + app.lang.HUB + " can only have a maximum of " + Tasket.settings.TASK_LIMIT + " incomplete tasks");
             return;
         }
-        
+
         return this.displayHub(hubId)
             ._createTaskForm(hub, new Task({
                 hub: hubId, // NOTE: Verify this when refactoring hubs.
@@ -589,7 +484,7 @@ var TankController = Controller.extend({
                 estimate: Task.ESTIMATES[0].value
             }));
     },
-    
+
     editTask: function (hubId, taskId) {
         var hub  = Tasket.getHubs(hubId),
             task = Tasket.getTasks(taskId);
@@ -641,7 +536,7 @@ var TankController = Controller.extend({
                       'tasks.owned.new': userTasks
                     });
                 }
-                    
+
                 tank.repositionHubViews();
 
                 // Go to the hub's URL
@@ -649,7 +544,7 @@ var TankController = Controller.extend({
             }, this))
             .bind("delete", _.bind(function (model) { // TODO create removeTask method
                 var hubView = this.getHubView(hub.id);
-                if (hubView) {                
+                if (hubView) {
                     hubView.model.removeTask(task);
                 }
                 app.currentUser.removeTask(model);
@@ -659,25 +554,16 @@ var TankController = Controller.extend({
             .bind("error", _.bind(function(task, form, status){
                 this.error("Sorry, there was an error creating the task. Please try logging out and in again. (error: task-" + task.id + ", status " + status + ")");
             }));
-        
+
         return this;
     },
 
-    error: function (message) {
-        app.notification.error(
-            message || "You do not have permission to access this."
-        );
-        app.back();
-        
-        return this;
-    },
-    
-    
+
     /////
-    
+
     // FORCE-DIRECTION PHYSICS
     // TODO: totally refactor these, and related methods in hub-view.js
-        
+
     removeForceDirectorNode: function(key){
         if (this.forceDirector){
             this.forceDirector.nodes = _.reject(this.forceDirector.nodes, function(node){
@@ -686,43 +572,43 @@ var TankController = Controller.extend({
         }
         return this;
     },
-    
+
     getHubWeights: function(){
         return _.map(this.hubViews, function(hubView){
             return hubView.model.weight();
         });
     },
-    
+
     calculateHubWeights: function(){
         var hubWeights = this.hubWeights = this.getHubWeights(),
             totalHubViews;
-            
+
         this.hubWeightMin = Math.min.apply(Math, hubWeights);
         this.hubWeightMax = Math.max.apply(Math, hubWeights);
         this.hubWeightRange = this.hubWeightMax - this.hubWeightMin;
         this.hubViewOrderX = this.hubsAlphabetical();
         this.hubViewOrderXSlice = this.width / this.hubViewOrderX.length;
-        
+
         return this;
     },
 
     hubViewOffsetTop: function(hubView){
         if (_.isUndefined(this.hubWeights)){
-            throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first"; 
+            throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first";
         }
-        
+
         var weight = hubView.model.weight(),
             weightRatioOfFullRange = (weight - this.hubWeightMin) / (this.hubWeightRange || 0.5); // 0.5 is to supply a number for when there is no difference at all
 
         return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
     },
-    
+
     hubViewOffsetLeft: function(hubView){
         return this.hubViewOrderX.length < 2 ?
             this.wallLeft + this.width / 2 :
             this.wallLeft + this.hubViewOrderXSlice / 2 + (this.hubViewOrderXSlice * _.indexOf(this.hubViewOrderX, hubView.model.id)) + Math.random(); // random seed
     },
-    
+
     hubsAlphabetical: function(){
         return _(this.hubViews).chain()
             .sortBy(function(hubView){
@@ -733,14 +619,14 @@ var TankController = Controller.extend({
             })
             .value();
     },
-    
+
     hubViewOffset: function(hubView){
         return {
             left: this.hubViewOffsetLeft(hubView),
             top:  this.hubViewOffsetTop(hubView)
         };
     },
-    
+
     setHubViewOffsetFromForcedNode: function(hubView){
         var node = hubView.forcedNodeHubToHub,
             pos = node.getPos();
@@ -750,31 +636,31 @@ var TankController = Controller.extend({
             top: app.invertY(~~pos.y)
         });
     },
-    
+
     repositionHubViews: function(){
         var tank = this;
-        
+
         _(this.hubViews).each(function(hubView){
             var offsetTop = tank.hubViewOffsetTop(hubView),
                 forcedNode = hubView.forcedNodeHubToHub;
-                
+
             // Set position of force-directed representation, with respect to other hubs
             forcedNode.setPos(
                 forcedNode.getPos().x,
                 app.invertY(offsetTop)
             );
-            
+
             // Set position of DOM element
             tank.setHubViewOffsetFromForcedNode(hubView);
-            
+
             // Set position of force-directed representation, with respect to tasks - TODO: combine these
             hubView.updateForceDirectedDimensions();
         });
-        
+
         return this.forcedirectHubs();
             //.forcedirectTasks(); // TODO: not currently working (canvas lines move out of sync)
     },
-    
+
     repositionHubs: function(){
         _.each(this.hubViews, this.setHubViewOffsetFromForcedNode);
         return this.trigger("change:position:hubs");
@@ -798,5 +684,119 @@ var TankController = Controller.extend({
         return this
             .forcedirectHubs()
             .forcedirectTasks();
-    }
+    },
+
+    // Get the dimensions of the tank
+    updateWalls: function(){
+        var wallBuffer = app.wallBuffer,
+            viewportWidth = document.documentElement.clientWidth - this.scrollbarWidth,
+            viewportHeight = document.documentElement.clientHeight - this.scrollbarWidth,
+            dimensions;
+
+        if (viewportWidth < 0){
+            viewportWidth = 0;
+        }
+        if (viewportHeight < 0){
+            viewportHeight = 0;
+        }
+        this.viewportWidth = viewportWidth;
+        this.viewportHeight = viewportHeight;
+        this.wallBuffer = wallBuffer;
+        this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
+        this.wallLeft = wallBuffer;
+        this.width = this.wallRight - this.wallLeft;
+
+         // NOTE: this is zero-bottom y
+        this.wallTop = viewportHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
+        this.wallBottom = wallBuffer;
+        this.height = this.wallTop - this.wallBottom;
+        this.marginTop = viewportHeight - this.wallTop;
+
+        dimensions = {
+            top: this.wallTop,
+            bottom: this.wallBottom,
+            left: this.wallLeft,
+            right: this.wallRight
+        };
+
+        return this.trigger("change:walls", this, dimensions);
+    },
+
+    // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
+    getScrollbarWidth: function(){
+        var // Outer scrolling div
+            outer = jQuery("<div/>").css({
+                position: "absolute",
+                top: "-1000px",
+                left: "-1000px",
+                width: "100px",
+                height: "50px",
+                overflow: "hidden"
+            }).appendTo("body"),
+
+            // Inner content div
+            inner = jQuery("<div/>").css({
+                width: "100%",
+                height: "200px"
+            }).appendTo(outer),
+
+            // Width of the inner div without scrollbar
+            width1 = inner[0].offsetWidth,
+            width2;
+
+        // Width of the inner div with scrollbar
+        outer.css({overflow: "auto"});
+        width2 = inner[0].offsetWidth;
+
+        // Remove the scrolling div from the doc
+        outer.remove();
+
+        // Pixel width of the scroller
+        return width1 - width2;
+    },
+
+    clearSVG: function(){
+        return this.emptyElement(this.svg);
+    },
+
+    createSVGElement: function(nodeName){
+        return document.createElementNS("http://www.w3.org/2000/svg", nodeName);
+    },
+
+    // NOTE: Creating the <svg> element this way allows it to render on iPad et al, whereas including the <svg> element directly in the HTML document does not. Inspired by http://keith-wood.name/svg.html
+    createSVGRoot: function(container){
+        var svg = this.createSVGElement("svg");
+	    svg.setAttribute("version", "1.1");
+
+	    container.appendChild(svg);
+	    return svg;
+    },
+
+    updateSVGDimensions: function(){
+        this.svg.setAttribute("width", this.viewportWidth);
+        this.svg.setAttribute("height", this.viewportHeight);
+        return this;
+    },
+
+    addSVGLine: function(x1, x2, y1, y2){
+        var line = this.svg && this.createSVGElement("line");
+
+        if (line){
+            line.setAttribute("x1", x1);
+            line.setAttribute("x2", x2);
+            line.setAttribute("y1", y1);
+            line.setAttribute("y2", y2);
+            this.svg.appendChild(line);
+        }
+        return this;
+    },
+
+    emptyElement: function(elem){
+        if (elem){
+            while (elem.firstChild) {
+                elem.removeChild(elem.firstChild);
+            }
+        }
+        return this;
+    },
 });
