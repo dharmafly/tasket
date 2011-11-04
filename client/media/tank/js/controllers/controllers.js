@@ -42,12 +42,19 @@ function Controller(options) {
             routes = routes.apply(this);
         }
 
-        // Register the controllers routes with the router.
-        _.each(routes, function (name, route) {
-            if (_.isFunction(this[name])) {
-                this.router.route(route, name, _.bind(this[name], this));
-            }
+        // Format the routes into arguments for the Router#route() method.
+        routes = _(routes).chain().map(function (name, route) {
+            var fn = this[name];
+            return _.isFunction(fn) ? [route, name, _.bind(fn, this)] : null;
         }, this);
+
+        // Reverse them to ensure they retain precedence and add each
+        // route to the router. See documentation for Backbone router for
+        // details on why they must be reversed.
+        // http://documentcloud.github.com/backbone/docs/backbone.html#section-86
+        routes.compact().reverse().each(function (args) {
+            this.route.apply(this, args);
+        }, this.router);
     }
 
     this.initialize.apply(this, arguments);
