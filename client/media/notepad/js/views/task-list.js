@@ -113,6 +113,15 @@ var TaskListView = View.extend({
 	toggleEdit: function(){
 		this._onTitleEdit();
 	},
+    
+    hideAddEditControls: function(){
+        // hide editing controls - used when viewing starred items
+        this.$('div.header ul.edit-item').add('#content a.new-item').hide();
+    },
+
+    showAddEditControls: function(){
+        this.$('div.header ul.edit-item').add('#content a.new-item').show();
+    },
 
     makeSortable: function () {
         this.itemList.sortable({
@@ -150,7 +159,7 @@ var TaskListView = View.extend({
         var view = this,
             itemList = this.itemList,
             taskView;
-
+            
 		this.itemList.empty();
         this.collection.each(function (task) {
             taskView = new TaskView({model: task, collection: view.collection});
