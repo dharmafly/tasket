@@ -230,5 +230,17 @@ var TaskList = CollectionModel.extend({
     model: Task,
     constructor: function TaskList(){
         CollectionModel.prototype.constructor.apply(this, arguments);
+    },
+    filterByState: function (state) {
+        return new TaskList(this.filter(function (task) {
+            return task.get("state") === state;
+        }));
+    },
+    toHubTasks: function () {
+        var tasks = {};
+        _.each(Task.states, function (state) {
+           tasks[state] = this.filterByState(state).pluck('id');
+        }, this);
+        return tasks;
     }
 });
