@@ -6,8 +6,15 @@
  * If a Router is provided it will register it's own routes and provides
  * a proxy to the Router#navigate() method.
  *
+ * This object exists as well as the Backbone.Router because there should
+ * only be one "router" instance per application which will manage all
+ * registered routes and as such allows the binding to "route:*" to listen
+ * for app changes across the entire application. These controllers allow
+ * logic to be split up into smaller modules while retaining a single route
+ * registry.
+ *
  * options - An options object.
- *           router: An instance of Backbone.Router.
+ *           router: An instance of Backbone.Router (optional).
  *
  * Examples
  *
