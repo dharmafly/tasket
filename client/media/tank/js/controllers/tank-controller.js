@@ -270,10 +270,14 @@ var TankController = Controller.extend({
 
     displayHub: function(hubId){
         var controller = this,
-            hubView = this.getHubView(hubId);
+            hubView = this.getHubView(hubId),
+            position;
 
         if (hubView){
             hubView.sendToFront().showTasks();
+
+            position = hubView.elem.position();
+            this.centerViewport(position.left, position.top);
         }
 
         return this;
@@ -724,13 +728,21 @@ var TankController = Controller.extend({
         this.tankHeight = height;
     },
 
+    // Centers the viewport in the middle of the tank.
     centerTank: function () {
-        var centerX = (this.tankWidth  - this.viewportWidth)  / 2,
-            centerY = (this.tankHeight - this.viewportHeight) / 2;
-
-        this.positionViewport(centerX, centerY);
+        this.centerViewport(this.tankWidth / 2, this.tankHeight / 2);
     },
 
+    // Centres the viewport around the x, y position.
+    centerViewport: function (x, y) {
+        // Take into account the dashboard sidebar
+        var centerX = (this.viewportWidth - this.getDashboardWidth()) / 2,
+            centerY = this.viewportHeight / 2;
+
+        window.scrollTo(x - centerX, y - centerY);
+    },
+
+    // Positions the viewport at x, y from the top left.
     positionViewport: function (x, y) {
         window.scrollTo(x || 0, y || 0);
     },
@@ -749,7 +761,7 @@ var TankController = Controller.extend({
         // NOTE: this is zero-bottom y
         this.wallTop    = this.tankHeight - wallBuffer - toolbarHeight;
         this.wallLeft   = wallBuffer;
-        this.wallRight  = this.tankWidth - app.dashboard.elem.outerWidth() - wallBuffer;
+        this.wallRight  = this.tankWidth - this.getDashboardWidth() - wallBuffer;
         this.wallBottom = wallBuffer;
 
         this.width     = this.wallRight  - this.wallLeft;
@@ -764,6 +776,11 @@ var TankController = Controller.extend({
         };
 
         return this.trigger("change:walls", this, dimensions);
+    },
+
+    // Gets the width of the dashboard including the right offset.
+    getDashboardWidth: function () {
+        return app.dashboard.elem.outerWidth() + parseFloat(app.dashboard.elem.css('right'));
     },
 
     // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
