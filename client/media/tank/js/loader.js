@@ -64,6 +64,7 @@
                 "tank/js/models/task.js",
                 "tank/js/models/user.js",
                 "tank/js/viz/forcedirector.backbone.js",
+                "tank/js/views/tank.js",
                 "tank/js/views/toolbar.js",
                 "tank/js/views/hub-view.js",
                 "tank/js/views/task-view.js",

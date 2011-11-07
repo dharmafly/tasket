@@ -47,6 +47,7 @@
             "../js/viz/forcedirector.js",
             "../js/viz/forcedirector.backbone.js",
             "../js/views/views.js",
+            "../js/views/tank.js",
             "../js/views/hub-view.js",
             "../js/views/task-view.js",
             "../js/views/user-view.js",
