@@ -110,7 +110,9 @@ var TankController = Controller.extend({
         (function () {
             $('body').width(1500).height(1000);
         }).call(this);
+
         this.updateWalls();
+        this.centerTank();
 
         // Add hubs
         if (options && options.hubs){
@@ -720,6 +722,17 @@ var TankController = Controller.extend({
 
         this.tankWidth  = width;
         this.tankHeight = height;
+    },
+
+    centerTank: function () {
+        var centerX = (this.tankWidth  - this.viewportWidth)  / 2,
+            centerY = (this.tankHeight - this.viewportHeight) / 2;
+
+        this.positionViewport(centerX, centerY);
+    },
+
+    positionViewport: function (x, y) {
+        window.scrollTo(x || 0, y || 0);
     },
 
     // Get the dimensions of the tank
