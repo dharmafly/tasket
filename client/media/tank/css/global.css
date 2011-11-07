@@ -42,14 +42,15 @@ body {
 	margin: 0;
 	height: 100%;
 	font-size: 1.3em; /* Base font size 13px */
-}
-
-html > body {
 	cursor: -webkit-grab;
 }
 
-html > body.panning {
+body.panning {
 	cursor: -webkit-grabbing;
+}
+
+body > * {
+	cursor: default;
 }
 
 header, hgroup, footer, section, article, nav {
@@ -980,6 +981,14 @@ article.hub .meta .link.decline { /* e.g. cancel claimed task */
     border-bottom:1px solid #676767;
 }
 
+body #vector {
+	pointer-events: none;
+	cursor: -webkit-grab;
+}
+
+body.panning #vector {
+	cursor: -webkit-grabbing;
+}
 
 /* SVG lines connecting tasks to hubs */
 svg line {
