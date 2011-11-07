@@ -54,10 +54,12 @@
         </ul>
       </nav>
       
-      <div id="main">
-        <aside id="lists" class="close">
-            <h1><a><span>Open lists</span></a></h1>
-			
+      <div id="main" class="cf">
+
+        <section id="content"></section>
+
+		<h1 class="listsTab"><a><span>Open lists</span></a></h1>
+        <aside id="lists">
             <nav>
               <!-- <ul>
                 <li class="star"><a href="/">Starred</a></li>
@@ -77,9 +79,7 @@
             </nav>
 
         </aside>
-        
-        <section id="content"></section>
-
+		
         <footer>
           <nav>
             <!--
@@ -101,11 +101,22 @@
 
     <!-- TEMPLATES -->
     <script type="text/tim" class="welcome-msg">
-        <p class="welcome-message">Please <a href="#/sign-up/">sign up</a> or <a href="#/login/">login</a> to start creating items.</p>
+		<div class="welcome-message">
+			<h1>A simple, fast, easy to use tasklist</h1>
+			<p>We all have to make lists now and again and Tasket Notepad is the easiest, fastest way to do that. <a href="#/sign-up/">sign up</a> and you can start to:</p>
+			<ul>
+				<li>Create tasks that can be ticked off once done</li>
+				<li>Create multiple lists of tasks</li>
+				<li>Prioritise tasks</li>
+				<li>Star certain tasks if super important!</li>
+			</ul>
+		
+	        <p class="cta">Please <a href="#/sign-up/">sign up</a> or <a href="#/login/">login</a> to start creating items.</p>
+		</div>
     </script>
     
     <script type="text/tim" class="title-edit">
-        <input class="task-edit" type="text" placeholder="{{placeholder}}"> <a class="cancel link">cancel</a> <a class="save button">save</a>
+        <input class="task-edit" type="text" placeholder="{{placeholder}}"> <a class="save button">save</a> <a class="cancel link">cancel</a>
     </script>
     
     <script type="text/tim" class="task-edit">
@@ -113,14 +124,16 @@
     </script>
 
     <script type="text/tim" class="task-list">
-        <div class="header">
-            <h1><a>{{listTitle}}</a></h1>
-            <ul class="edit-item">
-                <li class="edit"><a title="Edit this item">Edit this item</a></li>
-            </ul>
-        </div>
-        <ul class="item-list"></ul>
-        <a class="new-item">Add new item</a>
+		<div class="task-list">
+	        <div class="header">
+	            <h1><a>{{listTitle}}</a></h1>
+	            <ul class="edit-item">
+	                <li class="edit"><a title="Edit this item">Edit this item</a></li>
+	            </ul>
+	        </div>
+	        <ul class="item-list"></ul>
+	        <a class="new-item">Add new item</a>
+		</div>
     </script>
 
     <script type="text/tim" class="task">
@@ -140,15 +153,14 @@
 
 		</ul>
 
-		<p><a href="#/hubs/new/" class="new-item">Add new list</a></p>
-		
-		<div class="showing">
-			<a href="/">Showing all</a>
+		<div class="controls">
+			<p><a href="#/hubs/new/" class="new-item">Add new list</a></p>
+			<div class="showing"><a href="/">Showing all</a></div>
 		</div>
 	</script>
 
 	<script type="text/tim" class="hub">
-    	<a href="#/hubs/{{id}}/">{{title}}</a>
+    	<a href="#/hubs/{{id}}/"><span class="count">{{count}}</span> <span class="title">{{title}}</span></a>
 	</script>
 	
     <script type="text/tim" class="lightbox">
