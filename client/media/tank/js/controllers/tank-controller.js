@@ -107,9 +107,8 @@ var TankController = Controller.extend({
             }, this));
    */
 
-        (function () {
-            $('body').width(1500).height(1000);
-        }).call(this);
+        this.tankView = new Tank({el: $('body')});
+        this.tankView.bind('pan', this.shiftViewport, this);
 
         this.updateWalls();
         this.centerTank();
@@ -275,9 +274,7 @@ var TankController = Controller.extend({
 
         if (hubView){
             hubView.sendToFront().showTasks();
-
-            position = hubView.elem.position();
-            this.centerViewport(position.left, position.top);
+            this.centerViewport(hubView.elem.position());
         }
 
         return this;
@@ -730,21 +727,41 @@ var TankController = Controller.extend({
 
     // Centers the viewport in the middle of the tank.
     centerTank: function () {
-        this.centerViewport(this.tankWidth / 2, this.tankHeight / 2);
+        this.centerViewport({
+            top:  this.tankHeight / 2,
+            left: this.tankWidth  / 2
+        });
     },
 
     // Centres the viewport around the x, y position.
-    centerViewport: function (x, y) {
+    centerViewport: function (offset) {
         // Take into account the dashboard sidebar
         var centerX = (this.viewportWidth - this.getDashboardWidth()) / 2,
             centerY = this.viewportHeight / 2;
 
-        window.scrollTo(x - centerX, y - centerY);
+        this.positionViewport({
+            top:  offset.top  - centerY,
+            left: offset.left - centerX
+        });
     },
 
-    // Positions the viewport at x, y from the top left.
-    positionViewport: function (x, y) {
-        window.scrollTo(x || 0, y || 0);
+    // Shifts viewport by increments provided.
+    shiftViewport: function (offset) {
+        var currentX = window.scrollX,
+            currentY = window.scrollY;
+
+        this.positionViewport({
+            top:  currentY - offset.top,
+            left: currentX - offset.left
+        });
+    },
+
+    // Positions the viewport top/left from the document.
+    positionViewport: function (offset) {
+        var offsetX = offset.left > 0 ? offset.left : 0,
+            offsetY = offset.top  > 0 ? offset.top  : 0;
+
+        window.scrollTo(offsetX, offsetY);
     },
 
     // Get the dimensions of the tank
