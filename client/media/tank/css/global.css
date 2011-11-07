@@ -44,6 +44,14 @@ body {
 	font-size: 1.3em; /* Base font size 13px */
 }
 
+html > body {
+	cursor: -webkit-grab;
+}
+
+html > body.panning {
+	cursor: -webkit-grabbing;
+}
+
 header, hgroup, footer, section, article, nav {
 	display: block;
 }
