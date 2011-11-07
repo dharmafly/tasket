@@ -106,6 +106,10 @@ var TankController = Controller.extend({
                 }
             }, this));
    */
+
+        (function () {
+            $('body').width(1500).height(1000);
+        }).call(this);
         this.updateWalls();
 
         // Add hubs
@@ -685,37 +689,65 @@ var TankController = Controller.extend({
             .forcedirectTasks();
     },
 
+    updateViewport: function () {
+        var $window = $(window);
+
+        this.viewportWidth  = $window.width()  - this.scrollbarWidth;
+        this.viewportHeight = $window.height() - this.scrollbarWidth;
+
+        if (this.viewportWidth < 0){
+            this.viewportWidth = 0;
+        }
+
+        if (this.viewportHeight < 0){
+            this.viewportHeight = 0;
+        }
+    },
+
+    updateTank: function () {
+        // Work out how big we want the tank and set the dimensions.
+        var width  = this.viewportWidth,
+            height = this.viewportHeight,
+            factor = Tasket.hubs.length / 5;
+
+        // If more that five hubs update the size of the screen. This is
+        // very clunky but works for the moment.
+        if (factor > 1) {
+            width  *= factor;
+            height *= factor;
+            $('body').width(width).height(height);
+        }
+
+        this.tankWidth  = width;
+        this.tankHeight = height;
+    },
+
     // Get the dimensions of the tank
     updateWalls: function(){
-        var wallBuffer = app.wallBuffer,
-            viewportWidth = document.documentElement.clientWidth - this.scrollbarWidth,
-            viewportHeight = document.documentElement.clientHeight - this.scrollbarWidth,
+        var toolbarHeight = app.toolbar.elem.outerHeight(true),
+            wallBuffer = app.wallBuffer,
             dimensions;
 
-        if (viewportWidth < 0){
-            viewportWidth = 0;
-        }
-        if (viewportHeight < 0){
-            viewportHeight = 0;
-        }
-        this.viewportWidth = viewportWidth;
-        this.viewportHeight = viewportHeight;
-        this.wallBuffer = wallBuffer;
-        this.wallRight = app.dashboard.elem.offset().left - wallBuffer;
-        this.wallLeft = wallBuffer;
-        this.width = this.wallRight - this.wallLeft;
+        this.updateViewport();
+        this.updateTank();
 
-         // NOTE: this is zero-bottom y
-        this.wallTop = viewportHeight - wallBuffer - app.toolbar.elem.outerHeight(true);
+        this.wallBuffer = wallBuffer;
+
+        // NOTE: this is zero-bottom y
+        this.wallTop    = this.tankHeight - wallBuffer - toolbarHeight;
+        this.wallLeft   = wallBuffer;
+        this.wallRight  = this.tankWidth - app.dashboard.elem.outerWidth() - wallBuffer;
         this.wallBottom = wallBuffer;
-        this.height = this.wallTop - this.wallBottom;
-        this.marginTop = viewportHeight - this.wallTop;
+
+        this.width     = this.wallRight  - this.wallLeft;
+        this.height    = this.wallTop    - this.wallBottom;
+        this.marginTop = this.tankHeight - this.wallTop;
 
         dimensions = {
             top: this.wallTop,
-            bottom: this.wallBottom,
             left: this.wallLeft,
-            right: this.wallRight
+            right: this.wallRight,
+            bottom: this.wallBottom
         };
 
         return this.trigger("change:walls", this, dimensions);
@@ -772,8 +804,8 @@ var TankController = Controller.extend({
     },
 
     updateSVGDimensions: function(){
-        this.svg.setAttribute("width", this.viewportWidth);
-        this.svg.setAttribute("height", this.viewportHeight);
+        this.svg.setAttribute("width", this.tankWidth);
+        this.svg.setAttribute("height", this.tankHeight);
         return this;
     },
 

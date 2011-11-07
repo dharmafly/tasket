@@ -212,7 +212,7 @@ var cache = new Cache(Tasket.namespace),
 
         // Convert between bottom-zeroed and top-zeroed coordinate systems
         invertY: function(y, maxValue){
-            maxValue = maxValue || app.tank.viewportHeight;
+            maxValue = maxValue || app.tank.tankHeight;
 
             return maxValue - y;
         },
