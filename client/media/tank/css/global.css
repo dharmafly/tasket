@@ -981,13 +981,8 @@ article.hub .meta .link.decline { /* e.g. cancel claimed task */
     border-bottom:1px solid #676767;
 }
 
-body #vector {
+#vector, svg {
 	pointer-events: none;
-	cursor: -webkit-grab;
-}
-
-body.panning #vector {
-	cursor: -webkit-grabbing;
 }
 
 /* SVG lines connecting tasks to hubs */

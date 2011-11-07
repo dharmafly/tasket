@@ -64,7 +64,7 @@ var Tank = View.extend({
      * Returns nothing.
      */
     _onMouseDown: function (event) {
-        if (event.target !== this.el) {
+        if (! (event.target === this.el || $(event.target).parents('#vector').length)) {
             return;
         }
 
