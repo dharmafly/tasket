@@ -64,6 +64,10 @@ var Tank = View.extend({
      * Returns nothing.
      */
     _onMouseDown: function (event) {
+        if (event.target !== this.el) {
+            return;
+        }
+
         var offset = this._getEventOffset(event);
         this._mouseOffset = offset;
         this._viewport.bind({

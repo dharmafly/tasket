@@ -107,7 +107,7 @@ var TankController = Controller.extend({
             }, this));
    */
 
-        this.tankView = new Tank({el: $('body')});
+        this.tankView = new Tank({el: $('body')[0]});
         this.tankView.bind('pan', this.shiftViewport, this);
 
         this.updateWalls();
@@ -274,7 +274,10 @@ var TankController = Controller.extend({
 
         if (hubView){
             hubView.sendToFront().showTasks();
-            this.centerViewport(hubView.elem.position());
+            this.centerViewport(hubView.elem.position(), {
+                // Animate if this is not the first view loaded.
+                animate: !!Backbone.history.getPrevious()
+            });
         }
 
         return this;
@@ -726,15 +729,15 @@ var TankController = Controller.extend({
     },
 
     // Centers the viewport in the middle of the tank.
-    centerTank: function () {
+    centerTank: function (options) {
         this.centerViewport({
             top:  this.tankHeight / 2,
             left: this.tankWidth  / 2
-        });
+        }, options);
     },
 
     // Centres the viewport around the x, y position.
-    centerViewport: function (offset) {
+    centerViewport: function (offset, options) {
         // Take into account the dashboard sidebar
         var centerX = (this.viewportWidth - this.getDashboardWidth()) / 2,
             centerY = this.viewportHeight / 2;
@@ -742,26 +745,33 @@ var TankController = Controller.extend({
         this.positionViewport({
             top:  offset.top  - centerY,
             left: offset.left - centerX
-        });
+        }, options);
     },
 
     // Shifts viewport by increments provided.
-    shiftViewport: function (offset) {
+    shiftViewport: function (offset, options) {
         var currentX = window.scrollX,
             currentY = window.scrollY;
 
         this.positionViewport({
             top:  currentY - offset.top,
             left: currentX - offset.left
-        });
+        }, options);
     },
 
     // Positions the viewport top/left from the document.
-    positionViewport: function (offset) {
+    positionViewport: function (offset, options) {
         var offsetX = offset.left > 0 ? offset.left : 0,
             offsetY = offset.top  > 0 ? offset.top  : 0;
 
-        window.scrollTo(offsetX, offsetY);
+        if (options && options.animate) {
+            $('body').animate({
+                scrollTop:  offsetY,
+                scrollLeft: offsetX
+            });
+        } else {
+            window.scrollTo(offsetX, offsetY);
+        }
     },
 
     // Get the dimensions of the tank
