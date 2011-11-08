@@ -1,3 +1,5 @@
+/* @override http://localhost:8000/media/notepad/css/global.css?v0.2 */
+
 /*
 ----------------------------------------------
  Tasket Notepad
@@ -453,12 +455,14 @@ table {
   }
   
   #main {
+  	position: relative;
     -moz-box-shadow: 0px 2px 10px #888;
     -webkit-box-shadow: 0px 2px 10px #888;
     box-shadow: 0px 2px 10px #888;
-    
+    overflow: hidden;
     margin: 0 30px;
   }
+
 
 /* HEADER */ 
   
@@ -573,100 +577,146 @@ table {
   
 /* LISTS TAB */
 
-  /* TODO: TEMP - hide lists tab */
-  aside#lists h1 {
-/*    margin-top:22px !important;*/
-  }
-  aside#lists h1 a {
-/*    display:none !important;*/
-  }
-
   aside#lists,
   #content,
   footer {
-    background: #f8f5f3 url(../images/bg-content.png);
+      background: #f8f5f3 url(../images/bg-content.png);
   }
-  
+  aside#lists,
+  #content,
+  .listsTab {
+      -webkit-transition: all 0.3s ease-out 0s;
+      -moz-transition: all 0.3s ease-out 0s;
+      transition: all 0.3s ease-out 0s;
+  }  
   aside#lists {
-    border-bottom: 1px solid #9dcfe7;
-    padding-top: 60px;
-    position: relative;
-    z-index: 2; 
+    padding-top: 40px;
     float: right;
-    width: 100%;
+/*    position: absolute;*/
+/*    right: 0;*/
+/*    top: 0;*/
+/*    bottom: 0;*/
+    z-index: 2; 
+    width: 20%;
+    position: absolute;
+    right: 0;
+    margin-right: -20%;
   }
   
-    aside#lists h1 {
+    .listsTab {
+      font-weight: bold;
+      text-shadow: 0 1px 1px rgba(0,0,0,0.25);
       background-color: #6ab6da;
       -webkit-border-top-left-radius: 5px;
-      -webkit-border-top-right-radius: 5px;
       -moz-border-radius-topleft: 5px;
-      -moz-border-radius-topright: 5px;
       border-top-left-radius: 5px;
+      -webkit-border-top-right-radius: 5px;
+      -moz-border-radius-topright: 5px;
       border-top-right-radius: 5px;
       font-size: 1.3em;
       line-height: 1.1em;
       font-style: italic;
       border-bottom: 1px solid #60a6c6;
-      text-align: right;
-      margin: 0 13px;
-			float: right;
-
+      text-align: center;
+	  position: absolute;
+	  right: 0;
+	  z-index: 10;
+	  top: 50px;
+	  display: none;
+      -webkit-transform-origin: right bottom;
+	  -webkit-transform: rotate(-90deg);
+      -moz-transform-origin: 100% 100%;
+	  -moz-transform: rotate(-90deg);
+      transform-origin: right bottom;
+	  transform: rotate(-90deg);
+    }
+    .loggedin .listsTab {
+        display: block;
+    }
+    .open .listsTab {
+        right: 20%;
     }
     
-    aside#lists h1,
-    aside#lists h1 a {
+    .listsTab,
+    .listsTab a {
       color: #fff;
     }
 
-    aside#lists h1 a {
+    .listsTab a {
         display: block;
         text-decoration: none;
+        width: 110px;
     }
 
-    aside#lists h1 a:hover {
+.listsTab a:hover {
         text-decoration: underline;
     }
 
-    aside#lists h1 {
-       float: right;
-    }
-
-    aside#lists h1 a span {
+    .listsTab a span {
       padding: 4px 25px 4px 10px;
       display: block;
+      text-align: center;
       background: url(../images/sprite1.png) no-repeat right -294px;
     }
-    aside#lists nav {
-      position: absolute;
-	  display: none;
-      right: 0;
-      top: 85px;
-      background-color: #6ab6da;
-      max-width: 25em;
+    .open .listsTab a span {
+        background-position: 100% -390px;
     }
-    aside#lists.open nav {
-    	display: block;
+        
+    aside#lists nav {
+        border-top-left-radius: 5px;
+        border-bottom-left-radius: 5px;
+    	position: relative;
+    	height: 390px;
+        background-color: #6ab6da;
+        max-width: 25em;
+/*        min-width: 200px;*/
+    }
+	
+	aside#lists nav .new-item {
+	    margin-left: 15px;
 	}
     
+    aside#lists nav ul::before {
+        content: '';
+        z-index: 100;
+        position: absolute;
+        top: 0; left: 0; right: 0; height: 8px;
+        border-top-left-radius: 5px;
+        background: -moz-linear-gradient(top, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 100%);
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0) 100%);
+    }
+    aside#lists nav ul::after { 
+        content: '';
+        z-index: 100;
+        position: absolute;
+        top: auto; bottom: 70px; left: 0; right: 0; height: 8px;
+        background: -moz-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.18) 100%);
+        background: -webkit-linear-gradient(top, rgba(0,0,0,0) 0%, rgba(0,0,0,0.18) 100%);
+    }
+
       aside#lists nav ul {
-        padding: 28px 28px 18px 28px;
+          border-radius: 5px;
+        overflow-y: scroll;
+        padding: 20px 15px 10px;
+        margin: 10px 0 0;
         border-bottom: 1px solid #60a6c6;
+        height: 290px;
+/*        position: absolute;*/
+/*        bottom: 60px;*/
+/*        top: 0;*/
       }
       
       aside#lists nav li {
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         font-size: 1.3em;
         line-height: 1.3em;
+        clear: both;
       }
       
-	  aside#lists nav .active {
-		font-weight: bold;
-	  }
-	
       aside#lists nav .star a {
-        background: url(../images/sprite1.png) no-repeat right -1101px;
-        padding: 1px 25px 1px 0;
+        background: url(../images/sprite1.png) no-repeat right -1097px;
+        border: none;
+        padding: 4px 25px 4px 7px;
       }
       
       aside#lists nav .new-list {
@@ -680,12 +730,38 @@ table {
            padding-left: 17px;
          }
       
-      aside#lists nav a {
-        color: #fff;
+      aside#lists .item-list a {
+            color: #fff;
+            text-decoration: none;
+            background: #5490ad;
+            display: block;
+            padding: 4px 7px;
+            border-radius: 3px;
+            border: 1px solid #4e86a1;
+            text-shadow: 0px 1px 1px rgba(0,0,0,0.5);
+      }
+      aside#lists .item-list :not(.active) a:hover {
+          background-color: #518aa6;
+      }
+	  aside#lists nav .active a {
+          background-color: #418559;
+          border-color: #37704b;
+	  }
+      
+      aside#lists .item-list a:hover {
         text-decoration: none;
       }
-      aside#lists nav a:hover {
-        text-decoration: underline;
+      
+      aside#lists .item-list .count {
+          padding: 2px 6px;
+          background: #97d8b4;
+          color: #333;
+          text-shadow: 0px 1px 1px rgba(255,255,255,0.5);
+          position: relative;
+          top: -2px;
+          border-radius: 2px;
+          float: right;
+          right: -5px;
       }
       
       aside#lists nav .showing {
@@ -701,6 +777,14 @@ table {
         line-height: 17px;
       }
       
+      aside#lists .controls {
+          position: absolute;
+          left: 0;
+          bottom: 0;
+          width: 100%;
+      }
+      aside#lists .controls a { color: #fff; }
+      
       body.incomplete aside#lists nav .showing a {
         background-position: 5px -599px;
       }
@@ -713,24 +797,23 @@ table {
         background-position: right -391px;
       } 
       
-      .open nav {
-        display: block;
-      }
   
   
 /* CONTENT */
 
   #content {
-    background-color: #f8f5f3;
+    background: #F8F5F3 url(../images/bg-content.png);
     clear: both;
     position: relative;
     z-index: 1;
     border-top: 4px solid #6ab6da;
-    padding-left: 115px;
+    padding-top: 50px;
+    float: left;
+    width:100%;
   }
   
     #content .header {
-      padding: 40px 20px 10px 5px;
+      padding: 44px 20px 10px 135px;
       overflow: hidden;
     }
   
@@ -739,15 +822,43 @@ table {
       text-decoration: underline;
       float: left;
       margin-right: 15px;
+      padding: 2px 0 3px;
     }
       #content h1 a {
         color: #000;
       }
       
   #content .welcome-message {
-    font-size:2.6em;
-    padding:10px 0;
-    text-align:center;
+    margin:30px auto;
+    width: 80%;
+    font-size: 16px;
+    line-height: 1.3;
+    text-align: center;
+  }
+  #content .welcome-message a { text-decoration: none; }
+  #content .welcome-message a:hover { text-decoration: underline; }
+  #content .welcome-message h1 { float:none; font-size: 3em; text-decoration: none; margin: 1em 0; }
+  #content .welcome-message ul { margin: 1em 1em 1.5em; }
+  #content .welcome-message li { font-size: 18px; padding: 20px; width: 18%; text-align: center; margin: 0 1%;
+        box-shadow: 0 0 5px rgba(0,0,0,0.25);
+        color: #fff;
+        text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3), -2px 0 1px rgba(0, 0, 0, 0.3);
+        border: 1px solid #A65100;
+        height: 70px;
+        border-radius: 5px;
+        display: inline-block;
+        vertical-align: middle;
+        background: #ff7c00;
+        background: -moz-linear-gradient(top,  #ff7c00 0%, #ff9430 100%);
+        background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ff7c00), color-stop(100%,#ff9430));
+        background: -webkit-linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
+        background: -o-linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
+        background: -ms-linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
+        background: linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
+  }
+  #content .welcome-message .cta {
+      font-size:2.6em;
+      text-align: center;
   }
   
   #content .welcome-message a {
@@ -756,7 +867,6 @@ table {
   
   #content .item-list {
     clear: left;
-    margin-left: -115px;
   }
   
     #content .item-list > li {
@@ -789,27 +899,33 @@ table {
     #content .item-list input.task-edit,
     #content .header input.task-edit {
         padding: 0;
-        margin: -1px 10px -1px -1px;
-        border: 0;
+        margin: -1px 15px -1px -1px;
+        border: 2px inset;
         outline: 0;
         background: none transparent;
         font-size: 1em;
-        width: 550px;
+        width: 60%;
+        float: left;
     }
     #content .header input.task-edit {
+        position: relative;
+        left: -2px;
+        top: -2px;
       float:left;
       font-size: 2em;
       width:auto;
       min-width: 200px;
       max-width:630px;
-      margin:-2px 50px -2px -1px;
+      margin:-2px 10px -2px -1px;
       padding-bottom:1px;
     }
     
-    #content .item-list a.save,
-    #content .item-list a.cancel {
-        float:right;
-        margin-top:2px;
+    #content .item-list .save,
+    #content .item-list .cancel,
+    #content .edit-mode .save,
+    #content .edit-mode .cancel {
+        float:left;
+        margin:2px 5px 0;
     }
     
     #content .header a.save,
@@ -819,7 +935,6 @@ table {
     
     #content .item-list a.cancel,
     #content .header a.cancel {
-        margin-right:10px;
         color: #6ab6da;
         text-decoration: none;
         font-size:0.8em;
@@ -835,9 +950,6 @@ table {
         font-size:1.2em;
     }
     
-    #content .header a.save {
-        margin-right:35px;
-    }
     
     /* hide edit icon in the header when we are in edit mode already */
     #content .header.edit-mode .edit-item {
@@ -859,6 +971,17 @@ table {
       #content .edit-item .star a,
       #content .edit-item .tick a {
         opacity: 1;
+      }
+      
+      /* lists panel open */
+      .open #content .item-list ul {
+          position: absolute;
+          left: 0;
+          right: 20%;
+          top: 0;
+      }
+      .open #lists {
+          margin-right: 0;
       }
       
 /* star */
@@ -985,7 +1108,7 @@ table {
 /* add new item */
 
       .new-item {
-        margin: 10px 0 0 0;
+        margin: 10px 0 0 115px;
         line-height: 19px;
         padding: 0 0 10px 29px;
         background: url(../images/sprite1.png) no-repeat left top;
@@ -1002,14 +1125,19 @@ table {
   
 /* FOOTER */
 
-  footer nav {
-    background: url(../images/bg-footer.png) left top;
-    padding: 90px 10px 10px 30px;
-    overflow: hidden;
-  }
+    footer {
+        min-height: 450px;
+    }
+
+    footer nav {
+        background: url(../images/bg-footer.png) left top;
+        padding: 90px 10px 10px 30px;
+        overflow: hidden;
+        clear:both;
+    }
   
     footer nav ul {
-      float: left;
+        float: left;
     }
     
     footer nav p {
@@ -1271,4 +1399,18 @@ nav#mainnav .login form {
 /* User account "upload-image" field disabled */
 .lightbox .content form .upload-image {
     display:none;
+}
+
+
+/* utility classes */
+.cf {
+	zoom: 1
+}
+.cf:after {
+	content: ".";
+	display: block;
+	clear: both;
+	height: 0;
+	max-height: 0;
+	visibility: hidden;
 }
