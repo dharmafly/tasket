@@ -17,13 +17,16 @@ var TaskController = Controller.extend({
 
         // Set up views on login.
         app.bind("change:currentUser", _.once(function () {
+			jQuery('body').addClass('loggedin');
 			controller.createHubList();
 			controller.createTaskList();
         }));
 
-        app.bind("change:selectedHub", function (hub) {			
-			controller.hubListView.selectHub(hub);
-            controller.taskListView.showHub(hub);
+        app.bind("change:selectedHub", function (hub) {
+            if (app.currentUser) {
+                controller.hubListView.selectHub(hub);
+                controller.taskListView.showHub(hub);
+            };
         });
     },
 
@@ -44,18 +47,29 @@ var TaskController = Controller.extend({
                 if ("description" in attrValues && _.isEmpty(attrValues.description)) {
                     attrValues.description = app.lang.EMPTY_TASK;
                 }
-                task.save(attrValues);
+
+                // task.save(attrValues);
+                var request = task.save(attrValues);
+                if (task.isNew()) {
+                    request.success(function () {
+                        taskListView.model.addTask(task);
+                    });
+                }
             })
             .bind("remove-item", function (task) {
-                task.destroy();
+                var request = task.destroy();
+                request.success(function () {
+                    taskListView.model.removeTask(task);
+                });
+                
             });
 
 
 		taskListView.bind('create-hub', function(hub){
 			if (hub.isNew()) {
 				hub.bind('change:id', _.once(function () {
-					controller.navigate("/hubs/" + hub.id + '/');
                     controller.hubListView.collection.add(hub);
+                    controller.navigate('/hubs/' + hub.id + '/', true);
 				}));
 			}
 			app.selectedHub = hub;
@@ -77,7 +91,7 @@ var TaskController = Controller.extend({
 
 	showHub: function (id) {
 		if (app.selectedHub && app.selectedHub.id === id) {
-			return;
+            return;
 		}
 
 		var hub = Tasket.getHubs(id);
@@ -104,7 +118,8 @@ var TaskController = Controller.extend({
                 collection: hubs
             });
         
-		hubListView.render();        
+		hubListView.render();
+		
 	},
 	
 	showStarred: function () {
