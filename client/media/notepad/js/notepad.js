@@ -56,7 +56,7 @@ _.extend(app, {
             hub;
 
         // There is already a hub we can load
-        if (hubId && hash === '/'){
+        if (hubId && hash === '/' || hash === '/login/'){
             hub = app.selectedHub = Tasket.getHubs(hubId);
             
             // If the hub data is complete
@@ -140,6 +140,7 @@ _.extend(app, {
 
         if (!app.currentUser){
             jQuery("section#content").html(tim("welcome-msg"));
+            jQuery('body').removeClass('loggedin');
         }
 
         // Load the server settings.
