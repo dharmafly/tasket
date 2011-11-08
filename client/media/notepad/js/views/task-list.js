@@ -25,7 +25,9 @@ var TaskListView = View.extend({
         "click ul.item-list ul.edit-item li a": "_onControlAction",
         "click li p a.cancel": "_onCancel",
         "click li p a.save": "_onSave",
-        "keypress li p input": "_onKeypress"
+        "keypress li p input": "_onKeypress",
+        "dblclick div.header h1": "_onTitleDoubleClick",
+        "dblclick ul.item-list li p": "_onItemDoubleClick"
     },
 
     constructor: function TaskListView () {
@@ -390,6 +392,12 @@ var TaskListView = View.extend({
         event.preventDefault();
     },
 
+    // a double click on the item title will find the edit icon & fire that control
+    _onItemDoubleClick: function(e) {
+        e.target = $(e.target).parents('li').find('li.edit a').get(0);
+        this._onControlAction(e);
+    },
+
    /**
     * Handles the 'delete' action.
     * Triggers the 'remove-item' event and passes along the cid of the selected task.
@@ -424,6 +432,12 @@ var TaskListView = View.extend({
         this.editedTaskView = taskView;
         taskView.makeEditable();
     },
+
+    // double click the title to envoke the title edit
+    _onTitleDoubleClick: function(e) {
+        this._onTitleEdit(e);
+    },
+    
 
    /*
     * Handles the _onTick action and triggers the 'update-item' event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
