@@ -1,10 +1,10 @@
 var HubListView = View.extend({
-    el: "aside#lists",
+    el: "div#main",
 
     hubViews: {},
 
 	events: {
-		"click h1 a": "_onShowHidePanel"
+		"click h1.listsTab a": "_onShowHidePanel"
 	},
 	
     constructor: function HubListView () {
@@ -13,7 +13,7 @@ var HubListView = View.extend({
     },
 
     initialize: function (options) {
-        this.elem = jQuery(this.el).find('nav');
+        this.elem = jQuery(this.el).find('aside nav');
 		this.hubViews = {};
 
 		var view = this;
@@ -22,9 +22,12 @@ var HubListView = View.extend({
                 view.renderHubs();
             })
             .bind('add', function(hub){
-                view.renderHubs();
+                // clicked save after adding a new list
+                // view.renderHubs(hub);
+                view.itemList.find('.star').after(view.renderHub(hub).render().el);
+    			
+                view.selectHub(hub);
             });
-        
         
 	},
 
@@ -41,7 +44,7 @@ var HubListView = View.extend({
         this.elem.html(tim("hub-list"));
         this.itemList = this.$("ul.item-list");
 
-		this.renderHubs();
+        this.renderHubs();
 
         return this;
     },
@@ -55,10 +58,21 @@ var HubListView = View.extend({
             if (!view.hubViews[hub.id]) {
 	            var hubView = new HubView({model: hub, collection: view.collection});
 				view.hubViews[hub.id] = hubView;
-	            itemList.append(hubView.render().el);
 			};
+			
+			itemList.append(view.renderHub(hub).render().el);
         });
-
+        
+	},
+	
+	renderHub: function(hub) {
+	    var view = this;
+	    
+	    if (hub && !view.hubViews[hub.id]) {
+            var hubView = new HubView({model: hub, collection: view.collection});
+			view.hubViews[hub.id] = hubView;
+		};
+		return view.hubViews[hub.id];
 	},
 
 	selectHub: function(hub){
@@ -70,8 +84,16 @@ var HubListView = View.extend({
 	},
 
     _onShowHidePanel: function (event) {
-		var $el = this.$(this.el);
-		$el.toggleClass('open');
+        var $el = this.elem.parents('div#main');
+		if($el.hasClass('open')){
+		    $el.removeClass('open')
+		        .find('> span')
+		        .text('Open lists');
+		}else{
+		    $el.addClass('open')
+		        .find('> span')
+		        .text('Close lists');
+		}
 
 		event.preventDefault();
     }

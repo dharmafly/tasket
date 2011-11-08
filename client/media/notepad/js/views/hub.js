@@ -10,17 +10,20 @@ var HubView = View.extend({
     
     initialize: function (options) {
         var view = this;
-        this.elem = jQuery(this.el);
+        view.elem = jQuery(view.el);
 
-        this.elem.attr("data-id", this.model.id);
+        view.elem.attr("data-id", view.model.id);
 
-        this.model
+        view.model
             .bind("remove", view.remove)
             .bind("change", function (hub) {
 				if (hub.hasChanged('title')) {
-                	view.$("a").text(hub.get('title'));
+                	view.$(".title").text(hub.get('title'));
 				}
+
+                view.$('.count').text(hub.countNewTasks());                
             });
+        
     },
 
 	select: function(){
@@ -31,8 +34,10 @@ var HubView = View.extend({
 		this.elem.removeClass("active");
 	},
 
-    render: function () {			
-        jQuery(this.el).html(tim("hub", this.model.toJSON()));
+    render: function () {
+        var hub = this.model;
+        	
+        jQuery(this.el).html(tim("hub", _.extend(this.model.toJSON(), {count: hub.countNewTasks() }) ));
        return this;
     }
 });
