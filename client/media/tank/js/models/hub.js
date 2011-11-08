@@ -64,6 +64,10 @@ var Hub = Model.extend({
     countTasks: function (states){
         return this.getTasks(states).length;
     },
+
+    countNewTasks: function(){
+        return this.countTasks([Task.states.NEW]);
+    },
     
     // Count "done" and "verified" tasks
     countCompletedTasks: function(){
