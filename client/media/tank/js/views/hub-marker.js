@@ -44,6 +44,19 @@ var HubMarker = View.extend({
     position: function (offset, angle) {
         this.elem.css(offset);
         return this;
+    },
+
+    /* Public: Renders the current view.
+     *
+     * Examples
+     *
+     *   $("body").append(marker.render());
+     *
+     * Returns the root view element.
+     */
+    render: function () {
+        this.elem.text(this.model.id);
+        return this.el;
     }
 });
 
