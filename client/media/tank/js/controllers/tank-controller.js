@@ -109,6 +109,7 @@ var TankController = Controller.extend({
 
         this.tankView = new Tank({el: $('body')[0]});
         this.tankView.bind('pan', this.shiftViewport, this);
+        this.tankView.bind('pan', this.updateMarkers, this);
 
         this.updateWalls();
         this.centerTank();
@@ -849,6 +850,44 @@ var TankController = Controller.extend({
 
         // Pixel width of the scroller
         return width1 - width2;
+    },
+
+    updateMarkers: function () {
+        _.each(this.hubViews, function (view) {
+            var isVisible = this._isHubViewVisible(view),
+                hub = view.model, angle;
+
+            this.markersView.toggleMarker(hub, !isVisible);
+            if (!isVisible) {
+                angle = this._hubViewAngle(hub);
+                this.markersView.updateMarker(hub, angle);
+            }
+        }, this);
+    },
+
+    _isHubViewVisible: function (hubView) {
+        var scrollX = window.scrollX,
+            scrollY = window.scrollY,
+            hubBounds = hubView.getBounds(),
+            visibleArea;
+
+        visibleArea = {
+            top:    scrollY,
+            left:   scrollX,
+            right:  scrollX + this.tankWidth,
+            bottom: scrollY + this.tankHeight
+        };
+
+        return (
+            hubBounds.left   < visibleArea.right  &&
+            hubBounds.right  > visibleArea.left   &&
+            hubBounds.top    < visibleArea.bottom &&
+            hubBounds.bottom > visibleArea.top
+        );
+    },
+
+    _hubViewAngle: function () {
+        return 0;
     },
 
     clearSVG: function(){

@@ -488,7 +488,13 @@ var HubView = View.extend({
         return this;
     },
     
-    
+    getBounds: function () {
+        var bounds    = this.elem.position();
+        bounds.right  = bounds.left + this.elem.width();
+        bounds.bottom = bounds.top + this.elem.height();
+        return bounds;
+    },
+
     /////
     
     // FORCE-DIRECTION PHYSICS

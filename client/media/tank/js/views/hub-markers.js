@@ -27,9 +27,6 @@ var HubMarkers = View.extend({
      */
     addMarker: function (hub) {
         var marker = this.markers[hub.id] = new HubMarker({model: hub});
-
-        marker.elem.css(this._calculatePosition(Math.random() * 360));
-
         this.elem.append(marker.render());
         return this._proxyEvents(marker);
     },
