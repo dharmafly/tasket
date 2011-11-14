@@ -1627,6 +1627,27 @@ footer a.df:hover {
 	display: none;
 }
 
+.hub-marker .hub-marker-pointer {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	-webkit-transform-origin: 20px 20px;
+	-webkit-transform: rotate(45deg);
+}
+
+.hub-marker .hub-marker-pointer:after {
+	content: "";
+	display: block;
+	position: absolute;
+	width: 20px;
+	height: 20px;
+	top: 1px;
+	left: 1px;
+	background: #e00282;
+}
+
 /* @group Notification
 -----------------------------------------------------------------------------*/
 

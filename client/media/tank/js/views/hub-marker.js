@@ -43,6 +43,22 @@ var HubMarker = View.extend({
      */
     position: function (offset, angle) {
         this.elem.css(offset);
+        return this.angle(angle);
+    },
+
+    /* Public: Points the marker at the angle provided.
+     *
+     * angle - An angle in degrees (0 is north).
+     *
+     * Examples
+     *
+     *   marker.angle(0);
+     *   marker.angle(134);
+     *
+     * Returns itself.
+     */
+    angle: function (angle) {
+        this.$('.hub-marker-pointer').css('-webkit-transform', 'rotate(' + (angle + 45) + 'deg)');
         return this;
     },
 
@@ -55,7 +71,7 @@ var HubMarker = View.extend({
      * Returns the root view element.
      */
     render: function () {
-        this.elem.text(this.model.id);
+        this.elem.text(this.model.id).append($('<span class="hub-marker-pointer"/>'));
         return this.el;
     }
 });
