@@ -51,6 +51,7 @@
             "lib/js/flatten.js",
             "tank/js/backbone-stack.js",
             "tank/js/core/utils.js",
+            "tank/js/core/mixins.js",
             "tank/js/models/models.js",
             "tank/js/viz/forcedirector.js",
             "tank/js/views/views.js",
@@ -58,7 +59,6 @@
             "tank/js/controllers/tank-controller.js",
             "tank/js/controllers/account-controller.js",
             "tank/js/controllers/dashboard-controller.js",
-            
             [
                 "tank/js/models/hub.js",
                 "tank/js/models/task.js",
@@ -71,7 +71,9 @@
                 "tank/js/views/notification.js",
                 "tank/js/views/lightbox.js",
                 "tank/js/views/dashboard.js",
-                "tank/js/views/form.js"
+                "tank/js/views/form.js",
+                "tank/js/views/hub-marker.js",
+                "tank/js/controllers/hub-markers.js"
             ],
             "tank/js/views/form-upload.js",
             [
