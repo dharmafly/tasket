@@ -487,12 +487,38 @@ var HubView = View.extend({
             
         return this;
     },
-    
+
+    /* Public: Returns a bounds object for the hub. With top, left, width and
+     * height as properties.
+     *
+     * Examples
+     *
+     *   hubView.getBounds();
+     *
+     * Returns an object.
+     */
     getBounds: function () {
-        var bounds    = this.elem.position();
-        bounds.right  = bounds.left + this.elem.width();
-        bounds.bottom = bounds.top + this.elem.height();
-        return bounds;
+        return _.extend({
+            width:  this.elem.width(),
+            height: this.elem.height()
+        }, this.elem.offset());
+    },
+
+    /* Public: Returns an offset for the center of the hub relative to the
+     * tank (document body).
+     *
+     * Examples
+     *
+     *   hubView.getCenter(); //=> {top: 20, left: 200}
+     *
+     * Returns an offset object with top and left properties.
+     */
+    getCenter: function () {
+        var icon = this.$('.nucleus-wrapper');
+        var offset = icon.offset();
+        offset.top  = offset.top + (icon.outerHeight(true) / 2);
+        offset.left = offset.left + (icon.outerWidth(true) / 2);
+        return offset
     },
 
     /////
