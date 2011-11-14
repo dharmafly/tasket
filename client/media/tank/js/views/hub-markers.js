@@ -72,6 +72,22 @@ var HubMarkers = View.extend({
         return this;
     },
 
+    /* Public: Gets a bounding object for the view. The object has properties
+     * for width, height, top and left offsets.
+     *
+     * Examples
+     *
+     *   $("<div>").css(marker.getBounds());
+     *
+     * Returns a object reprresenting the views bounds.
+     */
+    getBounds: function () {
+        return _.extend({
+            width:  this.elem.width(),
+            height: this.elem.height()
+        }, this.elem.offset());
+    },
+
     /* Calculates the top/left position of an element in a container based
      * apon the angle (in degrees) from the center of the container. The
      * results are returned in percentages and can be passed directly into
