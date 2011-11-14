@@ -852,6 +852,15 @@ var TankController = Controller.extend({
         return width1 - width2;
     },
 
+    /* Public: Updates each of the markers surrounding the hub, this should
+     * be called each time the tank is panned or window scrolled.
+     *
+     * Examples
+     *
+     *   $(window).scroll(tank.updateMarkers);
+     *
+     * Returns nothing.
+     */
     updateMarkers: function () {
         _.each(this.hubViews, function (view) {
             var isVisible = this._isHubViewVisible(view),
@@ -859,24 +868,28 @@ var TankController = Controller.extend({
 
             this.markersView.toggleMarker(hub, !isVisible);
             if (!isVisible) {
-                angle = this._hubViewAngle(hub);
+                angle = this._hubViewAngle(view);
                 this.markersView.updateMarker(hub, angle);
             }
         }, this);
     },
 
+    /* Determines if a HubView is currently visible in the viewport. This
+     * does not include the sidebar.
+     *
+     * hubView - A HubView object.
+     *
+     * Returns true if the hub is visible.
+     */
     _isHubViewVisible: function (hubView) {
-        var scrollX = window.scrollX,
-            scrollY = window.scrollY,
-            hubBounds = hubView.getBounds(),
-            visibleArea;
+        var hubBounds = hubView.getBounds(),
+            visibleArea = this.markersView.getBounds();
 
-        visibleArea = {
-            top:    scrollY,
-            left:   scrollX,
-            right:  scrollX + this.tankWidth,
-            bottom: scrollY + this.tankHeight
-        };
+        hubBounds.right  = hubBounds.left + hubBounds.width;
+        hubBounds.bottom = hubBounds.top + hubBounds.height;
+
+        visibleArea.right  = visibleArea.left + visibleArea.width;
+        visibleArea.bottom = visibleArea.top + visibleArea.height;
 
         return (
             hubBounds.left   < visibleArea.right  &&
@@ -886,8 +899,35 @@ var TankController = Controller.extend({
         );
     },
 
-    _hubViewAngle: function () {
-        return 0;
+    /* Returns the angle of the hub view relative to the center of the
+     * viewport (in degrees).
+     *
+     * hubView - A HubView object.
+     *
+     * Returns an angle in degrees.
+     */
+    _hubViewAngle: function (hubView) {
+        var hubPosition = hubView.getCenter(),
+            visibleArea = this.markersView.getBounds(),
+            viewportCenter = {
+                left: visibleArea.left + (visibleArea.width / 2),
+                top:  visibleArea.top  + (visibleArea.height / 2)
+            },
+            x = hubPosition.left   - viewportCenter.left,
+            y = viewportCenter.top - hubPosition.top,
+            deg;
+
+        deg = (Math.atan(Math.abs(x) / Math.abs(y)) * 180) / Math.PI;
+
+        if (x >= 0 && y < 0) {
+            deg = 180 - deg;
+        } else if (x < 0 && y < 0) {
+            deg = 180 + deg;
+        } else if (x < 0 && y >= 0) {
+            deg = 360 - deg;
+        }
+
+        return deg;
     },
 
     clearSVG: function(){
