@@ -73,7 +73,7 @@
                 "tank/js/views/dashboard.js",
                 "tank/js/views/form.js",
                 "tank/js/views/hub-marker.js",
-                "tank/js/controllers/hub-markers.js"
+                "tank/js/views/hub-markers.js"
             ],
             "tank/js/views/form-upload.js",
             [
