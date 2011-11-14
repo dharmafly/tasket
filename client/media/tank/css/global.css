@@ -1598,6 +1598,31 @@ footer a.df:hover {
 
 /* @end */
 
+/* @group Hub Navigation Markers */
+
+.hub-marker-container {
+	position: fixed;
+	top: 65px;
+	left: 25px;
+	right: 21.92em /* 285px */;
+	bottom: 25px;
+	pointer-events: none;
+}
+
+.hub-marker {
+	top: 0;
+	left: 0;
+	z-index: 999999;
+	position: absolute;
+	width: 40px;
+	height: 40px;
+	margin-top: -20px;
+	margin-left: -20px;
+	background: #e00282;
+	border-radius: 20px;
+	pointer-events: all;
+}
+
 /* @group Notification
 -----------------------------------------------------------------------------*/
 
