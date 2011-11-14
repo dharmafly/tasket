@@ -113,6 +113,14 @@ var TankController = Controller.extend({
         this.updateWalls();
         this.centerTank();
 
+        // Create controller to handle hub navigation markers.
+        this.markersView = new HubMarkers();
+        this.bind("add:hub", function (controller, hub, hubView) {
+            this.addMarker(hub);
+        }, this.markersView);
+
+        $('body').append(this.markersView.render());
+
         // Add hubs
         if (options && options.hubs){
             this.addHubs(options.hubs);
