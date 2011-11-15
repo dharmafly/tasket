@@ -468,7 +468,7 @@ table {
   
   header#pageheader {
     background: url(../images/bg-header.png) repeat-x left bottom;
-    min-height: 110px;
+    min-height: 120px;
     margin: 0 30px -28px 30px;
     position: relative;
     z-index: 3;
@@ -512,7 +512,7 @@ table {
 
   #mainnav {
     position: absolute;
-    top: 10px;
+    top: 20px;
     right: 40px;
     color: #333;
     z-index: 4;
@@ -767,14 +767,11 @@ table {
       aside#lists nav .showing {
         border-top: 1px solid #9dcfe7;
         padding: 6px 6px 6px 12px;
+        color: #fff;
       }
       
-      aside#lists nav .showing a {
-        padding-left: 30px;
-        display: block;
-        background: url(../images/sprite1.png) no-repeat 0 -499px;
-        font-size: 1.2em;
-        line-height: 17px;
+      aside#lists nav .showing select {
+          min-width: 170px;
       }
       
       aside#lists .controls {
@@ -829,17 +826,41 @@ table {
       }
       
   #content .welcome-message {
-    margin:30px auto;
-    width: 80%;
+/*    margin:30px auto;*/
+/*    width: 80%;*/
+    background: url(../images/bg-footer.png) top left repeat;
     font-size: 16px;
     line-height: 1.3;
-    text-align: center;
   }
   #content .welcome-message a { text-decoration: none; }
   #content .welcome-message a:hover { text-decoration: underline; }
   #content .welcome-message h1 { float:none; font-size: 3em; text-decoration: none; margin: 1em 0; }
-  #content .welcome-message ul { margin: 1em 1em 1.5em; }
-  #content .welcome-message li { font-size: 18px; padding: 20px; width: 18%; text-align: center; margin: 0 1%;
+  #content .welcome-message .intro {
+      margin: 2% 4%;
+      padding: 0 20px;
+      position: relative;
+  }
+  #content .welcome-message .intro h1 {
+      line-height: 1;
+      margin: 0 0 0 5%;
+      width: 40%;
+      float: left;
+  }
+  #content .welcome-message .intro p {
+      width: 44%;
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      margin: 0 5% 0 0;
+  }
+  #content .welcome-message .features {
+      font-size: 18px; padding: 20px;
+      background: #f7f1df;
+      margin: 2% 4%;
+      border-radius: 10px;
+  }
+
+/*
         box-shadow: 0 0 5px rgba(0,0,0,0.25);
         color: #fff;
         text-shadow: 0 -1px 1px rgba(0, 0, 0, 0.3), -2px 0 1px rgba(0, 0, 0, 0.3);
@@ -855,12 +876,36 @@ table {
         background: -o-linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
         background: -ms-linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
         background: linear-gradient(top,  #ff7c00 0%,#ff9430 100%);
+*/
+  #content .welcome-message .row {
+      text-align: left;
+      margin: 1em 5%;
+      text-shadow: 0px 1px 1px #fff;
+      font-size: 15px;
+  }
+  #content .welcome-message .row div {
+      float: left;
+      width: 44%;
+      padding: 3% 2%;
+      margin: 0 2% 0 0;
+      border-radius: 10px;
+  }
+  #content .welcome-message .row div.even { margin: 0 0 0 2%; }
+  #content .welcome-message .row img {
+      float: left;
+      margin: 0 1.2em 0.5em 0;
+      border: 1px solid #888;
+      box-shadow: 0 0 5px #ccc;
+      border-radius: 2px;
+  }
+  #content .welcome-message .row h2 {
+      font-weight: bold;
+      margin: 0 0 0.5em;
   }
   #content .welcome-message .cta {
       font-size:2.6em;
-      text-align: center;
+      text-align: left;
   }
-  
   #content .welcome-message a {
     color:#3092C0;
   }
@@ -891,9 +936,13 @@ table {
     }
     
     #content .item-list .completed p {
-      text-decoration: line-through;
-      color: #9b9b9b;
-      background-position: 0 -194px;
+        color: #9b9b9b;
+        background-position: 0 -194px;
+        text-decoration: line-through;
+    }
+    
+    #content .item-list .completed p.editing {
+        text-decoration: none;
     }
     
     #content .item-list input.task-edit,
@@ -1069,6 +1118,11 @@ table {
           top: 10px;
           right: 40px;
         }
+            #content .header .edit-item .delete {
+                position: static;
+                float: left;
+                margin-left: 15px;
+            }
 
         #content .edit-item .delete a {
           width: 14px;
@@ -1093,12 +1147,14 @@ table {
       #content .item-list > li:hover .edit-item .edit,
       #content .item-list > li:hover .edit-item .delete,
       #content .header:hover .edit-item .edit,
+      #content .header:hover .edit-item .delete,
 
       /* IE6 compatibility */
       #content .item-list > li.hover .edit-item .move,
       #content .item-list > li.hover .edit-item .edit,
       #content .item-list > li.hover .edit-item .delete,
-      #content .header.hover .edit-item .edit {
+      #content .header.hover .edit-item .edit,
+      #content .header.hover .edit-item .delete {
         visibility: visible;
       }
 
@@ -1229,6 +1285,11 @@ table {
 	border: 0.308em solid #aaa /* 4px */;
 	padding: 1.538em /* 20px */;
 	background-color: #e6e6e6;
+}
+
+.lightbox.wide .lightbox-inner {
+    width: 1000px;
+    margin-left: -520px;
 }
 
 .ie .lightbox .lightbox-inner {
