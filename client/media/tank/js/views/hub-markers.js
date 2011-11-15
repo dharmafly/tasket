@@ -11,6 +11,13 @@ var HubMarkers = View.extend({
      */
     constructor: function HubMarkersView(options) {
         View.apply(this, arguments);
+
+        _.bindAll(this, "_onClick");
+
+        // Manually delegate clicks on Hub markers for performance. This can't
+        // be done in the events property as we need the className.
+        var markerClass = '.' + HubMarker.prototype.className;
+        this.elem.on("click", markerClass, this._onClick);
         this.markers = {};
     },
 
@@ -164,6 +171,31 @@ var HubMarkers = View.extend({
 
     _getOffset: function (degrees) {
         return Math.tan(degrees * (Math.PI/180)) * 0.5;
+    },
+
+    /* Click handler that handles clicks on child elements and triggers the
+     * "selected" event passing in the selected view and itself to all
+     * event handlers.
+     *
+     * event - A jQuery.Event click event.
+     *
+     * Examples
+     *
+     *   view.elem.on("click", markerClass, view._onClick);
+     *
+     * Returns nothing.
+     */
+    _onClick: function (event) {
+        var model = event.currentTarget.getAttribute('data-model') || "",
+            view  = this.markers[model.split("-").pop()];
+
+        if (view) {
+            // Trigger event on the child view. This will be proxied by the
+            // current view and allows the click handler to be moved to the
+            // child later if necessary.
+            view.trigger("selected", view);
+            event.preventDefault();
+        }
     }
 });
 
