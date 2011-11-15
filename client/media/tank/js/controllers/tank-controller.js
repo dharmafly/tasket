@@ -20,6 +20,10 @@ var TankController = Controller.extend({
 
         _.bindAll(this, "_onSelectHubs", "_onDeselectHubs", "repositionHubs");
 
+        // Hack to check if we're loading a hub when this class is intialised
+        // as we don't want to scroll to a hub on load in #displayHub().
+        this._isHubUrlOnLoad = window.location.hash.slice(2, 6) === "hubs";
+
         this.scrollbarWidth = this.getScrollbarWidth();
         this.svg = this.createSVGRoot(jQuery("#vector")[0]);
 
@@ -295,7 +299,7 @@ var TankController = Controller.extend({
             hubView.sendToFront().showTasks();
             this.centerViewport(hubView.elem.position(), {
                 // Animate if this is not the first view loaded.
-                animate: !!Backbone.history.getPrevious()
+                animate: Backbone.history.stack().length > 0 || !this._isHubUrlOnLoad
             });
         }
 
