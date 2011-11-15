@@ -1614,17 +1614,55 @@ footer a.df:hover {
 	left: 0;
 	z-index: 999999;
 	position: absolute;
-	width: 40px;
-	height: 40px;
-	margin-top: -20px;
-	margin-left: -20px;
-	background: #e00282;
-	border-radius: 20px;
+	width: 30px;
+	height: 30px;
+	margin-top: -15px;
+	margin-left: -15px;
+	background: #AAA;
+	border-radius: 15px;
 	pointer-events: all;
 }
 
 .hub-marker.hide {
 	display: none;
+}
+
+.hub-marker .hub-marker-icon {
+}
+
+.hub-marker img {
+	display: block;
+	margin: 7px auto 0;
+}
+
+.hub-marker .tooltip {
+	position: absolute;
+	top: 0;
+	left: 50%;
+	width: auto;
+	max-width: 60px;
+	display: none;
+	opacity: 0;
+	background-image: linear-gradient(bottom, #000, #333);
+	background-image: -webkit-linear-gradient(top, #333 0, #222 10px, #000 10px, #000);
+	padding: 3px 7px;
+	margin-bottom: 3px; /* This is for the pointer */
+	border-radius: 2px;
+	font-weight: bold;
+	color: #eee;
+	text-align: center;
+	z-index: 1;
+	-webkit-font-smoothing: antialiased;
+	-webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.hub-marker .tooltip:hover {
+	border: none;
+}
+
+.hub-marker .tooltip.show {
+	opacity: 1;
+	display: block;
 }
 
 .hub-marker .hub-marker-pointer {
@@ -1633,19 +1671,35 @@ footer a.df:hover {
 	height: 100%;
 	top: 0;
 	left: 0;
-	-webkit-transform-origin: 20px 20px;
+	z-index: -1;
+	-webkit-transform-origin: 15px 15px;
 	-webkit-transform: rotate(45deg);
 }
 
+.hub-marker .tooltip:after,
 .hub-marker .hub-marker-pointer:after {
 	content: "";
 	display: block;
 	position: absolute;
-	width: 20px;
-	height: 20px;
+	width: 15px;
+	height: 15px;
 	top: 1px;
 	left: 1px;
-	background: #e00282;
+	background: #AAA;
+}
+
+.hub-marker .tooltip:after {
+	top: auto;
+	bottom: -6px;
+	left: 50%;
+	margin-left: -15px;
+	width: 15px;
+	height: 15px;
+	background: #000;
+	z-index: -1;
+	border-radius: 1px;
+	-webkit-transform-origin: 15px 15px;
+	-webkit-transform: rotate(45deg);
 }
 
 /* @group Notification
