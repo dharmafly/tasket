@@ -12,12 +12,16 @@ var HubMarkers = View.extend({
     constructor: function HubMarkersView(options) {
         View.apply(this, arguments);
 
-        _.bindAll(this, "_onClick");
+        _.bindAll(this, "_onClick", "_onMouseEnterMarker", "_onMouseLeaveMarker");
 
         // Manually delegate clicks on Hub markers for performance. This can't
         // be done in the events property as we need the className.
         var markerClass = '.' + HubMarker.prototype.className;
-        this.elem.on("click", markerClass, this._onClick);
+        this.elem.on({
+            click:      this._onClickMarker,
+            mouseenter: this._onMouseEnterMarker,
+            mouseleave: this._onMouseLeaveMarker
+        }, markerClass);
         this.markers = {};
     },
 
@@ -173,6 +177,11 @@ var HubMarkers = View.extend({
         return Math.tan(degrees * (Math.PI/180)) * 0.5;
     },
 
+    _getViewByModelAttr: function (element) {
+        var model = element.getAttribute('data-model') || "";
+        return this.markers[model.split("-").pop()];
+    },
+
     /* Click handler that handles clicks on child elements and triggers the
      * "selected" event passing in the selected view and itself to all
      * event handlers.
@@ -186,8 +195,7 @@ var HubMarkers = View.extend({
      * Returns nothing.
      */
     _onClick: function (event) {
-        var model = event.currentTarget.getAttribute('data-model') || "",
-            view  = this.markers[model.split("-").pop()];
+        var view = this._getViewByModelAttr(event.currentTarget);
 
         if (view) {
             // Trigger event on the child view. This will be proxied by the
@@ -195,6 +203,32 @@ var HubMarkers = View.extend({
             // child later if necessary.
             view.trigger("selected", view);
             event.preventDefault();
+        }
+    },
+
+    /* Event handler that displays the tooltip for the marker on mouseover.
+     *
+     * event - A jQuery.Event mouse event.
+     *
+     * Returns nothing.
+     */
+    _onMouseEnterMarker: function (event) {
+        var view = this._getViewByModelAttr(event.currentTarget);
+        if (view) {
+            view.showTooltip();
+        }
+    },
+
+    /* Event handler that displays the tooltip for the marker on mouseout.
+     *
+     * event - A jQuery.Event mouse event.
+     *
+     * Returns nothing.
+     */
+    _onMouseLeaveMarker: function (event) {
+        var view = this._getViewByModelAttr(event.currentTarget);
+        if (view) {
+            view.hideTooltip();
         }
     }
 });
