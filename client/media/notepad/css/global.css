@@ -845,6 +845,7 @@ table {
       margin: 0 0 0 5%;
       width: 40%;
       float: left;
+      text-shadow: 0 1px 2px white;
   }
   #content .welcome-message .intro p {
       width: 44%;
@@ -852,6 +853,7 @@ table {
       bottom: 0;
       right: 0;
       margin: 0 5% 0 0;
+      text-shadow: 0 1px 2px white;
   }
   #content .welcome-message .features {
       font-size: 18px; padding: 20px;
@@ -903,8 +905,10 @@ table {
       margin: 0 0 0.5em;
   }
   #content .welcome-message .cta {
-      font-size:2.6em;
-      text-align: left;
+      font-size:2em;
+      margin-top: 1em;
+      text-align: center;
+      text-shadow: 0 1px 2px white;
   }
   #content .welcome-message a {
     color:#3092C0;
