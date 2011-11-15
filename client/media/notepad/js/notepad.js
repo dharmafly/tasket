@@ -140,7 +140,29 @@ _.extend(app, {
 
         if (!app.currentUser){
             jQuery("section#content").html(tim("welcome-msg"));
-            jQuery('body').removeClass('loggedin');
+            jQuery('body').removeClass("loggedin");
+
+
+            // setup all the screenshots to go big on click
+            jQuery(".features img").each(function(index, node) {
+                
+                jQuery(node).bind("click", function(){
+                    var srcNode = jQuery(node).clone(),
+                        bigImgPath = srcNode.attr('src'),
+                        parts = bigImgPath.split('.');
+                        
+    			    if(parts.length){
+    			        parts[parts.length-2] = parts[parts.length-2]  + '-big';
+    			        bigImgPath = parts.join('.');
+    			    }
+
+                    app.lightbox.content(srcNode.attr({
+                        "src": bigImgPath,
+                        "width": 1000,
+                        "height": 850,
+                    }), 'wide').show();
+                })
+            });
         }
 
         // Load the server settings.
