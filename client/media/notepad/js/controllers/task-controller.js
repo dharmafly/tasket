@@ -22,12 +22,40 @@ var TaskController = Controller.extend({
 			controller.createTaskList();
         }));
 
-        app.bind("change:selectedHub", function (hub) {
+        app.bind("change:selectedHub", function (hub, opts) {
+            opts = opts || {};
+            if ('showTasksOfType' in opts) {
+                app.cache.set("showTasksOfType", opts.showTasksOfType);
+            }else{
+                opts.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : 'onlyIncomplete';
+            }
+            
             if (app.currentUser) {
                 controller.hubListView.selectHub(hub);
-                controller.taskListView.showHub(hub);
+                controller.taskListView.showHub(hub, opts);
             };
         });
+        Tasket.hubs.bind("all", function(){console.log(arguments);})
+        
+        // keyboard shortcuts
+        $('body').bind('keyup', function(e){
+            var keyCode = e.keyCode ? e.keyCode : e.which;
+
+            if (app.currentUser && controller.taskListView) {
+                switch(keyCode){
+                    case 78:
+                        // 'n' for new task
+                        if (!(controller.taskListView.newTaskView || controller.taskListView.editedTaskView)) {
+                            controller.taskListView.createTask();
+                            e.preventDefault();
+                        };
+                        break;
+
+                }
+            }
+            
+        });
+        
     },
 
     createTaskList: function () {
@@ -58,9 +86,13 @@ var TaskController = Controller.extend({
             })
             .bind("remove-item", function (task) {
                 var request = task.destroy();
-                request.success(function () {
+                if (task.isNew()) {
                     taskListView.model.removeTask(task);
-                });
+                }else{
+                    request.success(function () {
+                        taskListView.model.removeTask(task);
+                    });
+                }
                 
             });
 
@@ -102,9 +134,9 @@ var TaskController = Controller.extend({
 		// will be fired when the model is properly loaded from the server. We then
 		// re-update the view and re-render.
 		if (!hub.isComplete()) {
-			hub.bind("change", function onChange(hub) {
-				app.trigger("change:selectedHub", hub);
-			});
+			hub.bind("change", _.once(function(hub) {
+                app.trigger("change:selectedHub", hub);
+			}));
 		} else {
 			app.trigger("change:selectedHub", hub);
 		}
