@@ -121,6 +121,11 @@ var TankController = Controller.extend({
 
         // Create controller to handle hub navigation markers.
         this.markersView = new HubMarkers();
+        this.markersView.bind("selected", function (markerView) {
+            // Just update the hash fragment to jump to the selected hub.
+            window.location.hash = "/hubs/:id/".replace(":id", markerView.model.id);
+        });
+
         this.bind("add:hub", function (controller, hub, hubView) {
             this.addMarker(hub);
         }, this.markersView);
