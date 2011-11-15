@@ -63,7 +63,7 @@ var HubMarker = View.extend({
      * Returns itself.
      */
     angle: function (angle) {
-        this.angle = angle;
+        this._angle = angle;
         this.$('.hub-marker-pointer').css('-webkit-transform', 'rotate(' + (angle + 45) + 'deg)');
         return this;
     },
