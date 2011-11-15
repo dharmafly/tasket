@@ -3,8 +3,11 @@ var HubListView = View.extend({
 
     hubViews: {},
 
+    showTasksOfType: "",
+    
 	events: {
-		"click h1.listsTab a": "_onShowHidePanel"
+		"click h1.listsTab a": "_onShowHidePanel",
+		"change select#showing": "_onSelectionChange"
 	},
 	
     constructor: function HubListView () {
@@ -15,8 +18,10 @@ var HubListView = View.extend({
     initialize: function (options) {
         this.elem = jQuery(this.el).find('aside nav');
 		this.hubViews = {};
+		this.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : "onlyIncomplete";
 
 		var view = this;
+		    
 		this.collection
 		    .bind("reset", function () {
                 view.renderHubs();
@@ -24,11 +29,12 @@ var HubListView = View.extend({
             .bind('add', function(hub){
                 // clicked save after adding a new list
                 // view.renderHubs(hub);
-                view.itemList.find('.star').after(view.renderHub(hub).render().el);
+                view.itemList.find('.star')
+                    .after(view.renderHub(hub).render().el);
     			
                 view.selectHub(hub);
             });
-        
+
 	},
 
     /*
@@ -45,6 +51,7 @@ var HubListView = View.extend({
         this.itemList = this.$("ul.item-list");
 
         this.renderHubs();
+        this.elem.find("select").val(this.showTasksOfType);
 
         return this;
     },
@@ -81,6 +88,15 @@ var HubListView = View.extend({
 		if (hubView) {
 			hubView.select();
 		};
+	},
+	
+	_onSelectionChange: function(e){
+	    var selectedOption = jQuery(e.target).val();
+	    
+	    app.trigger("change:selectedHub", app.selectedHub, {
+	        showTasksOfType: selectedOption
+	    });
+	    
 	},
 
     _onShowHidePanel: function (event) {
