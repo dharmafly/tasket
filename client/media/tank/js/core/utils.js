@@ -30,6 +30,31 @@ function hasChanged(attributes, callback) {
   };
 }
 
+// Takes all methods prefixed with "_on" and binds them to the current scope.
+//
+// Example
+//
+//   var obj = {
+//     doSomething: function () {},
+//     _onClick: function () {},
+//     _onHover: function () {}
+//   }
+//   bindHandlers(obj); // _onClick and _onHover will be bound to current scope.
+//
+function bindHandlers(object) {
+    var key, value;
+    for (key in object) {
+        value = object[key];
+        if (key.indexOf("_on") === 0 && typeof value === "function" && !value.bound) {
+            object[key] = _.bind(value, object);
+
+            // Prevent an item being bound multiple times. This could happen
+            // if multiple constructors call bindHandlers(this);
+            object[key].bound = true;
+        }
+    }
+}
+
 // Helper function to escape a string for HTML rendering.
 function escapeHTML(string) {
   return string.replace(/&(?!\w+;)/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
