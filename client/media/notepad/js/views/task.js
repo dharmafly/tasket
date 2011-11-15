@@ -45,7 +45,7 @@ var TaskView = View.extend({
 
     render: function () {
         var starred = !!this.model.get("starred.id"),
-            done = this.model.get("state") === "done",
+            done = this.model.get("state") === "verified",
             description = this.model.get("description");
 
         jQuery(this.el).html(tim("task", {
@@ -65,6 +65,7 @@ var TaskView = View.extend({
             this.elem.addClass("completed");
         }
 
+        
        return this;
     },
 
@@ -76,7 +77,7 @@ var TaskView = View.extend({
             paragraph = this.$("p"),
             description = this.previousDescription = this.model.get("description");
 
-        paragraph.empty().append(html);
+        paragraph.empty().append(html).addClass("editing");
 
         if (description) {
             paragraph.find("input").val(description);
@@ -94,7 +95,7 @@ var TaskView = View.extend({
             this.collection.remove(this.model);
         }
         else {
-            this.$("p").text(this.previousDescription);
+            this.$("p").text(this.previousDescription).removeClass("editing");
         }
         return this;
     },
