@@ -498,10 +498,19 @@ var HubView = View.extend({
      * Returns an object.
      */
     getBounds: function () {
-        return _.extend({
-            width:  this.elem.width(),
-            height: this.elem.height()
-        }, this.elem.offset());
+        var bounds = this._bounds, nucleus, offset;
+        if (!bounds) {
+            this._bounds = bounds = {};
+
+            offset = this.elem.offset();
+            nucleus = this.$(".nucleus-wrapper");
+
+            bounds.top    = offset.top  + parseFloat(nucleus.css("margin-top"));
+            bounds.left   = offset.left + parseFloat(nucleus.css("margin-left"));
+            bounds.width  = this.width;
+            bounds.height = this.height;
+        }
+        return bounds;
     },
 
     /* Public: Returns an offset for the center of the hub relative to the
