@@ -16,6 +16,7 @@ var TaskListView = View.extend({
     
     events: {
         "click div.header .edit a": "_onTitleEdit",
+        "click div.header .delete a": "_onTitleDelete",
         "click div.header a.cancel": "_onTitleEditCancel",
         "click div.header a.save": "_onTitleEditSave",
         "mouseover div.header h1 a": "_onTitleMouseover",
@@ -26,13 +27,15 @@ var TaskListView = View.extend({
         "click li p a.cancel": "_onCancel",
         "click li p a.save": "_onSave",
         "keypress li p input": "_onKeypress",
-        "dblclick div.header h1": "_onTitleDoubleClick",
-        "dblclick ul.item-list li p": "_onItemDoubleClick"
+        "click div.header h1": "_onTitleEditClick",
+        "click ul.item-list li p": "_onItemEditClick"
+        // "blur input[type='text']": "_onTextInputBlur"
     },
 
     constructor: function TaskListView () {
         // Display object name in browser console
         Backbone.View.prototype.constructor.apply(this, arguments);
+        
     },
 
     initialize: function (options) {
@@ -52,7 +55,7 @@ var TaskListView = View.extend({
 
     _setupModelBindings: function(){
         var view = this;
-    
+
         this.model
             // Unbind first, in case we've displayed this hub before
             .unbind("change:title", this._onModelChangeTitle)
@@ -75,10 +78,10 @@ var TaskListView = View.extend({
                     view.renderTasks(task);
                 }
             })
-
+            
 	        //event handler for rendering loaded tasks into the view
 	        .bind("reset", function () {
-	            view.renderTasks();
+                view.renderTasks();
 	        });
 
             
@@ -103,12 +106,38 @@ var TaskListView = View.extend({
         return this;
     },
 
-	showHub: function(hub){
+	showHub: function(hub, opts){
+	    console.log('showHub', hub, opts);
 		this.model = hub;
-		this.collection = Tasket.getTasks(hub.get("tasks.new").concat(hub.get("tasks.claimed")));
-		this._setupModelBindings();
-		this.render();
-		this.renderTasks();
+		var taskIds;
+
+        if (opts && 'showTasksOfType' in opts) {
+            switch(opts.showTasksOfType){
+                case 'all':
+                    taskIds = hub.get("tasks.new")
+    		                    .concat(hub.get("tasks.claimed"))
+    		                    .concat(hub.get("tasks.verified"))
+    		                    .concat(hub.get("tasks.done"));
+                    break;
+
+                case 'onlyDone':
+                    taskIds = hub.get("tasks.verified").concat(hub.get("tasks.done"));
+                    break;
+
+                case 'onlyIncomplete':
+                    taskIds = hub.get("tasks.new").concat(hub.get("tasks.claimed"));
+                    break;
+
+            }
+        }else{
+            taskIds = hub.get("tasks.new").concat(hub.get("tasks.claimed"));
+        }
+
+        this.collection = Tasket.getTasks(taskIds);
+        this._setupModelBindings();
+        this.render();
+        this.renderTasks();
+
 		return this;
 	},
 
@@ -234,6 +263,12 @@ var TaskListView = View.extend({
         this.$("div.header input").css("width", headingWidth+10+"px");
     },
 
+    _onTitleDelete: function (event) {
+        if(confirm('Delete this list and all assigned tasks?')){
+            this.model.destroy();
+        }
+    },
+    
     _onTitleEditSave: function (event) {
         var newTitle = this.$("div.header input").val();
 
@@ -393,9 +428,15 @@ var TaskListView = View.extend({
     },
 
     // a double click on the item title will find the edit icon & fire that control
-    _onItemDoubleClick: function(e) {
-        e.target = $(e.target).parents('li').find('li.edit a').get(0);
-        this._onControlAction(e);
+    _onItemEditClick: function(e) {
+        if (e.target.nodeName.toUpperCase() == "P") {
+            // re-assign the click target to be the edit icon
+            e.target = $(e.target).parents('li')
+                        .find('li.edit a').get(0);
+
+            this._onControlAction(e);
+        };
+        
     },
 
    /**
@@ -428,16 +469,21 @@ var TaskListView = View.extend({
         if (this.editedTaskView && taskView === this.editedTaskVew ) {
             return false;
         }
-
-        this.editedTaskView = taskView;
-        taskView.makeEditable();
+        else {
+            this.editedTaskView = taskView;
+            taskView.makeEditable();
+        }
+        
     },
 
     // double click the title to envoke the title edit
-    _onTitleDoubleClick: function(e) {
+    _onTitleEditClick: function(e) {
         this._onTitleEdit(e);
     },
     
+    _onTextInputBlur: function(e){
+        this._onCancel(e);
+    },
 
    /*
     * Handles the _onTick action and triggers the 'update-item' event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
@@ -478,8 +524,8 @@ var TaskListView = View.extend({
 
         if (taskView.model.isNew()) {
             taskView.remove();
-        }
-        else {
+            this.trigger("remove-item", taskView.model);
+        } else {
             taskView.reset();
         }
 
