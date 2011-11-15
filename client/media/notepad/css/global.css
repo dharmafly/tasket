@@ -1123,6 +1123,7 @@ table {
           right: 40px;
         }
             #content .header .edit-item .delete {
+                display: none; /* TODO: Implement list deletetion */
                 position: static;
                 float: left;
                 margin-left: 15px;
