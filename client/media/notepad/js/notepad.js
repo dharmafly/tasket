@@ -158,8 +158,8 @@ _.extend(app, {
 
                     app.lightbox.content(srcNode.attr({
                         "src": bigImgPath,
-                        "width": 1000,
-                        "height": 850,
+                        "width": 920,
+                        "height": 500,
                     }), 'wide').show();
                 })
             });

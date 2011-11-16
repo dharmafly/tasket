@@ -1293,8 +1293,8 @@ table {
 }
 
 .lightbox.wide .lightbox-inner {
-    width: 1000px;
-    margin-left: -520px;
+    width: 920px;
+    margin-left: -480px;
 }
 
 .ie .lightbox .lightbox-inner {
