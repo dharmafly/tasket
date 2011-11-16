@@ -233,10 +233,14 @@ var TankController = Controller.extend({
 
         if (!options || !options.dontDraw){
             this.calculateHubWeights();
-
+            
             _.each(this.hubViews, function(hubView){
                 tank.drawHubView(hubView);
             });
+            
+            // Tank size is based on hubs.
+            this.updateWalls();
+
             this.forcedirectHubs();
         }
 
@@ -733,22 +737,60 @@ var TankController = Controller.extend({
         }
     },
 
+    /* Public: Determine the tank dimensions by splitting the hubs into
+     * into groups based on thier weight. The width is determined by the
+     * group with the most hubs multiplied by the hub width. The height is
+     * determined by the number of groups that contains hubs multiplied
+     * by the height.
+     *
+     * Returns nothing.
+     */
     updateTank: function () {
         // Work out how big we want the tank and set the dimensions.
-        var width  = this.viewportWidth,
-            height = this.viewportHeight,
-            factor = Tasket.hubs.length / 5;
+        var groups = [],
+            groupCount = 5,
+            groupWeight, weights, hubWidth, hubHeight;
 
-        // If more that five hubs update the size of the screen. This is
-        // very clunky but works for the moment.
-        if (factor > 1) {
-            width  *= factor;
-            height *= factor;
-            $('body').width(width).height(height);
+        // If we have no hubs yet just use the viewport dimensions.
+        if (!_.size(this.hubViews)) {
+            this.tankWidth  = this.viewportWidth;
+            this.tankHeight = this.viewportHeight;
+            return;
         }
 
-        this.tankWidth  = width;
-        this.tankHeight = height;
+        // Split the range of hub weights into groups.
+        groupWeight = this.hubWeightRange / groupCount;
+
+        // Assign the hubs to groups.
+        _.each(this.hubViews, function (view) {
+            var group = Math.floor(view.model.weight() / groupWeight),
+                array = groups[group];
+
+            if (!array) {
+                array =  groups[group] = [];
+            }
+
+            array.push(view);
+
+            if (!hubWidth) {
+                // Grab the hub width/height for use when resizing.
+                hubWidth  = view.width;
+                hubHeight = view.height;
+            }
+        });
+
+        // Remove empty groups.
+        groups = _.compact(groups);
+
+        // width == max number of hubs in group * hub width
+        this.tankWidth  = Math.max.apply(Math, _.pluck(groups, "length")) * hubWidth;
+
+        // height == number of groups containing hubs * hub height
+        // this is multiplied by 2 to give a little more height between the
+        // hubs. The 2 is arbitrary and assigned through trial and error.
+        this.tankHeight = groups.length * (hubHeight * 2);
+
+        $('body').width(this.tankWidth).height(this.tankHeight);
     },
 
     // Centers the viewport in the middle of the tank.
@@ -824,6 +866,8 @@ var TankController = Controller.extend({
             right: this.wallRight,
             bottom: this.wallBottom
         };
+
+        console.log(dimensions);
 
         return this.trigger("change:walls", this, dimensions);
     },
