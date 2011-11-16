@@ -71,6 +71,13 @@ var TankController = Controller.extend({
             tank.trigger("resize", tank);
         }, app.tankResizeThrottle));
 
+        app.dashboard.bind("all", function (eventName) {
+            if (eventName === "show" || eventName === "hide") {
+                this.markersView.toggleFullscreen(eventName === "hide");
+                this.updateWalls().repositionHubViews();
+            }
+        }, this);
+
         Tasket.hubs
             // Watch for new hubs and add them to the tank.
             .bind("add", _.bind(function(hub){
@@ -888,6 +895,9 @@ var TankController = Controller.extend({
 
     // Gets the width of the dashboard including the right offset.
     getDashboardWidth: function () {
+        if (app.dashboard.isHidden()) {
+            return 0;
+        }
         return app.dashboard.elem.outerWidth() + parseFloat(app.dashboard.elem.css('right'));
     },
 

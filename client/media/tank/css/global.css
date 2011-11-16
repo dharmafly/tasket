@@ -1665,6 +1665,10 @@ footer a.df:hover {
 	pointer-events: none;
 }
 
+.hub-marker-container.fullscreen {
+	right: 25px;
+}
+
 .hub-marker {
 	top: 0;
 	left: 0;

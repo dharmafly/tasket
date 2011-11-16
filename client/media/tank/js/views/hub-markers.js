@@ -3,6 +3,11 @@ var HubMarkers = View.extend({
 
     className: "hub-marker-container",
 
+    /* Classes to change state. */
+    classes: {
+        fullscreen: "fullscreen"
+    },
+
     /* Public: Initializes the HubMarkers view.
      *
      * options - An object literal containing config options.
@@ -23,6 +28,45 @@ var HubMarkers = View.extend({
             mouseenter: this._onMouseEnterMarker,
             mouseleave: this._onMouseLeaveMarker
         }, '.' + HubMarker.prototype.className);
+    },
+
+    /* Public: Checks to see if the view is currently fullscreened.
+     *
+     * Examples
+     *
+     *   if (view.isFullscreen()) {
+     *     // Do something.
+     *   }
+     *
+     * Returns true if the view is fullscreen.
+     */
+    isFullscreen: function () {
+        return this.elem.hasClass(this.classes.fullscreen);
+    },
+
+    /* Public: Makes the marker view take up the full viewport. Usually
+     * called when the sidebar dashboard is hidden.
+     *
+     * If no fullscreen is provided it will toggle the fullscreen state.
+     *
+     * fullscreen - If true makes the view fullscreen (optional).
+     *
+     * Examples
+     *
+     *   if (dashboard.isHidden()) {
+     *     view.toggleFullscreen(true);
+     *   } else {
+     *     view.toggleFullscreen(false);
+     *   }
+     *
+     * Returns itself.
+     */
+    toggleFullscreen: function (fullscreen) {
+        if (!arguments.length) {
+            fullscreen = !this.isFullscreen();
+        }
+        this.elem.toggleClass(this.classes.fullscreen);
+        return this;
     },
 
     /* Public: Adds a marker to the view for the Hub model provided. All
