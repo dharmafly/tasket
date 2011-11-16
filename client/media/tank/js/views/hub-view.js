@@ -525,8 +525,8 @@ var HubView = View.extend({
     getCenter: function () {
         var icon = this.$('.nucleus-wrapper');
         var offset = icon.offset();
-        offset.top  = offset.top + (icon.outerHeight(true) / 2);
-        offset.left = offset.left + (icon.outerWidth(true) / 2);
+        offset.top  = offset.top  + (icon.outerHeight(true));
+        offset.left = offset.left + (icon.outerWidth(true));
         return offset
     },
 
