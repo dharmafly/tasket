@@ -44,6 +44,15 @@ var TankController = Controller.extend({
                 }
             });
 
+        _.bindAll(this, "updateMarkers");
+        var throttledUpdateMarkers = _.throttle(this.updateMarkers, 1000 / 60);
+
+        this.tankView = new Tank({el: $('body')[0]});
+        this.tankView.bind('pan', this.shiftViewport, this);
+        this.tankView.bind('pan', throttledUpdateMarkers);
+
+        $(window).scroll(throttledUpdateMarkers);
+
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
 
@@ -55,8 +64,7 @@ var TankController = Controller.extend({
         });
 
         this.bind("resize", function(){
-            this.updateWalls()
-                .repositionHubViews();
+            this.updateWalls().repositionHubViews();
         });
 
         jQuery(window).bind("resize", _.debounce(function(){
@@ -111,15 +119,6 @@ var TankController = Controller.extend({
                 }
             }, this));
    */
-
-        _.bindAll(this, "updateMarkers");
-        var throttledUpdateMarkers = _.throttle(this.updateMarkers, 1000 / 60);
-
-        this.tankView = new Tank({el: $('body')[0]});
-        this.tankView.bind('pan', this.shiftViewport, this);
-        this.tankView.bind('pan', throttledUpdateMarkers);
-
-        $(window).scroll(throttledUpdateMarkers);
 
         this.updateWalls();
         this.centerTank();
@@ -255,7 +254,6 @@ var TankController = Controller.extend({
             
             // Tank size is based on hubs.
             this.updateWalls();
-
             this.forcedirectHubs();
         }
 
@@ -884,8 +882,6 @@ var TankController = Controller.extend({
             right: this.wallRight,
             bottom: this.wallBottom
         };
-
-        console.log(dimensions);
 
         return this.trigger("change:walls", this, dimensions);
     },
