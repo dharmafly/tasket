@@ -106,7 +106,8 @@ var Dashboard = View.extend({
             about = stat.find("section.about");
         
         this.elem.html(tim("dashboard", {
-            verified: app.statistics.tasks.verified
+            verified: app.statistics.tasks.verified,
+            toggleText: this.isHidden() ? "Show" : "Hide"
         }));
         
         this.$("footer.meta").html(footer.html());

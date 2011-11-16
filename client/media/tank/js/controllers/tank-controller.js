@@ -132,6 +132,8 @@ var TankController = Controller.extend({
 
         // Create controller to handle hub navigation markers.
         this.markersView = new HubMarkers();
+        this.markersView.toggleFullscreen(app.dashboard.isHidden());
+
         this.markersView.bind("selected", function (markerView) {
             var hubView = this.hubViews[markerView.model.cid];
 

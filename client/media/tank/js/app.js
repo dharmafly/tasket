@@ -50,6 +50,17 @@ var cache = new Cache(Tasket.namespace),
             app.bind("change:currentUser", this._onChangeUser)
                .bind("change:currentUser", this._cacheChangesToCurrentUser);
 
+            // Manage and restore the dashboard state.
+            if (this.cache.get("dashboard-hidden") === true) {
+                this.dashboard.hide();
+            }
+
+            this.dashboard.bind("all", function (eventName) {
+                if (eventName === "show" || eventName === "hide") {
+                    this.cache.set("dashboard-hidden", eventName === "hide");
+                }
+            }, this);
+
             return this.trigger("setup", this);
         },
 
