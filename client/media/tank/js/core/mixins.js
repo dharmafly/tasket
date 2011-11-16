@@ -40,6 +40,22 @@ var mixins = {
             hide: "hide"
         },
 
+        /* Public: Checks to see if the element is currently visible.
+         *
+         * Examples
+         *
+         *   if (view.isHidden()) {
+         *     view.show();
+         *   } else {
+         *     view.hide();
+         *   }
+         *
+         * Returns true if the element is hidden.
+         */
+        isHidden: function () {
+            return this.elem.hasClass(this.classes.hide);
+        },
+
         /* Public: Show the current element by removing the #classes.hide
          * class name. Triggers the "show" event passing in the view
          * to registered listeners.
