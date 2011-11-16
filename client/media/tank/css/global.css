@@ -1613,6 +1613,7 @@ footer a.df:hover {
 	top: 0;
 	left: 0;
 	z-index: 999999;
+	cursor: pointer;
 	position: absolute;
 	width: 30px;
 	height: 30px;
