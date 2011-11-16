@@ -126,9 +126,15 @@ var TankController = Controller.extend({
         // Create controller to handle hub navigation markers.
         this.markersView = new HubMarkers();
         this.markersView.bind("selected", function (markerView) {
-            // Just update the hash fragment to jump to the selected hub.
-            window.location.hash = "/hubs/:id/".replace(":id", markerView.model.id);
-        });
+            var hubView = this.hubViews[markerView.model.cid];
+
+            if (hubView && hubView.isSelected()) {
+                this.centerViewportOnHub(hubView);
+            } else {
+                // Just update the hash fragment to jump to the selected hub.
+                window.location.hash = "/hubs/:id/".replace(":id", markerView.model.id);
+            }
+        }, this);
 
         this.bind("add:hub", function (controller, hub, hubView) {
             this.addMarker(hub);
@@ -173,6 +179,12 @@ var TankController = Controller.extend({
     },
     */
 
+    centerViewportOnHub: function (hubView) {
+        this.centerViewport(hubView.getCenter(), {
+            animate: Backbone.history.stack().length > 0 || !this._isHubUrlOnLoad
+        });
+    },
+
     // When a hubView is selected, then deselect all the other hubviews
     _onSelectHubs: function(selectedHubView){
         _(this.hubViews)
@@ -181,6 +193,8 @@ var TankController = Controller.extend({
                 return hubView.model.id === selectedHubView.model.id;
             })
             .invoke("deselect");
+
+        this.centerViewportOnHub(selectedHubView);
 
         return this.trigger("hub:select", selectedHubView, this);
     },
@@ -301,10 +315,6 @@ var TankController = Controller.extend({
 
         if (hubView){
             hubView.sendToFront().showTasks();
-            this.centerViewport(hubView.elem.position(), {
-                // Animate if this is not the first view loaded.
-                animate: Backbone.history.stack().length > 0 || !this._isHubUrlOnLoad
-            });
         }
 
         return this;
