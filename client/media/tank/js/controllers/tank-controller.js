@@ -1,5 +1,6 @@
 var TankController = Controller.extend({
     routes: {
+        "/": "resetHubs",
         "/hubs/new/": "newHub",
         "/hubs/archived/": "listArchivedHubs",
         "/hubs/:id/": "displayHub",
@@ -306,6 +307,13 @@ var TankController = Controller.extend({
         }
 
         return this;
+    },
+
+    resetHubs: function () {
+        _.invoke(this.hubViews, "deselect");
+        this.centerTank({
+            animate: !!Backbone.history.stack().length
+        });
     },
 
     displayHub: function(hubId){
