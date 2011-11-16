@@ -148,7 +148,7 @@ var HubMarker = View.extend({
     }
 }, {
     /* Base z-index for all views. Gets incremented by #_bumpIndex() */
-    zindex: 1000
+    zindex: 999999
 });
 
 // Add show/hide methods to the view.
