@@ -1004,24 +1004,80 @@ svg line {
 	background-color: rgba(230, 230, 230, 0.95);
 	border: 1px solid #b4b4b4;
 	border-color: rgba(180, 180, 180, 1);
+}
+
+.dashboard-inner,
+.lightbox-inner {
 	padding: 1.538em /* 20px */;
 }
 
 .dashboard {
 	position: fixed;
+	overflow: hidden;
 	z-index: 999998; /*when set high, this puts the dashboard above the hubs and tasks in the tank*/
 	top: 3.077em /* 40px */;
 	right: 20px;
 	bottom: 20px;
-	width: 15.385em /* 200px */;
-	overflow: auto;
-	overflow-x: hidden;
+	width: 18.461em /* 200px */;
 	border-top: none;
 	-webkit-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	-moz-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	-ms-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	-o-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	border-radius: 0 0 0.385em 0.385em /* 5px */;
+}
+
+.dashboard-inner {
+	position: absolute;
+	top: 0;
+	bottom: 1.769em /* 23px */;
+	overflow: auto;
+	overflow-x: hidden;
+}
+
+.dashboard.hide {
+	bottom: auto;
+	height: 1.769em /* 23px */;
+}
+
+.dashboard-toggle {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	width: 16.923em /* 220px */;
+	padding: 0.231em 0.769em /* 3px 10px */;
+	background: rgba(255, 255, 255, 0.8);
+	text-align: right;
+	border-top: 1px solid #b4b4b4;
+	border-color: rgba(180, 180, 180, 1);
+	-webkit-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	-moz-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	-ms-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	-o-border-radius: 0 0 0.385em 0.385em /* 5px */;
+	border-radius: 0 0 0.385em 0.385em /* 5px */;
+}
+
+.dashboard-toggle a {
+	font-size: 0.769em /* 10px */;
+	text-transform: uppercase;
+	font-weight: bold;
+	margin-right: 8px;
+}
+
+.dashboard-toggle a:after {
+	content: "";
+	width: 10px;
+	height: 10px;
+	position: absolute;
+	top: 50%;
+	right: 4px;
+	margin-top: -5px;
+	background: url(../images/sprites.png) no-repeat 0 -540px;
+}
+
+.hide .dashboard-toggle a:after {
+	background-position: 0 -570px;
 }
 
 .dashboard.detail-active {

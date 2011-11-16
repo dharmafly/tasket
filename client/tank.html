@@ -537,58 +537,63 @@
     </script>
 
     <script type="text/tim" class="dashboard">
-        <section class="about"></section>
-        <ul class="listing notifications">
-            <li>
-                <!-- <a data-type="ownedClaimed" href="#my-tasks" title="View these claimed tasks"> -->
-                <span data-type="ownedClaimed">
-                    <span></span> of your tasks have been claimed
-                </span>
-                <!-- </a> -->
-            </li>
-            <li>
-                <a data-type="adminedDone" href="#managed-tasks" title="Verify these tasks">
-                    <span></span> tasks have been done by people and need verifying
-                </a>
-            </li>
-            <li>
-                <!-- <a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"> -->
-                <span data-type="claimedVerified">
-                    <span></span> tasks you’ve done have been verified
-                </span>
-                <!-- </a> -->
-            </li>
-            <li>
-                <span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span>
-            </li>
-        </ul>
+        <div class="dashboard-inner">
+          <section class="about"></section>
+          <ul class="listing notifications">
+              <li>
+                  <!-- <a data-type="ownedClaimed" href="#my-tasks" title="View these claimed tasks"> -->
+                  <span data-type="ownedClaimed">
+                      <span></span> of your tasks have been claimed
+                  </span>
+                  <!-- </a> -->
+              </li>
+              <li>
+                  <a data-type="adminedDone" href="#managed-tasks" title="Verify these tasks">
+                      <span></span> tasks have been done by people and need verifying
+                  </a>
+              </li>
+              <li>
+                  <!-- <a data-type="claimedVerified" href="#my-tasks" title="View your completed tasks"> -->
+                  <span data-type="claimedVerified">
+                      <span></span> tasks you’ve done have been verified
+                  </span>
+                  <!-- </a> -->
+              </li>
+              <li>
+                  <span data-type="atClaimedLimit">You've reached the limit of <span></span> claimed tasks</span>
+              </li>
+          </ul>
         
-        <section class="quicklinks my-projects">
-            <h1>My Projects</h1>
-            <p class="help">This section has a list of your projects</p>
-            <ul class="listing"></ul>
-            <p>
-                <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
-            </p>
-            <div class="archived-projects"></div>
-        </section>
+          <section class="quicklinks my-projects">
+              <h1>My Projects</h1>
+              <p class="help">This section has a list of your projects</p>
+              <ul class="listing"></ul>
+              <p>
+                  <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
+              </p>
+              <div class="archived-projects"></div>
+          </section>
         
-        <section class="quicklinks my-tasks">
-            <h1>Tasks I’m Doing</h1>
-            <p class="help">This section has a list of tasks that you've said you'd complete</p>
-            <ul class="listing"></ul>
-        </section>
+          <section class="quicklinks my-tasks">
+              <h1>Tasks I’m Doing</h1>
+              <p class="help">This section has a list of tasks that you've said you'd complete</p>
+              <ul class="listing"></ul>
+          </section>
         
-        <section class="quicklinks managed-tasks">
-            <h1>Tasks to Verify</h1>
-            <p class="help">This section has a list of tasks that have been done and need verifying</p>
-            <ul class="listing"></ul>
-        </section>
+          <section class="quicklinks managed-tasks">
+              <h1>Tasks to Verify</h1>
+              <p class="help">This section has a list of tasks that have been done and need verifying</p>
+              <ul class="listing"></ul>
+          </section>
         
-        <p class="statistics">
-            <em>{{verified}}</em> completed tasks
-        </p>
-        <footer class="meta"></footer>
+          <p class="statistics">
+              <em>{{verified}}</em> completed tasks
+          </p>
+          <footer class="meta"></footer>
+        </div>
+        <div class="dashboard-toggle">
+            <a href="#toggle"><span class="toggle-text">Hide</span> Dashboard</a>
+        </div>
     </script>
     
     <script type="text/tim" class="archived-projects-link">

@@ -8,6 +8,7 @@ var Dashboard = View.extend({
     },
 
     events: {
+        "click .dashboard-toggle a": "_onToggleClick",
         "click ul.notifications a": "_onNotificationClick",
         "click section.quicklinks.my-projects ul.listing li a.hub-link": "toggleHub",
         "mouseenter a.info": "_toggleHelp",
@@ -53,6 +54,12 @@ var Dashboard = View.extend({
                 app.back();
             }
         }, this));
+
+        this.bind("all", function (eventName) {
+            if (eventName === "show" || eventName === "hide") {
+                this._onToggle(eventName);
+            }
+        }, this);
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
@@ -344,5 +351,18 @@ var Dashboard = View.extend({
                 
             event.preventDefault();
         }
+    },
+
+    /* Updates the toggle text when the view is toggled. */
+    _onToggle: function (method) {
+        this.$(".toggle-text").text(method === "hide" ? "Show" : "Hide");
+    },
+
+    /* Handles clicks on the dashboard toggle button. */
+    _onToggleClick: function (event) {
+        event.preventDefault();
+        this[this.isHidden() ? "show" : "hide"]();
     }
 });
+
+jQuery.extend(true, Dashboard.prototype, mixins.toggle);
