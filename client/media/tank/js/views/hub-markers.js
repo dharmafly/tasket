@@ -12,17 +12,17 @@ var HubMarkers = View.extend({
     constructor: function HubMarkersView(options) {
         View.apply(this, arguments);
 
-        _.bindAll(this, "_onClick", "_onMouseEnterMarker", "_onMouseLeaveMarker");
+        bindHandlers(this);
 
-        // Manually delegate clicks on Hub markers for performance. This can't
+        this.markers = {};        
+
+        // Manually delegate events on Hub markers for performance. This can't
         // be done in the events property as we need the className.
-        var markerClass = '.' + HubMarker.prototype.className;
         this.elem.on({
             click:      this._onClickMarker,
             mouseenter: this._onMouseEnterMarker,
             mouseleave: this._onMouseLeaveMarker
-        }, markerClass);
-        this.markers = {};
+        }, '.' + HubMarker.prototype.className);
     },
 
     /* Public: Adds a marker to the view for the Hub model provided. All
@@ -177,6 +177,19 @@ var HubMarkers = View.extend({
         return Math.tan(degrees * (Math.PI/180)) * 0.5;
     },
 
+    /* Gets the view from the #markers objects for the element provided.
+     *
+     * element - A HubMarker DOM Element.
+     *
+     * Examples
+     *
+     *   var markerView = view._getViewByModelAttr(element);
+     *   if (markerView) {
+     *      // Do something.
+     *   }
+     *
+     * Returns a HubMarker or undefined if not found.
+     */
     _getViewByModelAttr: function (element) {
         var model = element.getAttribute('data-model') || "";
         return this.markers[model.split("-").pop()];
@@ -194,7 +207,7 @@ var HubMarkers = View.extend({
      *
      * Returns nothing.
      */
-    _onClick: function (event) {
+    _onClickMarker: function (event) {
         var view = this._getViewByModelAttr(event.currentTarget);
 
         if (view) {
