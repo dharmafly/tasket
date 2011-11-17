@@ -284,6 +284,8 @@ var HubMarkers = View.extend({
 
     /* Event handler that displays the tooltip for the marker on mouseover.
      *
+     * Triggers the "mouseenter" event passing in the view to all handlers.
+     *
      * event - A jQuery.Event mouse event.
      *
      * Returns nothing.
@@ -291,11 +293,14 @@ var HubMarkers = View.extend({
     _onMouseEnterMarker: function (event) {
         var view = this._getViewByModelAttr(event.currentTarget);
         if (view) {
+            view.trigger("mouseenter", view, this);
             view.showTooltip();
         }
     },
 
     /* Event handler that displays the tooltip for the marker on mouseout.
+     *
+     * Triggers the "mouseleave" event passing in the view to all handlers.
      *
      * event - A jQuery.Event mouse event.
      *
@@ -304,10 +309,11 @@ var HubMarkers = View.extend({
     _onMouseLeaveMarker: function (event) {
         var view = this._getViewByModelAttr(event.currentTarget);
         if (view) {
+            view.trigger("mouseleave", view, this);
             view.hideTooltip();
         }
     }
 });
 
 // Add show/hide methods to the view.
-jQuery.extend(true, HubMarkers.prototype, mixins.proxy);
+jQuery.extend(true, HubMarkers.prototype, mixins.proxy, mixins.toggle);
