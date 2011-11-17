@@ -74,7 +74,6 @@ var TankController = Controller.extend({
         app.dashboard.bind("all", function (eventName) {
             if (eventName === "show" || eventName === "hide") {
                 this.markersView.toggleFullscreen(eventName === "hide");
-                this.updateWalls().repositionHubViews();
             }
         }, this);
 
