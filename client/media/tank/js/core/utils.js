@@ -138,3 +138,52 @@ function timestampToRelativeDate(timestamp) {
         
     return relativeDate;
 }
+
+// Capitalize all words in the passed string.
+function capitalize(string) {
+    return $.map(string.split(' '), function (word) {
+        return word.charAt(0).toUpperCase() + word.slice(1);
+    }).join(' ');
+}
+
+function camelize(string) {
+    return string.replace(/-([a-z])/gi, function (match, letter) {
+        return letter.toUpperCase();
+    });
+}
+
+// Checks to see if browser supports style property. Returns the property
+// string or null if not supported.
+function getCSSProperty(property) {
+    var prefixes = ['Moz', 'Webkit', 'Khtml', 'O', 'Ms'],
+        index  = 0,
+        length = prefixes.length,
+        cache  = getCSSProperty.cache,
+        styles, prefixed, capialized;
+
+    if (!cache) {
+        cache = getCSSProperty.cache = {};
+    }
+
+    property = camelize(property);
+    if (cache[property]) {
+        return cache[property];
+    }
+
+    if (window.getComputedStyle) {
+        styles = getComputedStyle(document.documentElement, null);
+        if (property in styles) {
+            cache[property] = property;
+            return property;
+        }
+        capialized = capitalize(property);
+        for (; index < length; index += 1) {
+            prefixed = prefixes[index] + capialized;
+            if (prefixed in styles) {
+                cache[property] = prefixed;
+                return prefixed;
+            }
+        }
+    }
+    return null;
+}
