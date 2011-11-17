@@ -65,7 +65,7 @@ var HubMarkers = View.extend({
         if (!arguments.length) {
             fullscreen = !this.isFullscreen();
         }
-        this.elem.toggleClass(this.classes.fullscreen);
+        this.elem.toggleClass(this.classes.fullscreen, fullscreen);
         return this;
     },
 
