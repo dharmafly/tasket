@@ -65,13 +65,19 @@ var HubMarker = View.extend({
      * Returns itself.
      */
     angle: function (angle) {
+        var transform = getCSSProperty('transform');
+
         // CSS expects angle to rotate clockwise so we accomodate for this
         // by subtracting it from 2π. Also starts 135 degrees from 0 (x-axis)
         // also accomodate for that.
         angle = (2 * Math.PI - angle) + (Math.PI * 0.75);
 
         this._angle = angle;
-        this.$('.hub-marker-pointer').css('-webkit-transform', 'rotate(' + angle + 'rad)');
+
+        if (transform) {
+            this.$('.hub-marker-pointer').css(transform, 'rotate(' + angle + 'rad)');
+        }
+
         return this;
     },
 

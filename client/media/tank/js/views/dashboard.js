@@ -384,7 +384,7 @@ var Dashboard = View.extend({
     _onToggle: function (method, options) {
         var value = 0, toggle = this.$(".dashboard-toggle"),
             disableAnimation = !!options && options.animate === false,
-            dashboard = this;
+            dashboard = this, transform = getCSSProperty('transform');
 
         if (method === "hide") {
             value = toggle.outerHeight() - this.elem.height();
@@ -392,7 +392,10 @@ var Dashboard = View.extend({
 
         this._animating = !disableAnimation;
         this.elem.toggleClass(this.classes.disableAnimation, disableAnimation);
-        this.elem.css('-webkit-transform', 'translate(0, ' + value + 'px)');
+
+        if (transform) {
+            this.elem.css(transform, 'translate(0, ' + value + 'px)');
+        }
 
         if (this._animating) {
             setTimeout(function () {
