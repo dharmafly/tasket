@@ -39,6 +39,7 @@ html.linear {
 }
 
 body {
+	position: relative;
 	margin: 0;
 	height: 100%;
 	font-size: 1.3em; /* Base font size 13px */
@@ -1658,10 +1659,10 @@ footer a.df:hover {
 
 .hub-marker-container {
 	position: fixed;
-	top: 65px;
-	left: 25px;
+	top: 61px;
+	left: 21px;
 	right: 21.92em /* 285px */;
-	bottom: 25px;
+	bottom: 21px;
 	pointer-events: none;
 }
 
