@@ -816,7 +816,7 @@ var TankController = Controller.extend({
                 // height == number of groups containing hubs * hub height
                 // this is multiplied by 2 to give a little more height between the
                 // hubs. The 2 is arbitrary and assigned through trial and error.
-                this.tankHeight = groups.length * (hubHeight * 2.5);
+                this.tankHeight = groups.length * (hubHeight * 2);
             }
         }
 
