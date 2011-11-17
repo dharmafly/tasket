@@ -51,20 +51,27 @@ var HubMarker = View.extend({
         return this.angle(angle);
     },
 
-    /* Public: Points the marker at the angle provided.
+    /* Public: Points the marker at the angle provided. The angle should be
+     * in radians where 0 is the positive x-axis and the rotation is counter
+     * clockwise.
      *
-     * angle - An angle in degrees (0 is north).
+     * angle - An angle in radians (0 is positive x-axis).
      *
      * Examples
      *
-     *   marker.angle(0);
-     *   marker.angle(134);
+     *   marker.angle(0); // East
+     *   marker.angle(Math.PI / 2); // 90 degrees (North).
      *
      * Returns itself.
      */
     angle: function (angle) {
+        // CSS expects angle to rotate clockwise so we accomodate for this
+        // by subtracting it from 2π. Also starts 135 degrees from 0 (x-axis)
+        // also accomodate for that.
+        angle = (2 * Math.PI - angle) + (Math.PI * 0.75);
+
         this._angle = angle;
-        this.$('.hub-marker-pointer').css('-webkit-transform', 'rotate(' + (angle + 45) + 'deg)');
+        this.$('.hub-marker-pointer').css('-webkit-transform', 'rotate(' + angle + 'rad)');
         return this;
     },
 

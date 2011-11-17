@@ -122,6 +122,7 @@ var HubMarkers = View.extend({
     updateMarker: function (hub, degrees) {
         var marker = this.markers[hub && hub.id];
         if (marker) {
+            degrees = this._convertOldDegreesToRadians(degrees);
             marker.position(this._calculatePosition(degrees), degrees);
         }
         return this;
@@ -165,16 +166,8 @@ var HubMarkers = View.extend({
      *
      * Returns an object with top & left as percentages.
      */
-    _calculatePosition: function (degrees) {
-        // Convert old 0 degree north to new 0 radian east model.
-        function convert(degrees) {
-            var converted = ((360 - degrees) + 90);
-            return converted > 360 ? converted - 360 : converted;
-        }
-
-        // TODO: Refactor this into nicer logic.
-        var radians  = convert(degrees) * (Math.PI/180),
-            width    = this.elem.width(),
+    _calculatePosition: function (radians) {
+        var width    = this.elem.width(),
             height   = this.elem.height(),
             x = width / 2, y = height / 2,
             scalarY, scalarX,
@@ -236,8 +229,10 @@ var HubMarkers = View.extend({
         };
     },
 
-    _getOffset: function (degrees) {
-        return Math.tan(degrees * (Math.PI/180)) * 0.5;
+    _convertOldDegreesToRadians: function (degrees) {
+        var converted = ((360 - degrees) + 90);
+        converted = converted > 360 ? converted - 360 : converted;
+        return converted * (Math.PI / 180);
     },
 
     /* Gets the view from the #markers objects for the element provided.
