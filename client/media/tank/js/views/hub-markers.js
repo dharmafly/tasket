@@ -109,21 +109,24 @@ var HubMarkers = View.extend({
     },
 
     /* Public: Updates the position of a marker for the provided hub.
+     * 
+     * The angle argument should be an angle where 0 sits on the positive
+     * x-axis. Rotation is counter clockwise.
      *
-     * hub     - A hub model.
-     * degrees - The angle the marker is at from the center of the view.
+     * hub   - A hub model.
+     * angle - The angle the marker is at from the center of the view.
      *
      * Examples
      *
-     *   view.updateMarker(hub, 36);
+     *   view.updateMarker(hub, Math.PI / 2);
      *
      * Returns itself.
      */
-    updateMarker: function (hub, degrees) {
+    updateMarker: function (hub, angle) {
         var marker = this.markers[hub && hub.id];
         if (marker) {
-            degrees = this._convertOldDegreesToRadians(degrees);
-            marker.position(this._calculatePosition(degrees), degrees);
+            angle = this._convertOldDegreesToRadians(angle);
+            marker.position(this._calculatePosition(angle), angle);
         }
         return this;
     },
@@ -145,23 +148,26 @@ var HubMarkers = View.extend({
     },
 
     /* Calculates the top/left position of an element in a container based
-     * apon the angle (in degrees) from the center of the container. The
+     * upon the angle (in radians) from the center of the container. The
      * results are returned in percentages and can be passed directly into
      * jQuery#css().
      *
-     * degrees - The angle the marker is at (0 degrees is north).
+     * The radians argument should be an angle where 0 sits on the positive
+     * x-axis. Rotation is counter clockwise.
+     *
+     * radians - The angle the marker is at relative to the viewport.
      *
      * Examples
      *
      *   // Assuming a square viewport:
      *
-     *   var offset = view._calculatePosition(45);
+     *   var offset = view._calculatePosition(Math.PI / 4); // 45 degrees
      *   //=> {top: "0%", left: "100%"}
      *
-     *   var offset = view._calculatePosition(270);
+     *   var offset = view._calculatePosition(Math.PI * 1.75); // 275 degrees
      *   //=> {top: "50%", left: "0%"}
      * 
-     *   var offset = view._calculatePosition(180);
+     *   var offset = view._calculatePosition(Math.PI); // 180 degrees
      *   //=> {top: "100%", left: "50%"}
      *
      * Returns an object with top & left as percentages.
