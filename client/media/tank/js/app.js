@@ -61,7 +61,21 @@ var cache = new Cache(Tasket.namespace),
                 }
             }, this);
 
+            this.setupCSSSupport();
+
             return this.trigger("setup", this);
+        },
+
+        // Add a class to the html element for all css properties that are
+        // not supported. eg. class="no-transform no-transition".
+        setupCSSSupport: function () {
+            var root = document.documentElement;
+            _.each(["transform"], function (prop) {
+                var supported = getCSSProperty(prop);
+                if (!supported) {
+                    root.className += " no-" + prop;
+                }
+            });
         },
 
         // Create routes for all templates prefixed with "static-". When this
