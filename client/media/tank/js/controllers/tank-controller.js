@@ -45,13 +45,7 @@ var TankController = Controller.extend({
             });
 
         _.bindAll(this, "updateMarkers");
-        var throttledUpdateMarkers = _.throttle(this.updateMarkers, 1000 / 60);
-
         this.tankView = new Tank({el: $('body')[0]});
-        this.tankView.bind('pan', this.shiftViewport, this);
-        this.tankView.bind('pan', throttledUpdateMarkers);
-
-        $(window).scroll(throttledUpdateMarkers);
 
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
@@ -150,6 +144,7 @@ var TankController = Controller.extend({
                 window.location.hash = "/hubs/:id/".replace(":id", markerView.model.id);
             }
         }, this);
+        this._setupPanAndScrollEvents();
 
         this.bind("add:hub", function (controller, hub, hubView) {
             this.addMarker(hub);
@@ -161,6 +156,51 @@ var TankController = Controller.extend({
         if (options && options.hubs){
             this.addHubs(options.hubs);
         }
+    },
+
+    _setupPanAndScrollEvents: function () {
+        var throttledUpdateMarkers = _.throttle(this.updateMarkers, 1000 / 60),
+            toggleDisplayMarkers;
+
+        // Move viewport and update markers when panned.
+        this.tankView.bind('pan', this.shiftViewport, this);
+        this.tankView.bind('pan', throttledUpdateMarkers);
+        $(window).scroll(throttledUpdateMarkers);
+
+        // Handler to show the markers when the view is scrolled/panned and
+        // will hide the markers when idle. If a marker is moused over the
+        // timer will be cancelled until mouseleave.
+        toggleDisplayMarkers = (function (markersView) {
+            var started = false, timer;
+
+            function startTimer() {
+                timer = setTimeout(function () {
+                    started = false;
+                    markersView.hide();
+                }, 1500);
+            }
+
+            function stopTimer() {
+                clearTimeout(timer);
+            }
+
+            markersView.bind("mouseenter", stopTimer);
+            markersView.bind("mouseleave", startTimer);
+
+            return function () {
+                if (!started) {
+                    markersView.show();
+                    started = true;
+                }
+
+                stopTimer();
+                startTimer();
+            };
+        })(this.markersView);
+
+        // Bind this handler to scroll and pan.
+        this.tankView.bind('pan', toggleDisplayMarkers);
+        $(window).scroll(toggleDisplayMarkers);
     },
 
     error: function (message) {

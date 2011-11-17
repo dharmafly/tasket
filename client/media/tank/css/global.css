@@ -1674,10 +1674,20 @@ footer a.df:hover {
 	right: 21.92em /* 285px */;
 	bottom: 21px;
 	pointer-events: none;
+	-webkit-transition: opacity 0.2s ease-in-out, top 0 0.2s;
 }
 
 .hub-marker-container.fullscreen {
 	right: 25px;
+}
+
+.hub-marker-container.fade-out {
+	opacity: 0;
+}
+
+.hub-marker-container.hide {
+	opacity: 0;
+	top: -999999em; /* Throw them way off screen */
 }
 
 .hub-marker {
