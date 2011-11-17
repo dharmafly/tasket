@@ -152,6 +152,8 @@ var HubMarkers = View.extend({
      *
      * Examples
      *
+     *   // Assuming a square viewport:
+     *
      *   var offset = view._calculatePosition(45);
      *   //=> {top: "0%", left: "100%"}
      *
@@ -164,56 +166,73 @@ var HubMarkers = View.extend({
      * Returns an object with top & left as percentages.
      */
     _calculatePosition: function (degrees) {
-        // TODO: Refactor this into nicer logic.
-        var width  = this.elem.width(),
-            height = this.elem.height(),
-            top = 0, left = 0.5;
+        // Convert old 0 degree north to new 0 radian east model.
+        function convert(degrees) {
+            var converted = ((360 - degrees) + 90);
+            return converted > 360 ? converted - 360 : converted;
+        }
 
-        // The container is divided into four segments, NE, SE, SW, NW for
-        // each angle we check to see where in the grid the angle falls. For
-        // example if it's 35deg we know that it will fall in the NE block and
-        // top will be 0 so we calculate the left offset from the central
-        // point and add 0.5 for the NW offset.
-        //
-        // I'm certain there are much more efficient and mathematically
-        // correct ways of doing this so please refactor at will.
-        if (degrees < 45) {
-            top  = 0;
-            left = 0.5 + this._getOffset(degrees);
+        // TODO: Refactor this into nicer logic.
+        var radians  = convert(degrees) * (Math.PI/180),
+            width    = this.elem.width(),
+            height   = this.elem.height(),
+            x = width / 2, y = height / 2,
+            scalarY, scalarX,
+            PI = Math.PI,
+            top = 0, left = 0;
+
+        if (radians < PI / 2) { // First quadrant.
+            scalarY = Math.tan(radians) * x;
+            if (scalarY <= y) {
+                top  = y - scalarY;
+                left = width;
+            } else {
+                scalarX = Math.tan((PI / 2) - radians) * y;
+                top  = 0;
+                left = x + scalarX;
+            }
         }
-        else if (degrees <= 90) {
-            left = 1;
-            top  = this._getOffset(degrees - 45);
+        else if (radians < PI) { // Second quadrant.
+            radians = PI - radians;
+            scalarY = Math.tan(radians) * x;
+            if (scalarY <= y) {
+                top  = y - scalarY;
+                left = 0;
+            } else {
+                scalarX = Math.tan((PI / 2) - radians) * y;
+                top  = 0;
+                left = x - scalarX;
+            }
         }
-        else if (degrees < 135) {
-            left = 1;
-            top  = 0.5 + this._getOffset(degrees - 90);
+        else if (radians < (PI * 1.5)) { // Third quadrant.
+            radians = radians - PI;
+            scalarY = Math.tan(radians) * x;
+            if (scalarY <= y) {
+                top  = y + scalarY;
+                left = 0;
+            } else {
+                scalarX = Math.tan((PI / 2) - radians) * y;
+                top  = height;
+                left = x - scalarX;
+            }
         }
-        else if (degrees <= 180) {
-            top  = 1;
-            left = 1 - this._getOffset(degrees - 135);
-        }
-        else if (degrees < 225) {
-            left = 0.5 - this._getOffset(degrees - 180);
-            top  = 1;
-        }
-        else if (degrees <= 270) {
-            left = 0;
-            top  = 1 - this._getOffset(degrees - 225);
-        }
-        else if (degrees < 315) {
-            top  = 0.5 - this._getOffset(degrees - 270);
-            left = 0;
-        }
-        else if (degrees <= 360) {
-            top  = 0;
-            left = this._getOffset(degrees - 315);
+        else if (radians < (PI * 2)) { // Forth quadrant.
+            radians = (2 * PI) - radians;
+            scalarY = Math.tan(radians) * x;
+            if (scalarY <= y) {
+                top  = y + scalarY;
+                left = width;
+            } else {
+                scalarX = Math.tan((PI / 2) - radians) * y;
+                top  = height;
+                left = x + scalarX;
+            }
         }
 
         // Return widths in percentages to allow window to be resized.
         return {
-            top:  ((top  * height / height) * 100) + '%',
-            left: ((left * width  / width)  * 100) + '%'
+            top:  ((top / height) * 100) + '%',
+            left: ((left  / width)  * 100) + '%'
         };
     },
 
