@@ -1021,11 +1021,26 @@ svg line {
 	bottom: 20px;
 	width: 18.461em /* 200px */;
 	border-top: none;
+
+	-webkit-transition: top 0.25s ease-in-out, -webkit-transform 0.3s ease-in-out;
+	-moz-transition: top 0.25s ease-in-out, -moz-transform 0.3s ease-in-out;
+	-ms-transition: top 0.25s ease-in-out, -ms-transform 0.3s ease-in-out;
+	-o-transition: top 0.25s ease-in-out, -o-transform 0.3s ease-in-out;
+	transition: top 0.25s ease-in-out, transform 0.3s ease-in-out;
+
 	-webkit-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	-moz-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	-ms-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	-o-border-radius: 0 0 0.385em 0.385em /* 5px */;
 	border-radius: 0 0 0.385em 0.385em /* 5px */;
+}
+
+.dashboard.no-animate {
+	-webkit-transition: none;
+	-moz-transition: none;
+	-ms-transition: none;
+	-o-transition: none;
+	transition: none;
 }
 
 .dashboard-inner {
@@ -1034,11 +1049,6 @@ svg line {
 	bottom: 1.769em /* 23px */;
 	overflow: auto;
 	overflow-x: hidden;
-}
-
-.dashboard.hide {
-	bottom: auto;
-	height: 1.769em /* 23px */;
 }
 
 .dashboard-toggle {
@@ -1910,7 +1920,6 @@ footer a.df:hover {
 	box-shadow: none;
 }
 
-.dashboard,
 .notification,
 .header-container {
 	-webkit-transition: top 0.25s ease-in-out;

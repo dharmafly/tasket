@@ -4,7 +4,8 @@ var Dashboard = View.extend({
     className: "dashboard",
 
     classes: {
-        detailShown: "detail-active"
+        detailShown: "detail-active",
+        disableAnimation: "no-animate"
     },
 
     events: {
@@ -36,6 +37,8 @@ var Dashboard = View.extend({
 
         // Set up the detail instance.
         this.detail = new DashboardDetail();
+
+        this._animating = false;
 
         // BIND EVENTS
         app.bind("change:currentUser", this.setUser)
@@ -99,17 +102,31 @@ var Dashboard = View.extend({
         return this;
     },
 
+    /* Public: Checks to see if the dashboard is currently animating.
+     *
+     * Examples
+     *
+     *   if (dashboard.isAnimating()) {
+     *      dashboard.bind("animated", onAnimated);
+     *   }
+     *
+     * Returns true if the dashboard is currently animating.
+     */
+    isAnimating: function () {
+        return this._animating;
+    },
+
     render: function () {
         // place the footer within the dashboard
         var stat = jQuery(".static"),
             footer = stat.find("footer.meta"),
             about = stat.find("section.about");
-        
+
         this.elem.html(tim("dashboard", {
             verified: app.statistics.tasks.verified,
             toggleText: this.isHidden() ? "Show" : "Hide"
         }));
-        
+
         this.$("footer.meta").html(footer.html());
         this.$("section.about").html(about.html());
 
@@ -119,6 +136,8 @@ var Dashboard = View.extend({
         }, this);
 
         this.elem.append(this.detail.render().el);
+
+        this._onToggle(this.isHidden() ? "hide" : "show", {animate: false, silent: true});
 
         return this;
     },
@@ -354,8 +373,33 @@ var Dashboard = View.extend({
         }
     },
 
-    /* Updates the toggle text when the view is toggled. */
-    _onToggle: function (method) {
+    /* Updates the toggle text when the view is toggled.
+     *
+     * method  - Method name either "show" or "hide".
+     * options - Object of options for the method.
+     *           animate: If false does not transition the hide.
+     *
+     * Returns nothing.
+     */
+    _onToggle: function (method, options) {
+        var value = 0, toggle = this.$(".dashboard-toggle"),
+            disableAnimation = !!options && options.animate === false,
+            dashboard = this;
+
+        if (method === "hide") {
+            value = toggle.outerHeight() - this.elem.height();
+        }
+
+        this._animating = !disableAnimation;
+        this.elem.toggleClass(this.classes.disableAnimation, disableAnimation);
+        this.elem.css('-webkit-transform', 'translate(0, ' + value + 'px)');
+
+        if (this._animating) {
+            setTimeout(function () {
+                dashboard.trigger("animated", dashboard);
+            }, 300 /* This needs to be updated when CSS changes */);
+        }
+
         this.$(".toggle-text").text(method === "hide" ? "Show" : "Hide");
     },
 

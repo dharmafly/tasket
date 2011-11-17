@@ -71,9 +71,16 @@ var TankController = Controller.extend({
             tank.trigger("resize", tank);
         }, app.tankResizeThrottle));
 
-        app.dashboard.bind("all", function (eventName) {
+        app.dashboard.bind("all", function (eventName, dashboard) {
             if (eventName === "show" || eventName === "hide") {
-                this.markersView.toggleFullscreen(eventName === "hide");
+                if (dashboard.isAnimating() && eventName === "show") {
+                    dashboard.bind("animated", function onAnimated() {
+                        dashboard.unbind("animated", onAnimated);
+                        this.markersView.toggleFullscreen(eventName === "hide");
+                    }, this);
+                } else {
+                    this.markersView.toggleFullscreen(eventName === "hide");
+                }
             }
         }, this);
 
