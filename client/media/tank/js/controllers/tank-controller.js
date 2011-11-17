@@ -995,7 +995,8 @@ var TankController = Controller.extend({
     },
 
     /* Returns the angle of the hub view relative to the center of the
-     * viewport (in degrees).
+     * viewport (in radians where 0 sits on the positive x-axis and rotation
+     * is counter clockwise).
      *
      * hubView - A HubView object.
      *
@@ -1010,19 +1011,20 @@ var TankController = Controller.extend({
             },
             x = hubPosition.left   - viewportCenter.left,
             y = viewportCenter.top - hubPosition.top,
-            deg;
+            PI = Math.PI, angle;
 
-        deg = (Math.atan(Math.abs(x) / Math.abs(y)) * 180) / Math.PI;
+        // Calculate angle for first quadrant.
+        angle = Math.atan(Math.abs(y) / Math.abs(x));
 
-        if (x >= 0 && y < 0) {
-            deg = 180 - deg;
-        } else if (x < 0 && y < 0) {
-            deg = 180 + deg;
-        } else if (x < 0 && y >= 0) {
-            deg = 360 - deg;
+        if (x < 0 && y >= 0) {        // Second quadrant.
+            angle = PI - angle;
+        } else if (x < 0 && y < 0) {  // Third quadrant.
+            angle = PI + angle;
+        } else if (x >= 0 && y < 0) { // Fourth quadrant.
+            angle = 2 * PI - angle;
         }
 
-        return deg;
+        return angle;
     },
 
     clearSVG: function(){

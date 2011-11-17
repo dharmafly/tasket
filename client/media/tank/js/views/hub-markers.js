@@ -125,7 +125,6 @@ var HubMarkers = View.extend({
     updateMarker: function (hub, angle) {
         var marker = this.markers[hub && hub.id];
         if (marker) {
-            angle = this._convertOldDegreesToRadians(angle);
             marker.position(this._calculatePosition(angle), angle);
         }
         return this;
