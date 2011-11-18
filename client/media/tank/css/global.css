@@ -1715,18 +1715,13 @@ footer a.df:hover {
 	z-index: 999999;
 	cursor: pointer;
 	position: absolute;
-	width: 30px;
-	height: 30px;
-	margin-top: -15px;
-	margin-left: -15px;
+	width: 26px;
+	height: 26px;
+	margin-top: -13px;
+	margin-left: -13px;
 	background: #AAA;
-	border-radius: 15px;
+	border-radius: 13px;
 	pointer-events: all;
-	-webkit-transition: -webkit-transform 0.1s;
-	-moz-transition: -moz-transform 0.1s;
-	-ms-transition: -ms-transform 0.1s;
-	-o-transition: -o-transform 0.1s;
-	transition: transform 0.1s;
 }
 
 .hub-marker.hide {
@@ -1738,7 +1733,7 @@ footer a.df:hover {
 
 .hub-marker img {
 	display: block;
-	margin: 7px auto 0;
+	margin: 5px auto 0;
 }
 
 .hub-marker .tooltip {
@@ -1796,11 +1791,11 @@ footer a.df:hover {
 	top: 0;
 	left: 0;
 	z-index: -1;
-	-webkit-transform-origin: 15px 15px;
-	-moz-transform-origin: 15px 15px;
-	-ms-transform-origin: 15px 15px;
-	-o-transform-origin: 15px 15px;
-	transform-origin: 15px 15px;
+	-webkit-transform-origin: 13px 13px;
+	-moz-transform-origin: 13px 13px;
+	-ms-transform-origin: 13px 13px;
+	-o-transform-origin: 13px 13px;
+	transform-origin: 13px 13px;
 	-webkit-transform: rotate(45deg);
 	-moz-transform: rotate(45deg);
 	-ms-transform: rotate(45deg);
@@ -1813,8 +1808,8 @@ footer a.df:hover {
 	content: "";
 	display: block;
 	position: absolute;
-	width: 15px;
-	height: 15px;
+	width: 13px;
+	height: 13px;
 	top: 1px;
 	left: 1px;
 	background: #AAA;

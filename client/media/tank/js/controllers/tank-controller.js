@@ -1029,7 +1029,8 @@ var TankController = Controller.extend({
             if (!isVisible) {
                 position = this._hubViewPosition(view);
                 scale = this._hubViewDistanceFromViewportCenter(position);
-                this.markersView.updateMarker(hub, position.angles.y, 1 - scale);
+                scale = 1 - (0.7 * scale); /* Don't let scale go below 0.3 */
+                this.markersView.updateMarker(hub, position.angles.y, scale);
             }
         }, this);
     },
