@@ -168,8 +168,8 @@ var TankController = Controller.extend({
             toggleDisplayMarkers;
 
         // Move viewport and update markers when panned.
-        this.tankView.bind('pan', this.shiftViewport, this);
-        this.tankView.bind('pan', throttledUpdateMarkers);
+        this.tankView.bind("pan", this.shiftViewport, this);
+        this.tankView.bind("pan", throttledUpdateMarkers);
         jQuery(window).scroll(throttledUpdateMarkers);
 
         // Handler to show the markers when the view is scrolled/panned and
@@ -884,6 +884,14 @@ var TankController = Controller.extend({
         jQuery('body').width(this.tankWidth).height(this.tankHeight);
     },
 
+    getViewportCenter: function () {
+        var visibleArea = this.markersView.getBounds();
+        return {
+            left: visibleArea.left + (visibleArea.width  / 2),
+            top:  visibleArea.top  + (visibleArea.height / 2)
+        };
+    },
+
     // Centers the viewport in the middle of the tank.
     centerTank: function (options) {
         this.centerViewport({
@@ -1060,11 +1068,7 @@ var TankController = Controller.extend({
      */
     _hubViewAngle: function (hubView) {
         var hubPosition = hubView.getCenter(),
-            visibleArea = this.markersView.getBounds(),
-            viewportCenter = {
-                left: visibleArea.left + (visibleArea.width / 2),
-                top:  visibleArea.top  + (visibleArea.height / 2)
-            },
+            viewportCenter = this.getViewportCenter(),
             x = hubPosition.left   - viewportCenter.left,
             y = viewportCenter.top - hubPosition.top,
             PI = Math.PI, angle;
