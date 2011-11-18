@@ -913,7 +913,8 @@ var TankController = Controller.extend({
             offsetY = offset.top  > 0 ? offset.top  : 0;
 
         if (options && options.animate) {
-            $('body').animate({
+            // Webkit requires "body", Firefox "html".
+            $("html, body").animate({
                 scrollTop:  offsetY,
                 scrollLeft: offsetX
             });
