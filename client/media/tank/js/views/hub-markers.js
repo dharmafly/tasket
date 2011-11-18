@@ -234,12 +234,6 @@ var HubMarkers = View.extend({
         };
     },
 
-    _convertOldDegreesToRadians: function (degrees) {
-        var converted = ((360 - degrees) + 90);
-        converted = converted > 360 ? converted - 360 : converted;
-        return converted * (Math.PI / 180);
-    },
-
     /* Gets the view from the #markers objects for the element provided.
      *
      * element - A HubMarker DOM Element.
