@@ -155,7 +155,7 @@ function camelize(string) {
 // Checks to see if browser supports style property. Returns the property
 // string or null if not supported.
 function getCSSProperty(property) {
-    var prefixes = ['Moz', 'Webkit', 'Khtml', 'O', 'Ms'],
+    var prefixes = ['Moz', 'Webkit', 'Khtml', 'O', 'ms'],
         index  = 0,
         length = prefixes.length,
         cache  = getCSSProperty.cache,
