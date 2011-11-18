@@ -81,6 +81,18 @@ var HubMarker = View.extend({
         return this;
     },
 
+    scale: function (percentage) {
+        var transform = getCSSProperty('transform');
+
+        this._scale = percentage;
+        if (transform) {
+            this.elem.css(transform, 'scale(' + percentage + ')');
+        }
+        this.elem.css('opacity', percentage);
+
+        return this;
+    },
+
     /* Public: Show the tooltip for the current marker.
      *
      * Examples
@@ -93,7 +105,8 @@ var HubMarker = View.extend({
         this.tooltip.addClass(this.classes.showTooltip);
         this._positionTooltip();
         this._bumpIndex();
-        return this;
+        this._cacheScale = this._scale;
+        return this.scale(1);
     },
 
     /* Public: Hide the tooltip for the current marker.
@@ -106,7 +119,7 @@ var HubMarker = View.extend({
      */
     hideTooltip: function () {
         this.tooltip.removeClass(this.classes.showTooltip);
-        return this;
+        return this.scale(this._cacheScale || this._scale);
     },
 
     /* Public: Renders the current view.

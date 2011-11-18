@@ -122,10 +122,10 @@ var HubMarkers = View.extend({
      *
      * Returns itself.
      */
-    updateMarker: function (hub, angle) {
+    updateMarker: function (hub, angle, scale) {
         var marker = this.markers[hub && hub.id];
         if (marker) {
-            marker.position(this._calculatePosition(angle), angle);
+            marker.position(this._calculatePosition(angle), angle).scale(scale);
         }
         return this;
     },

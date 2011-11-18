@@ -1023,12 +1023,13 @@ var TankController = Controller.extend({
     updateMarkers: function () {
         _.each(this.hubViews, function (view) {
             var isVisible = this._isHubViewVisible(view),
-                hub = view.model, angle;
+                hub = view.model, position, scale;
 
             this.markersView.toggleMarker(hub, !isVisible);
             if (!isVisible) {
-                angle = this._hubViewAngle(view);
-                this.markersView.updateMarker(hub, angle);
+                position = this._hubViewPosition(view);
+                scale = this._hubViewDistanceFromViewportCenter(position);
+                this.markersView.updateMarker(hub, position.angles.y, 1 - scale);
             }
         }, this);
     },
@@ -1066,7 +1067,7 @@ var TankController = Controller.extend({
      *
      * Returns an angle in degrees.
      */
-    _hubViewAngle: function (hubView) {
+    _hubViewPosition: function (hubView) {
         var hubPosition = hubView.getCenter(),
             viewportCenter = this.getViewportCenter(),
             x = hubPosition.left   - viewportCenter.left,
@@ -1084,7 +1085,23 @@ var TankController = Controller.extend({
             angle = 2 * PI - angle;
         }
 
-        return angle;
+        return {
+            sides:  {y: y, x: x},
+            angles: {y: angle, x: 0.5 * PI - angle}
+        };
+    },
+
+    _hubViewDistanceFromViewportCenter: function (position) {
+        var viewportCenter = this.getViewportCenter(),
+            positionX = position.sides.x,
+            positionY = position.sides.y,
+            maxDistance, currentDistance;
+
+        currentDistance = (positionX * positionX) + (positionY * positionY);
+        maxDistance = (this.viewportHeight * this.viewportHeight) + 
+                      (this.viewportWidth * this.viewportWidth);
+
+        return (currentDistance / maxDistance);
     },
 
     clearSVG: function(){

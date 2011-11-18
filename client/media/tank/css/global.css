@@ -1722,6 +1722,11 @@ footer a.df:hover {
 	background: #AAA;
 	border-radius: 15px;
 	pointer-events: all;
+	-webkit-transition: -webkit-transform 0.1s;
+	-moz-transition: -moz-transform 0.1s;
+	-ms-transition: -ms-transform 0.1s;
+	-o-transition: -o-transform 0.1s;
+	transition: transform 0.1s;
 }
 
 .hub-marker.hide {
