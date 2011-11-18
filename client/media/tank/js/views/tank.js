@@ -64,11 +64,15 @@ var Tank = View.extend({
      * Returns nothing.
      */
     _onMouseDown: function (event) {
-        if (!supportsPointerEvents() && !this._isTarget(event.target)) {
+        var isTarget = event.target === this.el,
+            hasPointerEvents = supportsPointerEvents(),
+            offset;
+
+        if ((hasPointerEvents && !isTarget) || (!hasPointerEvents && !this._isTarget(event.target))) {
             return;
         }
 
-        var offset = this._getEventOffset(event);
+        offset = this._getEventOffset(event);
         this._mouseOffset = offset;
         this._viewport.bind({
             'mouseup.pan': this._onMouseUp,
