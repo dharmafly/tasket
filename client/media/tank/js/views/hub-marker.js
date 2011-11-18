@@ -81,6 +81,16 @@ var HubMarker = View.extend({
         return this;
     },
 
+    /* Public: Scales the marker to a percentage of it's normal size.
+     *
+     * percentage - A percentage between 0 and 1.
+     *
+     * Examples
+     *
+     *   markerView.scale(0.5); // Marker is now half the size.
+     *
+     * Returns itself.
+     */
     scale: function (percentage) {
         var transform = getCSSProperty('transform');
 

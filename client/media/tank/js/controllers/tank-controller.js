@@ -1046,7 +1046,7 @@ var TankController = Controller.extend({
             visibleArea = this.markersView.getBounds();
 
         hubBounds.right  = hubBounds.left + hubBounds.width;
-        hubBounds.bottom = hubBounds.top + hubBounds.height;
+        hubBounds.bottom = hubBounds.top  + hubBounds.height;
 
         visibleArea.right  = visibleArea.left + visibleArea.width;
         visibleArea.bottom = visibleArea.top + visibleArea.height;
@@ -1098,8 +1098,8 @@ var TankController = Controller.extend({
             maxDistance, currentDistance;
 
         currentDistance = (positionX * positionX) + (positionY * positionY);
-        maxDistance = (this.viewportHeight * this.viewportHeight) + 
-                      (this.viewportWidth * this.viewportWidth);
+        maxDistance = (this.tankWidth * this.tankWidth) + 
+                      (this.tankHeight * this.tankHeight);
 
         return (currentDistance / maxDistance);
     },
