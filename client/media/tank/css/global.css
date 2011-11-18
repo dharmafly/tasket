@@ -1730,7 +1730,7 @@ footer a.df:hover {
 	max-width: 60px;
 	display: none;
 	opacity: 0;
-	background-image: linear-gradient(bottom, #000, #333);
+	background-color: #000;
 	background-image: -webkit-linear-gradient(
 		top, #333 0, #222 10px, #000 10px, #000
 	);
