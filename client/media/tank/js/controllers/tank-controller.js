@@ -146,6 +146,9 @@ var TankController = Controller.extend({
         }, this);
         this._setupPanAndScrollEvents();
 
+        // Hide markers when showing lightbox.
+        app.lightbox.bind("show", this.markersView.hide, this.markersView);
+
         this.bind("add:hub", function (controller, hub, hubView) {
             this.addMarker(hub);
         }, this.markersView);
