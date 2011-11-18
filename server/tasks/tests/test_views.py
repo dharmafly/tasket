@@ -42,6 +42,14 @@ class ViewTests(TestCase):
         response = self.client.get('/hubs/?ids=2')
         json_list = json.loads(response.content)
         self.assertEqual(json_list[0]['title'], "Example Hub")
+        self.assertEqual(json_list[0].keys(), ['tasks',
+                                               'description',
+                                               'title',
+                                               'image',
+                                               'estimates',
+                                               'owner',
+                                               'createdTime',
+                                               'id'])
     
     def test_hubs_get_by_id_nonexistent(self):
         response = self.client.get('/hubs/?ids=10')
@@ -64,6 +72,40 @@ class ViewTests(TestCase):
         response = self.client.get('/hubs/')
         json_list = json.loads(response.content)
         self.assertEqual(len(json_list), 2)
+
+    def test_hubs_post_private(self):
+        old_count = Hub.objects.all().count()
+        self.assertEqual(old_count, 4)
+
+
+        self.client.login(username='TestUser2', password='12345')
+    
+        response = self.client.post(
+            '/hubs/', 
+            json.dumps({
+                'title' : 'New Hub',
+                'privacy' : 'true',
+            }),
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+        self.assertEqual(set(json_list.keys()), set(['id', 'createdTime']))
+        
+        response = self.client.get('/hubs/%s' % json_list['id'])
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 8)
+        self.assertTrue('privacy' in json_list)
+
+        response = self.client.get('/hubs/')
+        json_list = json.loads(response.content)
+        self.assertEqual(len(json_list), 3)
+        
+        new_count = Hub.objects.all().count()
+        self.assertEqual(new_count, 5)
+        new__private_count = Hub.objects.private(User.objects.get(pk=2)).count()
+        self.assertEqual(new__private_count, 4)
+        new__private_count = Hub.objects.private(User.objects.get(pk=5)).count()
+        self.assertEqual(new__private_count, 3)
 
         
 

@@ -190,7 +190,17 @@ class HubForm(StarredForm):
     class Meta:
         model = Hub
         exclude = ('owner', 'createdTime',)
+        
+    privacy = forms.BooleanField(required=False)
+    
+    def clean_privacy(self):
+        if not 'privacy' in self.data:
+            return self.cleaned_data
 
+        self.instance.private_to = self.request.user.profile
+        self.cleaned_data['private_to'] = self.request.user.profile
+        return self.cleaned_data
+        
     def clean_task_order(self):
         try:
             task_order_raw = self.data['tasks']['order']
