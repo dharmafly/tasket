@@ -165,7 +165,7 @@ var TankController = Controller.extend({
 
     _setupPanAndScrollEvents: function () {
         var throttledUpdateMarkers = _.throttle(this.updateMarkers, 1000 / 60),
-            toggleDisplayMarkers;
+            toggleDisplayMarkers, isPanning;
 
         // Move viewport and update markers when panned.
         this.tankView.bind("pan", this.shiftViewport, this);
@@ -176,13 +176,13 @@ var TankController = Controller.extend({
         // will hide the markers when idle. If a marker is moused over the
         // timer will be cancelled until mouseleave.
         toggleDisplayMarkers = (function (markersView) {
-            var started = false, timer;
+            var timer;
 
             function startTimer() {
                 timer = setTimeout(function () {
-                    started = false;
+                    isPanning = false;
                     markersView.hide();
-                }, 1500);
+                }, 2000);
             }
 
             function stopTimer() {
@@ -193,9 +193,9 @@ var TankController = Controller.extend({
             markersView.bind("mouseleave", startTimer);
 
             return function () {
-                if (!started) {
+                if (!isPanning) {
                     markersView.show();
-                    started = true;
+                    isPanning = true;
                 }
 
                 stopTimer();
@@ -206,6 +206,31 @@ var TankController = Controller.extend({
         // Bind this handler to scroll and pan.
         this.tankView.bind('pan', toggleDisplayMarkers);
         jQuery(window).scroll(toggleDisplayMarkers);
+
+        // Watch the viewport bounds. If the user mouses into these bounds
+        // and is not panning display the markers. This allows the user to
+        // interact with the markers when not panning.
+        jQuery("body").mousemove(_.throttle(_.bind(function (event) {
+            var bound       = 30,
+                width       = this.viewportWidth - this.getDashboardWidth(),
+                mouseTop    = event.clientY,
+                mouseleft   = event.clientX,
+                boundTop    = bound + app.toolbar.elem.outerHeight(true),
+                boundLeft   = bound,
+                boundRight  = width - bound,
+                boundBottom = this.viewportHeight - bound;
+
+            if (mouseTop < boundTop || mouseTop > boundBottom ||
+                mouseleft < boundLeft || (mouseleft > boundRight && mouseleft < width)) {
+                if (!isPanning) {
+                    this.markersView.show();
+                }
+            } else {
+                if (!isPanning) {
+                    this.markersView.hide();
+                }
+            }
+        }, this), 200));
     },
 
     error: function (message) {
