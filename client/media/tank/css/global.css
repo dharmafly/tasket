@@ -58,6 +58,20 @@ body > * {
 	cursor: default;
 }
 
+/* Nasty cursor hack for IE9: http://stackoverflow.com/q/3632532 */
+.ie body,
+.ie body.panning #vector,
+.ie .hub-marker-container  {
+	/* Image paths need to be absolute. */
+	cursor: url(/media/tank/images/openhand.cur), default;
+}
+
+.ie body.panning,
+.ie body.panning #vector,
+.ie body.panning .hub-marker-container {
+	cursor: url(/media/tank/images/closedhand.cur), default;
+}
+
 header, hgroup, footer, section, article, nav {
 	display: block;
 }
