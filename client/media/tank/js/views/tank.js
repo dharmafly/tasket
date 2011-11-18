@@ -34,8 +34,8 @@ var Tank = View.extend({
 
         _.bindAll(this, "_onMouseMove", "_onMouseUp");
 
-        this._viewport = $(window);
-        this._document = $(document);
+        this._viewport = jQuery(window);
+        this._document = jQuery(document);
     },
 
     /* Public: Triggers the "pan" event providing an offset object so the

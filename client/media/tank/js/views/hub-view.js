@@ -523,11 +523,12 @@ var HubView = View.extend({
      * Returns an offset object with top and left properties.
      */
     getCenter: function () {
-        var icon = this.$('.nucleus-wrapper');
-        var offset = icon.offset();
+        var icon = this.$('.nucleus-wrapper'),
+            offset = icon.offset();
+
         offset.top  = offset.top  + (icon.outerHeight(true));
         offset.left = offset.left + (icon.outerWidth(true));
-        return offset
+        return offset;
     },
 
     /////

@@ -141,7 +141,7 @@ function timestampToRelativeDate(timestamp) {
 
 // Capitalize all words in the passed string.
 function capitalize(string) {
-    return $.map(string.split(' '), function (word) {
+    return jQuery.map(string.split(' '), function (word) {
         return word.charAt(0).toUpperCase() + word.slice(1);
     }).join(' ');
 }
@@ -201,14 +201,15 @@ function supportsPointerEvents() {
         supports;
 
     if (!('pointerEvents' in element.style) || !getComputedStyle) {
-        return supportsPointerEvents.cache = false;
+        supportsPointerEvents.cache = false;
+    } else {
+        element.style.pointerEvents = 'auto';
+        element.style.pointerEvents = 'x';
+        documentElement.appendChild(element);
+        supports = getComputedStyle(element, '').pointerEvents === 'auto';
+        documentElement.removeChild(element);
+        supportsPointerEvents.cache = !!supports;
     }
 
-    element.style.pointerEvents = 'auto';
-    element.style.pointerEvents = 'x';
-    documentElement.appendChild(element);
-    supports = getComputedStyle(element, '').pointerEvents === 'auto';
-    documentElement.removeChild(element);
-
-    return supportsPointerEvents.cache = !!supports;
+    return supportsPointerEvents.cache;
 }

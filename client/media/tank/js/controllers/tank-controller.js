@@ -19,7 +19,7 @@ var TankController = Controller.extend({
         var tank = this;
 
         this.hubViews = {};
-        this.window = $(window);
+        this.window = jQuery(window);
 
         _.bindAll(this, "_onSelectHubs", "_onDeselectHubs", "repositionHubs");
 
@@ -47,7 +47,7 @@ var TankController = Controller.extend({
             });
 
         _.bindAll(this, "updateMarkers");
-        this.tankView = new Tank({el: $('body')[0]});
+        this.tankView = new Tank({el: jQuery('body')[0]});
 
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
@@ -155,7 +155,7 @@ var TankController = Controller.extend({
             this.addMarker(hub);
         }, this.markersView);
 
-        $('body').append(this.markersView.render());
+        jQuery('body').append(this.markersView.render());
 
         // Add hubs
         if (options && options.hubs){
@@ -170,7 +170,7 @@ var TankController = Controller.extend({
         // Move viewport and update markers when panned.
         this.tankView.bind('pan', this.shiftViewport, this);
         this.tankView.bind('pan', throttledUpdateMarkers);
-        $(window).scroll(throttledUpdateMarkers);
+        jQuery(window).scroll(throttledUpdateMarkers);
 
         // Handler to show the markers when the view is scrolled/panned and
         // will hide the markers when idle. If a marker is moused over the
@@ -205,7 +205,7 @@ var TankController = Controller.extend({
 
         // Bind this handler to scroll and pan.
         this.tankView.bind('pan', toggleDisplayMarkers);
-        $(window).scroll(toggleDisplayMarkers);
+        jQuery(window).scroll(toggleDisplayMarkers);
     },
 
     error: function (message) {
@@ -454,7 +454,7 @@ var TankController = Controller.extend({
                 this.addHub(hub).select();
                 // TODO: re-render dashboard list of projects
 
-                hubsLength --;
+                hubsLength -= 1;
 
                 if (!hubsLength){
                     app.lightbox.hide();
@@ -805,7 +805,7 @@ var TankController = Controller.extend({
     },
 
     updateViewport: function () {
-        var $window = $(window);
+        var $window = jQuery(window);
 
         this.viewportWidth  = $window.width()  - this.scrollbarWidth;
         this.viewportHeight = $window.height() - this.scrollbarWidth;
@@ -881,7 +881,7 @@ var TankController = Controller.extend({
             this.tankWidth  = this.viewportWidth;
         }
 
-        $('body').width(this.tankWidth).height(this.tankHeight);
+        jQuery('body').width(this.tankWidth).height(this.tankHeight);
     },
 
     // Centers the viewport in the middle of the tank.
@@ -922,7 +922,7 @@ var TankController = Controller.extend({
 
         if (options && options.animate) {
             // Webkit requires "body", Firefox "html".
-            $("html, body").animate({
+            jQuery("html, body").animate({
                 scrollTop:  offsetY,
                 scrollLeft: offsetX
             });
@@ -1126,5 +1126,5 @@ var TankController = Controller.extend({
             }
         }
         return this;
-    },
+    }
 });
