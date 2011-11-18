@@ -873,9 +873,12 @@ var TankController = Controller.extend({
         }
 
         // Default to the viewport width/height.
-        if (!this.tankWidth || !this.tankHeight) {
-            this.tankWidth  = this.viewportWidth;
+        if (!this.tankHeight || this.tankHeight < this.viewportHeight) {
             this.tankHeight = this.viewportHeight;
+        }
+
+        if (!this.tankWidth || this.tankWidth < this.viewportWidth) {
+            this.tankWidth  = this.viewportWidth;
         }
 
         $('body').width(this.tankWidth).height(this.tankHeight);
