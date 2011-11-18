@@ -64,7 +64,7 @@ var Tank = View.extend({
      * Returns nothing.
      */
     _onMouseDown: function (event) {
-        if (! (event.target === this.el || $(event.target).parents('#vector').length)) {
+        if (!supportsPointerEvents() && !this._isTarget(event.target)) {
             return;
         }
 
@@ -143,5 +143,22 @@ var Tank = View.extend({
             top:  offsetA.top  - offsetB.top,
             left: offsetA.left - offsetB.left
         };
+    },
+
+    /* Fallback method if the browser does not support the pointer-events
+     * CSS property we must manually calculate whether or not the mousedown
+     * event was on the tank and not another UI element.
+     *
+     * target - The clicked Element.
+     *
+     * Returns true if the target is a background element.
+     */
+    _isTarget: function (target) {
+        var element = jQuery(target);
+        return (
+            target === this.el ||
+            element.parents('#vector').length ||
+            element.is('.hub-marker-container')
+        );
     }
 });

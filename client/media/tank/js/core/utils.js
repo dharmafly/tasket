@@ -187,3 +187,28 @@ function getCSSProperty(property) {
     }
     return null;
 }
+
+// Lifted from Modernizr. http://www.modernizr.com/license/.
+// https://raw.github.com/Modernizr/Modernizr/master/feature-detects/css-pointerevents.js
+function supportsPointerEvents() {
+    if (supportsPointerEvents.hasOwnProperty('cache')) {
+        return supportsPointerEvents.cache;
+    }
+
+    var element = document.createElement('x'),
+        documentElement = document.documentElement,
+        getComputedStyle = window.getComputedStyle,
+        supports;
+
+    if (!('pointerEvents' in element.style) || !getComputedStyle) {
+        return supportsPointerEvents.cache = false;
+    }
+
+    element.style.pointerEvents = 'auto';
+    element.style.pointerEvents = 'x';
+    documentElement.appendChild(element);
+    supports = getComputedStyle(element, '').pointerEvents === 'auto';
+    documentElement.removeChild(element);
+
+    return supportsPointerEvents.cache = !!supports;
+}

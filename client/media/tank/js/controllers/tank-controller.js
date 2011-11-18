@@ -17,7 +17,9 @@ var TankController = Controller.extend({
 
     initialize: function(options){
         var tank = this;
+
         this.hubViews = {};
+        this.window = $(window);
 
         _.bindAll(this, "_onSelectHubs", "_onDeselectHubs", "repositionHubs");
 
@@ -901,8 +903,8 @@ var TankController = Controller.extend({
 
     // Shifts viewport by increments provided.
     shiftViewport: function (offset, options) {
-        var currentX = window.scrollX,
-            currentY = window.scrollY;
+        var currentY = this.window.scrollTop(),
+            currentX = this.window.scrollLeft();
 
         this.positionViewport({
             top:  currentY - offset.top,
