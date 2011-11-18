@@ -127,6 +127,7 @@ class ModelTest(TestCase):
         self.assertTrue('archived' in T.as_dict())
     
     def test_hub_private_manager(self):
+        self.assertEqual(Hub.objects.all().count(), 5) 
         self.assertEqual(Hub.objects.private(self.U).count(), 5) 
 
 

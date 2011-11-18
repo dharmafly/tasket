@@ -275,6 +275,9 @@ class Hub(StarredModel):
                 "archivedBy" : str(self.archived_by.pk),
             }
         
+        if self.private_to_id:
+            obj_dict['privacy'] = True
+        
         for k,v in obj_dict.items():
             if v == None:
                 obj_dict[k] = ""

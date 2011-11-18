@@ -1,3 +1,4 @@
+from optparse import make_option
 from datetime import datetime, timedelta
 
 from django.core.management.base import BaseCommand, CommandError
@@ -12,7 +13,6 @@ class Command(BaseCommand):
     DONE_TIME_LIMIT = int(getattr(settings, "DONE_TIME_LIMIT", 72))
     
     def mark_claimed(self):
-        
         time_offset = datetime.now() - timedelta(hours=self.CLAIMED_TIME_LIMIT)
         claimed_tasks = Task.objects.filter(state=Task.STATE_CLAIMED)
         claimed_tasks = claimed_tasks.filter(claimedTime__lte=time_offset)
