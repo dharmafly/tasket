@@ -146,18 +146,6 @@ var HubMarkers = View.extend({
         }, this.elem.offset());
     },
 
-    /* Public: Renders the contents of the view and sets up initial state.
-     *
-     * Examples
-     *
-     *   $('body').append(markersView.render());
-     *
-     * Returns the root view Element.
-     */
-    render: function () {
-        return this.hide().el;
-    }
-
     /* Calculates the top/left position of an element in a container based
      * upon the angle (in radians) from the center of the container. The
      * results are returned in percentages and can be passed directly into
