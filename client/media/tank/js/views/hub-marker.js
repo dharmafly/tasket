@@ -152,6 +152,7 @@ var HubMarker = View.extend({
 
         this.elem.html(html);
         this.tooltip = this.$('.tooltip');
+        this.hide({silent: true});
 
         return this._positionTooltip()._bumpIndex().el;
     },

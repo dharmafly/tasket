@@ -19,7 +19,7 @@ var HubMarkers = View.extend({
 
         bindHandlers(this);
 
-        this.markers = {};        
+        this.markers = {};
 
         // Manually delegate events on Hub markers for performance. This can't
         // be done in the events property as we need the className.
@@ -145,6 +145,18 @@ var HubMarkers = View.extend({
             height: this.elem.height()
         }, this.elem.offset());
     },
+
+    /* Public: Renders the contents of the view and sets up initial state.
+     *
+     * Examples
+     *
+     *   $('body').append(markersView.render());
+     *
+     * Returns the root view Element.
+     */
+    render: function () {
+        return this.hide().el;
+    }
 
     /* Calculates the top/left position of an element in a container based
      * upon the angle (in radians) from the center of the container. The
