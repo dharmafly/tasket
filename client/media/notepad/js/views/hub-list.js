@@ -19,10 +19,22 @@ var HubListView = View.extend({
         this.elem = jQuery(this.el).find('aside nav');
 		this.hubViews = {};
 		this.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : "onlyIncomplete";
-
+		
 		var view = this;
-		    
-		this.collection
+		
+		// keep in reverse id order
+		this.collection.comparator = function(hub) {
+            return -Number(hub.id);
+        };
+		
+        this.collection
+            .bind("remove", function(hub){                
+                if (view.hubViews[hub.id]) {
+                    // remove li from the list
+                    view.$(view.hubViews[hub.id].el).remove();
+                    delete view.hubViews[hub.id];
+                };
+            })
 		    .bind("reset", function () {
                 view.renderHubs();
             })
@@ -60,6 +72,9 @@ var HubListView = View.extend({
         var view = this,
             itemList = this.itemList,
             taskView;
+        
+        // TODO: why is this sort required to force the comparator?
+        this.collection.sort({silent:true});
 
         this.collection.each(function (hub) {
             if (!view.hubViews[hub.id]) {
@@ -74,7 +89,7 @@ var HubListView = View.extend({
 	
 	renderHub: function(hub) {
 	    var view = this;
-	    
+
 	    if (hub && !view.hubViews[hub.id]) {
             var hubView = new HubView({model: hub, collection: view.collection});
 			view.hubViews[hub.id] = hubView;
