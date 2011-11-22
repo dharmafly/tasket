@@ -41,7 +41,7 @@ var HubListView = View.extend({
             .bind('add', function(hub){
                 // clicked save after adding a new list
                 // view.renderHubs(hub);
-                view.itemList.find('.star')
+                view.itemList.find('.starred')
                     .after(view.renderHub(hub).render().el);
     			
                 view.selectHub(hub);
