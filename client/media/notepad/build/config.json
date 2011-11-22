@@ -29,6 +29,7 @@
             "./header.js",
             "../../lib/js/jquery.js",
             "../../lib/js/jquery.hashchange.js",
+            "../../lib/js/jquery.putcursoratend.js",
             "../js/lib/jquery-ui.min.js",
             "../../lib/js/underscore.js",
             "../../lib/js/backbone.js",

@@ -82,7 +82,9 @@ var TaskView = View.extend({
         if (description) {
             paragraph.find("input").val(description);
         }
-        paragraph.find("input").focus();
+
+        paragraph.find("input").putCursorAtEnd();
+        
         return this;
     },
 

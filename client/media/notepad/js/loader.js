@@ -39,6 +39,7 @@
             // dependencies
             jsLibPath + "jquery.js",
             jsLibPath + "jquery.hashchange.js",
+            jsLibPath + "jquery.putcursoratend.js",
             jsLibPath + "cache.js",
             jsLibPath + "underscore.js",
             jsLibPath + "tim.js",
