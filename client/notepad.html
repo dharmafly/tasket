@@ -174,15 +174,14 @@
 	<script type="text/tim" class="hub-list">
 	
    		<ul class="item-list">
-			<li class="starred"><a href="#/tasks/starred/">Starred</a></li>
+			<li class="starred"><a tabindex="-1" href="#/tasks/starred/">Starred</a></li>
 		</ul>
 
 		<div class="controls">
-			<p><a href="#/hubs/new/" class="new-item">Add new list</a></p>
+			<p><a tabindex="-1" href="#/hubs/new/" class="new-item">Add new list</a></p>
 			<div class="showing">
-				<!-- <a href="/">Showing all</a> -->
 				<p>Show: 
-					<select name="showing" id="showing" size="1">
+					<select name="showing" id="showing" size="1" tabindex="-1">
 						<option value="all">all tasks</option>
 						<option value="onlyDone">only done tasks</option>
 						<option value="onlyIncomplete">only incomplete tasks</option>
@@ -194,7 +193,7 @@
 	</script>
 
 	<script type="text/tim" class="hub">
-    	<a href="#/hubs/{{id}}/"><span class="count">{{count}}</span> <span class="title">{{title}}</span></a>
+    	<a tabindex="-1" href="#/hubs/{{id}}/"><span class="count">{{count}}</span> <span class="title">{{title}}</span></a>
 	</script>
 	
     <script type="text/tim" class="lightbox">
