@@ -713,7 +713,7 @@ table {
         clear: both;
       }
       
-      aside#lists nav .star a {
+      aside#lists nav .starred a {
         background: url(../images/sprite1.png) no-repeat right -1097px;
         border: none;
         padding: 4px 25px 4px 7px;
@@ -921,7 +921,7 @@ table {
     #content .item-list > li {
       border-bottom: 1px solid #ccc;
       position: relative;
-      padding: 10px 0 10px 120px;
+      padding: 0 0 0 120px;
       line-height: 1.9em;
     }
     
@@ -933,8 +933,8 @@ table {
     
     #content .item-list p {
       font-size: 1.5em;
-      background: url(../images/sprite1.png) no-repeat 0 -93px;
-      padding-left: 15px;
+      background: url(../images/sprite1.png) no-repeat 0 -84px;
+      padding: 10px 0 10px 15px;
       margin-right: 150px;
       min-height: 1.3em;
     }
@@ -1123,7 +1123,6 @@ table {
           right: 40px;
         }
             #content .header .edit-item .delete {
-                display: none; /* TODO: Implement list deletetion */
                 position: static;
                 float: left;
                 margin-left: 15px;
