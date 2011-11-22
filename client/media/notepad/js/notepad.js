@@ -46,8 +46,8 @@ _.extend(app, {
     },
     
     getLatestOpenHub: function(user){
-        var hubs = user.getNonArchivedHubs();
-        return hubs.length ? _.max(hubs) : null;
+        var hubIds = user.getNonArchivedHubs();
+        return hubIds.length ? _.max(hubIds) : null;
     },
 
     _bindHubEvents: function (user) {
@@ -57,35 +57,55 @@ _.extend(app, {
 
         // There is already a hub we can load
         if (hubId && hash === '/' || hash === '/login/'){
-            hub = app.selectedHub = Tasket.getHubs(hubId);
-            
-            // If the hub data is complete
-            if (hub.isComplete()){
-                app.trigger("change:selectedHub", hub);
-            }
-            // Otherwise data load from the server
-            else {
-                hub.bind("change", function onLoad(){
-                    hub.unbind("change", onLoad);
-                    app.trigger("change:selectedHub", hub);
-                });
-            }
-            // TODO: handle errors - e.g. hub was already deleted since user record last cached in localStorage
+            this.selectHub(hubId);
         }
         
         // No existing hubs. Create a new one
         else if (hash === '/') {
-            hub = app.selectedHub = new Hub({
-                title: app.lang.NEW_HUB,
-                owner: user.id
-            });
-            
-            hub.bind("change:id", function (hub) {
-                app.trigger("change:selectedHub", hub);
-            });
-            hub.save();
+            this.createAndSelectHub();
         }
         
+        return this;
+    },
+
+    selectHub: function(hubId){
+        // TODO: Work out why the commented out code doesnt work
+        
+        // change hash to new id
+        // var hub = Tasket.getHubs(hubId),
+        //     mockView = {model:hub};
+        // 
+        // View.prototype.updateLocation.apply(mockView);
+        // return this;
+        
+        var hub = app.selectedHub = Tasket.getHubs(hubId);
+        
+        // If the hub data is complete
+        if (hub.isComplete()){
+            app.trigger("change:selectedHub", hub);
+        }
+        // Otherwise wait for data to load from the server
+        else {
+            hub.bind("change", function onLoad(){
+                hub.unbind("change", onLoad);
+                app.trigger("change:selectedHub", hub);
+            });
+        }
+        
+        return this;
+
+    },
+
+    createAndSelectHub: function(){
+        hub = app.selectedHub = new Hub({
+            title: app.lang.NEW_HUB,
+            owner: user.id
+        });
+        
+        hub.bind("change:id", function (hub) {
+            app.trigger("change:selectedHub", hub);
+        });
+        hub.save();
         
         return this;
     },
