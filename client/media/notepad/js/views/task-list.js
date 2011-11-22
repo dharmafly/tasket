@@ -17,8 +17,8 @@ var TaskListView = View.extend({
     events: {
         "click div.header .edit a": "_onTitleEdit",
         "click div.header .delete a": "_onTitleDelete",
-        "click div.header a.cancel": "_onTitleEditCancel",
-        "click div.header a.save": "_onTitleEditSave",
+        "click div.header .cancel": "_onTitleEditCancel",
+        "click div.header .save": "_onTitleEditSave",
         "mouseover div.header h1 a": "_onTitleMouseover",
         "mouseout div.header h1 a": "_onTitleMouseout",
         "keypress div.header input": "_onKeypressTitle",
@@ -83,6 +83,10 @@ var TaskListView = View.extend({
 	        .bind("reset", function () {
                 view.renderTasks();
 	        });
+	        
+            this.bind("remove-item", function(hub){
+                view.collection.remove(hub);
+            });
 
             
         return this;
@@ -107,7 +111,6 @@ var TaskListView = View.extend({
     },
 
 	showHub: function(hub, opts){
-	    console.log('showHub', hub, opts);
 		this.model = hub;
 		var taskIds;
 
@@ -254,7 +257,7 @@ var TaskListView = View.extend({
 
         this.$("div.header").addClass("edit-mode");
         this.$("div.header h1").replaceWith(html);
-        this.$("div.header input").val(listTitle).focus();
+        this.$("div.header input").val(listTitle).putCursorAtEnd();
 		if (event) {
 			event.preventDefault();
 		}
@@ -271,6 +274,10 @@ var TaskListView = View.extend({
     
     _onTitleEditSave: function (event) {
         var newTitle = this.$("div.header input").val();
+        if (newTitle === this.model.get("title")) {
+            this._resetTitle(newTitle);
+            return;
+        };
 
         if (_.isEmpty(newTitle)) {
             newTitle = app.lang.EMPTY_HUB;
@@ -292,7 +299,6 @@ var TaskListView = View.extend({
 		} else {
 			this.trigger('update-hub', this.model);
 		}
-        this.$("div.header").removeClass("edit-mode");        
     },
 
     _onKeypressTitle: function (event) {
@@ -314,6 +320,12 @@ var TaskListView = View.extend({
 
         // Return and tab keys
         if (_.include([13, 9], event.which)) {
+            var newTitle = this.$("div.header input").val();
+            if (newTitle === this.model.get("title")) {
+                this._resetTitle(newTitle);
+                return;
+            }
+            
             this._saveTitle(newTitle);
         }
     },
@@ -427,7 +439,7 @@ var TaskListView = View.extend({
         event.preventDefault();
     },
 
-    // a double click on the item title will find the edit icon & fire that control
+    // a click on the item title will find the edit icon & fire that control
     _onItemEditClick: function(e) {
         if (e.target.nodeName.toUpperCase() == "P") {
             // re-assign the click target to be the edit icon
@@ -438,7 +450,7 @@ var TaskListView = View.extend({
         };
         
     },
-
+    
    /**
     * Handles the 'delete' action.
     * Triggers the 'remove-item' event and passes along the cid of the selected task.
@@ -481,10 +493,6 @@ var TaskListView = View.extend({
         this._onTitleEdit(e);
     },
     
-    _onTextInputBlur: function(e){
-        this._onCancel(e);
-    },
-
    /*
     * Handles the _onTick action and triggers the 'update-item' event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
     */
@@ -531,6 +539,10 @@ var TaskListView = View.extend({
 
         this.editedTaskView = null;
         event.preventDefault();
+    },
+
+    cancelEdit: function(){
+        this.$("a.cancel").click();
     },
 
     /*
