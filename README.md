@@ -223,7 +223,7 @@ The Tasket server runs as a simple JSON API, allowing innovation in the client a
 
 # Branches and workflow
 
-The Tasket repository on Github uses two branches, '*master*' and '*release*'.  The release branch always contains a production-ready version of Tasket, ready to be deployed to a live server. The master branch is the latest development version of Tasket, containing any recent stable updates.  
+The Tasket repository on Github uses two main branches, '*master*' and '*release*'.  The release branch always contains a production-ready version of Tasket, ready to be deployed to a live server. The master branch is the latest development version of Tasket, containing any recent stable updates.  
 
 When developing new functionality for Tasket, consider creating local development branches for each feature.  When complete, these changes should be committed and merged into the '*master*' branch.  Once these updates have been tested and verified as ready for release, they should be merged into the remote '*release*' branch.
 
