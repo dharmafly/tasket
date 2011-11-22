@@ -138,7 +138,7 @@ var TaskController = Controller.extend({
     },
     
     loadLatestOrNew: function(){
-        if (!app.curentUser) {
+        if (!app.currentUser) {
             return;
         };
         
