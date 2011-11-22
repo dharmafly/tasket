@@ -1,5 +1,6 @@
 var TaskController = Controller.extend({
     routes: {
+        "/": 'loadLatestOrNew',
         "/hubs/:hub/": 'showHub',
 		"/hubs/new/": "newHub",
 		"/tasks/starred/": "showStarred"
@@ -31,16 +32,31 @@ var TaskController = Controller.extend({
             }
             
             if (app.currentUser) {
+                controller.navigate('/hubs/' + hub.id + '/');
                 controller.hubListView.selectHub(hub);
                 controller.taskListView.showHub(hub, opts);
             };
         });
-        Tasket.hubs.bind("all", function(){console.log(arguments);})
+        
+        Tasket.bind('hub:remove', function(hub, hublist){
+            var hubId = app.getLatestOpenHub(app.currentUser);
+            
+            if (hubId) {
+                // remove the deleted hub from the hublist collection, which will update view
+                controller.hubListView.collection.remove(hub);
+                app.selectHub(hubId);
+            }
+            else{
+                app.createAndSelectHub();
+            }
+
+        });
+        
         
         // keyboard shortcuts
         $('body').bind('keyup', function(e){
             var keyCode = e.keyCode ? e.keyCode : e.which;
-
+            
             if (app.currentUser && controller.taskListView) {
                 switch(keyCode){
                     case 78:
@@ -51,6 +67,13 @@ var TaskController = Controller.extend({
                         };
                         break;
 
+                    case 27:
+                        // escape out of editing/creating a task
+                        if (controller.taskListView.newTaskView || controller.taskListView.editedTaskView) {
+                            controller.taskListView.cancelEdit();
+                            e.preventDefault();
+                        };
+                        break;
                 }
             }
             
@@ -85,10 +108,13 @@ var TaskController = Controller.extend({
                 }
             })
             .bind("remove-item", function (task) {
-                var request = task.destroy();
+                var request;
+                
                 if (task.isNew()) {
+                    // remove task from the hub
                     taskListView.model.removeTask(task);
                 }else{
+                    request = task.destroy();
                     request.success(function () {
                         taskListView.model.removeTask(task);
                     });
@@ -100,6 +126,8 @@ var TaskController = Controller.extend({
 		taskListView.bind('create-hub', function(hub){
 			if (hub.isNew()) {
 				hub.bind('change:id', _.once(function () {
+				    // add to global cache
+				    Tasket.hubs.add(hub);
                     controller.hubListView.collection.add(hub);
                     controller.navigate('/hubs/' + hub.id + '/', true);
 				}));
@@ -107,6 +135,22 @@ var TaskController = Controller.extend({
 			app.selectedHub = hub;
 		});
 
+    },
+    
+    loadLatestOrNew: function(){
+        if (!app.curentUser) {
+            return;
+        };
+        
+        var hubId = app.getLatestOpenHub(app.currentUser),
+            controller = this;
+      
+        if (hubId) {
+            app.trigger("change:selectedHub", Tasket.getHubs(hubId));
+        }
+        else{
+            controller.navigate('/hubs/new/', true);
+        }
     },
 
 	newHub: function () {
@@ -122,13 +166,22 @@ var TaskController = Controller.extend({
 	},
 
 	showHub: function (id) {
+	    var hub,
+	        controller = this;
+
 		if (app.selectedHub && app.selectedHub.id === id) {
             return;
 		}
 
-		var hub = Tasket.getHubs(id);
-
-		app.selectedHub = hub;
+		if (Tasket.hubs.get(id)) {
+    		hub = app.selectedHub = Tasket.getHubs(id);
+		}
+		else{
+            // id does not exist any more, redirect to root
+            controller.navigate('/', true);
+            return;
+		}
+		
 
 		// If the model is not complete we listen for the first "change" event. This
 		// will be fired when the model is properly loaded from the server. We then
@@ -137,9 +190,13 @@ var TaskController = Controller.extend({
 			hub.bind("change", _.once(function(hub) {
                 app.trigger("change:selectedHub", hub);
 			}));
-		} else {
+		}
+		
+		else {
 			app.trigger("change:selectedHub", hub);
 		}
+		
+        // TODO: handle errors - e.g. hub was already deleted since user record last cached in localStorage
 	},
 
     createHubList: function () {
@@ -151,7 +208,6 @@ var TaskController = Controller.extend({
             });
         
 		hubListView.render();
-		
 	},
 	
 	showStarred: function () {
@@ -171,7 +227,6 @@ var TaskController = Controller.extend({
 		    controller.taskListView.hideAddEditControls();
         }
 
-
 		if (!tasks.isComplete()) {
 			tasks.bind("reset", _.once(function (tasks) {
 			    complete();
@@ -180,6 +235,4 @@ var TaskController = Controller.extend({
             complete();
 		}
 	}
-
-	
 });
