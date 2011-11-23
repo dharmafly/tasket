@@ -39,6 +39,7 @@
             // dependencies
             jsLibPath + "jquery.js",
             jsLibPath + "jquery.hashchange.js",
+            jsLibPath + "jquery.putcursoratend.js",
             jsLibPath + "cache.js",
             jsLibPath + "underscore.js",
             jsLibPath + "tim.js",
@@ -68,6 +69,8 @@
             jsAppPath + "views/authbar.js",
             jsAppPath + "views/task.js",
             jsAppPath + "views/task-list.js",
+            jsAppPath + "views/hub-list.js",
+            jsAppPath + "views/hub.js",
 
             // controllers
             jsCorePath + "controllers/controllers.js",
@@ -90,7 +93,7 @@
             },
             
             // Options (path is relative to the calling HTML file)
-            {path:"/media/", noCache:true}
+            {path:"/media/", noCache:false}
         );
     }
 }(this, getScript));

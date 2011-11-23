@@ -46,45 +46,66 @@ _.extend(app, {
     },
     
     getLatestOpenHub: function(user){
-        var hubs = user.getNonArchivedHubs();
-        return hubs.length ? _.max(hubs) : null;
+        var hubIds = user.getNonArchivedHubs();
+        return hubIds.length ? _.max(hubIds) : null;
     },
 
     _bindHubEvents: function (user) {
         var hubId = this.getLatestOpenHub(user),
+            hash = window.location.hash.slice(1),
             hub;
-        
+
         // There is already a hub we can load
-        if (hubId){
-            hub = app.selectedHub = Tasket.getHubs(hubId);
-            
-            // If the hub data is complete
-            if (hub.isComplete()){
-                app.trigger("change:selectedHub", hub);
-            }
-            // Otherwise data load from the server
-            else {
-                hub.bind("change", function onLoad(){
-                    hub.unbind("change", onLoad);
-                    app.trigger("change:selectedHub", hub);
-                });
-            }
-            // TODO: handle errors - e.g. hub was already deleted since user record last cached in localStorage
+        if (hubId && hash === '/' || hash === '/login/'){
+            this.selectHub(hubId);
         }
         
         // No existing hubs. Create a new one
-        else {
-            hub = app.selectedHub = new Hub({
-                title: app.lang.NEW_HUB,
-                owner: user.id
-            });
-            
-            hub.bind("change:id", function (hub) {
-                app.trigger("change:selectedHub", hub);
-            });
-            hub.save();
+        else if (hash === '/') {
+            this.createAndSelectHub();
         }
         
+        return this;
+    },
+
+    selectHub: function(hubId){
+        // TODO: Work out why the commented out code doesnt work
+        
+        // change hash to new id
+        // var hub = Tasket.getHubs(hubId),
+        //     mockView = {model:hub};
+        // 
+        // View.prototype.updateLocation.apply(mockView);
+        // return this;
+        
+        var hub = app.selectedHub = Tasket.getHubs(hubId);
+        
+        // If the hub data is complete
+        if (hub.isComplete()){
+            app.trigger("change:selectedHub", hub);
+        }
+        // Otherwise wait for data to load from the server
+        else {
+            hub.bind("change", function onLoad(){
+                hub.unbind("change", onLoad);
+                app.trigger("change:selectedHub", hub);
+            });
+        }
+        
+        return this;
+
+    },
+
+    createAndSelectHub: function(){
+        hub = app.selectedHub = new Hub({
+            title: app.lang.NEW_HUB,
+            owner: user.id
+        });
+        
+        hub.bind("change:id", function (hub) {
+            app.trigger("change:selectedHub", hub);
+        });
+        hub.save();
         
         return this;
     },
@@ -139,6 +160,29 @@ _.extend(app, {
 
         if (!app.currentUser){
             jQuery("section#content").html(tim("welcome-msg"));
+            jQuery('body').removeClass("loggedin");
+
+
+            // setup all the screenshots to go big on click
+            jQuery(".features img").each(function(index, node) {
+                
+                jQuery(node).bind("click", function(){
+                    var srcNode = jQuery(node).clone(),
+                        bigImgPath = srcNode.attr('src'),
+                        parts = bigImgPath.split('.');
+                        
+    			    if(parts.length){
+    			        parts[parts.length-2] = parts[parts.length-2]  + '-big';
+    			        bigImgPath = parts.join('.');
+    			    }
+
+                    app.lightbox.content(srcNode.attr({
+                        "src": bigImgPath,
+                        "width": 920,
+                        "height": 500,
+                    }), 'wide').show();
+                })
+            });
         }
 
         // Load the server settings.

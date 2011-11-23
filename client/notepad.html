@@ -54,12 +54,14 @@
         </ul>
       </nav>
       
-      <div id="main">
-        <aside id="lists" class="closed">
-            <h1><a><span>Close lists</span></a></h1>
-            <!--
+      <div id="main" class="cf ">
+
+        <section id="content"></section>
+
+		<h1 class="listsTab"><a><span>Open lists</span></a></h1>
+        <aside id="lists">
             <nav>
-              <ul>
+              <!-- <ul>
                 <li class="star"><a href="/">Starred</a></li>
                 <li><a href="/">Work list 1</a></li>
                 <li><a href="/">Work list 2</a></li>
@@ -73,13 +75,11 @@
 
               <div class="showing">
                 <a href="/">Showing all</a>
-              </div>
+              </div> -->
             </nav>
-            -->
-        </aside>
-        
-        <section id="content"></section>
 
+        </aside>
+		
         <footer>
           <nav>
             <!--
@@ -101,11 +101,45 @@
 
     <!-- TEMPLATES -->
     <script type="text/tim" class="welcome-msg">
-        <p class="welcome-message">Please <a href="#/sign-up/">sign up</a> or <a href="#/login/">login</a> to start creating items.</p>
+		<div class="welcome-message">
+			<div class="intro cf">
+				<h1>A simple, fast, easy to use tasklist</h1>
+				<p>We all have to make lists now and again and Tasket Notepad is the easiest, fastest way to do that. <a href="#/sign-up/">sign up</a> and you can start to:</p>
+			</div>
+			<div class="features cf">
+				<div class="row cf">
+					<div>
+						<img src="media/notepad/images/screenshot-tasks.png" width="200" alt="Tasks"/>
+						<h2>Create & complete tasks</h2>
+						<p>Create tasks quickly and easily to your list, then tick off once completed.</p>
+					</div>
+					<div class="even">
+						<img src="media/notepad/images/screenshot-lists.png" width="200" alt="Lists"/>
+						<h2>Create multiple lists of tasks</h2>
+						<p>Create lists and keep your task lists seperated into neat, organised lists.</p>
+					</div>
+				</div>
+				<div class="row cf">
+					<div>
+						<img src="media/notepad/images/screenshot-reorder.png" width="200" alt="Screenshot Reorder"/>
+						<h2>Prioritise tasks</h2>
+						<p>Re–order tasks however you wish, by priority or to group tasks</p>
+					</div>
+					<div class="even">
+						<img src="media/notepad/images/screenshot-staritems.png" width="200" alt="Screenshot Staritems"/>
+						<h2>Star certain tasks if important!</h2>
+						<p>And view all of your starred tasks in one list</p>
+					</div>
+				</div>
+
+			</div>
+		
+	        <p class="cta">Please <a href="#/sign-up/">create an account</a> or <a href="#/login/">login</a> to start creating items.</p>
+		</div>
     </script>
     
     <script type="text/tim" class="title-edit">
-        <input class="task-edit" type="text" placeholder="{{placeholder}}"> <a class="cancel link">cancel</a> <a class="save button">save</a>
+        <input class="task-edit" type="text" placeholder="{{placeholder}}"> <a class="save button">save</a> <a class="cancel link">cancel</a>
     </script>
     
     <script type="text/tim" class="task-edit">
@@ -113,14 +147,17 @@
     </script>
 
     <script type="text/tim" class="task-list">
-        <div class="header">
-            <h1><a>{{listTitle}}</a></h1>
-            <ul class="edit-item">
-                <li class="edit"><a title="Edit this item">Edit this item</a></li>
-            </ul>
-        </div>
-        <ul class="item-list"></ul>
-        <a class="new-item">Add new item</a>
+		<div class="task-list">
+	        <div class="header">
+	            <h1><a>{{listTitle}}</a></h1>
+	            <ul class="edit-item">
+	                <li class="edit"><a title="Edit this item">Edit this item</a></li>
+	                <li class="delete"><a title="Delete this list">Delete this list</a></li>
+	            </ul>
+	        </div>
+	        <ul class="item-list"></ul>
+	        <a class="new-item">Add new item</a>
+		</div>
     </script>
 
     <script type="text/tim" class="task">
@@ -134,6 +171,31 @@
         </ul>
     </script>
 
+	<script type="text/tim" class="hub-list">
+	
+   		<ul class="item-list">
+			<li class="starred"><a tabindex="-1" href="#/tasks/starred/">Starred</a></li>
+		</ul>
+
+		<div class="controls">
+			<p><a tabindex="-1" href="#/hubs/new/" class="new-item">Add new list</a></p>
+			<div class="showing">
+				<p>Show: 
+					<select name="showing" id="showing" size="1" tabindex="-1">
+						<option value="all">all tasks</option>
+						<option value="onlyDone">only done tasks</option>
+						<option value="onlyIncomplete">only incomplete tasks</option>
+					
+					</select>
+				</p>
+			</div>
+		</div>
+	</script>
+
+	<script type="text/tim" class="hub">
+    	<a tabindex="-1" href="#/hubs/{{id}}/"><span class="count">{{count}}</span> <span class="title">{{title}}</span></a>
+	</script>
+	
     <script type="text/tim" class="lightbox">
         <div class="lightbox-inner">
             <div class="content"></div>

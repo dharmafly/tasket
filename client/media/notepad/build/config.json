@@ -29,6 +29,7 @@
             "./header.js",
             "../../lib/js/jquery.js",
             "../../lib/js/jquery.hashchange.js",
+            "../../lib/js/jquery.putcursoratend.js",
             "../js/lib/jquery-ui.min.js",
             "../../lib/js/underscore.js",
             "../../lib/js/backbone.js",
@@ -56,6 +57,8 @@
             "../js/views/authbar.js",
             "../js/views/task.js",
             "../js/views/task-list.js",
+            "../js/views/hub-list.js",
+            "../js/views/hub.js",
             "../js/controllers/task-controller.js",
             
             "../../tank/js/core/tasket.js",

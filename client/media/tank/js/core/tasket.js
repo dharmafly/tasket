@@ -111,8 +111,8 @@ _.extend(Tasket, Backbone.Events, {
             model = wrappedModel.at(0);
             
             if (!model.isComplete()){
-                wrappedModel.bind("refresh", function onRefresh(){
-                    wrappedModel.unbind("refresh", onRefresh);
+                wrappedModel.bind("reset", function onRefresh(){
+                    wrappedModel.unbind("reset", onRefresh);
                     model.change();
                 });
             }
