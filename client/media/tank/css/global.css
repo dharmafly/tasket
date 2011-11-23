@@ -1088,6 +1088,10 @@ svg line {
 	border-radius: 0 0 0.385em 0.385em /* 5px */;
 }
 
+.dashboard-toggle:hover a {
+    border-bottom: 1px solid;
+}
+
 .dashboard-toggle a {
 	font-size: 0.769em /* 10px */;
 	text-transform: uppercase;
