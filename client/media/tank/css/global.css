@@ -1723,10 +1723,19 @@ footer a.df:hover {
 	background: #AAA;
 	border-radius: 13px;
 	pointer-events: auto;
+	-webkit-transition: opacity 0.15s ease-in-out;
+	-moz-transition: opacity 0.15s ease-in-out;
+	-ms-transition: opacity 0.15s ease-in-out;
+	-o-transition: opacity 0.15s ease-in-out;
+	transition: opacity 0.15s ease-in-out;
 }
 
 .hub-marker.hide {
-	display: none;
+	/*
+	Sadly need this !important to override the inline style applied by the
+	JavaScript to fade markers out at a distance.
+	*/
+	opacity: 0!important;
 }
 
 .hub-marker .hub-marker-icon {
