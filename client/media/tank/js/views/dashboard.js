@@ -29,7 +29,8 @@ var Dashboard = View.extend({
             "updateUserHubs",
             "updateManagedTasks",
             "updateStatistics",
-            "setUser"
+            "setUser",
+            "_applyTransform"
         );
 
         // Setup the user bindings.
@@ -63,6 +64,8 @@ var Dashboard = View.extend({
                 this._onToggle(eventName);
             }
         }, this);
+
+        jQuery(window).resize(_.debounce(this._applyTransform, 300));
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
@@ -136,6 +139,8 @@ var Dashboard = View.extend({
         }, this);
 
         this.elem.append(this.detail.render().el);
+
+        this.toggle = this.$(".dashboard-toggle");
 
         this._onToggle(this.isHidden() ? "hide" : "show", {animate: false, silent: true});
 
@@ -351,6 +356,23 @@ var Dashboard = View.extend({
         jQuery(event.target).siblings('.help').toggleClass('active');
     },
 
+    _applyTransform: function (method) {
+        if (!this.toggle) {
+            return;
+        }
+
+        var value = 0, transform = getCSSProperty('transform'),
+            isEvent = method instanceof jQuery.Event;
+
+        if (method === "hide" || isEvent) {
+            value = this.toggle.outerHeight() - this.elem.height();
+        }
+
+        if (transform) {
+            this.elem.css(transform, 'translate(0, ' + value + 'px)');
+        }
+    },
+
     // Scroll down to the appropriate listing and highlight the activity links.
     _onNotificationClick: function (event) {
         var hash = event && event.target && event.target.hash,
@@ -382,24 +404,18 @@ var Dashboard = View.extend({
      * Returns nothing.
      */
     _onToggle: function (method, options) {
-        var value = 0, toggle = this.$(".dashboard-toggle"),
-            disableAnimation = !!options && options.animate === false,
-            dashboard = this, transform = getCSSProperty('transform');
-
-        if (method === "hide") {
-            value = toggle.outerHeight() - this.elem.height();
-        }
+        var disableAnimation = !!options && options.animate === false,
+            dashboard = this;
 
         this._animating = !disableAnimation;
         this.elem.toggleClass(this.classes.disableAnimation, disableAnimation);
 
-        if (transform) {
-            this.elem.css(transform, 'translate(0, ' + value + 'px)');
-        }
+        this._applyTransform(method);
 
         if (this._animating) {
             setTimeout(function () {
                 dashboard.trigger("animated", dashboard);
+                dashboard.elem.addClass(dashboard.classes.disableAnimation);
             }, 300 /* This needs to be updated when CSS changes */);
         }
 
