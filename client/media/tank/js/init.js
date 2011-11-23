@@ -10,8 +10,12 @@ app.bind("setup", function() {
     
     // Render views
     app.bodyElem
-      .append(app.dashboard.render().el)
+      .append(app.dashboard.el)
       .append(app.lightbox.render().el);
+
+    // We must render after it's appended to the DOM so that the
+    // height can be calculated.
+    app.dashboard.render();
 });
 
 // Called when the app has all dependancies loaded.
