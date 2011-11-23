@@ -211,6 +211,10 @@ var TankController = Controller.extend({
         // and is not panning display the markers. This allows the user to
         // interact with the markers when not panning.
         jQuery("body").mousemove(_.throttle(_.bind(function (event) {
+            if (!app.lightbox.isHidden()) {
+                return;
+            }
+
             var bound       = 30,
                 width       = this.viewportWidth - this.getDashboardWidth(),
                 mouseTop    = event.clientY,

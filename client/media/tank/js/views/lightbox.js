@@ -67,6 +67,10 @@ var Lightbox = View.extend({
         return this;
     },
     
+    isHidden: function () {
+        return !this.elem.hasClass(this.classes.display);
+    },
+    
     // Custom lightbox types - a type can be passed to the content() method below
     _lightboxTypes: {},
     
