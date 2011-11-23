@@ -267,8 +267,10 @@ var TaskListView = View.extend({
     },
 
     _onTitleDelete: function (event) {
-        if(confirm('Delete this list and all assigned tasks?')){
-            this.model.destroy();
+        if(confirm('Remove this list and all assigned tasks?')){
+            // instead of this.model.destroy(); we use archive due to limits set by the API
+            // (unable to delete hubs that have completed items, only archive)
+            this.model.archive();
         }
     },
     

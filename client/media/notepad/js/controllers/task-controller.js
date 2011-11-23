@@ -37,8 +37,8 @@ var TaskController = Controller.extend({
                 controller.taskListView.showHub(hub, opts);
             };
         });
-        
-        Tasket.bind('hub:remove', function(hub, hublist){
+                
+        Tasket.bind('hub:change:archived', function(hub, hublist){
             var hubId = app.getLatestOpenHub(app.currentUser);
             
             if (hubId) {
