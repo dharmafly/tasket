@@ -889,13 +889,16 @@ table {
       margin: 0 2% 0 0;
       border-radius: 10px;
   }
-  #content .welcome-message .row div.even { margin: 0 0 0 2%; }
+  #content .welcome-message .row div.even {
+    margin: 0 0 0 2%;
+  }
   #content .welcome-message .row img {
       float: left;
       margin: 0 1.2em 0.5em 0;
       border: 1px solid #888;
       box-shadow: 0 0 5px #ccc;
       border-radius: 2px;
+      cursor:pointer;
   }
   #content .welcome-message .row h2 {
       font-weight: bold;
