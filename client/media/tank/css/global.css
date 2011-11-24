@@ -1862,7 +1862,7 @@ footer a.df:hover {
 	right: 0;
 	padding: 0 20px;
 	overflow: hidden;
-	z-index: 100;
+	z-index: 999999; /* z-index one dashboard */
 	background-color: rgb(25, 141, 6);
 	background-image: url(../images/notification_stripes.png);
 	background-repeat: repeat-x;
