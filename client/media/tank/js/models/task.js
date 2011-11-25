@@ -219,7 +219,19 @@ var Task = Model.extend({
         });
         
         return this.save({starred:false});
-    }
+    },
+    
+    isStarred: function(){
+        // Check presence of boolean property (see also hub.js:isArchived)
+        // NOTE: this will be correct, even if the server has not yet responded with a timestamp after a request to star() or unstar()
+        var isStarred = this.get("starred");
+
+        // If temporary flag does not exist, then check if details of the property are present on the model
+        if (!_.isBoolean(isStarred)){
+            isStarred = !!this.get("starred.timestamp");
+        }
+        return isStarred;
+    },
 }, {
     ESTIMATES: TaskEstimates
 });

@@ -402,8 +402,7 @@ _.extend(Tasket, Backbone.Events, {
         this.bind("hub:add", this._onHubAdded)
             .bind("hub:remove", this._onHubRemoved)
             .bind("hub:change:archived", this._onHubChangeArchived);
-                
-        // TODO: change user.stars on task:change:starred
+            
         // TODO: move user.task states here
     }
 });
