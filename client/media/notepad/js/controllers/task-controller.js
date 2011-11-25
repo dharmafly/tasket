@@ -41,7 +41,8 @@ var TaskController = Controller.extend({
         });
                 
         Tasket.bind("hub:change:archived", function(hub, hublist){
-            var hubId = app.getLatestOpenHub(app.currentUser);
+            var user = app.currentUser,
+                hubId = app.getLatestOpenHub(user);
             
             if (hubId) {
                 // remove the deleted hub from the hublist collection, which will update view
@@ -49,7 +50,7 @@ var TaskController = Controller.extend({
                 app.selectHub(hubId);
             }
             else{
-                app.createAndSelectHub();
+                app.createAndSelectHub(user);
             }
         });
         
