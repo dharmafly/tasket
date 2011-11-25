@@ -56,7 +56,7 @@ _.extend(app, {
             hub;
 
         // There is already a hub we can load
-        if (hubId && hash === "/" || hash === "/login/"){
+        if (hubId && (hash === "/" || hash === "/login/")){
             this.selectHub(hubId);
         }
         
