@@ -711,7 +711,7 @@ table {
       }
       
       aside#lists nav .starred a {
-        background: url(../images/sprite1.png) no-repeat right -1097px;
+        background: #5490ad url(../images/sprite1.png) no-repeat right -1097px;
         border: none;
         padding: 4px 25px 4px 7px;
       }
@@ -1222,30 +1222,32 @@ table {
         text-decoration: underline;
       }
 
-/* Dharmafly */
-
-  footer a.df {
-    text-decoration:none;
-    border:none;
-    padding-top:0.16em;
-    display:block;
-    text-align: right;
-  }
-
-  footer a.df span.df-name {
-    font-family: Calibri,Helvetica,Arial,sans-serif;
-    text-transform:uppercase;
-    font-weight:bold;
-  }
-
-  footer a.df:hover {
-  	color:#70873f;
-  }
-  
-  footer a.df:hover span.df-name {
-  	border-bottom-width:1px;
-  	border-bottom-style:solid;
-  }
+/* Credits */
+footer .credits {
+	padding-top:3.8em;
+	font-size:1.2em;
+}
+footer .credits a {
+	text-decoration:none;
+	border:none;
+	display:block;
+	float:left;
+	margin-left:1em;
+}
+footer .credits a span {
+	font-weight:bold;
+}
+footer .credits a:hover span {
+	border-bottom-width:1px;
+	border-bottom-style:solid;
+}
+footer a.df span.df-name {
+	font-family:Calibri,Helvetica,Arial,sans-serif;
+	text-transform:uppercase;
+}
+footer a.df:hover {
+	color:#70873f;
+}
   
   
 /* @group Lightbox
