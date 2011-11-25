@@ -18,19 +18,24 @@ Improvements and pull requests are welcome. If you have problems with these inst
 
 ## Install Tasket
 
-    cd PARENT_DIRECTORY
+    # clone the repo
+    cd DESINATION_DIRECTORY
     git clone git@github.com:dharmafly/tasket.git
     cd tasket
     
+    # install virtualenv
     easy_install virtualenv
     # if this fails, use: sudo easy_install virtualenv
     
+    # activate virtualenv
     virtualenv --no-site-packages .
     source bin/activate
     
+    # install required Python libraries
     easy_install pip
     pip install -r requirements.txt
     
+    # create the local settings config file
     cd web
     cp local_settings.py.example local_settings.py
     
@@ -51,6 +56,7 @@ Tasket allows its behaviour to be modified, via a number of settings in _local_s
 
 It is recommended to create a superuser account during this process (follow the instructions in the terminal).
 
+    # in the /web folder
     python manage.py syncdb
     python manage.py migrate
 
