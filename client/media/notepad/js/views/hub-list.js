@@ -16,7 +16,7 @@ var HubListView = View.extend({
     },
 
     initialize: function (options) {
-        this.elem = jQuery(this.el).find('aside nav');
+        this.elem = jQuery(this.el).find("aside nav");
 		this.hubViews = {};
 		this.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : "onlyIncomplete";
 		
@@ -38,10 +38,10 @@ var HubListView = View.extend({
 		    .bind("reset", function () {
                 view.renderHubs();
             })
-            .bind('add', function(hub){
+            .bind("add", function(hub){
                 // clicked save after adding a new list
                 // view.renderHubs(hub);
-                view.itemList.find('.starred')
+                view.itemList.find(".starred")
                     .after(view.renderHub(hub).render().el);
     			
                 view.selectHub(hub);
@@ -94,12 +94,13 @@ var HubListView = View.extend({
             var hubView = new HubView({model: hub, collection: view.collection});
 			view.hubViews[hub.id] = hubView;
 		};
+		
 		return view.hubViews[hub.id];
 	},
 
 	selectHub: function(hub){
 		var hubView = this.hubViews[hub.id];
-		_.invoke(this.hubViews, 'deselect');
+		_.invoke(this.hubViews, "deselect");
 		if (hubView) {
 			hubView.select();
 		};
@@ -111,23 +112,22 @@ var HubListView = View.extend({
 	    app.trigger("change:selectedHub", app.selectedHub, {
 	        showTasksOfType: selectedOption
 	    });
-	    
 	},
 
     _onShowHidePanel: function (event) {
-        var $el = this.elem.parents('div#main');
-		if($el.hasClass('open')){
-		    $el.removeClass('open')
-		        .find('> span')
-		        .text('Open lists');
-		}else{
-		    $el.addClass('open')
-		        .find('> span')
-		        .text('Close lists');
+        var $el = this.elem.parents("div#main");
+		if($el.hasClass("open")){
+		    $el.removeClass("open")
+		        .find("> span")
+		        .text("Open lists");
+		}
+		else{
+		    $el.addClass("open")
+		        .find("> span")
+		        .text("Close lists");
 		}
 
 		event.preventDefault();
     }
-
 });
 

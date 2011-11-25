@@ -114,20 +114,20 @@ var TaskListView = View.extend({
 		this.model = hub;
 		var taskIds;
 
-        if (opts && 'showTasksOfType' in opts) {
+        if (opts && "showTasksOfType" in opts) {
             switch(opts.showTasksOfType){
-                case 'all':
+                case "all":
                     taskIds = hub.get("tasks.new")
     		                    .concat(hub.get("tasks.claimed"))
     		                    .concat(hub.get("tasks.verified"))
     		                    .concat(hub.get("tasks.done"));
                     break;
 
-                case 'onlyDone':
+                case "onlyDone":
                     taskIds = hub.get("tasks.verified").concat(hub.get("tasks.done"));
                     break;
 
-                case 'onlyIncomplete':
+                case "onlyIncomplete":
                     taskIds = hub.get("tasks.new").concat(hub.get("tasks.claimed"));
                     break;
 
@@ -150,11 +150,11 @@ var TaskListView = View.extend({
     
     hideAddEditControls: function(){
         // hide editing controls - used when viewing starred items
-        this.$('div.header ul.edit-item').add('#content a.new-item').hide();
+        this.$("div.header ul.edit-item").add("#content a.new-item").hide();
     },
 
     showAddEditControls: function(){
-        this.$('div.header ul.edit-item').add('#content a.new-item').show();
+        this.$("div.header ul.edit-item").add("#content a.new-item").show();
     },
 
     makeSortable: function () {
@@ -267,7 +267,7 @@ var TaskListView = View.extend({
     },
 
     _onTitleDelete: function (event) {
-        if(confirm('Remove this list and all assigned tasks?')){
+        if(confirm("Remove this list and all assigned tasks?")){
             // instead of this.model.destroy(); we use archive due to limits set by the API
             // (unable to delete hubs that have completed items, only archive)
             this.model.archive();
@@ -297,9 +297,9 @@ var TaskListView = View.extend({
         this.model.set({title: title});
         this.model.save();
 		if (this.model.isNew()) {
-			this.trigger('create-hub', this.model);
+			this.trigger("create-hub", this.model);
 		} else {
-			this.trigger('update-hub', this.model);
+			this.trigger("update-hub", this.model);
 		}
     },
 
@@ -338,7 +338,7 @@ var TaskListView = View.extend({
         }
 
         this.$("div.header input").replaceWith(
-            jQuery('<h1><a href="#">'+title+'</a></h1>')
+            jQuery("<h1><a href='#'>"+title+"</a></h1>")
         );
         this.$("div.header .cancel, div.header .save").remove();
         this.$("div.header").removeClass("edit-mode");        
@@ -445,8 +445,8 @@ var TaskListView = View.extend({
     _onItemEditClick: function(e) {
         if (e.target.nodeName.toUpperCase() == "P") {
             // re-assign the click target to be the edit icon
-            e.target = $(e.target).parents('li')
-                        .find('li.edit a').get(0);
+            e.target = $(e.target).parents("li")
+                        .find("li.edit a").get(0);
 
             this._onControlAction(e);
         };
@@ -454,8 +454,8 @@ var TaskListView = View.extend({
     },
     
    /**
-    * Handles the 'delete' action.
-    * Triggers the 'remove-item' event and passes along the cid of the selected task.
+    * Handles the "delete" action.
+    * Triggers the "remove-item" event and passes along the cid of the selected task.
     *
     * cid    - The cid of a Task instance.
     * target - The event target element (optional).
@@ -467,7 +467,7 @@ var TaskListView = View.extend({
     },
 
    /**
-    * Handles the 'edit' action.
+    * Handles the "edit" action.
     *
     * cid - The cid of a Task instance.
     *
@@ -496,7 +496,7 @@ var TaskListView = View.extend({
     },
     
    /*
-    * Handles the _onTick action and triggers the 'update-item' event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
+    * Handles the _onTick action and triggers the "update-item" event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
     */
     _onTick: function (cid, target) {
         var currentUserId = app.currentUser.id,

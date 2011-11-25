@@ -1,7 +1,7 @@
 var TaskController = Controller.extend({
     routes: {
-        "/": 'loadLatestOrNew',
-        "/hubs/:hub/": 'showHub',
+        "/": "loadLatestOrNew",
+        "/hubs/:hub/": "showHub",
 		"/hubs/new/": "newHub",
 		"/tasks/starred/": "showStarred"
     },
@@ -18,27 +18,29 @@ var TaskController = Controller.extend({
 
         // Set up views on login.
         app.bind("change:currentUser", _.once(function () {
-			jQuery('body').addClass('loggedin');
+			jQuery("body").addClass("loggedin");
 			controller.createHubList();
 			controller.createTaskList();
         }));
 
         app.bind("change:selectedHub", function (hub, opts) {
             opts = opts || {};
-            if ('showTasksOfType' in opts) {
+            
+            if ("showTasksOfType" in opts) {
                 app.cache.set("showTasksOfType", opts.showTasksOfType);
-            }else{
-                opts.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : 'onlyIncomplete';
+            }
+            else{
+                opts.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : "onlyIncomplete";
             }
             
             if (app.currentUser) {
-                controller.navigate('/hubs/' + hub.id + '/');
+                controller.navigate("/hubs/" + hub.id + "/");
                 controller.hubListView.selectHub(hub);
                 controller.taskListView.showHub(hub, opts);
             };
         });
                 
-        Tasket.bind('hub:change:archived', function(hub, hublist){
+        Tasket.bind("hub:change:archived", function(hub, hublist){
             var hubId = app.getLatestOpenHub(app.currentUser);
             
             if (hubId) {
@@ -49,18 +51,16 @@ var TaskController = Controller.extend({
             else{
                 app.createAndSelectHub();
             }
-
         });
         
-        
         // keyboard shortcuts
-        $('body').bind('keyup', function(e){
+        $("body").bind("keyup", function(e){
             var keyCode = e.keyCode ? e.keyCode : e.which;
             
             if (app.currentUser && controller.taskListView) {
                 switch(keyCode){
                     case 78:
-                        // 'n' for new task
+                        // "n" for new task
                         if (!(controller.taskListView.newTaskView || controller.taskListView.editedTaskView)) {
                             controller.taskListView.createTask();
                             e.preventDefault();
@@ -76,9 +76,7 @@ var TaskController = Controller.extend({
                         break;
                 }
             }
-            
         });
-        
     },
 
     createTaskList: function () {
@@ -122,19 +120,17 @@ var TaskController = Controller.extend({
                 
             });
 
-
-		taskListView.bind('create-hub', function(hub){
+		taskListView.bind("create-hub", function(hub){
 			if (hub.isNew()) {
-				hub.bind('change:id', _.once(function () {
+				hub.bind("change:id", _.once(function () {
 				    // add to global cache
 				    Tasket.hubs.add(hub);
                     controller.hubListView.collection.add(hub);
-                    controller.navigate('/hubs/' + hub.id + '/', true);
+                    controller.navigate("/hubs/" + hub.id + "/", true);
 				}));
 			}
 			app.selectedHub = hub;
 		});
-
     },
     
     loadLatestOrNew: function(){
@@ -149,7 +145,7 @@ var TaskController = Controller.extend({
             app.trigger("change:selectedHub", Tasket.getHubs(hubId));
         }
         else{
-            controller.navigate('/hubs/new/', true);
+            controller.navigate("/hubs/new/", true);
         }
     },
 
@@ -178,7 +174,7 @@ var TaskController = Controller.extend({
 		}
 		else{
             // id does not exist any more, redirect to root
-            controller.navigate('/', true);
+            controller.navigate("/", true);
             return;
 		}
 		
@@ -203,35 +199,42 @@ var TaskController = Controller.extend({
 		var controller = this,
 			user = app.currentUser,
 			hubs = Tasket.getHubs(user.getNonArchivedHubs()),
-			hubListView = this.hubListView = new HubListView({
+			hubListView = controller.hubListView = new HubListView({
                 collection: hubs
             });
         
 		hubListView.render();
 	},
 	
+	// TODO: move this method to hub-list.js
 	showStarred: function () {
 	    var controller = this,
 	        user = app.currentUser,
 	        tasks = Tasket.getTasks(user.get("stars.tasks")),
 	        taskListView = this.taskListView,
+	        hubListView = this.hubListView,
 			hub = app.selectedHub = new Hub({
-			    id: 'starred',
-	            title: 'Starred items',
+			    id: "starred",
+	            title: "Starred items",
                 owner: user.id,
                 tasks: tasks.toHubTasks()
-        	});
+        	}),
+        	starredElem = hubListView.itemList.find(".starred"),
+        	callback;
 
         function complete() {
             app.trigger("change:selectedHub", hub);
-		    controller.taskListView.hideAddEditControls();
+		    taskListView.hideAddEditControls();
         }
 
 		if (!tasks.isComplete()) {
-			tasks.bind("reset", _.once(function (tasks) {
+		    callback = function(tasks){
+		        tasks.unbind("reset", callback);
 			    complete();
-			}));
-		} else {
+			};
+			tasks.bind("reset", callback);
+		}
+		else {
             complete();
 		}
 	}

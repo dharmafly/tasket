@@ -56,12 +56,12 @@ _.extend(app, {
             hub;
 
         // There is already a hub we can load
-        if (hubId && hash === '/' || hash === '/login/'){
+        if (hubId && hash === "/" || hash === "/login/"){
             this.selectHub(hubId);
         }
         
         // No existing hubs. Create a new one
-        else if (hash === '/') {
+        else if (hash === "/") {
             this.createAndSelectHub();
         }
         
@@ -93,7 +93,6 @@ _.extend(app, {
         }
         
         return this;
-
     },
 
     createAndSelectHub: function(){
@@ -111,7 +110,7 @@ _.extend(app, {
     },
 
     /*
-    * Creates a placeholder task list ('hub') on user login if the user has not
+    * Creates a placeholder task list ("hub") on user login if the user has not
     * created one already.
     *
     */
@@ -160,7 +159,7 @@ _.extend(app, {
 
         if (!app.currentUser){
             jQuery("section#content").html(tim("welcome-msg"));
-            jQuery('body').removeClass("loggedin");
+            jQuery("body").removeClass("loggedin");
 
 
             // setup all the screenshots to go big on click
@@ -168,19 +167,19 @@ _.extend(app, {
                 
                 jQuery(node).bind("click", function(){
                     var srcNode = jQuery(node).clone(),
-                        bigImgPath = srcNode.attr('src'),
-                        parts = bigImgPath.split('.');
+                        bigImgPath = srcNode.attr("src"),
+                        parts = bigImgPath.split(".");
                         
     			    if(parts.length){
-    			        parts[parts.length-2] = parts[parts.length-2]  + '-big';
-    			        bigImgPath = parts.join('.');
+    			        parts[parts.length-2] = parts[parts.length-2]  + "-big";
+    			        bigImgPath = parts.join(".");
     			    }
 
                     app.lightbox.content(srcNode.attr({
                         "src": bigImgPath,
                         "width": 920,
                         "height": 500,
-                    }), 'wide').show();
+                    }), "wide").show();
                 })
             });
         }

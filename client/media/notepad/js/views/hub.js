@@ -1,9 +1,6 @@
 var HubView = View.extend({
     tagName: "li",
 
-    events: {
-    },
-
     constructor: function HubView () {
         Backbone.View.prototype.constructor.apply(this, arguments);
     },
@@ -17,13 +14,12 @@ var HubView = View.extend({
         view.model
             .bind("remove", view.remove)
             .bind("change", function (hub) {
-				if (hub.hasChanged('title')) {
-                	view.$(".title").text(hub.get('title'));
+				if (hub.hasChanged("title")) {
+                	view.$(".title").text(hub.get("title"));
 				}
 
-                view.$('.count').text(hub.countNewTasks());                
+                view.$(".count").text(hub.countNewTasks());                
             });
-        
     },
 
 	select: function(){
