@@ -18,7 +18,10 @@ Improvements and pull requests are welcome. If you have problems with these inst
 
 ## Install Tasket
 
+    cd PARENT_DIRECTORY
+    git clone git@github.com:dharmafly/tasket.git
     cd tasket
+    
     easy_install virtualenv
     # if this fails, use: sudo easy_install virtualenv
     
