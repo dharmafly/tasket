@@ -118,12 +118,12 @@ var HubListView = View.extend({
         var $el = this.elem.parents("div#main");
 		if($el.hasClass("open")){
 		    $el.removeClass("open")
-		        .find("> span")
+		        .find("span.label")
 		        .text("Open lists");
 		}
 		else{
 		    $el.addClass("open")
-		        .find("> span")
+		        .find("span.label")
 		        .text("Close lists");
 		}
 
