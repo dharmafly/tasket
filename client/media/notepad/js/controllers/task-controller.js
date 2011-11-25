@@ -77,6 +77,23 @@ var TaskController = Controller.extend({
                 }
             }
         });
+        
+        // Manage starred tasks
+        Tasket.bind("task:change:starred", function(task, isStarred){
+            var user = app.currentUser,
+                taskId = task.id,
+                taskIds = user.get("stars.tasks"),
+                origLength = taskIds.length;
+            
+            taskIds = _.without(taskIds, taskId);
+            if (isStarred){
+                taskIds.push(taskId);
+            }
+            
+            if (taskIds.length !== origLength){
+                user.set({"stars.tasks": taskIds});
+            }
+        });
     },
 
     createTaskList: function () {
@@ -223,8 +240,17 @@ var TaskController = Controller.extend({
         	callback;
 
         function complete() {
+            var callback;
+            
             app.trigger("change:selectedHub", hub);
 		    taskListView.hideAddEditControls();
+		    starredElem.addClass("active");
+		    
+		    callback = function(tasks){
+		        app.unbind("change:selectedHub", callback);
+			    starredElem.removeClass("active");
+			};
+			app.bind("change:selectedHub", callback);
         }
 
 		if (!tasks.isComplete()) {
