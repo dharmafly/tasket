@@ -50,8 +50,8 @@ _.extend(app, {
         return hubIds.length ? _.max(hubIds) : null;
     },
 
-    _bindHubEvents: function (user) {
-        var hubId = this.getLatestOpenHub(user),
+    _bindHubEvents: function () {
+        var hubId = this.getLatestOpenHub(app.currentUser),
             hash = window.location.hash.slice(1),
             hub;
 
@@ -96,10 +96,11 @@ _.extend(app, {
     },
 
     createAndSelectHub: function(){
-        hub = app.selectedHub = new Hub({
-            title: app.lang.NEW_HUB,
-            owner: user.id
-        });
+        var user = app.currentUser,
+            hub = app.selectedHub = new Hub({
+                title: app.lang.NEW_HUB,
+                owner: user.id
+            });
         
         hub.bind("change:id", function (hub) {
             app.trigger("change:selectedHub", hub);
@@ -118,7 +119,7 @@ _.extend(app, {
         this.bind("change:currentUser", function (user) {
             // user record is in localStorage
             if (user.id) {
-                this._bindHubEvents(user);
+                this._bindHubEvents();
             }
             else {
                 // this will not be triggered when the user record is cached,
