@@ -28,10 +28,10 @@ DATABASES = {
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
-# How many tasks a hub can have
+# How many tasks a hub can have - for the Notepad app, use -1
 TASK_LIMIT = 10
 
-# How many tasks a user can claim
+# How many tasks a user can claim - for the Notepad app, use -1
 CLAIMED_LIMIT = 5
 
 # Maximum task estimate
@@ -48,7 +48,7 @@ USERS_CAN_CREATE_HUBS = True
 AUTOVERIFY_TASKS_DONE_BY_OWNER = True
 
 # Email messages from
-DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
+DEFAULT_FROM_EMAIL = "Tasket Robot <tasket-robot@example.com>"
 
 # Email routing
 # EMAIL_PORT = 25
@@ -57,5 +57,8 @@ DEFAULT_FROM_EMAIL = "Tasket Robot <robot@tasket.net>"
 # Turn CORS on or off (default: False)
 # CROSS_DOMAIN = False
 
+# All top-level pages that should be made accessible
 INDEX_PATHS = ["tank.html", "notepad.html",]
-# DEFAULT_INDEX_FILE = "tank.html"
+
+# Uncomment the next line to change the default index files from tank.html to notepad.html
+# DEFAULT_INDEX_FILE = "notepad.html"
