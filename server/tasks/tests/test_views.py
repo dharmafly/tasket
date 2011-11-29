@@ -84,7 +84,7 @@ class ViewTests(TestCase):
             '/hubs/', 
             json.dumps({
                 'title' : 'New Hub',
-                'privacy' : 'true',
+                'privacy' : True,
             }),
             content_type="application/json",
             )
@@ -107,7 +107,18 @@ class ViewTests(TestCase):
         new__private_count = Hub.objects.private(User.objects.get(pk=5)).count()
         self.assertEqual(new__private_count, 3)
 
-        
+        response = self.client.put(
+            '/hubs/%s' % json_list[0]['id'], 
+            json.dumps({
+                'privacy' : False,
+            }),
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+        self.assertFalse('privacy' in json_list)
+
+
+
 
     def test_hubs_post_admin_restrict(self):
         # TestUser is not an admin, this test should not create a hub
