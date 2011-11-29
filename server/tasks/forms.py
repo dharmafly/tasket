@@ -197,6 +197,10 @@ class HubForm(StarredForm):
         if not 'privacy' in self.data:
             return self.cleaned_data
 
+        if self.data['privacy'] == False:
+            self.cleaned_data['private_to'] = None
+            return self.cleaned_data
+
         self.instance.private_to = self.request.user.profile
         self.cleaned_data['private_to'] = self.request.user.profile
         return self.cleaned_data
