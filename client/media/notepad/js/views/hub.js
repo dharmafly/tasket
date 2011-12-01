@@ -7,33 +7,33 @@ var HubView = View.extend({
     
     initialize: function (options) {
         var view = this;
-        view.elem = jQuery(view.el);
+        this.elem = jQuery(this.el);
 
-        view.elem.attr("data-id", view.model.id);
+        this.elem.attr("data-id", this.model.id);
 
-        view.model
-            .bind("remove", view.remove)
+        this.model
+            .bind("remove", this.remove)
             .bind("change", function (hub) {
-				if (hub.hasChanged("title")) {
-                	view.$(".title").text(hub.get("title"));
-				}
-
+                if (hub.hasChanged("title")) {
+                    view.$(".title").text(hub.get("title"));
+                }
                 view.$(".count").text(hub.countNewTasks());                
             });
     },
 
-	select: function(){
-		this.elem.addClass("active");
-	},
+    select: function(){
+        this.elem.addClass("active");
+    },
 
-	deselect: function(){
-		this.elem.removeClass("active");
-	},
+    deselect: function(){
+        this.elem.removeClass("active");
+    },
 
     render: function () {
-        var hub = this.model;
-        	
-        jQuery(this.el).html(tim("hub", _.extend(this.model.toJSON(), {count: hub.countNewTasks() }) ));
-       return this;
+        var numTasks = this.model.countNewTasks(),
+            data = _.extend(this.model.toJSON(), {count: numTasks});
+    
+        this.elem.html(tim("hub", data));
+        return this;
     }
 });

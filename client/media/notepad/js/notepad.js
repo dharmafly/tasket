@@ -44,70 +44,6 @@ _.extend(app, {
 
         return this;
     },
-    
-    getLatestOpenHub: function(user){
-        var hubIds = user.getNonArchivedHubs();
-        return hubIds.length ? _.max(hubIds) : null;
-    },
-
-    _bindHubEvents: function (user) {
-        var hubId = this.getLatestOpenHub(user),
-            hash = window.location.hash.slice(1),
-            hub;
-
-        // There is already a hub we can load
-        if (hubId && (hash === "/" || hash === "/login/")){
-            this.selectHub(hubId);
-        }
-        
-        // No existing hubs. Create a new one
-        else if (hash === "/") {
-            this.createAndSelectHub(user);
-        }
-        
-        return this;
-    },
-
-    selectHub: function(hubId){
-        // TODO: Work out why the commented out code doesnt work
-        
-        // change hash to new id
-        // var hub = Tasket.getHubs(hubId),
-        //     mockView = {model:hub};
-        // 
-        // View.prototype.updateLocation.apply(mockView);
-        // return this;
-        
-        var hub = app.selectedHub = Tasket.getHubs(hubId);
-        
-        // If the hub data is complete
-        if (hub.isComplete()){
-            app.trigger("change:selectedHub", hub);
-        }
-        // Otherwise wait for data to load from the server
-        else {
-            hub.bind("change", function onLoad(){
-                hub.unbind("change", onLoad);
-                app.trigger("change:selectedHub", hub);
-            });
-        }
-        
-        return this;
-    },
-
-    createAndSelectHub: function(user){
-        var hub = app.selectedHub = new Hub({
-                title: app.lang.NEW_HUB,
-                owner: user.id
-            });
-        
-        hub.bind("change:id", function (hub) {
-            app.trigger("change:selectedHub", hub);
-        });
-        hub.save();
-        
-        return this;
-    },
 
     /*
     * Creates a placeholder task list ("hub") on user login if the user has not
@@ -118,12 +54,12 @@ _.extend(app, {
         this.bind("change:currentUser", function (user) {
             // user record is in localStorage
             if (user.id) {
-                this._bindHubEvents(user);
+                this.controller.showLatestOrNew();
             }
             else {
                 // this will not be triggered when the user record is cached,
                 // as the user id will be unchanged when the server responds
-                user.bind("change:id", this._bindHubEvents);
+                user.bind("change:id", _.bind(this.controller.showLatestOrNew, this.controller));
             }
         });
         
@@ -147,20 +83,18 @@ _.extend(app, {
         this.accountController = new AccountController({router: this.router});
         this.toolbar = new Toolbar({el: document.getElementById("mainnav")});
         
-        this.setupStaticTemplates()
+        this.bind("change:currentUser", this._cacheChangesToCurrentUser)
+            .setupStaticTemplates()
             ._setupOverrides()
             ._setupLightbox()
             ._setupAuth()
             // NOTE: _setupHub after _setupAuth, to prevent double-load of view
             ._setupHub()
-            ._setupHistory()
-            // NOTE: "change:currentUser" fires once on retrieval from localStorage, and once again on retrieval from the server, to refresh the localStorage cache
-            .bind("change:currentUser", this._cacheChangesToCurrentUser);
+            ._setupHistory();
 
         if (!app.currentUser){
             jQuery("section#content").html(tim("welcome-msg"));
             jQuery("body").removeClass("loggedin");
-
 
             // setup all the screenshots to go big on click
             jQuery(".features img").each(function(index, node) {
@@ -170,10 +104,10 @@ _.extend(app, {
                         bigImgPath = srcNode.attr("src"),
                         parts = bigImgPath.split(".");
                         
-    			    if(parts.length){
-    			        parts[parts.length-2] = parts[parts.length-2]  + "-big";
-    			        bigImgPath = parts.join(".");
-    			    }
+                    if(parts.length){
+                        parts[parts.length-2] = parts[parts.length-2]  + "-big";
+                        bigImgPath = parts.join(".");
+                    }
 
                     app.lightbox.content(srcNode.attr({
                         "src": bigImgPath,

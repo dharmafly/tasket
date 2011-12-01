@@ -104,6 +104,11 @@ var User = Model.extend({
     
     getNonArchivedHubs: function(){
         return _.difference(this.get("hubs.owned"), this.get("hubs.archived"));
+    },
+    
+    getLatestIncompleteHub: function(){
+        var hubIds = this.getNonArchivedHubs();
+        return hubIds.length ? _.max(hubIds) : null;
     }
 });
 

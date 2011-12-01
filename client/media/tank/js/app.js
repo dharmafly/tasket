@@ -271,7 +271,7 @@ var cache = new Cache(Tasket.namespace),
                     // Pre-populate the username field
                     setTimeout(function () {
                         jQuery('#field-username').val(username);
-                    }, 200);
+                    }, 250);
                 }
 
                 // Destroy the cache.
@@ -281,7 +281,9 @@ var cache = new Cache(Tasket.namespace),
             else if (currentUserData){
                 currentUser = app.updateCurrentUser(new User(currentUserData), false);
                 currentUser.fetch({
-                    success: app.updateCurrentUser
+                    success: function(user){
+                        app.cacheCurrentUser(user);
+                    }
                 }); // Store to cache again
             }
 
@@ -305,17 +307,25 @@ var cache = new Cache(Tasket.namespace),
 
         updateCurrentUser: function (user, saveToCache) {
             if (user){
-                if (!Tasket.users.get(user.id)){
-                    Tasket.users.add(user);
-                }
-                app.currentUser = user;
-
+                // Save the user, or any changes to the user to localStorage
                 if (saveToCache !== false){
                     app.cacheCurrentUser(user);
                 }
-                app.trigger("change:currentUser", app.currentUser); // see dashboard.js > Dashboard.setUser()
+                
+                // Add new user to the global cache
+                if (!Tasket.users.get(user.id)){
+                    Tasket.users.add(user);
+                }
+                
+                // Trigger event, if the currentUser has changed
+                // TODO: check this conditional - has implications for Tank dashboard rendering and for Notepad bootstrap sequence
+                if (!app.currentUser || app.currentUser.id !== user.id){
+                    app.currentUser = user;
+                    app.trigger("change:currentUser", user);
+                }
             }
-            return app.currentUser;
+            
+            return user;
         },
 
         _triggerAllDoneTasksChange: function(){

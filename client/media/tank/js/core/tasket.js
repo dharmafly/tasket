@@ -111,10 +111,13 @@ _.extend(Tasket, Backbone.Events, {
             model = wrappedModel.at(0);
             
             if (!model.isComplete()){
+                // Model successfully retrieved
                 wrappedModel.bind("reset", function onRefresh(){
                     wrappedModel.unbind("reset", onRefresh);
                     model.change();
                 });
+                
+                // If not found on server, the "notfound" event will fire
             }
             
             return model;
@@ -157,8 +160,9 @@ _.extend(Tasket, Backbone.Events, {
                 // but not in toLoad. As they do not exist on the server.
                 toLoadCopy.each(function (model) {
                     if (!toLoad.get(model.id)) {
-                        subset.remove(model, silent);
+                        subset.remove(model, silent); // TODO: should this be silent? or should "remove" event be listenable?
                         collection.remove(model, silent);
+                        model.trigger("notfound", model); // trigger custom "notfound" event
 
                         // Cache the failed model id.
                         Tasket.failed[model.type].push(model.id);
@@ -331,15 +335,16 @@ _.extend(Tasket, Backbone.Events, {
         return this;
     },
     
-    _addRemoveHubOnUser: function(hub, isArchived, collectionsToUpdate){
+    _addRemoveHubOnUser: function(hub, shouldBeAdded, collectionsToUpdate){
         var hubId = hub.id,
             owner;
 
         if (!hubId){
-            hub.bind("change:id", function(){
-                Tasket._addRemoveHubOnUser(hub, isArchived, collectionsToUpdate);
+            hub.bind("change:id", function whenLoaded(){
+                hub.unbind("change:id", whenLoaded);
+                Tasket._addRemoveHubOnUser(hub, shouldBeAdded, collectionsToUpdate);
             });
-            return;
+            return this;
         }
     
         owner = Tasket.users.get(hub.get("owner"));
@@ -348,9 +353,9 @@ _.extend(Tasket, Backbone.Events, {
             if (!collectionsToUpdate){
                 collectionsToUpdate = hub.isArchived() ? ["hubs.owned", "hubs.archived"] : "hubs.owned";
             }
-        
-            Tasket._addRemoveFromModelCollection(owner, hubId, isArchived, collectionsToUpdate);
+            Tasket._addRemoveFromModelCollection(owner, hubId, shouldBeAdded, collectionsToUpdate);
         }
+        return this;
     },
     
     _onHubAdded: function(hub){
@@ -404,6 +409,7 @@ _.extend(Tasket, Backbone.Events, {
             .bind("hub:change:archived", this._onHubChangeArchived);
             
         // TODO: move user.task states here
+        // TODO: on remove task, also remove from its hub's model
     }
 });
 

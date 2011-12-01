@@ -169,7 +169,7 @@ button:hover, button:focus,
 }
 
 button:active, .button:active {
-	color: #454545;
+	color: #686868;
 	text-shadow: 0 -1px 0 #000;
 	background-color: #111;
 	background-image: -webkit-gradient(

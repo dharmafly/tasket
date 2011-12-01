@@ -50,11 +50,14 @@ var TaskListView = View.extend({
             "_onSort"
         );
 
-        this.showHub(this.model);
+        if (this.model){
+            this.showHub(this.model);
+        }
     },
 
     _setupModelBindings: function(){
         var view = this;
+        this.mainContentElem = jQuery("#main");
 
         this.model
             // Unbind first, in case we've displayed this hub before
@@ -65,29 +68,49 @@ var TaskListView = View.extend({
             // TODO: should these events be unbound first, in case of displaying multiple hubs?
             // display the action controls once a task is saved
             .bind("change:id", function (task, collection) {
-                var taskView;
-
                 if (task.get("hub") === view.model.id) {
-                    taskView = view.taskViews[task.cid];
-                    taskView.showActionControls();
-                }
-            })
-            // Append new items to the list
-            .bind("add", function (task, collection) {
-                if (task.get("hub") === view.model.id) {
-                    view.renderTasks(task);
+                    view.taskViews[task.cid].showActionControls();
                 }
             })
             
-	        //event handler for rendering loaded tasks into the view
-	        .bind("reset", function () {
+            // Append new items to the list
+            .bind("add", function (task, collection) {
+                if (!Tasket.tasks.get(task.id)){
+                    Tasket.tasks.add(task);
+                }
+            
+                // TODO: don't renderTasks when not necessary
+                if (task.get("hub") === view.model.id) {
+                    view.renderTasks();
+                }
+            })
+            
+            .bind("remove", function(task, collection){
+                var request;
+                
+                if (!task.isNew() && Tasket.tasks.get(task.id)) {
+                    view.model.removeTask(task);
+                    
+                    // Remove from the server
+                    if (task.canDelete()){
+                        task.destroy();
+                    }
+                
+                    // Can't delete done tasks; need to change them to "new" first - see https://github.com/dharmafly/tasket/issues/426
+                    else {
+                        task.state("new", app.currentUser.id);
+                        request = task.save();
+                        request.success(function(){
+                            task.destroy();
+                        });
+                    }
+                }
+            })
+            
+            //event handler for rendering loaded tasks into the view
+            .bind("reset", function () {
                 view.renderTasks();
-	        });
-	        
-            this.bind("remove-item", function(hub){
-                view.collection.remove(hub);
             });
-
             
         return this;
     },
@@ -102,25 +125,24 @@ var TaskListView = View.extend({
         var hub = this.model,
             listTitle = hub.get("title"),
             view = this;
-            
+
         this.elem.html(tim("task-list", {listTitle: listTitle}));
         this.itemList = this.$("ul.item-list");
-        this.makeSortable();
-
-        return this;
+        
+        return this.makeSortable();
     },
 
-	showHub: function(hub, opts){
-		this.model = hub;
-		var taskIds;
+    showHub: function(hub, opts){
+        var taskIds;
+        this.model = hub;
 
         if (opts && "showTasksOfType" in opts) {
             switch(opts.showTasksOfType){
                 case "all":
                     taskIds = hub.get("tasks.new")
-    		                    .concat(hub.get("tasks.claimed"))
-    		                    .concat(hub.get("tasks.verified"))
-    		                    .concat(hub.get("tasks.done"));
+                        .concat(hub.get("tasks.claimed"))
+                        .concat(hub.get("tasks.verified"))
+                        .concat(hub.get("tasks.done"));
                     break;
 
                 case "onlyDone":
@@ -130,31 +152,34 @@ var TaskListView = View.extend({
                 case "onlyIncomplete":
                     taskIds = hub.get("tasks.new").concat(hub.get("tasks.claimed"));
                     break;
-
             }
-        }else{
+        }
+        else {
             taskIds = hub.get("tasks.new").concat(hub.get("tasks.claimed"));
         }
 
         this.collection = Tasket.getTasks(taskIds);
-        this._setupModelBindings();
-        this.render();
-        this.renderTasks();
+        
+        this._setupModelBindings()
+            .render()
+            .renderTasks();
 
-		return this;
-	},
-
-	toggleEdit: function(){
-		this._onTitleEdit();
-	},
+        // If no tasks yet on this list and the title has never been updated, then enter edit mode
+        if (!this.model.countTasks()){
+            this.enterEditMode();
+        }
+        
+        return this;
+    },
     
-    hideAddEditControls: function(){
-        // hide editing controls - used when viewing starred items
-        this.$("div.header ul.edit-item").add("#content a.new-item").hide();
+    hasDefaultTitle: function(){
+        return this.model.get("title") === app.lang.NEW_HUB;
     },
 
-    showAddEditControls: function(){
-        this.$("div.header ul.edit-item").add("#content a.new-item").show();
+    enterEditMode: function(){
+        // If the title has never been changed, then edit it.Otherwise, add a new item
+        return this.hasDefaultTitle() ?
+            this._onTitleEdit() : this._onNewItemClick();
     },
 
     makeSortable: function () {
@@ -163,7 +188,6 @@ var TaskListView = View.extend({
             axis: "y",
             update: this._onSort
         });
-
         return this;
     },
 
@@ -179,6 +203,7 @@ var TaskListView = View.extend({
             });
 
         hub.set({"tasks.order": ids}).save();
+        return this;
     },
 
     /*
@@ -194,7 +219,8 @@ var TaskListView = View.extend({
             itemList = this.itemList,
             taskView;
             
-		this.itemList.empty();
+        this.itemList.empty();
+        
         this.collection.each(function (task) {
             taskView = new TaskView({model: task, collection: view.collection});
             view.taskViews[task.cid] = taskView;
@@ -206,6 +232,8 @@ var TaskListView = View.extend({
                 taskView.makeEditable();
             }
         });
+        
+        return this;
     },
 
    /*
@@ -247,89 +275,99 @@ var TaskListView = View.extend({
     
     // Triggered by a model change:title event
     _onModelChangeTitle: function(task){
-        this._resetTitle(task.get("title"));
+        return this._resetTitle(task.get("title"));
     },
-	
+    
     _onTitleEdit: function (event) {
-        var listTitle = this.previousTitle =  this.$("div.header h1 a").text(),
+        var listTitle = this.previousTitle = this.$("div.header h1 a").text(),
             html = jQuery(tim("title-edit", {placeholder: app.lang.NEW_HUB})),
-            headingWidth = this.$("div.header h1 a").width();
+            headingWidth = this.$("div.header h1 a").width(),
+            inputElem;
 
         this.$("div.header").addClass("edit-mode");
         this.$("div.header h1").replaceWith(html);
-        this.$("div.header input").val(listTitle).putCursorAtEnd();
-		if (event) {
-			event.preventDefault();
-		}
+        inputElem = this.$("div.header input").val(listTitle).focus();
+        
+        if (this.hasDefaultTitle()){
+            inputElem.select();
+        }
+        else {
+            inputElem.putCursorAtEnd();
+        }
         
         // adjust title width based on input
         this.$("div.header input").css("width", headingWidth+10+"px");
-    },
-
-    _onTitleDelete: function (event) {
-        if(confirm("Remove this list and all assigned tasks?")){
-            // instead of this.model.destroy(); we use archive due to limits set by the API
-            // (unable to delete hubs that have completed items, only archive)
-            this.model.archive();
+        
+        if (event) {
+            event.preventDefault();
         }
+        return this;
     },
     
     _onTitleEditSave: function (event) {
         var newTitle = this.$("div.header input").val();
-        if (newTitle === this.model.get("title")) {
-            this._resetTitle(newTitle);
-            return;
-        };
 
         if (_.isEmpty(newTitle)) {
             newTitle = app.lang.EMPTY_HUB;
         }
-        this._saveTitle(newTitle);
-        event.preventDefault();
+        
+        if (newTitle === this.model.get("title")) {
+            this._resetTitle(newTitle);
+        }
+        else {
+            this._saveTitle(newTitle);
+        }
+            
+        // If the list title has been edited, and no tasks exist on the list, then add a new task
+        if (!this.model.countTasks()){
+            this._onNewItemClick();
+        }
+        
+        if (event){
+            event.preventDefault();
+            event.stopPropagation();
+        }
+        return this;
     },
 
     _onTitleEditCancel: function (event) {
-        this._resetTitle(this.previousTitle);
         event.preventDefault();
+        return this._resetTitle(this.previousTitle);
+    },
+
+    _onTitleDelete: function (event) {
+        var hub;
+    
+        if (confirm("Remove this list and all assigned tasks?")){
+            hub = this.model;
+            
+            // If the hub has active tasks, then archive rather than deleting
+            if (hub.canDelete()){
+                hub.destroy();
+            }
+            else {
+                hub.archive();
+            }
+        }
+        return this;
     },
 
     _saveTitle: function (title) {
         this.model.set({title: title});
         this.model.save();
-		if (this.model.isNew()) {
-			this.trigger("create-hub", this.model);
-		} else {
-			this.trigger("update-hub", this.model);
-		}
+        
+        if (this.model.isNew()) {
+            app.controller.createHub(this.model);
+        }
+        
+        return this;
     },
 
     _onKeypressTitle: function (event) {
-        var newTitle = jQuery(event.target).val(),
-            newCharCount = newTitle.length,
-            previousCharCount = jQuery(event.target).data("charCount"),
-            width = jQuery(event.target).width();
-
-        if (_.isEmpty(newTitle)) {
-            newTitle = app.lang.EMPTY_HUB;
-        }
-        
-        // adjust width of input box if we've got a new character, 
-        // and if the string length is longer now than it has been previously 
-        if (!previousCharCount || newCharCount > previousCharCount) {
-            this.$("div.header input").css("width", width+10+"px");
-            jQuery(event.target).data("charCount", newCharCount);
-        }
-
-        // Return and tab keys
         if (_.include([13, 9], event.which)) {
-            var newTitle = this.$("div.header input").val();
-            if (newTitle === this.model.get("title")) {
-                this._resetTitle(newTitle);
-                return;
-            }
-            
-            this._saveTitle(newTitle);
+            this._onTitleEditSave();
         }
+        return this;
     },
 
     _resetTitle: function (title) {
@@ -337,21 +375,24 @@ var TaskListView = View.extend({
             title = app.lang.EMPTY_HUB;
         }
 
-        this.$("div.header input").replaceWith(
+        this.$("div.header input, div.header h1").replaceWith(
             jQuery("<h1><a href='#'>"+title+"</a></h1>")
         );
         this.$("div.header .cancel, div.header .save").remove();
-        this.$("div.header").removeClass("edit-mode");        
+        this.$("div.header").removeClass("edit-mode");
+        return this;      
     },
 
     _onTitleMouseover: function (event) {
         this.$("div.header").addClass("hover");
         event.preventDefault();
+        return this;
     },
 
     _onTitleMouseout: function (event) {
         this.$("div.header").removeClass("hover");
         event.preventDefault();
+        return this;
     },
     
     /*
@@ -360,6 +401,7 @@ var TaskListView = View.extend({
     _onNewItemClick: function (event) {
         // If there is already a new item that's been created, then save it
         if (this.newTaskView) {
+            this.newTaskView = null;
             this.$("a.save").click();
             return false;
         }
@@ -369,31 +411,51 @@ var TaskListView = View.extend({
             this.editedTaskView.reset();
             this.editedTaskView = null;
         }
+        
         this.createTask();
         
-        event.preventDefault();
+        if (event){
+            event.preventDefault();
+            event.stopPropagation();
+        }
         return this;
     },
 
     /*
-    * Triggers the "update-item" event and expands a new insert item input if 
-    * the task is new.
+    * Expands a new insert item input ifthe task is new.
     *
     * task        - An instance of the Task model.
     * description - The todo item description.
     */
     _saveNewItem: function (task, description) {
-        this.newTaskView = null;
+        if (task.isNew()) {
+            this._onNewItemClick();
+        }
+        return this.updateItem(task, {description: description});
+    },
+    
+    updateItem: function(task, attrValues){
+        var taskListView = this,
+            request;
+            
+        // Set a default description
+        if ("description" in attrValues && _.isEmpty(attrValues.description)) {
+            attrValues.description = app.lang.EMPTY_TASK;
+        }
+        
+        request = task.save(attrValues);
         
         if (task.isNew()) {
-            this.$("a.new-item").click();
+            request.success(function () {
+                taskListView.model.addTask(task);
+            });
         }
-        this.trigger("update-item", task, {description: description});
+        return this;
     },
     
     createTask: function(){
         var newTask = new Task({
-            hub: app.selectedHub.id,
+            hub: this.model.id,
             owner: app.currentUser.id,
             estimate: Tasket.settings.TASK_ESTIMATE_MAX
         });
@@ -439,6 +501,7 @@ var TaskListView = View.extend({
         }
         
         event.preventDefault();
+        return this;
     },
 
     // a click on the item title will find the edit icon & fire that control
@@ -450,7 +513,7 @@ var TaskListView = View.extend({
 
             this._onControlAction(e);
         };
-        
+        return this;
     },
     
    /**
@@ -463,7 +526,7 @@ var TaskListView = View.extend({
     _onDelete: function (cid, target) {
         var taskView = this.taskViews[cid];
         taskView.remove();
-        this.trigger("remove-item", taskView.model);
+        return this.collection.remove(taskView.model);
     },
 
    /**
@@ -487,12 +550,12 @@ var TaskListView = View.extend({
             this.editedTaskView = taskView;
             taskView.makeEditable();
         }
-        
+        return this;
     },
 
     // double click the title to envoke the title edit
     _onTitleEditClick: function(e) {
-        this._onTitleEdit(e);
+        return this._onTitleEdit(e);
     },
     
    /*
@@ -508,6 +571,8 @@ var TaskListView = View.extend({
 
         task.state(newState, currentUserId, forceMode)
             .save();
+            
+        return this;
     },
 
    /*
@@ -522,6 +587,8 @@ var TaskListView = View.extend({
         else {
             task.star();
         }
+        
+        return this;
     },
 
     /*
@@ -534,17 +601,23 @@ var TaskListView = View.extend({
 
         if (taskView.model.isNew()) {
             taskView.remove();
-            this.trigger("remove-item", taskView.model);
-        } else {
+            this.collection.remove(taskView.model);
+        }
+        
+        else {
             taskView.reset();
         }
 
         this.editedTaskView = null;
+        
         event.preventDefault();
+        event.stopPropagation();
+        return this;
     },
 
     cancelEdit: function(){
         this.$("a.cancel").click();
+        return this;
     },
 
     /*
@@ -553,8 +626,8 @@ var TaskListView = View.extend({
     _onKeypress: function (event) {    
         if (_.include([9,13], event.which)) {
             this._onSave(event);
-            // TODO: on edit, and press RETURN -> go on to edit next item down
         }
+        return this;
     },
 
     _onSave: function (event) {
@@ -568,6 +641,9 @@ var TaskListView = View.extend({
         else {
             this._onCancel(event);
         }
+        
         event.preventDefault();
+        event.stopPropagation();
+        return this;
     }
 });

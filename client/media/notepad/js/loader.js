@@ -10,7 +10,7 @@
     
     var windowSearch = window.location.search,
         // Detect debug mode
-        debug = /^\?debug[\W\/]?/.test(windowSearch),
+        debug = /^\?(?:debug|dev)[\W\/]?/.test(windowSearch),
         jsLibPath   = "lib/js/",
         jsCorePath  = "tank/js/",
         jsAppPath   = "notepad/js/";
@@ -23,7 +23,7 @@
 
     // DEVELOPMENT/ DEBUG MODE
     else {
-        window.tasketDebug = true;
+        window.tasketDebug = window.tasketDev = true;
         
         // Console logging
         window.O = function(){
@@ -87,6 +87,11 @@
 
             // Callback function once all are loaded
             function(allLoaded){
+                // Dev mode
+                app.bodyElem.addClass("dev");
+                jQuery("#pageheader h1")
+                    .append("<span style='background-color:#f99; color:white; font-family:monospace; font-size:0.9em; margin-left:0.68em; top:-0.2em; position:relative;'>Dev</span>");
+                
                 if (!allLoaded){
                     throw "Scripts not fully loaded";
                 }

@@ -24,6 +24,7 @@ var TaskView = View.extend({
             .bind("remove", view.remove)
             .bind("change:description", function (task, description) {
                 view.$("p").text(description);
+                view.elem.removeClass("editing");
             })
             .bind("change:state", function (task, state) {
                 if (_.include(["verified", "done"], state)) {
@@ -67,6 +68,18 @@ var TaskView = View.extend({
 
         return this;
     },
+    
+    hasUnsavedDescription: function(){
+        var inputElem = this.$("input"),
+            desc;
+            
+        if (!inputElem.length){
+            return false;
+        }
+        
+        desc = inputElem.val();
+        return desc !== "" && desc !== this.model.get("description");
+    },
 
    /*
     * Allows in place editing of the task description
@@ -74,15 +87,17 @@ var TaskView = View.extend({
     makeEditable: function () {
         var html  = jQuery(tim("task-edit", {placeholder: app.lang.NEW_TASK})),
             paragraph = this.$("p"),
-            description = this.previousDescription = this.model.get("description");
+            description = this.previousDescription = this.model.get("description"),
+            inputElem;
 
-        paragraph.empty().append(html).addClass("editing");
+        this.elem.addClass("editing");
+        paragraph.empty().append(html);
+        inputElem = paragraph.find("input");
 
         if (description) {
-            paragraph.find("input").val(description);
+            inputElem.val(description);
         }
-
-        paragraph.find("input").putCursorAtEnd();
+        inputElem.putCursorAtEnd();
         
         return this;
     },
@@ -96,7 +111,8 @@ var TaskView = View.extend({
             this.collection.remove(this.model);
         }
         else {
-            this.$("p").text(this.previousDescription).removeClass("editing");
+            this.elem.removeClass("editing");
+            this.$("p").text(this.previousDescription);
         }
         return this;
     },
