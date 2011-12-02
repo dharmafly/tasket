@@ -92,18 +92,6 @@ var Hub = Model.extend({
                 "estimates.new": currentEstimates + task.get("estimate")
             });
         }
-        
-        return this;
-    },
-    
-    forEachTask: function (iterator){ // iterator is passed the taskId
-        var hub = this;
-        _.each(Task.states, function(state){
-            var tasks = hub.get("tasks." + state);
-            if (tasks) {
-                _.each(tasks, iterator);
-            }
-        });
         return this;
     },
 
@@ -145,8 +133,18 @@ var Hub = Model.extend({
             data["estimates." + previous] = this.get("estimates." + previous) - estimate;
             data["estimates." + current]  = this.get("estimates." + current)  + estimate;
         }
-
         return this.set(data);
+    },
+    
+    forEachTask: function (iterator){ // iterator is passed the taskId
+        var hub = this;
+        _.each(Task.states, function(state){
+            var tasks = hub.get("tasks." + state);
+            if (tasks) {
+                _.each(tasks, iterator);
+            }
+        });
+        return this;
     },
 
     estimate: function () {

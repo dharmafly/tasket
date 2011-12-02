@@ -7,18 +7,8 @@ var HubView = View.extend({
     
     initialize: function (options) {
         var view = this;
-        this.elem = jQuery(this.el);
-
-        this.elem.attr("data-id", this.model.id);
-
-        this.model
-            .bind("remove", this.remove)
-            .bind("change", function (hub) {
-                if (hub.hasChanged("title")) {
-                    view.$(".title").text(hub.get("title"));
-                }
-                view.$(".count").text(hub.countNewTasks());                
-            });
+        this.elem = jQuery(this.el)
+            .attr("data-id", this.model.id);
     },
 
     select: function(){

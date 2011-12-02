@@ -110,7 +110,7 @@ _.extend(Tasket, Backbone.Events, {
             wrappedModel = this.getModels(collection, [ids]);
             model = wrappedModel.at(0);
             
-            if (!model.isComplete()){
+            if (model && !model.isComplete()){
                 // Model successfully retrieved
                 wrappedModel.bind("reset", function onRefresh(){
                     wrappedModel.unbind("reset", onRefresh);
@@ -119,8 +119,7 @@ _.extend(Tasket, Backbone.Events, {
                 
                 // If not found on server, the "notfound" event will fire
             }
-            
-            return model;
+            return model || null;
         }
         
         // COLLECTION OF MODELS
@@ -165,7 +164,8 @@ _.extend(Tasket, Backbone.Events, {
                         model.trigger("notfound", model); // trigger custom "notfound" event
 
                         // Cache the failed model id.
-                        Tasket.failed[model.type].push(model.id);
+                        // TODO: TEMP: not caching model in `failed` collection, as a model with the same `id` may be assigned by Sqlite db (and other db?)
+                        // Tasket.failed[model.type].push(model.id);
                     }
                 });
 
@@ -394,6 +394,24 @@ _.extend(Tasket, Backbone.Events, {
         return Tasket._addRemoveHubOnUser(hub, isArchived, ["hubs.archived"]);
     },
     
+    _onTaskAdded: function(task){
+        var hub = Tasket.hubs.get(task.get("hub"));
+        
+        if (hub){
+            hub.addTask(task);
+        }
+        return this;
+    },
+    
+    _onTaskRemoved: function(task){
+        var hub = Tasket.hubs.get(task.get("hub"));
+        
+        if (hub){
+            hub.removeTask(task);
+        }
+        return this;
+    },
+    
     initialize: function(){
         // Extend Tasket.settings with defaultSettings
         _.defaults(this.settings, this.defaultSettings);
@@ -406,10 +424,11 @@ _.extend(Tasket, Backbone.Events, {
         // Update user's owned hubs on hub add
         this.bind("hub:add", this._onHubAdded)
             .bind("hub:remove", this._onHubRemoved)
-            .bind("hub:change:archived", this._onHubChangeArchived);
+            .bind("hub:change:archived", this._onHubChangeArchived)
+            .bind("task:add", this._onTaskAdded)
+            .bind("task:remove", this._onTaskRemoved);
             
         // TODO: move user.task states here
-        // TODO: on remove task, also remove from its hub's model
     }
 });
 

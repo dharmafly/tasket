@@ -24,22 +24,22 @@ var TaskView = View.extend({
             .bind("remove", view.remove)
             .bind("change:description", function (task, description) {
                 view.$("p").text(description);
-                view.elem.removeClass("editing");
+                view.removeClass("editing");
             })
             .bind("change:state", function (task, state) {
                 if (_.include(["verified", "done"], state)) {
-                    view.elem.addClass("completed");
+                    view.addClass("completed");
                 }
                 else {
-                    view.elem.removeClass("completed");
+                    view.removeClass("completed");
                 }
             })
             .bind("change:starred", function (task, isStarred) {
                 if (isStarred){
-                    view.elem.addClass("star");
+                    view.addClass("star");
                 }
                 else {
-                    view.elem.removeClass("star");
+                    view.removeClass("star");
                 }
             });
     },
@@ -55,15 +55,15 @@ var TaskView = View.extend({
 
         // Make action controllers invisible if the task has not been saved yet.
         if (!this.model.id) {
-            this.elem.addClass("unsaved");
+            this.addClass("unsaved");
         }
 
         if (starred) {
-            this.elem.addClass("star");
+            this.addClass("star");
         }
 
         if (done) {
-            this.elem.addClass("completed");
+            this.addClass("completed");
         }
 
         return this;
@@ -86,13 +86,13 @@ var TaskView = View.extend({
     */
     makeEditable: function () {
         var html  = jQuery(tim("task-edit", {placeholder: app.lang.NEW_TASK})),
-            paragraph = this.$("p"),
+            paragraphElem = this.$("p"),
             description = this.previousDescription = this.model.get("description"),
             inputElem;
 
-        this.elem.addClass("editing");
-        paragraph.empty().append(html);
-        inputElem = paragraph.find("input");
+        this.addClass("editing");
+        paragraphElem.empty().append(html);
+        inputElem = paragraphElem.find("input");
 
         if (description) {
             inputElem.val(description);
@@ -107,12 +107,16 @@ var TaskView = View.extend({
     *
     */
     reset: function () {
+        var paragraphElem;
+    
         if (this.model.isNew()) {
             this.collection.remove(this.model);
         }
         else {
-            this.elem.removeClass("editing");
-            this.$("p").text(this.previousDescription);
+            paragraphElem = this.$("p")
+                .text(this.previousDescription);
+            
+            this.removeClass("editing");
         }
         return this;
     },
@@ -121,15 +125,15 @@ var TaskView = View.extend({
     * Handles the "change:id" event emitted by the view's model
     */
     showActionControls: function () {
-        this.elem.removeClass("unsaved");
+        this.removeClass("unsaved");
         return this;
     },
 
     _onMouseover: function () {
-        this.elem.addClass("hover");
+        this.addClass("hover");
     },
 
     _onMouseout: function () {
-        this.elem.removeClass("hover");
+        this.removeClass("hover");
     }
 });

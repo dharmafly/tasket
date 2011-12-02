@@ -1,15 +1,14 @@
 var TaskListView = View.extend({
     el: "section",
+    
+    // Because the view has an id of "content", it will replace the existing #content element
     id: "content",
     
     // Collection of taskView instances, organised by task.cid => taskView  
     taskViews: {},
 
     // Keep a reference to the currently edited task
-    editedTaskView: null,
-    
-    // Keep a reference to the unsaved task view,
-    newTaskView: null,
+    activeTask: null,
 
     // Caches the hub title so it can be restored when cancelling an edit.
     previousTitle: null,
@@ -21,93 +20,76 @@ var TaskListView = View.extend({
         "click div.header .save": "_onTitleEditSave",
         "mouseover div.header h1 a": "_onTitleMouseover",
         "mouseout div.header h1 a": "_onTitleMouseout",
-        "keypress div.header input": "_onKeypressTitle",
-        "click a.new-item": "_onNewItemClick",
+        "keyup div.header input": "_onKeyupTitle",
+        "click a.new-item": "_onCreate",
         "click ul.item-list ul.edit-item li a": "_onControlAction",
         "click li p a.cancel": "_onCancel",
         "click li p a.save": "_onSave",
-        "keypress li p input": "_onKeypress",
+        "keyup li p input": "_onKeyup",
         "click div.header h1": "_onTitleEditClick",
-        "click ul.item-list li p": "_onItemEditClick"
+        "click ul.item-list li p": "_onTaskEditClick"
         // "blur input[type='text']": "_onTextInputBlur"
     },
 
     constructor: function TaskListView () {
         // Display object name in browser console
         Backbone.View.prototype.constructor.apply(this, arguments);
-        
     },
 
     initialize: function (options) {
         this.elem = jQuery(this.el);
+        this.mainContentElem = jQuery("#main");
 
         _.bindAll(this,
             "_onModelChangeTitle",
             "_onControlAction",
             "_onCancel",
-            "_onKeypress",
+            "_onKeyup",
             "_onSave",
-            "_onSort"
+            "saveTaskOrder",
+            "_tempRenderHubList"
         );
 
         if (this.model){
             this.showHub(this.model);
         }
     },
+    
+    // TODO: TEMP HACK - need to properly trigger methods in hubListView
+    _tempRenderHubList: _.debounce(function(){
+        app.controller.hubListView.renderHubs();
+    }, 250),
 
-    _setupModelBindings: function(){
+    _setupBindings: function(){
         var view = this;
-        this.mainContentElem = jQuery("#main");
-
+        
         this.model
             // Unbind first, in case we've displayed this hub before
             .unbind("change:title", this._onModelChangeTitle)
-            .bind("change:title", this._onModelChangeTitle);
+            .bind("change:title", this._onModelChangeTitle)
+            .unbind("change", this._tempRenderHubList)
+            .bind("change", this._tempRenderHubList);
 
         this.collection
-            // TODO: should these events be unbound first, in case of displaying multiple hubs?
+            // proxy to the view
+            .bind("all", function(){
+                view.trigger.apply(view, arguments);
+            })
+            
             // display the action controls once a task is saved
-            .bind("change:id", function (task, collection) {
+            .bind("change:id", function (task) {
                 if (task.get("hub") === view.model.id) {
-                    view.taskViews[task.cid].showActionControls();
+                    view.getTaskView(task).showActionControls();
                 }
             })
             
-            // Append new items to the list
-            .bind("add", function (task, collection) {
-                if (!Tasket.tasks.get(task.id)){
-                    Tasket.tasks.add(task);
-                }
-            
-                // TODO: don't renderTasks when not necessary
-                if (task.get("hub") === view.model.id) {
-                    view.renderTasks();
-                }
-            })
-            
-            .bind("remove", function(task, collection){
-                var request;
-                
+            .bind("remove", function(task){
                 if (!task.isNew() && Tasket.tasks.get(task.id)) {
-                    view.model.removeTask(task);
-                    
-                    // Remove from the server
-                    if (task.canDelete()){
-                        task.destroy();
-                    }
-                
-                    // Can't delete done tasks; need to change them to "new" first - see https://github.com/dharmafly/tasket/issues/426
-                    else {
-                        task.state("new", app.currentUser.id);
-                        request = task.save();
-                        request.success(function(){
-                            task.destroy();
-                        });
-                    }
+                    view.deleteTask(task);
                 }
             })
             
-            //event handler for rendering loaded tasks into the view
+            // event handler for rendering loaded tasks into the view
             .bind("reset", function () {
                 view.renderTasks();
             });
@@ -115,27 +97,57 @@ var TaskListView = View.extend({
         return this;
     },
 
-    /*
-    * Renders the view.
-    *
-    * Returns the view's element.
-    *
-    */
     render: function () {
         var hub = this.model,
-            listTitle = hub.get("title"),
-            view = this;
-
-        this.elem.html(tim("task-list", {listTitle: listTitle}));
-        this.itemList = this.$("ul.item-list");
+            listTitle = hub.get("title");
         
+        this.elem.html(tim("task-list", {listTitle: listTitle}))
+
+        // Create a list of tasks
+        this.taskListElem = this.$("ul.item-list");
+
         return this.makeSortable();
+    },
+
+    /*
+    * Appends one or several tasks items to the view.
+    * For each task, a new TaskView instance will be created and rendered.
+    * Populates the #taskViews array.
+    */
+    renderTasks: function () {
+        var view = this;
+
+        this.emptyTaskList();
+        this.collection
+            // Sort into order - TODO: why is this sort required to force the comparator?
+            .sort({silent:true})
+            // Render each taskView
+            .each(function (task) {
+                var taskView = view.getTaskView(task) || view.createTaskView(task);
+                view.appendTaskView(taskView.render());
+            });
+        
+        return this;
+    },
+    
+    getTaskView: function(task){
+        return this.taskViews[task.cid];
+    },
+    
+    createTaskView: function(task){
+        return this.taskViews[task.cid] = new TaskView({model: task, collection: this.collection});
+    },
+    
+    appendTaskView: function(taskView){
+        this.taskListElem.append(taskView.el);
+        return this;
     },
 
     showHub: function(hub, opts){
         var taskIds;
+        
         this.model = hub;
-
+        
         if (opts && "showTasksOfType" in opts) {
             switch(opts.showTasksOfType){
                 case "all":
@@ -158,9 +170,14 @@ var TaskListView = View.extend({
             taskIds = hub.get("tasks.new").concat(hub.get("tasks.claimed"));
         }
 
+        // A collection of ordered tasks
         this.collection = Tasket.getTasks(taskIds);
+        this.collection.comparator = function(task){
+            var orderedIds = hub.get("tasks.order");
+            return _.indexOf(orderedIds, task.id);
+        };
         
-        this._setupModelBindings()
+        this._setupBindings()
             .render()
             .renderTasks();
 
@@ -179,23 +196,14 @@ var TaskListView = View.extend({
     enterEditMode: function(){
         // If the title has never been changed, then edit it.Otherwise, add a new item
         return this.hasDefaultTitle() ?
-            this._onTitleEdit() : this._onNewItemClick();
+            this._onTitleEdit() : this.createTask();
     },
-
-    makeSortable: function () {
-        this.itemList.sortable({
-            handle: ".move",
-            axis: "y",
-            update: this._onSort
-        });
-        return this;
-    },
-
-    _onSort: function (event) {
+    
+    saveTaskOrder: function(){
         var view = this,
             hub = this.model,
             tasks = this.collection,
-            ids = jQuery.map(this.itemList.children(), function (item) {
+            ids = jQuery.map(this.taskListElem.children(), function (item) {
                 var cid = view.getCidFromElement(item),
                     task = tasks.getByCid(cid);
 
@@ -205,88 +213,26 @@ var TaskListView = View.extend({
         hub.set({"tasks.order": ids}).save();
         return this;
     },
-
-    /*
-    * Public: Appends one or several tasks items to the view.
-    *
-    * For each task provided a new TaskView instance will be created and rendered. This
-    * view will keep track or appended instances by appending them in the #taskViews array.
-    *
-    * tasks - a single or an array of task model instances.
-    */
-    renderTasks: function () {
-        var view = this,
-            itemList = this.itemList,
-            taskView;
-            
-        this.itemList.empty();
-        
-        this.collection.each(function (task) {
-            taskView = new TaskView({model: task, collection: view.collection});
-            view.taskViews[task.cid] = taskView;
-            itemList.append(taskView.render().el);
-
-            // new item
-            if (task.isNew()) {
-                view.newTaskView = taskView;
-                taskView.makeEditable();
-            }
-        });
-        
-        return this;
-    },
-
-   /*
-   * Orders the task collection according to the sequence made
-   * explicit in the hub "tasks.order" attribute.
-   *
-   *
-   * tasks - a task collection.
-   *
-   * Returns an array of sorted tasks.
-   *
-   */
-    _orderTasks: function (tasks) {
-        var orderedIds = this.model.get("tasks.order"),
-            output = [];
-
-        if (!_.isArray(orderedIds)) {
-            return tasks;
-        }
-        
-        _.each(orderedIds, function (id) {
-            var task = _.detect(tasks, function (aTask){
-                return aTask.id === id;
-            });
-
-            if (task) {
-                output.push(task);
-            }
-        });
-
-        _.each(tasks, function (task) {
-            if (!_.include(orderedIds, task.id)) {
-                output.push(task);
-            }
-        });
-
-        return output;
-    },
     
     // Triggered by a model change:title event
-    _onModelChangeTitle: function(task){
-        return this._resetTitle(task.get("title"));
+    _onModelChangeTitle: function(task, newTitle){
+        return this._resetTitle(newTitle);
     },
     
     _onTitleEdit: function (event) {
-        var listTitle = this.previousTitle = this.$("div.header h1 a").text(),
+        var headerElem = this.$("div.header"),
+            h1Elem = headerElem.find("h1"),
+            titleElem = h1Elem.find("a"),
+            headingWidth = titleElem.width(),
+            listTitle = this.previousTitle = titleElem.text(),
             html = jQuery(tim("title-edit", {placeholder: app.lang.NEW_HUB})),
-            headingWidth = this.$("div.header h1 a").width(),
             inputElem;
 
-        this.$("div.header").addClass("edit-mode");
-        this.$("div.header h1").replaceWith(html);
-        inputElem = this.$("div.header input").val(listTitle).focus();
+        headerElem.addClass("edit-mode");
+        h1Elem.replaceWith(html);
+        inputElem = headerElem.find("input")
+            .val(listTitle)
+            .focus();
         
         if (this.hasDefaultTitle()){
             inputElem.select();
@@ -296,7 +242,7 @@ var TaskListView = View.extend({
         }
         
         // adjust title width based on input
-        this.$("div.header input").css("width", headingWidth+10+"px");
+        inputElem.css("width", headingWidth+10+"px");
         
         if (event) {
             event.preventDefault();
@@ -304,7 +250,7 @@ var TaskListView = View.extend({
         return this;
     },
     
-    _onTitleEditSave: function (event) {
+    _onTitleEditSave: function () {
         var newTitle = this.$("div.header input").val();
 
         if (_.isEmpty(newTitle)) {
@@ -320,19 +266,9 @@ var TaskListView = View.extend({
             
         // If the list title has been edited, and no tasks exist on the list, then add a new task
         if (!this.model.countTasks()){
-            this._onNewItemClick();
+            this.createTask();
         }
-        
-        if (event){
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        return this;
-    },
-
-    _onTitleEditCancel: function (event) {
-        event.preventDefault();
-        return this._resetTitle(this.previousTitle);
+        return false;
     },
 
     _onTitleDelete: function (event) {
@@ -353,21 +289,30 @@ var TaskListView = View.extend({
     },
 
     _saveTitle: function (title) {
-        this.model.set({title: title});
-        this.model.save();
-        
-        if (this.model.isNew()) {
-            app.controller.createHub(this.model);
-        }
-        
+        this.model.save({title: title});
         return this;
     },
 
-    _onKeypressTitle: function (event) {
-        if (_.include([13, 9], event.which)) {
+    _onTitleEditCancel: function () {
+        this._resetTitle(this.previousTitle);
+        return false;
+    },
+
+    _onKeyupTitle: function (event) {
+        var keyCode = event.keyCode ?
+            event.keyCode : event.which;
+        
+        // RETURN & TAB keys
+        // TODO: TAB (9) seems non-functional [Chrome 16]
+        if (keyCode === 13 || keyCode === 9){
             this._onTitleEditSave();
+            return false;
         }
-        return this;
+        // ESc - to exit editing or creating a task
+        else if (keyCode === 27){
+            this._onTitleEditCancel();
+            return false;
+        }
     },
 
     _resetTitle: function (title) {
@@ -383,86 +328,144 @@ var TaskListView = View.extend({
         return this;      
     },
 
-    _onTitleMouseover: function (event) {
-        this.$("div.header").addClass("hover");
-        event.preventDefault();
-        return this;
-    },
-
-    _onTitleMouseout: function (event) {
-        this.$("div.header").removeClass("hover");
-        event.preventDefault();
+    makeSortable: function () {
+        this.taskListElem.sortable({
+            handle: ".move",
+            axis: "y",
+            update: this.saveTaskOrder
+        });
         return this;
     },
     
-    /*
-    * Handles the click event fired by the new item link
-    */
-    _onNewItemClick: function (event) {
-        // If there is already a new item that's been created, then save it
-        if (this.newTaskView) {
-            this.newTaskView = null;
-            this.$("a.save").click();
-            return false;
-        }
-
-        // If another item is being edited, then reset it.
-        if (this.editedTaskView) {
-            this.editedTaskView.reset();
-            this.editedTaskView = null;
-        }
-        
-        this.createTask();
-        
-        if (event){
-            event.preventDefault();
-            event.stopPropagation();
-        }
-        return this;
-    },
-
-    /*
-    * Expands a new insert item input ifthe task is new.
-    *
-    * task        - An instance of the Task model.
-    * description - The todo item description.
-    */
-    _saveNewItem: function (task, description) {
-        if (task.isNew()) {
-            this._onNewItemClick();
-        }
-        return this.updateItem(task, {description: description});
+    activeTaskView: function(){
+        return this.activeTask && this.taskViews[this.activeTask.cid];
     },
     
-    updateItem: function(task, attrValues){
-        var taskListView = this,
-            request;
+    /////
+    
+    // EDITING
+    
+    emptyTaskList: function(){
+        this.taskListElem.empty();
+        return this;
+    },
+    
+    taskHasDefaultTitle: function(task){
+        return task.get("title") === app.lang.NEW_TASK;
+    },
+    
+    createTask: function(){
+        var hubId = this.model.id,
+            task = new Task({
+                hub: hubId,
+                owner: app.currentUser.id
+            }),
+            taskView = this.createTaskView(task).render();
+        
+        this.collection.add(task);
+        this.appendTaskView(taskView.makeEditable());
+        
+        // Save active task, then cache and edit the new one
+        return this.editTask(task);
+    },
+    
+    inTaskEditMode: function(){
+        return !!this.activeTask;
+    },
+    
+    editTask: function(task){
+        if (task){
+            // Save active task
+            this.saveTask(this.activeTask);
             
-        // Set a default description
-        if ("description" in attrValues && _.isEmpty(attrValues.description)) {
-            attrValues.description = app.lang.EMPTY_TASK;
+            // Cache new active task
+            this.activeTask = task;
+            
+            // Make editable
+            this.getTaskView(task)
+                .makeEditable();
         }
+        return this;
+    },
+
+    cancelEdit: function(task){
+        var taskView;
+            
+        if (task){
+            taskView = this.getTaskView(task);
+            
+            if (task.isNew()){
+                // Remove from view
+                taskView.remove();
+                
+                // Remove from collection
+                this.collection.remove(task);
+            }
+            else {
+                // Reset state
+                taskView.reset();
+            }
+            this.activeTask = null;
+        }
+        return this;
+    },
+    
+    saveTask: function(task, createFollowOn){
+        var taskView, oldDesc, newDesc, hub, request;
         
-        request = task.save(attrValues);
-        
-        if (task.isNew()) {
-            request.success(function () {
-                taskListView.model.addTask(task);
+        if (task){
+            taskView = this.getTaskView(task);
+            oldDesc = task.get("description");
+            newDesc = taskView.$("input").val();
+            
+            if (!newDesc || oldDesc === newDesc){
+                // No changes; cancel save
+                this.cancelEdit(this.activeTask);
+            }
+            else {
+                this.updateTask(task, {description: newDesc});
+                
+                // If a new task, then create another
+                if (createFollowOn && task.isNew()){
+                    this.activeTask = null;
+                    this.createTask();
+                }
+            }
+        }
+        return this;
+    },
+    
+    updateTask: function(task, attr){
+        if (task){
+            // Set a default description
+            if ("description" in attr && _.isEmpty(attr.description)) {
+                attr.description = app.lang.NEW_TASK;
+            }
+            task.save(attr);
+        }
+        return this;
+    },
+    
+    deleteTask: function(task){
+        var request;
+    
+        // Remove from the server
+        if (task.canDelete()){
+            task.destroy();
+        }
+    
+        // Can't delete done tasks; need to change them to "new" first - see https://github.com/dharmafly/tasket/issues/426
+        else {
+            task.state("new", app.currentUser.id);
+            request = task.save();
+            request.success(function(){
+                task.destroy();
             });
         }
         return this;
     },
     
-    createTask: function(){
-        var newTask = new Task({
-            hub: this.model.id,
-            owner: app.currentUser.id,
-            estimate: Tasket.settings.TASK_ESTIMATE_MAX
-        });
-
-        this.collection.add(newTask);
-        return this;
-    },
+    /////
     
     // Get a Backbone model's clientId from a DOM element in the view
     getCidFromElement: function(el){
@@ -473,13 +476,90 @@ var TaskListView = View.extend({
     },
 
     /*
-    *
     * Returns the taskView instance associated to an event target element
     * element - An event target element
     */
     _getElementView: function (el) {
         return this.taskViews[this.getCidFromElement(el)];
     },
+    
+    /////
+    
+    // EDIT HANDLERS
+
+    _onSave: function() {
+        this.saveTask(this.activeTask, true);
+        return false;
+    },
+
+    _onCancel: function() {
+        this.cancelEdit(this.activeTask);
+        return false;
+    },
+    
+    _onKeyup: function (event) {
+        var keyCode = event.keyCode ?
+            event.keyCode : event.which;
+        
+        // RETURN & TAB keys
+        // TODO: TAB (9) seems non-functional [Chrome 16]
+        if (keyCode === 13 || keyCode === 9){
+            this._onSave();
+            return false;
+        }
+        // ESc - to exit editing or creating a task
+        else if (keyCode === 27){
+            this.cancelEdit(this.activeTask);
+            return false;
+        }
+    },
+    
+    _onCreate: function(){
+        // Create a new task; if there is an unsaved task then save it first
+        if (!this.activeTask || this.getTaskView(this.activeTask).hasUnsavedDescription()){
+            this.createTask();
+        }
+        // If there is already a task being edited, and no content has been added, then toggle off editing
+        else {
+            this.cancelEdit(this.activeTask);
+        }
+        return false;
+    },
+    
+    /////
+    
+    // TITLE HANDLERS
+
+    // a click on the item title will find the edit icon & fire that control
+    _onTaskEditClick: function(event) {
+        var target = event.target;
+    
+        if (target.nodeName.toUpperCase() == "P") {
+            // re-assign the click target to be the edit icon
+            event.target = jQuery(target).parents("li").find("li.edit a")[0];
+            this._onControlAction(event);
+        };
+        return this;
+    },
+
+    // click the hub title to envoke the title edit
+    _onTitleEditClick: function(event){
+        return this._onTitleEdit(event);
+    },
+
+    _onTitleMouseover: function (event) {
+        this.$("div.header").addClass("hover");
+        return false;
+    },
+
+    _onTitleMouseout: function (event) {
+        this.$("div.header").removeClass("hover");
+        return false;
+    },
+    
+    /////
+    
+    // CONTROL BUTTON HANDLERS
 
     /*
     * Handles all action events delegated to the .item-list element on initialisation.
@@ -490,7 +570,7 @@ var TaskListView = View.extend({
             cid = this.getCidFromElement(el),
             parentClass = el.parentNode.className,
             action = parentClass && parentClass.split(" ")[0],
-            // find the appropriate view method
+            // find the appropriate view method - e.g. _onDelete
             methodName = action && "_on" + action[0].toUpperCase() + action.slice(1);
         
         if (methodName && this[methodName]) {
@@ -499,69 +579,18 @@ var TaskListView = View.extend({
         else {
             throw "taskListView._onControlAction: " + methodName + " not found";
         }
-        
-        event.preventDefault();
-        return this;
+        return false;
     },
 
-    // a click on the item title will find the edit icon & fire that control
-    _onItemEditClick: function(e) {
-        if (e.target.nodeName.toUpperCase() == "P") {
-            // re-assign the click target to be the edit icon
-            e.target = $(e.target).parents("li")
-                        .find("li.edit a").get(0);
-
-            this._onControlAction(e);
-        };
-        return this;
+    _onEdit: function (cid) {
+        this.editTask(this.collection.getByCid(cid));
     },
     
-   /**
-    * Handles the "delete" action.
-    * Triggers the "remove-item" event and passes along the cid of the selected task.
-    *
-    * cid    - The cid of a Task instance.
-    * target - The event target element (optional).
-    */
-    _onDelete: function (cid, target) {
-        var taskView = this.taskViews[cid];
-        taskView.remove();
-        return this.collection.remove(taskView.model);
-    },
-
-   /**
-    * Handles the "edit" action.
-    *
-    * cid - The cid of a Task instance.
-    *
-    * target - The event target element.
-    */
-    _onEdit: function (cid, target) {
-        var taskView = this.taskViews[cid];
-
-        // cancel all active edits
-        this.$("a.cancel").click();
-
-        // Do nothing if the user is already editing this same task.
-        if (this.editedTaskView && taskView === this.editedTaskVew ) {
-            return false;
-        }
-        else {
-            this.editedTaskView = taskView;
-            taskView.makeEditable();
-        }
-        return this;
-    },
-
-    // double click the title to envoke the title edit
-    _onTitleEditClick: function(e) {
-        return this._onTitleEdit(e);
+    _onDelete: function (cid) {
+        this.deleteTask(this.collection.getByCid(cid));
     },
     
-   /*
-    * Handles the _onTick action and triggers the "update-item" event passing along 'state:"done"' and 'claimedBy:<currentUserId>' as update values.
-    */
-    _onTick: function (cid, target) {
+    _onTick: function (cid) {
         var currentUserId = app.currentUser.id,
             task = this.collection.getByCid(cid),
             forceMode = true,
@@ -571,14 +600,9 @@ var TaskListView = View.extend({
 
         task.state(newState, currentUserId, forceMode)
             .save();
-            
-        return this;
     },
 
-   /*
-    * Handles the _onStar action
-    */
-    _onStar: function (cid, target) {
+    _onStar: function (cid) {
         var task = this.collection.getByCid(cid);
         
         if (task.get("starred.id")){
@@ -587,63 +611,5 @@ var TaskListView = View.extend({
         else {
             task.star();
         }
-        
-        return this;
-    },
-
-    /*
-    * Handles the cancel edit event.
-    *
-    */
-    _onCancel: function (event) {
-        var taskView = this._getElementView(event.target);
-        this.newTaskView = null;
-
-        if (taskView.model.isNew()) {
-            taskView.remove();
-            this.collection.remove(taskView.model);
-        }
-        
-        else {
-            taskView.reset();
-        }
-
-        this.editedTaskView = null;
-        
-        event.preventDefault();
-        event.stopPropagation();
-        return this;
-    },
-
-    cancelEdit: function(){
-        this.$("a.cancel").click();
-        return this;
-    },
-
-    /*
-    * Handles the onChange event on the editing input field.
-    */
-    _onKeypress: function (event) {    
-        if (_.include([9,13], event.which)) {
-            this._onSave(event);
-        }
-        return this;
-    },
-
-    _onSave: function (event) {
-        var taskView = this._getElementView(event.target),
-            description = taskView.$("input").val(),
-            task = taskView.model;
-            
-        if (description !== task.get("description")){
-            this._saveNewItem(task, description, event.target);
-        }
-        else {
-            this._onCancel(event);
-        }
-        
-        event.preventDefault();
-        event.stopPropagation();
-        return this;
     }
 });

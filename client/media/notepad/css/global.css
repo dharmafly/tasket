@@ -920,28 +920,28 @@ table {
     color:#3092C0;
   }
   
-  #content .item-list {
+  #content ul.item-list {
     clear: left;
   }
   
-    #content .item-list > li {
+    #content ul.item-list > li {
       border-bottom: 1px solid #ccc;
       position: relative;
       padding: 0 0 0 120px;
       line-height: 1.9em;
     }
     
-    #content .item-list > li:hover, #content .item-list > li.hover {
+    #content ul.item-list > li:hover, #content ul.item-list > li.hover {
       background-color: #fff;
       border-bottom: 2px solid #000;
       margin-bottom: -1px;
     }
     
-    #content .item-list > li.editing {
+    #content ul.item-list > li.editing {
         background-color: #ffc;
     }
     
-    #content .item-list p {
+    #content ul.item-list p {
       font-size: 1.5em;
       background: url(../images/sprite1.png) no-repeat 0 -84px;
       padding: 10px 0 10px 15px;
@@ -949,17 +949,17 @@ table {
       min-height: 1.3em;
     }
     
-    #content .item-list .completed p {
+    #content ul.item-list .completed p {
         color: #9b9b9b;
         background-position: 0 -184px;
         text-decoration: line-through;
-    }x
+    }
     
-    #content .item-list .completed.editing p {
+    #content ul.item-list .completed.editing p {
         text-decoration: none;
     }
 
-    #content .item-list input.task-edit,
+    #content ul.item-list input.task-edit,
     #content .header input.task-edit {
         padding: 0;
         margin: 0 15px -1px -1px;
@@ -984,8 +984,20 @@ table {
         border: 2px inset;
     }
     
-    #content .item-list .save,
-    #content .item-list .cancel,
+    /* TODO: EXPERIMENTAL: hide the Save / Cancel controls */
+    /*
+    body.hide-save-cancel #content .header .edit-item .edit,
+    body.hide-save-cancel #content .edit-item .edit
+    */
+    body.hide-save-cancel #content .header a.save,
+    body.hide-save-cancel #content .header a.cancel,
+    body.hide-save-cancel #content ul.item-list li.editing .save,
+    body.hide-save-cancel #content ul.item-list li.editing .cancel {
+        display:none;
+    }
+    
+    #content ul.item-list .save,
+    #content ul.item-list .cancel,
     #content .edit-mode .save,
     #content .edit-mode .cancel {
         float:left;
@@ -997,7 +1009,7 @@ table {
         float:left;
     }
     
-    #content .item-list a.cancel,
+    #content ul.item-list a.cancel,
     #content .header a.cancel {
         color: #6ab6da;
         text-decoration: none;
@@ -1005,7 +1017,7 @@ table {
         line-height:1.1;
     }
 
-    #content .item-list a.cancel:hover,
+    #content ul.item-list a.cancel:hover,
     #content .header a.cancel:hover {
         text-decoration:underline;
     }
@@ -1038,7 +1050,7 @@ table {
       }
       
       /* lists panel open */
-      #main.lists-open #content .item-list ul {
+      #main.lists-open #content ul.item-list ul {
           position: absolute;
           left: 0;
           right: 20%;
@@ -1146,7 +1158,7 @@ table {
         }
 
                 /* This should be placed after the rules handling hover item'control's over state */
-                #content .item-list li.unsaved .edit-item {
+                #content ul.item-list li.unsaved .edit-item {
                     visibility: hidden;
         }
         
@@ -1158,16 +1170,16 @@ table {
         visibility: hidden;
       }
       
-      #content .item-list > li:hover .edit-item .move,
-      #content .item-list > li:hover .edit-item .edit,
-      #content .item-list > li:hover .edit-item .delete,
+      #content ul.item-list > li:hover .edit-item .move,
+      #content ul.item-list > li:hover .edit-item .edit,
+      #content ul.item-list > li:hover .edit-item .delete,
       #content .header:hover .edit-item .edit,
       #content .header:hover .edit-item .delete,
 
       /* IE6 compatibility */
-      #content .item-list > li.hover .edit-item .move,
-      #content .item-list > li.hover .edit-item .edit,
-      #content .item-list > li.hover .edit-item .delete,
+      #content ul.item-list > li.hover .edit-item .move,
+      #content ul.item-list > li.hover .edit-item .edit,
+      #content ul.item-list > li.hover .edit-item .delete,
       #content .header.hover .edit-item .edit,
       #content .header.hover .edit-item .delete {
         visibility: visible;

@@ -15,61 +15,52 @@ var TaskController = Controller.extend({
         var controller = this;
 
         Controller.apply(this, arguments);
+        
+        _.bindAll(this,
+            "selectHub"
+        );
 
         // Set up views on login.
-        app.bind("change:currentUser", _.once(function (user) {
-            jQuery("body").addClass("loggedin");
-            controller.createHubList();
-            controller.createTaskList();
-        }))
+        app.bind("change:selectedHub", this.selectHub)
         
-        .bind("change:selectedHub", function (hub, opts) {
-            opts = opts || {};
-            
-            if ("showTasksOfType" in opts) {
-                app.cache.set("showTasksOfType", opts.showTasksOfType);
-            }
-            else{
-                opts.showTasksOfType = app.cache.get("showTasksOfType") ? app.cache.get("showTasksOfType") : "onlyIncomplete";
-            }
-            
-            if (app.currentUser) {
-                controller.navigate(hub.url());
-                controller.hubListView.selectHub(hub);
-                controller.taskListView.showHub(hub, opts);
-            };
-        });
+            // TODO: remove requirement for `once` method
+           .bind("change:currentUser", _.once(function (user) {
+                
+                app.bodyElem
+                    .addClass("loggedin")
+                    // TODO: EXPERIMENTAL Hide the save / cancel controls
+                    .addClass("hide-save-cancel");
+                
+                controller
+                    .createHubList()
+                    .createTaskList()
+                    .hubListView.render();
+            }));
         
         // keyboard shortcuts
         app.bodyElem
-            .bind("keyup", function(e){
-                var keyCode = e.keyCode ? e.keyCode : e.which,
-                    taskListView;
+            .bind("keyup", function(event){
+                var taskListView = controller.taskListView,
+                    keyCode;
                 
-                if (app.currentUser && controller.taskListView) {
-                    taskListView = controller.taskListView;
-                
-                    switch(keyCode){
-                        case 78:
-                            // "n" for new task
-                            if (!(taskListView.newTaskView || taskListView.editedTaskView)) {
-                                taskListView.createTask();
-                                e.preventDefault();
-                            };
-                            break;
-
-                        case 27:
-                            // escape out of editing/creating a task
-                            if (taskListView.newTaskView || taskListView.editedTaskView) {
-                                taskListView.cancelEdit();
-                                e.preventDefault();
-                            };
-                            break;
+                // Only respond when taskView is not in task edit mode
+                if (taskListView && !taskListView.inTaskEditMode() && app.currentUser) {
+                    keyCode = event.keyCode ?
+                        event.keyCode : event.which;
+                    
+                    // "n" or "N" for new task
+                    if (keyCode === 78 || keyCode === 110){
+                        taskListView.createTask();
+                        return false;
                     }
+                    
+                    // "t" or "T" for list title
+                    // TODO
                 }
             })
-            // Cancel the edit of a task, if the user clicks off an edited task
-            .bind("click", function(e){
+            
+            // If the user clicks off an edited task, then save the currently active task
+            .bind("click", function(event){
                 var taskListView = controller.taskListView,
                     taskView, taskElem;
                     
@@ -77,11 +68,14 @@ var TaskController = Controller.extend({
                     return;
                 }
                 
-                taskView = taskListView.newTaskView;
-                taskElem = taskView && taskView.elem;
+                taskView = taskListView.activeTaskView();
                 
-                if (taskElem && !taskElem.is(e.target) && !taskElem.has(e.target).length && !taskView.hasUnsavedDescription()){
-                    taskListView.cancelEdit();
+                if (taskView && taskView.hasUnsavedDescription()){
+                    taskElem = taskView.elem;
+                    
+                    if (taskElem && !taskElem.is(event.target) && !taskElem.has(event.target).length){
+                        taskListView.saveTask(taskView.model);
+                    }
                 }
             });
         
@@ -102,29 +96,94 @@ var TaskController = Controller.extend({
                     user.set({"stars.tasks": taskIds});
                 }
             })
+            
             // When a hub (i.e. a list of tasks) is deleted or archived, then show a different hub
             .bind("hub:remove", function(hub){
-                var selectedHub = app.selectedHub;
+                var selectedHub = app.selectedHub,
+                    collection = controller.hubListView.collection,
+                    isInCollection = !!collection.get(hub.id);
+                
+                if (isInCollection){
+                    collection.remove(hub);
+                }
 
                 if (selectedHub && hub.id === selectedHub.id){
                     controller.showLatestOrNew();
                 }
-                controller.hubListView.collection.remove(hub);
             })
+            
             .bind("hub:change:archived", function(hub, isArchived){
-                var selectedHub = app.selectedHub;
+                var selectedHub = app.selectedHub,
+                    collection = controller.hubListView.collection,
+                    isInCollection = !!collection.get(hub.id);
                 
-                if (isArchived && selectedHub && hub.id === selectedHub.id){
-                    controller.showLatestOrNew();
+                if (isArchived){
+                    // Remove the hub
+                    if (isInHubList){
+                        collection.remove(hub);
+                    }
                 }
-                controller.hubListView.collection.remove(hub);
+                else {
+                    // Add the hub
+                    if (!isInHubList){
+                        collection.add(hub);
+                    }
+                }
             });
     },
 
     createTaskList: function () {
-        // Because the view has an id of "content", it will replace the existing #content element
-        this.taskListView = new TaskListView();
+        var controller = this,
+            taskListView = this.taskListView = new TaskListView();
+        
+        taskListView
+            .bind("add", function(task){
+                // Add to global cache if not yet in the cache
+                if (!task.isNew() && !Tasket.tasks.get(task.id)){
+                    Tasket.tasks.add(task);
+                }
+                // If not yet saved on server, then add to global cache when saved
+                else {
+                    task.bind("change:id", function(task){
+                        Tasket.tasks.add(task);
+                    });
+                }
+            })
+            .bind("remove", function(task){
+                // Remove from global cache
+                if (!task.isNew() && Tasket.tasks.get(task.id)) {
+                    Tasket.tasks.remove(task);
+                }
+            })
 
+        return this;
+    },
+
+    createHubList: function () {
+        var hubs = Tasket.getHubs(app.currentUser.getNonArchivedHubs()),
+            hubListView = this.hubListView = new HubListView({
+                collection: hubs
+            });
+        
+        hubListView
+            .bind("add", function(hub){
+                // Add to global cache if not yet in the cache
+                if (!hub.isNew() && !Tasket.hubs.get(hub.id)){
+                    Tasket.hubs.add(hub);
+                }
+                // If not yet saved on server, then add to global cache when saved
+                else {
+                    hub.bind("change:id", function(hub){
+                        Tasket.hubs.add(hub);
+                    });
+                }
+            })
+            .bind("remove", function(hub){
+                if (!hub.isNew() && Tasket.hubs.get(hub.id)) {
+                    Tasket.hubs.remove(hub);
+                }
+            });
+            
         return this;
     },
     
@@ -135,7 +194,7 @@ var TaskController = Controller.extend({
         user = user || app.currentUser;
         if (user) {
             hubId = user.getLatestIncompleteHub();
-
+            
             if (hubId) {
                 this.showHub(hubId);
             }
@@ -149,12 +208,13 @@ var TaskController = Controller.extend({
     // TODO: merge with newHub()
     createHub: function(hub){
         var controller = this;
+        
         app.selectedHub = hub;
-    
-        if (hub.isNew()) {
+        if (hub.isNew()){
+            // Clear browser address
+            this.navigate("/");
+            
             hub.bind("change:id", _.once(function () {
-                // add to global cache
-                Tasket.hubs.add(hub);
                 controller.hubListView.collection.add(hub);
                 controller.navigate(hub.url(), true);
             }));
@@ -163,22 +223,39 @@ var TaskController = Controller.extend({
     },
 
     newHub: function () {
-        var user = app.currentUser,
-            
-            // Create a new hub with the default hub title
-            hub = new Hub({
-                title: app.lang.NEW_HUB,
-                owner: user.id
-            });
+        var hub = new Hub({
+            owner: app.currentUser.id
+        });
         
-        // Clear the browser URL until the new hub's url appears when the hub id is retrieved
-        this.navigate("/").createHub(hub);
-
-        this.hubListView.selectHub(hub);
+        this.createHub(hub);
         this.taskListView.showHub(hub);
-            
+        this.hubListView.selectHub(hub);
         hub.save();
         
+        return this;
+    },
+    
+    selectHub: function(hub, opts){
+        // Don't show archived hubs; they are to be treated like deleted hubs, unless archiving is integrated into the UI
+        if (hub.isArchived()){
+            return this.showLatestOrNew();
+        }
+    
+        opts = opts || {};
+        
+        if ("showTasksOfType" in opts) {
+            app.cache.set("showTasksOfType", opts.showTasksOfType);
+        }
+        else {
+            opts.showTasksOfType = app.cache.get("showTasksOfType") ?
+                app.cache.get("showTasksOfType") : "onlyIncomplete";
+        }
+        
+        if (app.currentUser) {
+            this.navigate(hub.url());
+            this.hubListView.selectHub(hub);
+            this.taskListView.showHub(hub, opts);
+        }
         return this;
     },
 
@@ -190,7 +267,8 @@ var TaskController = Controller.extend({
         if (id === "new"){
             return this.newHub();
         }
-        else if (id === "starred"){
+        
+        if (id === "starred"){
             return this.showStarred();
         }
 
@@ -204,11 +282,18 @@ var TaskController = Controller.extend({
         // will be fired when the model is properly loaded from the server. We then
         // re-update the view and re-render.
         if (hub.isComplete()) {
+            this.selectHub(hub);
             app.trigger("change:selectedHub", hub);
+            // This will call this.selectHub()
+            // TODO: clean up this pathway; minimise need to trigger custom event
         }
         else {
+            // Clear browser address
+            this.navigate("/");
+            
             hub.bind("change", _.once(function(hub) {
-                app.trigger("change:selectedHub", hub);
+                hub.unbind();
+                controller.showHub(hub);
             }));
             
             // Not found on the server; show another hub
@@ -222,24 +307,13 @@ var TaskController = Controller.extend({
         
         return this;
     },
-
-    createHubList: function () {
-        var user = app.currentUser,
-            hubs = Tasket.getHubs(user.getNonArchivedHubs()),
-            hubListView = this.hubListView = new HubListView({
-                collection: hubs
-            });
-        
-        hubListView.render();
-        return this;
-    },
     
     showStarred: function(){
         var user = app.currentUser,
             tasks = Tasket.getTasks(user.get("stars.tasks")),
             taskListView = this.taskListView,
             hubListView = this.hubListView,
-            starredElem = hubListView.itemList.find(".starred"),
+            starredElem = hubListView.hubListElem.find(".starred"),
             hub = app.selectedHub = new Hub({
                 id: "starred",
                 title: "Starred items",
@@ -253,13 +327,16 @@ var TaskController = Controller.extend({
                 removeUnstarred = function(task, isStarred){
                     if (!isStarred){
                         taskListView.taskViews[task.cid].remove();
+                        taskListView.collection.remove({silent:true});
                     }
                 },
-                unsetStarredHub = function(tasks){
-                    app.unbind("change:selectedHub", unsetStarredHub);
-                    starredCollection.unbind("change:starred", removeUnstarred);
-                    starredElem.removeClass("active");
-                    taskListView.mainContentElem.removeClass("starred");
+                unsetStarredHub = function(newHub){
+                    if (newHub.id !== hub.id){
+                        app.unbind("change:selectedHub", unsetStarredHub);
+                        starredCollection.unbind("change:starred", removeUnstarred);
+                        starredElem.removeClass("active");
+                        taskListView.mainContentElem.removeClass("starred");
+                    }
                 };
                 
             tasks.unbind("reset", showStarred);

@@ -10,9 +10,16 @@ _.extend(app, {
     cache: cache,
 
     _setupOverrides: function () {
-        // Always set task records as private so that
-        // they can be accessed only by the their owner.
-        Task.prototype.defaults.privacy = true;
+        // Extend Task model defaults
+        _.extend(Task.prototype.defaults, {
+            privacy: true, // Always set task records as private so that they can be only be accessed by their owner
+            estimate: Tasket.settings.TASK_ESTIMATE_MAX // Estimate is not currently used in the app
+        });
+        
+        // Extend Hub model defaults
+        _.extend(Hub.prototype.defaults, {
+            title: app.lang.NEW_HUB
+        });
         
         return this;
     },

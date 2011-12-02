@@ -65,6 +65,21 @@ var View = Backbone.View.extend({
     
     /////
     
+    // ELEM MANIPULATION
+    
+    // Shorten class switching on view's main element
+    addClass: function(className){
+        this.elem.addClass(className);
+        return this;
+    },
+    
+    removeClass: function(className){
+        this.elem.removeClass(className);
+        return this;
+    },
+    
+    /////
+    
     initialize: function(options){
         this.elem = jQuery(this.el);
         if (this.model && this.model.type && this.model.id){
