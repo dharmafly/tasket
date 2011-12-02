@@ -111,6 +111,8 @@ var TaskListView = View.extend({
     render: function () {
         var hub = this.model,
             listTitle = hub.get("title");
+            
+        this.activeTask = null;
         
         this.elem.html(tim("task-list", {listTitle: listTitle}))
 
