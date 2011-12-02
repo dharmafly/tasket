@@ -50,7 +50,7 @@ var TaskController = Controller.extend({
                     
                     // "n" or "N" for new task
                     if (keyCode === 78 || keyCode === 110){
-                        taskListView.createTask();
+                        taskListView._onCreate();
                         return false;
                     }
                     
