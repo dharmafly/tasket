@@ -62,19 +62,30 @@ var TaskController = Controller.extend({
             // If the user clicks off an edited task, then save the currently active task
             .bind("click", function(event){
                 var taskListView = controller.taskListView,
-                    taskView, taskElem;
+                    target, taskView, taskElem, headerElem;
                     
                 if (!taskListView){
                     return;
                 }
                 
+                target = event.target;
                 taskView = taskListView.activeTaskView();
                 
                 if (taskView && taskView.hasUnsavedDescription()){
                     taskElem = taskView.elem;
                     
-                    if (taskElem && !taskElem.is(event.target) && !taskElem.has(event.target).length){
+                    if (taskElem && !taskElem.is(target) && !taskElem.has(target).length){
                         taskListView.saveTask(taskView.model);
+                    }
+                }
+                
+                else {
+                    headerElem = taskListView.headerElem;
+                    if (headerElem && headerElem.hasClass("edit-mode") && !headerElem.is(target) && !headerElem.has(target).length){ // TODO: use view property flag
+                        // If input has already replaced the clicked header anchor, then compare with the input val
+                        if (target.textContent !== headerElem.find("input").val()){
+                            taskListView._onTitleEditSave();
+                        }
                     }
                 }
             });

@@ -28,6 +28,9 @@ var Lightbox = View.extend({
             this.elem.addClass(this.classes.animate);
         }, this), 0);
 
+        // Set height of overlay
+        this.elem.height(app.bodyElem.outerHeight(true));
+        
         this._updateMargin();
         
         // If contents is a form, then focus its first control

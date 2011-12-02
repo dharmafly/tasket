@@ -14,6 +14,7 @@ var TaskListView = View.extend({
     previousTitle: null,
     
     events: {
+        "click div.header:not(.starred) h1": "_onTitleEditClick",
         "click div.header .edit a": "_onTitleEdit",
         "click div.header .delete a": "_onTitleDelete",
         "click div.header .cancel": "_onTitleEditCancel",
@@ -26,7 +27,6 @@ var TaskListView = View.extend({
         "click li p a.cancel": "_onCancel",
         "click li p a.save": "_onSave",
         "keyup li p input": "_onKeyup",
-        "click div.header h1": "_onTitleEditClick",
         "click ul.item-list li p": "_onTaskEditClick"
         // "blur input[type='text']": "_onTextInputBlur"
     },
@@ -47,7 +47,7 @@ var TaskListView = View.extend({
             "_onKeyup",
             "_onSave",
             "saveTaskOrder",
-            "_tempRenderHubList"
+            "_tempTriggerGlobalHubs"
         );
 
         if (this.model){
@@ -56,9 +56,13 @@ var TaskListView = View.extend({
     },
     
     // TODO: TEMP HACK - need to properly trigger methods in hubListView
-    _tempRenderHubList: _.debounce(function(){
-        app.controller.hubListView.renderHubs();
-    }, 250),
+    _tempTriggerGlobalHubs: _.debounce(function(eventName, hub){
+        Tasket.hubs.trigger.apply(Tasket.hubs, arguments);
+
+        var hubListView = app.controller.hubListView;
+        hubListView.collection = Tasket.getHubs(app.currentUser.getNonArchivedHubs())
+        hubListView.initialize().renderHubs().selectHub(hub);
+    }, 50),
 
     _setupBindings: function(){
         var view = this;
@@ -67,8 +71,10 @@ var TaskListView = View.extend({
             // Unbind first, in case we've displayed this hub before
             .unbind("change:title", this._onModelChangeTitle)
             .bind("change:title", this._onModelChangeTitle)
-            .unbind("change", this._tempRenderHubList)
-            .bind("change", this._tempRenderHubList);
+            //.unbind("change", this._tempTriggerGlobalHubs)
+            //.bind("change", this._tempTriggerGlobalHubs)
+            .unbind("all", this._tempTriggerGlobalHubs)
+            .bind("all", this._tempTriggerGlobalHubs);
 
         this.collection
             // proxy to the view
@@ -96,12 +102,24 @@ var TaskListView = View.extend({
             
         return this;
     },
+    
+    hasSpecialId: function(){
+        var model = this.model;
+        return !model.isNew() && _.isNaN(Number(model.id));
+    },
 
     render: function () {
         var hub = this.model,
             listTitle = hub.get("title");
         
         this.elem.html(tim("task-list", {listTitle: listTitle}))
+
+        this.headerElem = this.$("div.header");
+        
+        // e.g. "starred" hubs
+        if (this.hasSpecialId()){
+            this.headerElem.addClass(this.model.id);
+        }
 
         // Create a list of tasks
         this.taskListElem = this.$("ul.item-list");
@@ -182,7 +200,7 @@ var TaskListView = View.extend({
             .renderTasks();
 
         // If no tasks yet on this list and the title has never been updated, then enter edit mode
-        if (!this.model.countTasks()){
+        if (!this.model.countTasks() && !this.hasSpecialId()){
             this.enterEditMode();
         }
         

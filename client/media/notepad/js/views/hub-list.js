@@ -1,13 +1,14 @@
 var HubListView = View.extend({
     el: "#main",
 
-    // TODO: on starting at /, editing the hub title or deleting does not trigger - see taskListView._tempRenderHubList
+    // TODO: on starting at /, editing the hub title or deleting does not trigger - see taskListView._tempTriggerGlobalHubs
+    // TODO: on load, selected hub not highlighted in sidebar - taskListView._tempTriggerGlobalHubs now forcing selectHub
     
-    // TODO: make "+" in "+ Add new list" white
-    // TODO: Chrome pixel shift on edit task and on edit list title
     // TODO: cached username in login not being populated
     // TODO: app by df spacing
-    // TODO: long task titles goes underneath hub list
+    // TODO: long task titles go underneath hub list
+    // TODO: home page screenshots include save/cancel buttons
+    // TODO: overlays (e.g. login) are fixed to screen height and appear at the top of the screen, so don't position correctly when scrolling down a long page
     
     // FUTURE
     // On press RETURN when editing, then move to next item in edit mode?
@@ -80,7 +81,7 @@ var HubListView = View.extend({
                 }
             });
             
-        this.showHidePanel(this.isOpen);
+        return this.showHidePanel(this.isOpen);
     },
 
     /*
@@ -102,6 +103,9 @@ var HubListView = View.extend({
         var view = this,
             hubListElem = this.hubListElem,
             taskView;
+
+        // TODO: TEMP
+        this.hubListElem.find("li:not(.starred)").remove();
 
         this.collection
             // Sort into order - TODO: why is this sort required to force the comparator?

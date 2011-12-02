@@ -575,7 +575,11 @@ table {
     text-transform:none;
   }
   
-/* STARRED CONTROLS */
+/* STARRED */
+    
+    #content .header.starred h1 a {
+        cursor:default;
+    }
 
     #main.starred ul.item-list ul.edit-item > li.move, #main.starred div.header ul.edit-item, #main.starred #content a.new-item {
         display:none;
@@ -774,7 +778,7 @@ table {
       }
       
       aside#lists nav .showing select {
-          min-width: 170px;
+          width: 98%;
       }
       
       aside#lists .controls {
@@ -813,8 +817,13 @@ table {
   }
   
     #content .header {
-      padding: 44px 20px 10px 135px;
+      padding: 10px 0 10px 125px;
+      margin: 34px 0 0 0;
       overflow: hidden;
+    }
+    
+    #content .header.edit-mode {
+        background: #ffc;
     }
   
     #content h1 {
@@ -972,16 +981,18 @@ table {
     }
     #content .header input.task-edit {
         position: relative;
-        left: -2px;
-        top: 0;
+        left: -1px;
+        top: 1px;
         float:left;
         font-size: 2em;
         width:auto;
         min-width: 200px;
         max-width:630px;
-        margin:-3px 10px -2px -1px;
-        padding-bottom:1px;
-        border: 2px inset;
+        margin:0;
+        padding:0;
+        
+        /*border: 2px inset;*/
+        border:none;
     }
     
     /* TODO: EXPERIMENTAL: hide the Save / Cancel controls */
@@ -1194,7 +1205,7 @@ table {
         margin: 10px 0 0 115px;
         line-height: 19px;
         padding: 0 0 10px 29px;
-        background: url(../images/sprite1.png) no-repeat left top;
+        background: url(../images/sprite1.png) no-repeat 0 -796px;
         display: block;
         font-size: 1.3em;
         font-style: italic;
@@ -1286,6 +1297,7 @@ footer a.df:hover {
     width: 100%;
     height: 100%;
     background-color: #000;
+    background-color: rgba(0,0,0,0.9);
 }
 
 .ie .lightbox {
