@@ -29,7 +29,7 @@ var Lightbox = View.extend({
         }, this), 0);
 
         // Set height of overlay
-        this.elem.height(app.bodyElem.outerHeight(true));
+        this.elem.height(jQuery(window).height());
         
         this._updateMargin();
         
