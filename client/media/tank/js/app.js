@@ -85,7 +85,7 @@ var cache = new Cache(Tasket.namespace),
             var staticPrefix = "static-",
                 prefixLength = staticPrefix.length;
 
-            _.each(tim.templates(), function(template, name) {
+            _.each(tim.dom(), function(template, name) {
                 var route;
 
                 if (name.indexOf(staticPrefix) === 0){
