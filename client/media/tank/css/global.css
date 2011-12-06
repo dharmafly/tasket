@@ -1641,7 +1641,7 @@ footer a.df:hover {
 	position: fixed;
 	top: 100px;
 	left: 50%;
-	width: 35.384em /* 460px */;
+	min-width: 35.384em /* 460px */;
 	max-height: 90%;
 	margin-left: -19.230em /* -250px */;
 	overflow: auto;
