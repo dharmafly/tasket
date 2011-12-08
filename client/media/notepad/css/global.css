@@ -1335,6 +1335,7 @@ footer a.df:hover {
 }
 
 .ie .lightbox .lightbox-inner {
+    width: 35.384em /* 460px */;
     position: absolute;
 }
 
