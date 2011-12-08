@@ -44,7 +44,7 @@ class HubManager(JsonManager):
     def private(self, user=None):
         in_list = [0,None,]
         if user and user.is_authenticated():
-            in_list.append(user.profile)
+            in_list.append(user.profile.pk)
         return self.filter(private_to__in=in_list)
         
 class UnVerifiedHubManager(JsonManager):
