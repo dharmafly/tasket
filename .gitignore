@@ -12,7 +12,7 @@
 Imaging-*
 
 # South migrations
-server/tasks/migrations/
+#server/tasks/migrations/
 
 # Backups
 web/tasks-backup-*
