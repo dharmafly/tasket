@@ -319,7 +319,45 @@ class WorkflowTests(TestCase):
         self.assertTrue('6' in json_data['tasks']['claimed']['claimed'])
         self.assertEqual(json_data['estimates']['claimed']['claimed'], 1800)
         
+    def test_create_private(self):
+        """
+        Creates a private hub for a user, and makes sure it's either visable or 
+        not visable depending on authentication.
+        """
         
+        self.client.login(username='TestUser2', password='12345')
+    
+        # Create a new hub
+        response = self.client.post(
+            '/hubs/', 
+            json.dumps({
+                'title' : 'New Hub',
+                'privacy' : True,
+            }),
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+        self.assertEqual(set(json_list.keys()), set(['id', 'createdTime']))
+        print json_list
+        
+        response = self.client.get(
+            '/users/3', 
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+        print json_list['hubs']
+        
+        response = self.client.get(
+            '/hubs/6', 
+            content_type="application/json",
+            )
+        json_list = json.loads(response.content)
+        print json_list
+        
+        
+        
+        
+            
         
         
         
