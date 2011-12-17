@@ -1,14 +1,50 @@
 var TankController = Controller.extend({
-    routes: {
-        "/": "resetHubs",
-        "/hubs/new/": "newHub",
-        "/hubs/archived/": "listArchivedHubs",
-        "/hubs/:id/": "displayHub",
-        "/hubs/:id/edit/": "editHub",
-        "/hubs/:id/tasks/new/": "newTask",
-        "/hubs/:hub_id/tasks/:id/edit/": "editTask",
-        "/hubs/:hub_id/tasks/:id/": "displayTaskDetails",
-        "/hubs/:hub_id/detail/" : "displayHubDetails"
+    routes: function(){
+        // Controller initialised on app.ready - see controllers/controllers.js
+        var hubs = app.slugs.hubs,
+            tasks = app.slugs.tasks,
+            routes = {};
+        
+        routes["/"] = "resetHubs";
+        routes["/"+hubs+"/new/"] = "newHub";
+        routes["/"+hubs+"/archived/"] = "listArchivedHubs";
+        routes["/"+hubs+"/:id/"] = "displayHub";
+        routes["/"+hubs+"/:id/edit/"] = "editHub";
+        routes["/"+hubs+"/:id/"+tasks+"/new/"] = "newTask";
+        routes["/"+hubs+"/:id/"+tasks+"/:taskId/edit/"] = "editTask";
+        routes["/"+hubs+"/:id/"+tasks+"/:taskId/"] = "displayTaskDetails";
+        routes["/"+hubs+"/:id/detail/"] = "displayHubDetails";
+        
+        return routes;
+    },
+    
+    clientUrl: function(model, includeHash){
+        var slugs = app.slugs,
+            path;
+        
+        if (!model || model.isNew()){
+            return null;
+        }
+        
+        switch (model.type){
+            case "hub":
+            path = slugs.hubs;
+            break;
+            
+            case "task":
+            path = slugs.hubs + "/" + model.get("hub") + "/" + slugs.tasks;
+            break;
+            
+            case "user":
+            path = slugs.users;
+            break;
+            
+            default:
+            return null;
+        }
+        
+        return (includeHash ? "#" : "") +
+            "/" + path + "/" + model.id + "/";
     },
 
     constructor: function TankController() {
@@ -47,7 +83,7 @@ var TankController = Controller.extend({
             });
 
         _.bindAll(this, "updateMarkers");
-        this.tankView = new Tank({el: jQuery('body')[0]});
+        this.tankView = new Tank({el: jQuery("body")[0]});
 
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
@@ -143,7 +179,7 @@ var TankController = Controller.extend({
                 this.centerViewportOnHub(hubView);
             } else {
                 // Just update the hash fragment to jump to the selected hub.
-                window.location.hash = "/hubs/:id/".replace(":id", markerView.model.id);
+                window.location.hash = "/" + app.slugHubs + "/:id/".replace(":id", markerView.model.id);
             }
         }, this);
         this._setupPanAndScrollEvents();
@@ -155,7 +191,7 @@ var TankController = Controller.extend({
             this.addMarker(hub);
         }, this.markersView);
 
-        jQuery('body').append(this.markersView.render());
+        jQuery("body").append(this.markersView.render());
 
         // Add hubs
         if (options && options.hubs){
@@ -204,7 +240,7 @@ var TankController = Controller.extend({
         })(this.markersView);
 
         // Bind this handler to scroll and pan.
-        this.tankView.bind('pan', toggleDisplayMarkers);
+        this.tankView.bind("pan", toggleDisplayMarkers);
         jQuery(window).scroll(toggleDisplayMarkers);
 
         // Watch the viewport bounds. If the user mouses into these bounds
@@ -674,13 +710,13 @@ var TankController = Controller.extend({
 
                 // Add to current users tasks if not already in there.
                 if (
-                  task.get('state') === Task.states.NEW &&
-                  task.get('owner') === app.currentUser.id
+                  task.get("state") === Task.states.NEW &&
+                  task.get("owner") === app.currentUser.id
                 ) {
-                    userTasks = _.clone(app.currentUser.get('tasks.owned.new'));
+                    userTasks = _.clone(app.currentUser.get("tasks.owned.new"));
                     userTasks.push(task.id);
                     app.currentUser.set({
-                      'tasks.owned.new': userTasks
+                      "tasks.owned.new": userTasks
                     });
                 }
 
@@ -910,7 +946,7 @@ var TankController = Controller.extend({
             this.tankWidth  = this.viewportWidth;
         }
 
-        jQuery('body').width(this.tankWidth).height(this.tankHeight);
+        jQuery("body").width(this.tankWidth).height(this.tankHeight);
     },
 
     getViewportCenter: function () {
@@ -1004,7 +1040,7 @@ var TankController = Controller.extend({
         if (app.dashboard.isHidden()) {
             return 0;
         }
-        return app.dashboard.elem.outerWidth() + parseFloat(app.dashboard.elem.css('right'));
+        return app.dashboard.elem.outerWidth() + parseFloat(app.dashboard.elem.css("right"));
     },
 
     // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
@@ -1145,10 +1181,10 @@ var TankController = Controller.extend({
     // NOTE: Creating the <svg> element this way allows it to render on iPad et al, whereas including the <svg> element directly in the HTML document does not. Inspired by http://keith-wood.name/svg.html
     createSVGRoot: function(container){
         var svg = this.createSVGElement("svg");
-	    svg.setAttribute("version", "1.1");
+        svg.setAttribute("version", "1.1");
 
-	    container.appendChild(svg);
-	    return svg;
+        container.appendChild(svg);
+        return svg;
     },
 
     updateSVGDimensions: function(){

@@ -22,7 +22,9 @@ var AccountController = Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification && app.notification.success("You are now logged in.");
+            if (app.notification){
+                app.notification.success("You are now logged in.");
+            }
         });
     },
     
@@ -44,7 +46,9 @@ var AccountController = Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification && app.notification.success("Your account has been created.");
+            if (app.notification){
+                app.notification.success("Your account has been created.");
+            }
         });
     },
 
@@ -65,7 +69,9 @@ var AccountController = Controller.extend({
         form.bind("success", function (user) {
             app.updateCurrentUser(user);
             app.lightbox.hide();
-            app.notification && app.notification.success("Your account has been updated!");
+            if (app.notification){
+                app.notification.success("Your account has been updated!");
+            }
         });
     },
 

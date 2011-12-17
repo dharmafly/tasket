@@ -284,14 +284,7 @@ var Dashboard = View.extend({
         if (models && (models.length || models.type === "hub")) {
             mapped = models.map(function (model) {
                 var title = model.get("title") || model.get("description"),
-                    href;
-                    
-                if (model.type === "task"){
-                    href = "#/hubs/" + model.get("hub") + "/tasks/" + model.id + "/";
-                }
-                else {
-                    href = "#/hubs/" + model.id + "/";
-                }
+                    href = app.tank.clientUrl(model, true);
                     
                 return {
                     id:          model.id,

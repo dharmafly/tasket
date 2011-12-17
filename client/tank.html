@@ -89,15 +89,15 @@
     </script>
 
     <script type="text/tim" class="hub-marker">
-      <a href="#/hubs/{{id}}/" class="hub-marker-icon">
+      <a href="#/projects/{{id}}/" class="hub-marker-icon">
         <img src="{{image}}" width="16" height="16" />
       </a>
-      <a href="#/hubs/{{id}}/" class="tooltip">{{title}}</a>
+      <a href="#/projects/{{id}}/" class="tooltip">{{title}}</a>
       <span class="hub-marker-pointer"></span>
     </script>
 
     <script type="text/tim" class="hub">
-        <a href="#/hubs/{{id}}/" class="nucleus-wrapper">
+        <a href="#/projects/{{id}}/" class="nucleus-wrapper">
             <img class="nucleus" {{isSelected}}class="selected" {{/isSelected}}src="{{image}}" width="30" height="30">
         </a>
         
@@ -108,7 +108,7 @@
             <p class="description">
                 {{description}}
                 {{readmore}}
-                <a class="readmore" href="#/hubs/{{hubId}}/detail/">» Read more</a>
+                <a class="readmore" href="#/projects/{{hubId}}/detail/">» Read more</a>
                 {{/readmore}}
             </p>
             {{hasName}}<span class="name">Created by {{name}}</span>{{/hasName}}
@@ -121,7 +121,7 @@
     
     <script type="text/tim" class="hub-detail">
         <article>
-            <h1><a href="#/hubs/{{hubId}}/">{{title}}</a></h1>
+            <h1><a href="#/projects/{{hubId}}/">{{title}}</a></h1>
             <div class="description">{{description}}</div>
             <p class="estimate">({{estimate}})</p>
             {{hasName}}<p class="name"><em>Created by {{name}}</em></p>{{/hasName}}
@@ -130,22 +130,22 @@
 
     <script type="text/tim" class="hub-admin-actions">
         <span class="admin-actions">
-            <a class="add" title="Add a new task" href="#/hubs/{{id}}/tasks/new/">Add Task</a>
-            <a class="edit" title="Edit project" href="#/hubs/{{id}}/edit/">Edit</a>
+            <a class="add" title="Add a new task" href="#/projects/{{id}}/tasks/new/">Add Task</a>
+            <a class="edit" title="Edit project" href="#/projects/{{id}}/edit/">Edit</a>
         </span>
     </script>
 
     <script type="text/tim" class="task">
         {{canEdit}}
         <span class="admin-actions">
-            <a class="edit" title="Edit task" href="#/hubs/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
+            <a class="edit" title="Edit task" href="#/projects/{{hubId}}/tasks/{{id}}/edit/">Edit</a>
         </span>
         {{/canEdit}}
         
         <p class="description">
             <span class="body">{{description}}</span> 
             <span class="estimate">({{estimate}})</span> 
-            {{readmore}}<a class="readmore" href="#/hubs/{{hubId}}/tasks/{{id}}/">» Read more</a>{{/readmore}}
+            {{readmore}}<a class="readmore" href="#/projects/{{hubId}}/tasks/{{id}}/">» Read more</a>{{/readmore}}
         </p>
         
         <aside class="meta">
@@ -569,7 +569,7 @@
               <p class="help">This section has a list of your projects</p>
               <ul class="listing"></ul>
               <p>
-                  <a class="button" href="#/hubs/new/" title="Create a new project">New Project</a>
+                  <a class="button" href="#/projects/new/" title="Create a new project">New Project</a>
               </p>
               <div class="archived-projects"></div>
           </section>
@@ -598,7 +598,7 @@
     
     <script type="text/tim" class="archived-projects-link">
         <p>
-            <a class="link" href="#/hubs/archived/">View archived projects</a>
+            <a class="link" href="#/projects/archived/">View archived projects</a>
         </p>
     </script>
     
@@ -654,7 +654,7 @@
         <p><em>(Please note, the following values are all configurable, those stated are the system defaults when you first <a href="https://github.com/dharmafly/tasket">download the application</a>).</em></p>
 
         <h3>How do I add a new project?</h3>
-        <p>You can add new projects by clicking the '<a href="/#/hubs/new/">New Project</a>' button. Enter a title of the project and a description. The more you can specify about the project, the more success you are likely to have with the work that volunteers complete on it. Once created, you will see your project appear in the main screen.</p>
+        <p>You can add new projects by clicking the '<a href="/#/projects/new/">New Project</a>' button. Enter a title of the project and a description. The more you can specify about the project, the more success you are likely to have with the work that volunteers complete on it. Once created, you will see your project appear in the main screen.</p>
 
         <h3>How do I add a new task?</h3>
         <p>You can add tasks by clicking on the '+' sign when you hover over your project. Again, add a description of the task and set and required time for completion. Then hit the 'Create Task' button and the task will appear on the main screen, linked to your project. You can repeat this process until all of your tasks are listed or you hit a limit.</p>

@@ -9,6 +9,11 @@ var cache = new Cache(Tasket.namespace),
 
             // app properties
             _.extend(this, {
+                slugs: {
+                    hubs: "projects",
+                    tasks: "tasks",
+                    users: "users"
+                },
                 wallBuffer: 50, // Pixels margin that project nodes should keep away from the walls of the tank
                 hubBuffer: 10,
                 taskBuffer: 10,
@@ -148,19 +153,21 @@ var cache = new Cache(Tasket.namespace),
 
         // Sets up the app. Called by init() on app "ready".
         ready: function () {
+            var options;
+            
             this.router = new Backbone.Router();
-
-            var options = {router: this.router};
+            options = {router: this.router};
+            
             _.extend(this, {
                 // The controllers will make Ajax calls on their init, so are created after app init
                 tank: new TankController(options),
-                pageController: new AccountController(options), // TODO: rename
+                accountController: new AccountController(options),
                 dashController: new DashboardController(options)
             });
 
-            // TODO temp
-            this.accountController = this.pageController;
+            // Set up routes for static templates
             this.setupStaticTemplates();
+            
             /////
 
             // THE TANK
@@ -178,6 +185,14 @@ var cache = new Cache(Tasket.namespace),
                         app.bodyElem.removeClass("hubSelected");
                     }
                 });
+                
+            // Route views' requests for window.location changes to the tank controller
+            app.bind("request:change:location", function(view){
+                var url = app.tank.clientUrl(view.model);
+                if (url){
+                    app.tank.navigate(url, true);
+                }
+            });
 
             /////
 

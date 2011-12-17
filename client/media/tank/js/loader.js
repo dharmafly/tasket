@@ -3,14 +3,14 @@
     
     The advantage of the loader is that it allows you to add `?debug` to the URL in the browser address bar, to load each full JS file separately, for development and debugging.
 
-    To enter debug mode, add ?debug to the URL (before the #hash), e.g. http://localhost:8000/?debug#/hubs/13/
+    To enter debug mode, add ?debug to the URL (before the #hash), e.g. http://localhost:8000/?debug#/projects/13/
 */
 (function(window, getScript){
     "use strict";
     
     var windowSearch = window.location.search,
         // Detect debug mode
-        debug = /^\?debug[\W\/]?/.test(windowSearch),
+        debug = /^\?(?:debug|dev)[\W\/]?/.test(windowSearch),
         debugForceDirector = debug && /debugForceDirector/i.test(windowSearch); // case-insensitive match of "debugforcedirector"
     
     // PRODUCTION MODE
@@ -103,13 +103,21 @@
             
             // Callback function once all are loaded
             function(allLoaded){
+                // Dev mode
+                var app = window.app,
+                    jQuery = window.jQuery;
+                    
+                app.bodyElem.addClass("dev");
+                jQuery(".header-container h1")
+                    .append("<span style='background-color:#f99; color:white; font-family:monospace; font-size:0.9em; margin-left:0.68em; top:-0.2em; position:relative;'>Dev</span>");
+                
                 if (!allLoaded){
                     throw "Scripts not fully loaded";
                 }
             },
             
             // Options (path is relative to the calling HTML file)
-            {path:"/media/", noCache:true}
+            {path:"/media/", noCache:false}
         );
     }
-}(this, getScript));
+}(window, getScript));
