@@ -229,6 +229,10 @@ var TankController = Controller.extend({
             markersView.bind("mouseleave", startTimer);
 
             return function () {
+                if (!app.lightbox.isHidden()) {
+                    return;
+                }
+
                 if (!isPanning) {
                     markersView.show();
                     isPanning = true;
