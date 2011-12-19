@@ -179,7 +179,7 @@ var TankController = Controller.extend({
                 this.centerViewportOnHub(hubView);
             } else {
                 // Just update the hash fragment to jump to the selected hub.
-                window.location.hash = "/" + app.slugHubs + "/:id/".replace(":id", markerView.model.id);
+                this.navigate("/" + app.slugs.hubs + "/:id/".replace(":id", markerView.model.id), true);
             }
         }, this);
         this._setupPanAndScrollEvents();
@@ -594,13 +594,13 @@ var TankController = Controller.extend({
             .bind("archive", _.bind(function (hub) {
                 this.removeHubView(hub);
                 app.lightbox.hide();
-                window.location.hash = "/";
+                this.navigate("/", true);
             }, this))
             .bind("delete", _.bind(function (hub) {
                 this.removeHubView(hub);
                 Tasket.hubs.remove(hub);
                 app.lightbox.hide();
-                window.location.hash = "/";
+                this.navigate("/", true);
             }, this))
             .bind("error", _.bind(function(hub, form, status){
                 this.error("Sorry, there was an error creating the " + app.lang.HUB + ". Please try logging out and in again. (error: hub-" + hub.id + ", status " + status + ")");
