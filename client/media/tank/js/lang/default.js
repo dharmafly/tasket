@@ -11,5 +11,6 @@ app.lang = {
     RESTORE_HUB_CONFIRM:    "Restoring a project will make it visible again. Continue?",
     DELETE_TASK_CONFIRM:    "This will permanently delete this task. Continue?",
     HUB:                    "hub",
-    MY_HUBS:                "My Hubs"
+    MY_HUBS:                "My Hubs",
+    ESTIMATED_TIME:         "Estimated Time: "
 };
