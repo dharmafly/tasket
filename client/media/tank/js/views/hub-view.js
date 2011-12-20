@@ -101,7 +101,7 @@ var HubView = View.extend({
 
     updateEstimate: function () {
         var estimate = this.model.humanEstimate();
-        this.$(".estimate").text("(" + ((estimate) ? app.lang.ESTIMATED_TIME + estimate : app.lang.HUB_NO_TASKS) + ")");
+        this.$(".estimate").text(estimate ? (app.lang.ESTIMATED_TIME + estimate) : app.lang.HUB_NO_TASKS);
         return this;
     },
     
@@ -419,7 +419,7 @@ var HubView = View.extend({
             estimate = this.model.humanEstimate(),
             userModel, updateName, model;
 
-        data.estimate   = (estimate) ? app.lang.ESTIMATED_TIME + estimate : app.lang.HUB_NO_TASKS;
+        data.estimate = estimate ? (app.lang.ESTIMATED_TIME + estimate) : app.lang.HUB_NO_TASKS;
         data.isSelected = this.isSelected();
         data.readmore = data.description.length > app.hubDescriptionTruncate;
         data.description = app.truncate(data.description, app.hubDescriptionTruncate);
