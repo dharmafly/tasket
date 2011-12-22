@@ -30,7 +30,8 @@ var Dashboard = View.extend({
             "updateManagedTasks",
             "updateStatistics",
             "setUser",
-            "_applyTransform"
+            "_onWindowResize",
+            "_onWindowResizeEnd"
         );
 
         // Setup the user bindings.
@@ -65,7 +66,8 @@ var Dashboard = View.extend({
             }
         }, this);
 
-        jQuery(window).resize(_.debounce(this._applyTransform, 300));
+        jQuery(window).resize(_.throttle(this._onWindowResize, 1000 / 60))
+                      .resize(_.debounce(this._onWindowResizeEnd, 500));
     },
 
     // Sets up bindings to update the dashbaord when the user changes.
@@ -284,14 +286,7 @@ var Dashboard = View.extend({
         if (models && (models.length || models.type === "hub")) {
             mapped = models.map(function (model) {
                 var title = model.get("title") || model.get("description"),
-                    href;
-                    
-                if (model.type === "task"){
-                    href = "#/hubs/" + model.get("hub") + "/tasks/" + model.id + "/";
-                }
-                else {
-                    href = "#/hubs/" + model.id + "/";
-                }
+                    href = app.tank.clientUrl(model, true);
                     
                 return {
                     id:          model.id,
@@ -361,10 +356,9 @@ var Dashboard = View.extend({
             return;
         }
 
-        var value = 0, transform = getCSSProperty('transform'),
-            isEvent = method instanceof jQuery.Event;
+        var value = 0, transform = getCSSProperty('transform');
 
-        if (method === "hide" || isEvent) {
+        if (method === "hide") {
             value = this.toggle.outerHeight() - this.elem.height();
         }
 
@@ -426,6 +420,25 @@ var Dashboard = View.extend({
     _onToggleClick: function (event) {
         event.preventDefault();
         this[this.isHidden() ? "show" : "hide"]();
+    },
+
+    _onWindowResize: function (event) {
+        // Disable animations for smoother resizing.
+        if (!this._isResizing) {
+            this.elem.addClass(this.classes.disableAnimation);
+            this._isResizing = true;
+        }
+
+        // Only need to reposition if dashboard is hidden.
+        if (this.isHidden()) {
+          this._applyTransform("hide");
+        }
+    },
+
+    _onWindowResizeEnd: function () {
+        // Enable animations for smoother resizing.
+        this.elem.removeClass(this.classes.disableAnimation);
+        this._isResizing = false;
     }
 });
 

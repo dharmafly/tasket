@@ -41,7 +41,7 @@ var User = Model.extend({
     // Returns true if user has claimed less tasks than the limit allows.
     canClaimTasks: function () {
         var limit = Tasket.settings.CLAIMED_LIMIT;
-        return this.get("tasks.claimed.claimed").length < limit;
+        return limit === -1 || this.get("tasks.claimed.claimed").length < limit;
     },
     
     isAdmin: function(){

@@ -22,7 +22,7 @@ var HubView = View.extend({
         
         // **
         
-        // Force director
+        // Force director for tasks around a hub
         this.forceDirector = ForceDirector.create({
             animate: app.animateTasks,
             numCycles: 400,
@@ -32,8 +32,8 @@ var HubView = View.extend({
             updateStepDamping: 0.01,
             inVelDampK: 0.1,
             inHookeK: 0.1,
-            inWallRepulsion: 1000,
-            inBBRepulsion:900
+            inWallRepulsion: 500,
+            inBBRepulsion:200
         });
         
         // Add hub node
@@ -100,7 +100,8 @@ var HubView = View.extend({
     },
 
     updateEstimate: function () {
-        this.$(".estimate").text("(" + (this.model.humanEstimate() || app.lang.HUB_NO_TASKS) + ")");
+        var estimate = this.model.humanEstimate();
+        this.$(".estimate").text(estimate ? (app.lang.ESTIMATED_TIME + estimate) : app.lang.HUB_NO_TASKS);
         return this;
     },
     
@@ -415,9 +416,10 @@ var HubView = View.extend({
 
     render: function(){
         var data = this.model.toJSON(),
+            estimate = this.model.humanEstimate(),
             userModel, updateName, model;
 
-        data.estimate   = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
+        data.estimate = estimate ? (app.lang.ESTIMATED_TIME + estimate) : app.lang.HUB_NO_TASKS;
         data.isSelected = this.isSelected();
         data.readmore = data.description.length > app.hubDescriptionTruncate;
         data.description = app.truncate(data.description, app.hubDescriptionTruncate);
@@ -460,10 +462,11 @@ var HubView = View.extend({
 
     hubDetailsHTML: function(){
         var data = this.model.toJSON(),
+            estimate = this.model.humanEstimate(),
             userModel;
 
         data.description = "{description}";
-        data.estimate = this.model.humanEstimate() || app.lang.HUB_NO_TASKS;
+        data.estimate = (estimate) ? app.lang.ESTIMATED_TIME + estimate : app.lang.HUB_NO_TASKS;
         data.hubId = this.model.id;
         
         data.hasName = app.showCreatedByOnHubs;

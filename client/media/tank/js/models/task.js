@@ -231,7 +231,7 @@ var Task = Model.extend({
             isStarred = !!this.get("starred.timestamp");
         }
         return isStarred;
-    },
+    }
 }, {
     ESTIMATES: TaskEstimates
 });

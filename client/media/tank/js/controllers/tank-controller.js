@@ -1,14 +1,50 @@
 var TankController = Controller.extend({
-    routes: {
-        "/": "resetHubs",
-        "/hubs/new/": "newHub",
-        "/hubs/archived/": "listArchivedHubs",
-        "/hubs/:id/": "displayHub",
-        "/hubs/:id/edit/": "editHub",
-        "/hubs/:id/tasks/new/": "newTask",
-        "/hubs/:hub_id/tasks/:id/edit/": "editTask",
-        "/hubs/:hub_id/tasks/:id/": "displayTaskDetails",
-        "/hubs/:hub_id/detail/" : "displayHubDetails"
+    routes: function(){
+        // Controller initialised on app.ready - see controllers/controllers.js
+        var hubs = app.slugs.hubs,
+            tasks = app.slugs.tasks,
+            routes = {};
+        
+        routes["/"] = "resetHubs";
+        routes["/"+hubs+"/new/"] = "newHub";
+        routes["/"+hubs+"/archived/"] = "listArchivedHubs";
+        routes["/"+hubs+"/:id/"] = "displayHub";
+        routes["/"+hubs+"/:id/edit/"] = "editHub";
+        routes["/"+hubs+"/:id/"+tasks+"/new/"] = "newTask";
+        routes["/"+hubs+"/:id/"+tasks+"/:taskId/edit/"] = "editTask";
+        routes["/"+hubs+"/:id/"+tasks+"/:taskId/"] = "displayTaskDetails";
+        routes["/"+hubs+"/:id/detail/"] = "displayHubDetails";
+        
+        return routes;
+    },
+    
+    clientUrl: function(model, includeHash){
+        var slugs = app.slugs,
+            path;
+        
+        if (!model || model.isNew()){
+            return null;
+        }
+        
+        switch (model.type){
+            case "hub":
+            path = slugs.hubs;
+            break;
+            
+            case "task":
+            path = slugs.hubs + "/" + model.get("hub") + "/" + slugs.tasks;
+            break;
+            
+            case "user":
+            path = slugs.users;
+            break;
+            
+            default:
+            return null;
+        }
+        
+        return (includeHash ? "#" : "") +
+            "/" + path + "/" + model.id + "/";
     },
 
     constructor: function TankController() {
@@ -47,7 +83,7 @@ var TankController = Controller.extend({
             });
 
         _.bindAll(this, "updateMarkers");
-        this.tankView = new Tank({el: jQuery('body')[0]});
+        this.tankView = new Tank({el: jQuery("body")[0]});
 
         this.bind("change:walls", function(tank, dimensions){
             var currentWalls = this.forceDirector.getWalls();
@@ -143,7 +179,7 @@ var TankController = Controller.extend({
                 this.centerViewportOnHub(hubView);
             } else {
                 // Just update the hash fragment to jump to the selected hub.
-                window.location.hash = "/hubs/:id/".replace(":id", markerView.model.id);
+                this.navigate("/" + app.slugs.hubs + "/:id/".replace(":id", markerView.model.id), true);
             }
         }, this);
         this._setupPanAndScrollEvents();
@@ -155,7 +191,7 @@ var TankController = Controller.extend({
             this.addMarker(hub);
         }, this.markersView);
 
-        jQuery('body').append(this.markersView.render());
+        jQuery("body").append(this.markersView.render());
 
         // Add hubs
         if (options && options.hubs){
@@ -193,6 +229,10 @@ var TankController = Controller.extend({
             markersView.bind("mouseleave", startTimer);
 
             return function () {
+                if (!app.lightbox.isHidden()) {
+                    return;
+                }
+
                 if (!isPanning) {
                     markersView.show();
                     isPanning = true;
@@ -204,7 +244,7 @@ var TankController = Controller.extend({
         })(this.markersView);
 
         // Bind this handler to scroll and pan.
-        this.tankView.bind('pan', toggleDisplayMarkers);
+        this.tankView.bind("pan", toggleDisplayMarkers);
         jQuery(window).scroll(toggleDisplayMarkers);
 
         // Watch the viewport bounds. If the user mouses into these bounds
@@ -554,13 +594,13 @@ var TankController = Controller.extend({
             .bind("archive", _.bind(function (hub) {
                 this.removeHubView(hub);
                 app.lightbox.hide();
-                window.location.hash = "/";
+                this.navigate("/", true);
             }, this))
             .bind("delete", _.bind(function (hub) {
                 this.removeHubView(hub);
                 Tasket.hubs.remove(hub);
                 app.lightbox.hide();
-                window.location.hash = "/";
+                this.navigate("/", true);
             }, this))
             .bind("error", _.bind(function(hub, form, status){
                 this.error("Sorry, there was an error creating the " + app.lang.HUB + ". Please try logging out and in again. (error: hub-" + hub.id + ", status " + status + ")");
@@ -674,13 +714,13 @@ var TankController = Controller.extend({
 
                 // Add to current users tasks if not already in there.
                 if (
-                  task.get('state') === Task.states.NEW &&
-                  task.get('owner') === app.currentUser.id
+                  task.get("state") === Task.states.NEW &&
+                  task.get("owner") === app.currentUser.id
                 ) {
-                    userTasks = _.clone(app.currentUser.get('tasks.owned.new'));
+                    userTasks = _.clone(app.currentUser.get("tasks.owned.new"));
                     userTasks.push(task.id);
                     app.currentUser.set({
-                      'tasks.owned.new': userTasks
+                      "tasks.owned.new": userTasks
                     });
                 }
 
@@ -719,11 +759,42 @@ var TankController = Controller.extend({
         }
         return this;
     },
+    
+    totalHubEstimate: function(){
+        var hubEstimates = Tasket.hubs.invoke("estimate");
+        return _.reduce(hubEstimates, function(memo, value){return memo + value;}, 0);
+    },
+    
+    getWeightForHub: function(hub){
+        var settings = Tasket.settings,
+            // (max minutes per task * max new, claimed or done tasks on a hub) / 3 = max minutes per task type - i.e. new, claimed or done tasks
+            //maxMinutesPerUnverifiedTaskType = (settings.TASK_ESTIMATE_MAX * settings.TASK_LIMIT) / 3,
+            
+            maxMinutesPerUnverifiedTaskType = this.totalHubEstimate() / 3,
+            
+            unverifiedTaskWeight = hub.get("estimates.new") +
+                (hub.get("estimates.claimed") / 2) +
+                (hub.get("estimates.done") / 4),
+                
+            maxUnverifiedTaskWeight = maxMinutesPerUnverifiedTaskType +
+                (maxMinutesPerUnverifiedTaskType / 2) +
+                (maxMinutesPerUnverifiedTaskType / 4),
+            
+            numVerifiedTasks = hub.get("estimates.verified"),
+            verifiedTaskAdjustment = numVerifiedTasks ? (0.5 / numVerifiedTasks) : 1,
+            maxVerifiedTaskAdjustment = 1,
+            
+            minutesThisHub = unverifiedTaskWeight + verifiedTaskAdjustment,
+            maxMinutes = maxUnverifiedTaskWeight + maxVerifiedTaskAdjustment;
+            
+        return minutesThisHub ?
+            minutesThisHub / maxMinutes : 0;
+    },
 
     getHubWeights: function(){
         return _.map(this.hubViews, function(hubView){
-            return hubView.model.weight();
-        });
+            return this.getWeightForHub(hubView.model);
+        }, this);
     },
 
     calculateHubWeights: function(){
@@ -744,7 +815,7 @@ var TankController = Controller.extend({
             throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first";
         }
 
-        var weight = hubView.model.weight(),
+        var weight = this.getWeightForHub(hubView.model),
             weightRatioOfFullRange = (weight - this.hubWeightMin) / (this.hubWeightRange || 0.5); // 0.5 is to supply a number for when there is no difference at all
 
         return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
@@ -759,7 +830,8 @@ var TankController = Controller.extend({
     hubsAlphabetical: function(){
         return _(this.hubViews).chain()
             .sortBy(function(hubView){
-                return hubView.model.get("title") || hubView.model.get("description");
+                var title = hubView.model.get("title") || hubView.model.get("description");
+                return title.toLowerCase();
             })
             .map(function(hubView){
                 return hubView.model.id;
@@ -861,7 +933,8 @@ var TankController = Controller.extend({
         var groups = [],
             groupCount = 5,
             groupWeight, weights,
-            hubWidth, hubHeight;
+            viewportRatio = this.viewportWidth / this.viewportHeight,
+            hubWidth, hubHeight, tankWidth, tankHeight, tankArea;
 
         // If we have no hubs yet just use the viewport dimensions.
         if (_.size(this.hubViews)) {
@@ -870,8 +943,9 @@ var TankController = Controller.extend({
 
             // Assign the hubs to groups.
             _.each(this.hubViews, function (view) {
-                var group = Math.floor(view.model.weight() / groupWeight),
-                    array = groups[group];
+                var weight = this.getWeightForHub(view.model),
+                    group  = Math.floor(weight / groupWeight),
+                    array  = groups[group];
 
                 if (!array) {
                     array =  groups[group] = [];
@@ -884,7 +958,7 @@ var TankController = Controller.extend({
                     hubWidth  = view.width;
                     hubHeight = view.height;
                 }
-            });
+            }, this);
 
             // If we have hubs in the DOM with dimensions.
             if (hubWidth && hubHeight) {
@@ -892,12 +966,20 @@ var TankController = Controller.extend({
                 groups = _.compact(groups);
 
                 // width == max number of hubs in group * hub width
-                this.tankWidth  = Math.max.apply(Math, _.pluck(groups, "length")) * hubWidth * 1.25;
+                tankWidth  = Math.max.apply(Math, _.pluck(groups, "length")) * hubWidth * 1.25;
 
                 // height == number of groups containing hubs * hub height
                 // this is multiplied by 2 to give a little more height between the
                 // hubs. The 2 is arbitrary and assigned through trial and error.
-                this.tankHeight = groups.length * (hubHeight * 2);
+                tankHeight = groups.length * (hubHeight * 2);
+                
+                tankArea = tankWidth * tankHeight;
+                tankWidth = Math.sqrt(tankArea / viewportRatio);
+                tankHeight = tankArea / tankWidth;
+                
+                // Spread to viewport ratio
+                this.tankWidth = tankWidth;
+                this.tankHeight = tankHeight;
             }
         }
 
@@ -910,7 +992,7 @@ var TankController = Controller.extend({
             this.tankWidth  = this.viewportWidth;
         }
 
-        jQuery('body').width(this.tankWidth).height(this.tankHeight);
+        jQuery("body").width(this.tankWidth).height(this.tankHeight);
     },
 
     getViewportCenter: function () {
@@ -1004,7 +1086,7 @@ var TankController = Controller.extend({
         if (app.dashboard.isHidden()) {
             return 0;
         }
-        return app.dashboard.elem.outerWidth() + parseFloat(app.dashboard.elem.css('right'));
+        return app.dashboard.elem.outerWidth() + parseFloat(app.dashboard.elem.css("right"));
     },
 
     // Modified from http://fleegix.org/articles/2006-05-30-getting-the-scrollbar-width-in-pixels
@@ -1145,10 +1227,10 @@ var TankController = Controller.extend({
     // NOTE: Creating the <svg> element this way allows it to render on iPad et al, whereas including the <svg> element directly in the HTML document does not. Inspired by http://keith-wood.name/svg.html
     createSVGRoot: function(container){
         var svg = this.createSVGElement("svg");
-	    svg.setAttribute("version", "1.1");
+        svg.setAttribute("version", "1.1");
 
-	    container.appendChild(svg);
-	    return svg;
+        container.appendChild(svg);
+        return svg;
     },
 
     updateSVGDimensions: function(){

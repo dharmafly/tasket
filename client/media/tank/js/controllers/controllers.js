@@ -3,7 +3,7 @@
  * to handle and an initialize method for setup without having to call the
  * constructor.
  *
- * If a Router is provided it will register it's own routes and provides
+ * If a Router is provided it will register its own routes and provides
  * a proxy to the Router#navigate() method.
  *
  * This object exists as well as the Backbone.Router because there should
@@ -21,8 +21,8 @@
  *   // Create a new controller.
  *   var HubController = Controller.extend({
  *       routes: {
- *           '/hubs/new/': 'newHub',
- *           '/hubs/:id/': 'showHub'
+ *           "/projects/new/": "newHub",
+ *           "/projects/:id/": "showHub"
  *       },
  *       newHub: function () {},
  *       showHub: function (id) {},
@@ -32,7 +32,7 @@
  *   var router = new Backbone.Router();
  *   var hubController = new HubController({router: router});
  *
- *   location.hash = '/hubs/new/'; // Calls hubController.newHub().
+ *   location.hash = "/projects/new/"; // Calls hubController.newHub().
  *
  * Returns an instance of Controller.
  */
@@ -45,7 +45,7 @@ function Controller(options) {
         routes = this.routes;
 
         // Call the routes object if it's a function.
-        if (typeof routes === 'function') {
+        if (typeof routes === "function") {
             routes = routes.apply(this);
         }
 
@@ -91,7 +91,7 @@ _.extend(Controller.prototype, Backbone.Events, {
      *
      * Examples
      *
-     *   controller.navigate('/hubs/1/');
+     *   controller.navigate("/projects/1/");
      *
      * Returns itself.
      */
