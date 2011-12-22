@@ -33,7 +33,7 @@ var HubView = View.extend({
             inVelDampK: 0.1,
             inHookeK: 0.1,
             inWallRepulsion: 500,
-            inBBRepulsion:200
+            inBBRepulsion:500
         });
         
         // Add hub node
