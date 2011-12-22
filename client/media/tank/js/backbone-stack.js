@@ -50,7 +50,7 @@
      * Examples
      *
      *   Backbone.history.stack();
-     *   // => ["/about/", "/hubs/", "/hubs/new/"]
+     *   // => ["/about/", "/projects/", "/projects/new/"]
      *
      * Returns nothing.
      */
@@ -70,13 +70,13 @@
      *
      * Returns nothing.
      */
-    Backbone.History.prototype.navigate = function(fragment) {
+    Backbone.History.prototype.navigate = function(fragment, triggerRoute) {
         fragment = (fragment || '').replace(/^#*/, '');
         if (this.getFragment() === fragment) {
             return;
         }
         this.stack().push(fragment);
-        _navigate.call(this, fragment);
+        _navigate.call(this, fragment, triggerRoute);
     };
 
     /* Public: Attempt to load the current URL fragment. If a route succeeds
