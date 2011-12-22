@@ -22,7 +22,7 @@ var HubView = View.extend({
         
         // **
         
-        // Force director
+        // Force director for tasks around a hub
         this.forceDirector = ForceDirector.create({
             animate: app.animateTasks,
             numCycles: 400,
@@ -32,8 +32,8 @@ var HubView = View.extend({
             updateStepDamping: 0.01,
             inVelDampK: 0.1,
             inHookeK: 0.1,
-            inWallRepulsion: 1000,
-            inBBRepulsion:900
+            inWallRepulsion: 500,
+            inBBRepulsion:200
         });
         
         // Add hub node

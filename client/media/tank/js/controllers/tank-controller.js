@@ -759,11 +759,42 @@ var TankController = Controller.extend({
         }
         return this;
     },
+    
+    totalHubEstimate: function(){
+        var hubEstimates = Tasket.hubs.invoke("estimate");
+        return _.reduce(hubEstimates, function(memo, value){return memo + value;}, 0);
+    },
+    
+    getWeightForHub: function(hub){
+        var settings = Tasket.settings,
+            // (max minutes per task * max new, claimed or done tasks on a hub) / 3 = max minutes per task type - i.e. new, claimed or done tasks
+            //maxMinutesPerUnverifiedTaskType = (settings.TASK_ESTIMATE_MAX * settings.TASK_LIMIT) / 3,
+            
+            maxMinutesPerUnverifiedTaskType = this.totalHubEstimate() / 3,
+            
+            unverifiedTaskWeight = hub.get("estimates.new") +
+                (hub.get("estimates.claimed") / 2) +
+                (hub.get("estimates.done") / 4),
+                
+            maxUnverifiedTaskWeight = maxMinutesPerUnverifiedTaskType +
+                (maxMinutesPerUnverifiedTaskType / 2) +
+                (maxMinutesPerUnverifiedTaskType / 4),
+            
+            numVerifiedTasks = hub.get("estimates.verified"),
+            verifiedTaskAdjustment = numVerifiedTasks ? (0.5 / numVerifiedTasks) : 1,
+            maxVerifiedTaskAdjustment = 1,
+            
+            minutesThisHub = unverifiedTaskWeight + verifiedTaskAdjustment,
+            maxMinutes = maxUnverifiedTaskWeight + maxVerifiedTaskAdjustment;
+            
+        return minutesThisHub ?
+            minutesThisHub / maxMinutes : 0;
+    },
 
     getHubWeights: function(){
         return _.map(this.hubViews, function(hubView){
-            return hubView.model.weight();
-        });
+            return this.getWeightForHub(hubView.model);
+        }, this);
     },
 
     calculateHubWeights: function(){
@@ -784,7 +815,7 @@ var TankController = Controller.extend({
             throw "tank.hubViewOffsetTop: Must call tank.calculateHubWeights() first";
         }
 
-        var weight = hubView.model.weight(),
+        var weight = this.getWeightForHub(hubView.model),
             weightRatioOfFullRange = (weight - this.hubWeightMin) / (this.hubWeightRange || 0.5); // 0.5 is to supply a number for when there is no difference at all
 
         return weightRatioOfFullRange * (this.height - this.marginTop - 90) + this.marginTop + 90; // 90 is expected hubView height
@@ -799,7 +830,8 @@ var TankController = Controller.extend({
     hubsAlphabetical: function(){
         return _(this.hubViews).chain()
             .sortBy(function(hubView){
-                return hubView.model.get("title") || hubView.model.get("description");
+                var title = hubView.model.get("title") || hubView.model.get("description");
+                return title.toLowerCase();
             })
             .map(function(hubView){
                 return hubView.model.id;
@@ -901,7 +933,8 @@ var TankController = Controller.extend({
         var groups = [],
             groupCount = 5,
             groupWeight, weights,
-            hubWidth, hubHeight;
+            viewportRatio = this.viewportWidth / this.viewportHeight,
+            hubWidth, hubHeight, tankWidth, tankHeight, tankArea;
 
         // If we have no hubs yet just use the viewport dimensions.
         if (_.size(this.hubViews)) {
@@ -910,8 +943,9 @@ var TankController = Controller.extend({
 
             // Assign the hubs to groups.
             _.each(this.hubViews, function (view) {
-                var group = Math.floor(view.model.weight() / groupWeight),
-                    array = groups[group];
+                var weight = this.getWeightForHub(view.model),
+                    group  = Math.floor(weight / groupWeight),
+                    array  = groups[group];
 
                 if (!array) {
                     array =  groups[group] = [];
@@ -924,7 +958,7 @@ var TankController = Controller.extend({
                     hubWidth  = view.width;
                     hubHeight = view.height;
                 }
-            });
+            }, this);
 
             // If we have hubs in the DOM with dimensions.
             if (hubWidth && hubHeight) {
@@ -932,12 +966,20 @@ var TankController = Controller.extend({
                 groups = _.compact(groups);
 
                 // width == max number of hubs in group * hub width
-                this.tankWidth  = Math.max.apply(Math, _.pluck(groups, "length")) * hubWidth * 1.25;
+                tankWidth  = Math.max.apply(Math, _.pluck(groups, "length")) * hubWidth * 1.25;
 
                 // height == number of groups containing hubs * hub height
                 // this is multiplied by 2 to give a little more height between the
                 // hubs. The 2 is arbitrary and assigned through trial and error.
-                this.tankHeight = groups.length * (hubHeight * 2);
+                tankHeight = groups.length * (hubHeight * 2);
+                
+                tankArea = tankWidth * tankHeight;
+                tankWidth = Math.sqrt(tankArea / viewportRatio);
+                tankHeight = tankArea / tankWidth;
+                
+                // Spread to viewport ratio
+                this.tankWidth = tankWidth;
+                this.tankHeight = tankHeight;
             }
         }
 
