@@ -467,7 +467,7 @@ def thumbs(request, size, path):
     file_mimetype = mimetypes.guess_type(im_obj.name)
     return HttpResponse(im.read(), mimetype=file_mimetype)
 
-
+@AllowJSONPCallback
 def statistics(request):
     """
     Stats on objects in the database.
