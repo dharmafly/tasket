@@ -156,7 +156,7 @@ def handle404(request):
     
     
     
-    
+@AllowJSONPCallback    
 def settings_view(request):
     exposed_settings = getattr(settings, "EXPOSED_SETTINGS", ())
     
